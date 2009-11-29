@@ -36,8 +36,8 @@ package com.adamatomic.Mode
 			FlxG.followAdjust(0.5,0.0);
 			FlxG.followBounds(0,0,640,640);
 			
-			for(var i:uint = 0; i < 8; i++){
-				_gravityObjs.add(this.add(new GravityObj()));
+			for(var j:uint = 0; j < 8; j++){
+				// _gravityObjs.add(this.add(new GravityObj())); // I had to comment this line because of a "BitmapData" error.
 			}
 			
 			//Uncomment these lines if you want to center TxtMap2
