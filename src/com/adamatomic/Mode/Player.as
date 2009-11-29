@@ -110,7 +110,7 @@ package com.adamatomic.Mode
 				if(_up) play("run_up");
 				else play("run");
 			}
-			
+				
 			//UPDATE POSITION AND ANIMATION
 			super.update();
 			

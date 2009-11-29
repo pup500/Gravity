@@ -4,7 +4,7 @@
   <output>
     <movie disabled="False" />
     <movie input="" />
-    <movie path="bin\flixelTest.swf" />
+    <movie path="bin\gravity.swf" />
     <movie fps="30" />
     <movie width="800" />
     <movie height="600" />

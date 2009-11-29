@@ -30,8 +30,8 @@ package com.adamatomic.Mode
 			_e.kill();
 			this.add(_e);
 				
-			_t1 = this.add(new FlxText(FlxG.width,FlxG.height/3,80,80,"mo",0x3a5c39,null,32)) as FlxText;
-			_t2 = this.add(new FlxText(-60,FlxG.height/3,80,80,"de",0x3a5c39,null,32)) as FlxText;
+			_t1 = this.add(new FlxText(FlxG.width,FlxG.height/3,80,80,"GRAV",0x3a5c39,null,32)) as FlxText;
+			_t2 = this.add(new FlxText(-60,FlxG.height/3,80,80,"ITY",0x3a5c39,null,32)) as FlxText;
 			
 			_ok = false;
 			_ok2 = false;
@@ -69,7 +69,7 @@ package com.adamatomic.Mode
 				_t1.angle = Math.random()*40-20;
 				_t2.angle = Math.random()*40-20;
 				
-				this.add(new FlxText(t1m,FlxG.height/3+39,110,20,"by Adam Atomic",0x3a5c39,null,8,"center"));
+				//this.add(new FlxText(t1m,FlxG.height/3+39,110,20,"by Adam Atomic",0x3a5c39,null,8,"center"));
 				
 				//flixel button
 				this.add(new FlxSprite(null,t1m+1,FlxG.height/3+53,false,false,106,19,0xff131c1b));
@@ -116,8 +116,8 @@ package com.adamatomic.Mode
 		
 		private function onFade():void
 		{
-			FlxG.switchState(PlayState);
-			//FlxG.switchState(PlayStateTiles);
+			//FlxG.switchState(PlayState);
+			FlxG.switchState(PlayStateTiles);
 		}
 	}
 }
