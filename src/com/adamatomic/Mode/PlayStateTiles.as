@@ -5,9 +5,10 @@ package com.adamatomic.Mode
 	public class PlayStateTiles extends FlxState
 	{
 		[Embed(source="../../../data/mode.mp3")] private var SndMode:Class;
-		[Embed(source="../../../data/gmap.txt",mimeType="application/octet-stream")] private var TxtMap:Class;
+		[Embed(source="../../../data/map2.txt",mimeType="application/octet-stream")] private var TxtMap:Class;
 		[Embed(source="../../../data/map2.txt",mimeType="application/octet-stream")] private var TxtMap2:Class;
 		[Embed(source="../../../data/tiles_all.png")] private var ImgTiles:Class;
+		[Embed(source="../../../data/tech_tiles.png")] private var ImgTech:Class;
 		
 		//major game objects
 		private var _tilemap:FlxTilemap;
@@ -36,9 +37,12 @@ package com.adamatomic.Mode
 			FlxG.followAdjust(0.5,0.0);
 			FlxG.followBounds(0,0,640,640);
 			
-			for(var j:uint = 0; j < 8; j++){
+			//for(var j:uint = 0; j < 8; j++){
 				// _gravityObjs.add(this.add(new GravityObj())); // I had to comment this line because of a "BitmapData" error.
-			}
+			//}
+			
+			_gravityObjs = new FlxArray();
+			_gravityObjs.add(this.add(new GravityObj(20,40,10,10,ImgTech)));
 			
 			//Uncomment these lines if you want to center TxtMap2
 			//var fx:uint = _tilemap.width/2 - FlxG.width/2;
@@ -58,6 +62,18 @@ package com.adamatomic.Mode
 			super.update();
 			FlxG.collideArray2(_tilemap,_bullets);
 			_tilemap.collide(_player);
+			//FlxG.collideArrays(_gravityObjs,_bullets);
+			//FlxG.collideArray(_gravityObjs,_player);
+			
+			FlxG.overlapArrays(_bullets,_gravityObjs,bulletHitObj);
+			
+		}
+		
+		private function bulletHitObj(Bullet:FlxSprite,Obj:GravityObj):void
+		{
+			FlxG.log("BULLET HIT NAME: ");
+			Bullet.hurt(0);
+			Obj.affectGravity(1);
 		}
 		
 		private function AnimationCallbackTest(Name:String, Frame:uint, FrameIndex:uint):void
