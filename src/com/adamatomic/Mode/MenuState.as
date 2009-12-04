@@ -117,7 +117,8 @@ package com.adamatomic.Mode
 		private function onFade():void
 		{
 			//FlxG.switchState(PlayState);
-			FlxG.switchState(PlayStateTiles);
+			//FlxG.switchState(PlayStateTiles);
+			FlxG.switchState(NewPlayState);
 		}
 	}
 }

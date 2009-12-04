@@ -36,8 +36,8 @@ package com.adamatomic.Mode
 			//basic player physics
 			var runSpeed:uint = 80;
 			drag.x = runSpeed*8;
-			acceleration.y = 420;
-			_jumpPower = 200;
+			//acceleration.y = 420;
+			_jumpPower = 100;
 			maxVelocity.x = runSpeed;
 			maxVelocity.y = _jumpPower;
 			
@@ -65,12 +65,12 @@ package com.adamatomic.Mode
 			{
 				_restart += FlxG.elapsed;
 				if(_restart > 2)
-					FlxG.switchState(PlayState);
+					FlxG.switchState(NewPlayState);
 				return;
 			}
 			
 			//MOVEMENT
-			acceleration.x = 0;
+			//acceleration.x = 0;
 			if(FlxG.kLeft)
 			{
 				facing = LEFT;
@@ -148,6 +148,11 @@ package com.adamatomic.Mode
 					bX -= _bullets[_curBullet].width - 4;
 					bXVel = -_bulletVel;
 				}
+				
+				//Make the player push in opposite direction as bullet
+				//velocity.x = -bXVel;
+				//velocity.y = -bYVel;
+				
 				_bullets[_curBullet].shoot(bX,bY,bXVel,bYVel);
 				if(++_curBullet >= _bullets.length)
 					_curBullet = 0;
