@@ -1,46 +1,56 @@
-package com.adamatomic.Mode
+﻿package com.adamatomic.Mode
 {
 	import com.adamatomic.flixel.*;
 
-	public class PlayStateTiles extends FlxState
+	public class PlayStateFlanTiles extends FlxState
 	{
 		[Embed(source="../../../data/mode.mp3")] private var SndMode:Class;
-		[Embed(source="../../../data/gmap.txt",mimeType="application/octet-stream")] private var TxtMap:Class;
-		[Embed(source="../../../data/map2.txt",mimeType="application/octet-stream")] private var TxtMap2:Class;
-		[Embed(source="../../../data/tiles_all.png")] private var ImgTiles:Class;
-		[Embed(source="../../../data/tech_tiles.png")] private var ImgTech:Class;
 		
-		private var _map:MapTest;
-		
+		//PUT THE FOLLOWING INSIDE YOUR DERIVED FlxState CLASS (i.e. under 'class MyState { ...')
+		private var _map:MapBase;
+
 		//major game objects
-		private var _tilemap:FlxTilemap;
+		//private var _tilemap:FlxTilemap;
 		private var _bullets:FlxArray;
 		private var _player:Player;
 		private var _gravityObjs:FlxArray;
 		
-		function PlayStateTiles():void
+		function PlayStateFlanTiles():void
 		{
 			super();
 			
-			//create tilemap
-			//_tilemap = new FlxTilemap(new TxtMap,ImgTiles,3);
-			//_tilemap = new FlxTilemap(new TxtMap2,ImgTiles,3); //This is an alternate tiny map
-			_map = new MapTest;
+			//Load the Flan Map.
+			_map = new MapSmallOnePlatform();
 			
-			_map = new MapTest;
-            this.add(_map.layerBackground);
-            this.add(_map.layerMain);
-            this.add(_map.layerForeground);
-			
+			//Add the background (a bit hacky but works)
+			//var bgColorSprite:FlxSprite = new FlxSprite(null, 0, 0, false, false, FlxG.width, FlxG.height, _map.bgColor);
+			//bgColorSprite.scrollFactor.x = 0;
+			//bgColorSprite.scrollFactor.y = 0;
+			//FlxG.state.add(bgColorSprite);
+
+			//Add the layers to current the FlxState
+			FlxG.state.add(_map.layerBackground);
+			_map.addSpritesToLayerBackground(onAddSpriteCallback);
+			FlxG.state.add(_map.layerMain);
+			_map.addSpritesToLayerMain(onAddSpriteCallback);
+			FlxG.state.add(_map.layerForeground);
+			_map.addSpritesToLayerForeground(onAddSpriteCallback);
+
+			FlxG.followBounds(_map.boundsMinX, _map.boundsMinY, _map.boundsMaxX, _map.boundsMaxY);
+
 			//create player and bullets
 			_bullets = new FlxArray();
 			//_player = new Player(_tilemap.width/2-4,_tilemap.height/2-4,_bullets);
-			_player = new Player(100,_tilemap.height/2-4,_bullets);
+			_player = new Player(100,_map.layerMain.height/2-4,_bullets);
+			
+			//Add instantiated elements to rendering loop.
+			//add background before anything else so it doesn't overlap anything.
+			this.add(_map.layerBackground);
 			
 			_player.addAnimationCallback(AnimationCallbackTest);
 			for(var i:uint = 0; i < 8; i++)
 				_bullets.add(this.add(new Bullet()));
-			
+				
 			//add player and set up camera
 			this.add(_player);
 			FlxG.follow(_player,2.5);
@@ -51,29 +61,20 @@ package com.adamatomic.Mode
 				// _gravityObjs.add(this.add(new GravityObj())); // I had to comment this line because of a "BitmapData" error.
 			//}
 			
-			_gravityObjs = new FlxArray();
+			//_gravityObjs = new FlxArray();
 			
-			for(var i:uint = 0; i < 10; i++){
-				_gravityObjs.add(this.add(new GravityObj(Math.random()*500,Math.random()*150,10,10,ImgTech)));
-			}
+			//for(var i2:uint = 0; i2 < 10; i2++){
+			//	_gravityObjs.add(this.add(new GravityObj(Math.random()*500,Math.random()*150,10,10,ImgTech)));
+			//}
 			//_gravityObjs.add(this.add(new GravityObj(20,40,10,10,ImgTech)));
 			//_gravityObjs.add(this.add(new GravityObj(80,80,10,10,ImgTech)));
 			//_gravityObjs.add(this.add(new GravityObj(100,20,10,10,ImgTech)));
-			
-			//Uncomment these lines if you want to center TxtMap2
-			//var fx:uint = _tilemap.width/2 - FlxG.width/2;
-			//var fy:uint = _tilemap.height/2 - FlxG.height/2;
-			//FlxG.followBounds(fx,fy,fx,fy);
-			
-			//add tilemap last so it is in front, looks neat
-			//this.add(_tilemap);
-			this.add(_map.layerBackground);
+
 			this.add(_map.layerMain);
 			this.add(_map.layerForeground);
 			
-			
 			//turn on music and fade in
-			FlxG.setMusic(SndMode);
+			//FlxG.setMusic(SndMode);
 			FlxG.flash(0xff131c1b);
 		}
 
@@ -81,18 +82,27 @@ package com.adamatomic.Mode
 		{
 			super.update();
 			//FlxG.collideArray2(_tilemap,_bullets);
-			FlxG.collideArray2(_tilemap,_bullets);
-			_tilemap.collide(_player);
+			
+			FlxG.collideArray2(_map.layerMain,_bullets);
+			_map.layerMain.collide(_player);
 			
 			//FlxG.collideArrays(_gravityObjs,_bullets);
-			FlxG.collideArray(_gravityObjs,_player);
+			//FlxG.collideArray(_gravityObjs,_player);
 			
 			updateGravity();
 			
-			FlxG.overlapArrays(_bullets,_gravityObjs,bulletHitObj);
+			//FlxG.overlapArrays(_bullets,_gravityObjs,bulletHitObj);
 			
 		}
 		
+		//Added for Flan Map loading. Not sure what it does.
+		protected function onAddSpriteCallback(obj:FlxSprite):void
+		{
+			/*
+			*/
+		}
+		
+		//TODO: Encapsulate gravity logic so it is independant of PlayState
 		private function updateGravity():void{
 			_player.acceleration.x = 0;
 			_player.acceleration.y = 100;
