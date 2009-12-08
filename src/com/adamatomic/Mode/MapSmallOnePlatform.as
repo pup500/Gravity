@@ -5,11 +5,12 @@ package com.adamatomic.Mode {
 	
 	public class MapSmallOnePlatform extends MapBase {
 		//Media content declarations
-		[Embed(source="../../../data/Maps/MapCSV_SmallOnePlatform_Background.txt", mimeType="application/octet-stream")] public var CSV_Background:Class;
+		//[Embed(source="../../../data/Maps/MapCSV_SmallOnePlatform_Background.txt", mimeType="application/octet-stream")] public var CSV_Background:Class;
+		[Embed(source="../../../data/Maps/MapCSV_OneGap_Background.txt", mimeType="application/octet-stream")] public var CSV_Background:Class;
 		[Embed(source="../../../data/tiles_all.png")] public var Img_Background:Class;
-		[Embed(source="../../../data/Maps/MapCSV_SmallOnePlatform_Main.txt", mimeType="application/octet-stream")] public var CSV_Main:Class;
+		[Embed(source="../../../data/Maps/MapCSV_OneGap_Main.txt", mimeType="application/octet-stream")] public var CSV_Main:Class;
 		[Embed(source="../../../data/tiles_all.png")] public var Img_Main:Class;
-		[Embed(source="../../../data/Maps/MapCSV_SmallOnePlatform_Foreground.txt", mimeType="application/octet-stream")] public var CSV_Foreground:Class;
+		[Embed(source="../../../data/Maps/MapCSV_OneGap_Foreground.txt", mimeType="application/octet-stream")] public var CSV_Foreground:Class;
 		[Embed(source="../../../data/tiles_all.png")] public var Img_Foreground:Class;
 
 		
