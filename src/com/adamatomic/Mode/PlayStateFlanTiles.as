@@ -1,6 +1,9 @@
 ﻿package com.adamatomic.Mode
 {
 	import com.adamatomic.flixel.*;
+	
+	import flash.utils.getDefinitionByName;
+	
 
 	public class PlayStateFlanTiles extends FlxState
 	{
@@ -15,12 +18,28 @@
 		private var _player:Player;
 		private var _gravityObjs:FlxArray;
 		
+		//This requires every map object derived classes to be referenced in this class
+		//like this:
+		
+		private var maponegamp:MapOneGap;
+		private var mapsmalloneplatform:MapSmallOnePlatform;
+		private var mapvalley:MapValley;
+		
+		private function getMapByLevel():MapBase{
+			trace(FlxG.level);
+			trace(FlxG.levels[FlxG.level]);
+			var ClassReference:Class = getDefinitionByName(FlxG.levels[FlxG.level]) as Class;
+			return new ClassReference() as MapBase;
+			//new MapSmallOnePlatform();
+		}
+		
 		function PlayStateFlanTiles():void
 		{
 			super();
 			
 			//Load the Flan Map.
-			_map = new MapSmallOnePlatform();
+			_map = getMapByLevel();
+			//new MapSmallOnePlatform();
 			
 			//Add the background (a bit hacky but works)
 			//var bgColorSprite:FlxSprite = new FlxSprite(null, 0, 0, false, false, FlxG.width, FlxG.height, _map.bgColor);
