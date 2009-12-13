@@ -24,7 +24,9 @@ package com.adamatomic.Mode {
 		public var boundsMaxX:int;
 		public var boundsMaxY:int;
 
-		public function MapBase() { }
+		public var MapName:String;
+		
+		public function MapBase() {}
 
 		public var bgColor:uint = 0xff000000;
 

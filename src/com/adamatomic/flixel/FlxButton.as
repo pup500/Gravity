@@ -5,15 +5,15 @@ package com.adamatomic.flixel
 	//@desc		A simple button class that calls a function when mouse-clicked
 	public class FlxButton extends FlxCore
 	{
-		private var _onToggle:Boolean;
-		private var _off:FlxSprite;
-		private var _on:FlxSprite;
-		private var _offT:FlxText;
-		private var _offTO:Point;
-		private var _onT:FlxText;
-		private var _onTO:Point;
-		private var _callback:Function;
-		private var _pressed:Boolean;
+		protected var _onToggle:Boolean;
+		protected var _off:FlxSprite;
+		protected var _on:FlxSprite;
+		protected var _offT:FlxText;
+		protected var _offTO:Point;
+		protected var _onT:FlxText;
+		protected var _onTO:Point;
+		protected var _callback:Function;
+		protected var _pressed:Boolean;
 		
 		//@desc		Constructor
 		//@param	X			The X position of the button
@@ -116,7 +116,7 @@ package com.adamatomic.flixel
 		
 		//@desc		Internal function for handling the visibility of the off and on graphics
 		//@param	On		Whether the button should be on or off
-		private function visibility(On:Boolean):void
+		protected function visibility(On:Boolean):void
 		{
 			if(On)
 			{
@@ -135,7 +135,7 @@ package com.adamatomic.flixel
 		}
 		
 		//@desc		Internal function that just updates the X and Y position of the button's graphics
-		private function updatePositions():void
+		protected function updatePositions():void
 		{
 			_off.x = x;
 			_off.y = y;

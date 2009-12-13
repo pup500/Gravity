@@ -17,11 +17,11 @@
 		[Embed(source="../../../data/tiles_all.png")] public var Img_Foreground:Class;
 
 		public function MapOneGap() {
-
+			
 			_setCustomValues();
 
 			bgColor = 0xff000000;
-
+			
 			layerBackground = new FlxTilemap(new CSV_Background, Img_Background,1,1);
 			layerBackground.x = 0;
 			layerBackground.y = 0;
