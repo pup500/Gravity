@@ -22,6 +22,11 @@ package com.adamatomic.flixel
 			return _layer.add(Core);
 		}
 		
+		virtual public function remove(Core:FlxCore, Splice:Boolean = false ):void
+		{
+			_layer.remove(Core, Splice);
+		}
+		
 		//@desc		Automatically goes through and calls update on everything you added to the game loop, override this function to handle custom input and perform collisions
 		virtual public function update():void
 		{

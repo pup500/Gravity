@@ -2,7 +2,7 @@ package com.adamatomic.Mode
 {
 	import com.adamatomic.flixel.*;
 
-	public class Player extends FlxSprite
+	public class Player extends MassedFlxSprite
 	{
 		[Embed(source="../../../data/spaceman.png")] private var ImgSpaceman:Class;
 		[Embed(source="../../../data/gibs.png")] private var ImgGibs:Class;
@@ -26,6 +26,7 @@ package com.adamatomic.Mode
 		{
 			super(ImgSpaceman,X,Y,true,true);
 			_restart = 0;
+			_mass = 100; //default
 			
 			//bounding box tweaks
 			width = 6;

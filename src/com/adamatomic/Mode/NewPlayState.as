@@ -1,6 +1,7 @@
 package com.adamatomic.Mode
 {
 	import com.adamatomic.flixel.*;
+	import flash.events.Event;
 
 	public class NewPlayState extends FlxState
 	{
@@ -13,11 +14,15 @@ package com.adamatomic.Mode
 		
 		//major game objects
 		private var _blocks:FlxArray;
+		private var _gravityGenerators:FlxArray;
+		private var _affectedByGravity:FlxArray;
 		private var _bullets:FlxArray;
 		private var _player:Player;
 		private var _bots:FlxArray;
 		private var _spawners:FlxArray;
 		private var _botBullets:FlxArray;
+		
+		private var gravityPool:ObjectPool;
 		
 		//HUD
 		private var _score:FlxText;
@@ -39,36 +44,42 @@ package com.adamatomic.Mode
 			
 			//create basic objects
 			_bullets = new FlxArray();
-			_player = new Player(316,300,_bullets);
+			_player = new Player(316, 300, _bullets);
+			_gravityGenerators = new FlxArray();
+			_affectedByGravity = new FlxArray();
+			_affectedByGravity.add(_player);
 			_botBullets = new FlxArray();
 			_bots = new FlxArray();
 			_spawners = new FlxArray();
+			
+			gravityPool = new ObjectPool(GravityObj);
 			
 			//create level
 			var i:uint;
 			var r:uint = 160;
 			_blocks = new FlxArray();
-			_blocks.add(this.add(new GravityObj(0,0,640,16,ImgTech)));
-			_blocks.add(this.add(new GravityObj(0,16,16,640-16,ImgTech)));
-			_blocks.add(this.add(new GravityObj(640-16,16,16,640-16,ImgTech)));
-			_blocks.add(this.add(new GravityObj(16,640-24,640-32,8,ImgDirtTop)));
-			_blocks.add(this.add(new GravityObj(16,640-16,640-32,16,ImgDirt)));
-			buildRoom(r*0,r*0,true);
+			var haveSpawners:Boolean = true;
+			_blocks.add(this.add(new FlxBlock(0,0,640,16,ImgTech)));
+			_blocks.add(this.add(new FlxBlock(0,16,16,640-16,ImgTech)));
+			_blocks.add(this.add(new FlxBlock(640-16,16,16,640-16,ImgTech)));
+			_blocks.add(this.add(new FlxBlock(16,640-24,640-32,8,ImgDirtTop)));
+			_blocks.add(this.add(new FlxBlock(16,640-16,640-32,16,ImgDirt)));
+			buildRoom(r*0,r*0,haveSpawners);
 			buildRoom(r*1,r*0);
 			buildRoom(r*2,r*0);
-			buildRoom(r*3,r*0,true);
-			buildRoom(r*0,r*1,true);
+			buildRoom(r*3,r*0,haveSpawners);
+			buildRoom(r*0,r*1,haveSpawners);
 			buildRoom(r*1,r*1);
 			buildRoom(r*2,r*1);
-			buildRoom(r*3,r*1,true);
+			buildRoom(r*3,r*1,haveSpawners);
 			buildRoom(r*0,r*2);
 			buildRoom(r*1,r*2);
 			buildRoom(r*2,r*2);
 			buildRoom(r*3,r*2);
-			buildRoom(r*0,r*3,true);
+			buildRoom(r*0,r*3,haveSpawners);
 			buildRoom(r*1,r*3);
 			buildRoom(r*2,r*3);
-			buildRoom(r*3,r*3,true);
+			buildRoom(r*3,r*3,haveSpawners);
 			
 			//create bullets
 			for(i = 0; i < 50; i++)
@@ -236,27 +247,26 @@ package com.adamatomic.Mode
 		private function updateGravity():void{
 			_player.acceleration.x = 0;
 			_player.acceleration.y = 200;
-			for each(var gravObj:GravityObj in _blocks)
-			{
+			for each(var gravObj:GravityObj in _gravityGenerators) {
+			  for each(var massedObj:Massed in _affectedByGravity){	
 				if(gravObj.getMass() == 0) continue;
 				
-				var xDistance:Number = gravObj.x - _player.x;
-				var yDistance:Number = gravObj.y - _player.y;
+				var xDistance:Number = gravObj.x - massedObj.xpos;
+				var yDistance:Number = gravObj.y - massedObj.ypos;
 				var xDistanceSq:Number = xDistance * xDistance;
 				var yDistanceSq:Number = yDistance * yDistance;
 				var distanceSq:Number = xDistanceSq + yDistanceSq;
+				if(distanceSq > 10000 ) continue;
 				
-				if(distanceSq > 10000) continue;
-				
-				var distance:Number = Math.sqrt(xDistanceSq + yDistanceSq);
-				var massProduct:Number = 100 * gravObj.getMass();	//_player.mass * gravObj.mass;
+				var distance:Number = Math.sqrt(distanceSq);
+				var massProduct:Number = massedObj.getMass() * gravObj.getMass();	//_player.mass * gravObj.mass;
 				
 				var G:Number = 1; //gravitation constant
 				
 				var force:Number = G*(massProduct / distanceSq);
 				
-				_player.acceleration.x += force * (xDistance/distance);//xDistance >= 0 ? xForce :-xForce;
-				_player.acceleration.y += force * (yDistance/distance);//yDistance >= 0 ? yForce :-yForce;
+				massedObj.accel.x += force * (xDistance/distance);//xDistance >= 0 ? xForce :-xForce;
+				massedObj.accel.y += force * (yDistance/distance);//yDistance >= 0 ? yForce :-yForce;
 				
 				FlxG.log("xDist:" + xDistance + " yDist:"+yDistance);
 				FlxG.log("xDistSq:" + xDistanceSq + " yDistSq:"+yDistanceSq);
@@ -264,6 +274,7 @@ package com.adamatomic.Mode
 				FlxG.log("distance:" + distance);
 				//FlxG.log("force:" + force);
 				//FlxG.log("xForce:" + xForce + " yForce:" + yForce);
+			  }
 			}
 		}
 		
@@ -274,10 +285,33 @@ package com.adamatomic.Mode
 			Bot.hurt(1);
 		}
 		
-		private function bulletHitBlocks(Bullet:FlxSprite,Block:GravityObj):void
+		private function bulletHitBlocks(Bullet:FlxSprite,Block:FlxBlock):void
 		{
 			Bullet.hurt(0);
-			Block.affectGravity(10000);
+			//Block.affectGravity(10000);
+			//spawn a new gravity generator at Bullet coords
+			var ggen:GravityObj = getGravityObj();
+			ggen.x = Bullet.x;
+			ggen.y = Bullet.y;
+			add(ggen);
+		}
+		
+		private function getGravityObj():GravityObj {
+			var die:String = "die";
+			var ggen:GravityObj = gravityPool.getObject();
+			if (!ggen.hasEventListener(die)) {
+				ggen.addEventListener(die, removeGravityObj);
+			}
+			ggen.reset();
+			_gravityGenerators.add(ggen);
+			return ggen;
+		}
+		
+		private function removeGravityObj(e:Event):void {
+			var ggen:GravityObj = GravityObj(e.target);
+			_gravityGenerators.remove(ggen, true);
+			remove(ggen, true);
+			gravityPool.returnObject(ggen);	
 		}
 		
 		private function botHitPlayer(Bot:FlxSprite,Player:FlxSprite):void
@@ -331,13 +365,13 @@ package com.adamatomic.Mode
 					else
 						check = true;
 				} while(!check);
-				_blocks.add(this.add(new GravityObj(RX+bx*8,RY+by*8,bw*8,bh*8,ImgTech)));
+				_blocks.add(this.add(new FlxBlock(RX+bx*8,RY+by*8,bw*8,bh*8,ImgTech)));
 				
 				//If the block has room, add some non-colliding "dirt" graphics for variety
 				if((bw >= 4) && (bh >= 5))
 				{
-					this.add(new GravityObj(RX+bx*8+8,RY+by*8,bw*8-16,8,ImgDirtTop));
-					this.add(new GravityObj(RX+bx*8+8,RY+by*8+8,bw*8-16,bh*8-24,ImgDirt));
+					this.add(new FlxBlock(RX+bx*8+8,RY+by*8,bw*8-16,8,ImgDirtTop));
+					this.add(new FlxBlock(RX+bx*8+8,RY+by*8+8,bw*8-16,bh*8-24,ImgDirt));
 				}
 			}
 			

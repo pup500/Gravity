@@ -7,10 +7,10 @@ package com.adamatomic.flixel
 	//@desc		This is the basic "environment object" class, used to create walls and floors
 	public class FlxBlock extends FlxCore
 	{
-		private var _pixels:BitmapData;
-		private var _rects:FlxArray;
-		private var _tileSize:uint;
-		private var _p:Point;
+		protected var _pixels:BitmapData;  //changed for access in subclasses.  SRS 12/6/09
+		protected var _rects:FlxArray;
+		protected var _tileSize:uint;
+		protected var _p:Point;
 		
 		//@desc		Constructor
 		//@param	X			The X position of the block

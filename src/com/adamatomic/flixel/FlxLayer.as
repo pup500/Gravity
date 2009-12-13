@@ -18,6 +18,10 @@ package com.adamatomic.flixel
 			return _children.add(Core) as FlxCore;
 		}
 		
+		virtual public function remove(Core:FlxCore, Splice:Boolean = false):void {
+			_children.remove(Core, Splice);
+		}
+		
 		//@desc		Automatically goes through and calls update on everything you added, override this function to handle custom input and perform collisions
 		override public function update():void
 		{
