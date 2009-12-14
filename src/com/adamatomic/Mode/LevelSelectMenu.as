@@ -55,21 +55,21 @@
 		{
 			FlxG.level = 0;
 			FlxG.play(SndHit);
-			FlxG.switchState(PlayStateFlanTiles);
+			FlxG.switchState(GravSpawnFlanTilesState);
 		}
 		
 		private function onSmallOnePlatform():void
 		{
 			FlxG.level = 1;
 			FlxG.play(SndHit);
-			FlxG.switchState(PlayStateFlanTiles);
+			FlxG.switchState(GravSpawnFlanTilesState);
 		}
 		
 		private function onValley():void
 		{
 			FlxG.level = 2;
 			FlxG.play(SndHit);
-			FlxG.switchState(PlayStateFlanTiles);
+			FlxG.switchState(GravSpawnFlanTilesState);
 		}
 	}
 

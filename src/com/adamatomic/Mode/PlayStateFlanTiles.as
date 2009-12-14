@@ -1,10 +1,8 @@
 ﻿package com.adamatomic.Mode
 {
 	import com.adamatomic.flixel.*;
-	
 	import flash.utils.getDefinitionByName;
 	
-
 	public class PlayStateFlanTiles extends FlxState
 	{
 		[Embed(source="../../../data/mode.mp3")] private var SndMode:Class;
@@ -21,7 +19,7 @@
 		//This requires every map object derived classes to be referenced in this class
 		//like this:
 		
-		private var maponegamp:MapOneGap;
+		private var maponegap:MapOneGap;
 		private var mapsmalloneplatform:MapSmallOnePlatform;
 		private var mapvalley:MapValley;
 		
@@ -160,7 +158,7 @@
 		{
 			FlxG.log("BULLET HIT NAME: ");
 			Bullet.hurt(0);
-			Obj.affectGravity(100);
+			//Obj.affectGravity(100);
 		}
 		
 		private function AnimationCallbackTest(Name:String, Frame:uint, FrameIndex:uint):void

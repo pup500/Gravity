@@ -1,59 +1,92 @@
-/**
- * @author Mint
- * @author Pup
- */
-package com.adamatomic.Mode {
-	import com.adamatomic.flixel.FlxBlock;
-	import com.adamatomic.flixel.FlxG;
-	
-	import flash.events.*;
+﻿package com.adamatomic.Mode 
+{
+	import com.adamatomic.flixel.FlxEmitter;
+	import com.adamatomic.Mode.MassedFlxSprite;
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.events.IEventDispatcher;
+	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	
-	public class GravityObj extends FlxBlock{
-		private var _g:Number;
-		private var _gDefault:Number;
-		private var _hasG:Boolean;
-		private var _mass:int;
-		private var _radius:int;
+	/**
+	 * ...
+	 * @author Steve Shipman
+	 */
+	public class GravityObj extends MassedFlxSprite implements IEventDispatcher
+	{
+		[Embed(source = '../../../data/GravSink.png')]
+		private var ImgGravSink:Class;
+		
 		private var _coolDown:Timer;
-			
-			
-		public function GravityObj(X:int,Y:int,Width:uint,Height:uint,TileGraphic:Class,Empties:uint=0) {
-			super(X,Y,Width,Height,TileGraphic,Empties);
-			
-			_mass = 0;
-			_coolDown = new Timer(1000,1);
+		private var _dispatcher:EventDispatcher;
+		private var initialMass:Number = 5000;
+		
+		public function GravityObj(X:int = 0,Y:int = 0) 
+		{
+			super(ImgGravSink, X, Y);
+			_mass = initialMass;
+			_dispatcher = new EventDispatcher(this);
+			_coolDown = new Timer(50,1);
 			_coolDown.addEventListener(TimerEvent.TIMER_COMPLETE, stopTimer);
 		}
 		
-		public function getMass():int{
-			return _mass;
-		}
-		
-		public function affectGravity($amount:Number):void{
-			_g += $amount;
-			
-			_mass += $amount;
-			//trace(_g);
-			FlxG.log("Gravity: "+_g);
+		/**
+		 * called when re-added from active pool
+		 */
+		public function reset():void {
+			exists = true;
+			alpha = 1;
+			_mass = initialMass;
+			_coolDown.reset();
 			_coolDown.start();
 		}
 		
-		private function stopTimer($e:Event):void{
-			_g = _gDefault;
-			
-			_mass -= 5000;
-			if(_mass < 0) _mass = 0;
-			else 
+		private function stopTimer($e:TimerEvent):void{
+			_mass -= 100;
+			if (_mass < 0) {
+				_mass = 0;
+				kill();
+			}
+			else {
+				alpha = _mass / initialMass;
+				_coolDown.reset();
 				_coolDown.start();
-			FlxG.log("Gravity End : "+_g);
+			}
 		}
 		
-		//Probably don't need these because we aren't going to use collide on them...
-		//Actually player will...
-		override public function hitWall():Boolean { return true; }
-		override public function hitFloor():Boolean { return true; }
-		override public function hitCeiling():Boolean { return true; }
+		override public function kill():void {
+			super.kill();
+			dispatchEvent(new Event("die"));
+		}
+		
+		/* INTERFACE flash.events.IEventDispatcher */
+		
+		public function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void
+		{
+			_dispatcher.addEventListener(type, listener, useCapture, priority, useWeakReference);
+		}
+		
+		public function dispatchEvent(event:Event):Boolean
+		{
+			return _dispatcher.dispatchEvent(event);
+		}
+		
+		public function hasEventListener(type:String):Boolean
+		{
+			return _dispatcher.hasEventListener(type);
+		}
+		
+		public function removeEventListener(type:String, listener:Function, useCapture:Boolean = false):void
+		{
+			_dispatcher.removeEventListener(type, listener, useCapture);
+		}
+		
+		public function willTrigger(type:String):Boolean
+		{
+			return _dispatcher.willTrigger(type);
+		}
+				
+		
 	}
 
 }
