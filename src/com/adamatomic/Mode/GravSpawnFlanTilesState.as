@@ -1,8 +1,9 @@
 ﻿package com.adamatomic.Mode
 {
 	import com.adamatomic.flixel.*;
-	import flash.utils.getDefinitionByName;
+	
 	import flash.events.Event;
+	import flash.utils.getDefinitionByName;
 
 	
 	public class GravSpawnFlanTilesState extends FlxState
@@ -90,10 +91,10 @@
 			super.update();
 			//FlxG.collideArray2(_tilemap,_bullets);
 			
-			//FlxG.collideArray2(_map.layerMain,_bullets);
+			FlxG.collideArray2(_map.layerMain,_bullets);
 			_map.layerMain.collide(_player);
 			
-			FlxG.overlapArray(_bullets, _map.layerMain, bulletHitBlocks);
+			//FlxG.overlapArray(_bullets, _map.layerMain, bulletHitBlocks);
 			
 			//FlxG.collideArrays(_gravityObjs,_bullets);
 			//FlxG.collideArray(_gravityObjs,_player);
@@ -111,15 +112,18 @@
 			*/
 		}
 		
+		public function createGravityAtLocation(object:FlxSprite):void{
+			var ggen:GravityObj = getGravityObj();
+			ggen.x = object.x;
+			ggen.y = object.y;
+			add(ggen);
+		}
+		
 		private function bulletHitBlocks(Bullet:FlxSprite,Block:FlxCore):void
 		{
 			Bullet.hurt(0);
-			//Block.affectGravity(10000);
-			//spawn a new gravity generator at Bullet coords
-			var ggen:GravityObj = getGravityObj();
-			ggen.x = Bullet.x;
-			ggen.y = Bullet.y;
-			add(ggen);
+			
+			createGravityAtLocation(Bullet);
 		}
 		
 		private function getGravityObj():GravityObj {

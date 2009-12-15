@@ -10,7 +10,7 @@ package {
 	{
 		public function Main():void
 		{
-			super(320,240,LevelSelectMenu,1,0xff131c1b,false,0xff729954);
+			super(320,240,LevelSelectMenu,2,0xff131c1b,false,0xff729954);
 			help("Jump", "Shoot", "Nothing");
 			
 			FlxG.levels.add("com.adamatomic.Mode.MapOneGap");
