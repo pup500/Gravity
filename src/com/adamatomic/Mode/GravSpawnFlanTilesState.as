@@ -160,7 +160,13 @@
 				var xDistanceSq:Number = xDistance * xDistance;
 				var yDistanceSq:Number = yDistance * yDistance;
 				var distanceSq:Number = xDistanceSq + yDistanceSq;
-				if(distanceSq > 10000 ) continue;
+				
+				//For performance reasons....  assume force is 0 when distance is pretty far
+				if(distanceSq > 100000 ) continue;
+				
+				//This is a physics hack to stop adding gravity to objects when they are too close
+				//they aren't pulling anymore because of normal force
+				if(distanceSq < 100) continue;
 				
 				var distance:Number = Math.sqrt(distanceSq);
 				var massProduct:Number = massedObj.getMass() * gravObj.getMass();	//_player.mass * gravObj.mass;
