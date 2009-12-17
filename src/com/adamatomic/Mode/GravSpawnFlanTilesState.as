@@ -9,6 +9,7 @@
 	public class GravSpawnFlanTilesState extends FlxState
 	{
 		[Embed(source="../../../data/mode.mp3")] private var SndMode:Class;
+		[Embed(source="../../../data/cursor.png")] private var ImgCursor:Class;
 		
 		//PUT THE FOLLOWING INSIDE YOUR DERIVED FlxState CLASS (i.e. under 'class MyState { ...')
 		private var _map:MapBase;
@@ -70,7 +71,7 @@
 			
 			_player.addAnimationCallback(AnimationCallbackTest);
 			for(var i:uint = 0; i < 8; i++)
-				_bullets.add(this.add(new Bullet()));
+				_bullets.add(this.add(new BotBullet()));
 				
 			//add player and set up camera
 			this.add(_player);
@@ -84,6 +85,8 @@
 			//turn on music and fade in
 			//FlxG.setMusic(SndMode);
 			FlxG.flash(0xff131c1b);
+			
+			FlxG.setCursor(ImgCursor);
 		}
 
 		override public function update():void

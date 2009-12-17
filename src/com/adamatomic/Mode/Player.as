@@ -1,7 +1,11 @@
 package com.adamatomic.Mode
 {
 	import com.adamatomic.flixel.*;
-
+	
+	import flash.geom.Point;
+	import flash.utils.Timer;
+	import flash.events.TimerEvent;
+	
 	public class Player extends MassedFlxSprite
 	{
 		[Embed(source="../../../data/spaceman.png")] private var ImgSpaceman:Class;
@@ -21,6 +25,9 @@ package com.adamatomic.Mode
 		private var _down:Boolean;
 		private var _restart:Number;
 		private var _gibs:FlxEmitter;
+		
+		private var _coolDown:Timer;
+		private var _canShoot:Boolean;
 		
 		public function Player(X:int,Y:int,Bullets:FlxArray)
 		{
@@ -54,9 +61,13 @@ package com.adamatomic.Mode
 			//bullet stuff
 			_bullets = Bullets;
 			_curBullet = 0;
-			_bulletVel = 360;
+			_bulletVel = 200;//360;
 			
 			_gibs = FlxG.state.add(new FlxEmitter(0,0,0,0,null,-1.5,-150,150,-200,0,-720,720,400,0,ImgGibs,60,true)) as FlxEmitter;
+		
+			_coolDown = new Timer(500,1);
+			_coolDown.addEventListener(TimerEvent.TIMER_COMPLETE, stopTimer);
+			_canShoot = true;
 		}
 		
 		override public function update():void
@@ -82,7 +93,10 @@ package com.adamatomic.Mode
 				facing = RIGHT;
 				acceleration.x += drag.x;
 			}
-			if(FlxG.justPressed(FlxG.A) && !velocity.y)
+			
+			//Trying to see if we don't have to use C, instead just use up....
+			//if(FlxG.justPressed(FlxG.A) && !velocity.y)
+			if(FlxG.kUp && !velocity.y)
 			{
 				velocity.y = -_jumpPower;
 				FlxG.play(SndJump);
@@ -115,7 +129,12 @@ package com.adamatomic.Mode
 			//UPDATE POSITION AND ANIMATION
 			super.update();
 			
-			//SHOOTING
+			mouseShoot();
+			
+			//keyShoot();
+		}
+		
+		private function keyShoot():void{
 			if(flickering())
 			{
 				if(FlxG.justPressed(FlxG.B))
@@ -157,6 +176,31 @@ package com.adamatomic.Mode
 				_bullets[_curBullet].shoot(bX,bY,bXVel,bYVel);
 				if(++_curBullet >= _bullets.length)
 					_curBullet = 0;
+			}
+		}
+		
+		private function stopTimer($e:TimerEvent):void{
+			_canShoot = true;
+		}
+		
+		private function mouseShoot():void{
+			if(FlxG.kMouse && _canShoot){
+				trace("mouse x: " + FlxG.mouse.x + " mouse y: " + FlxG.mouse.y);
+				trace("player x: " + x + " player y: " + y);
+				
+				var angle:Point = new Point(FlxG.mouse.x - x, FlxG.mouse.y - y);
+				var dist:Number = Math.sqrt(angle.x * angle.x + angle.y * angle.y);
+				
+				trace("angle.x: " + angle.x + " angle.y: " + angle.y);
+				trace("dist" + dist);
+				
+				_bullets[_curBullet].shoot(x,y,_bulletVel * angle.x/dist, _bulletVel * angle.y/dist);
+				if(++_curBullet >= _bullets.length)
+					_curBullet = 0;
+					
+				_canShoot = false;
+				_coolDown.reset();
+				_coolDown.start();
 			}
 		}
 		
