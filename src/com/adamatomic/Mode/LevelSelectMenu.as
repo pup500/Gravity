@@ -16,6 +16,7 @@
 		protected var _btnOneGap:FlxButton;
 		protected var _btnSmallOnePlatform:FlxButton;
 		protected var _btnValley:FlxButton;
+		protected var _btnTestLevel:FlxButton;
 		
 		protected var _buttons:FlxArray;
 		
@@ -40,6 +41,16 @@
 			_btnSmallOnePlatform = this.add(new FlxButton(10, 30, new FlxSprite(null, 0, 0, false, false, 104, 15, 0xff3a5c39), onSmallOnePlatform, new FlxSprite(null, 0, 0, false, false, 104, 15, 0xff729954), new FlxText(25, 1, 100, 10, "Small One Platform", 0x729954), new FlxText(25, 1, 100, 10, "Small One Platform", 0xd8eba2))) as FlxButton;
 			
 			_btnValley = this.add(new FlxButton(10,50,new FlxSprite(null,0,0,false,false,104,15,0xff3a5c39),onValley,new FlxSprite(null,0,0,false,false,104,15,0xff729954),new FlxText(25,1,100,10,"Valley",0x729954),new FlxText(25,1,100,10,"Valley",0xd8eba2))) as FlxButton;
+	
+	
+			this.add(
+			new FlxButton(10,70,
+				new FlxSprite(null,0,0,false,false,104,15,0xff3a5c39),
+				onTestLEvel,
+				new FlxSprite(null,0,0,false,false,104,15,0xff729954),
+				new FlxText(25,1,100,10,"Test Level",0x729954),
+				new FlxText(25,1,100,10,"Test Level",0xd8eba2))) as FlxButton;
+		
 		}
 		
 		private function onButtonClick(args:ButtonArgs = null):void
@@ -68,6 +79,13 @@
 		private function onValley():void
 		{
 			FlxG.level = 2;
+			FlxG.play(SndHit);
+			FlxG.switchState(GravSpawnFlanTilesState);
+		}
+		
+		private function onTestLEvel():void
+		{
+			FlxG.level = 3;
 			FlxG.play(SndHit);
 			FlxG.switchState(GravSpawnFlanTilesState);
 		}

@@ -16,6 +16,7 @@ package {
 			FlxG.levels.add("com.adamatomic.Mode.MapOneGap");
 			FlxG.levels.add("com.adamatomic.Mode.MapSmallOnePlatform");
 			FlxG.levels.add("com.adamatomic.Mode.MapValley");
+			FlxG.levels.add("com.adamatomic.Mode.MapTestLevel");
 			FlxG.level = 0;
 		}
 	}

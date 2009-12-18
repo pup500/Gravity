@@ -43,7 +43,7 @@ package com.adamatomic.Mode
 			
 			//basic player physics
 			var runSpeed:uint = 80;
-			drag.x = runSpeed*8;
+			drag.x = 10;//runSpeed*8;
 			//acceleration.y = 420;
 			_jumpPower = 100;
 			maxVelocity.x = runSpeed;

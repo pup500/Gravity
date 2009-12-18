@@ -29,6 +29,7 @@
 		private var maponegap:MapOneGap;
 		private var mapsmalloneplatform:MapSmallOnePlatform;
 		private var mapvalley:MapValley;
+		private var maptestlevel:MapTestLevel;
 		
 		private function getMapByLevel():MapBase{
 			trace(FlxG.level);
@@ -175,7 +176,7 @@
 				
 				//This is a physics hack to stop adding gravity to objects when they are too close
 				//they aren't pulling anymore because of normal force
-				//if(distanceSq < 100) continue;
+				if(distanceSq < 100) continue;
 				
 				var distance:Number = Math.sqrt(distanceSq);
 				var massProduct:Number = massedObj.getMass() * gravObj.getMass();	//_player.mass * gravObj.mass;
