@@ -29,8 +29,10 @@ package com.adamatomic.Mode
 		{
 			if(dead) return;
 			
-			var gravityState:GravSpawnFlanTilesState =  FlxG.state as GravSpawnFlanTilesState;
-			gravityState.createGravityAtLocation(this);
+			if(Damage == 0){
+				var gravityState:GravSpawnFlanTilesState =  FlxG.state as GravSpawnFlanTilesState;
+				gravityState.createGravityAtLocation(this);
+			}
 			
 			velocity.x = 0;
 			velocity.y = 0;

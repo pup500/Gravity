@@ -95,6 +95,8 @@
 			//FlxG.collideArray2(_tilemap,_bullets);
 			
 			FlxG.collideArray2(_map.layerMain,_bullets);
+			
+			FlxG.overlapArrays(_bullets, _gravityGenerators, bulletHitGravityObj);
 			_map.layerMain.collide(_player);
 			
 			//FlxG.overlapArray(_bullets, _map.layerMain, bulletHitBlocks);
@@ -120,6 +122,13 @@
 			ggen.x = object.x;
 			ggen.y = object.y;
 			add(ggen);
+		}
+		
+		private function bulletHitGravityObj(Bullet:FlxSprite,gravityObj:FlxCore):void
+		{
+			Bullet.hurt(1);
+			var ggen:GravityObj = gravityObj as GravityObj;
+			ggen.reset();
 		}
 		
 		private function bulletHitBlocks(Bullet:FlxSprite,Block:FlxCore):void
@@ -166,7 +175,7 @@
 				
 				//This is a physics hack to stop adding gravity to objects when they are too close
 				//they aren't pulling anymore because of normal force
-				if(distanceSq < 100) continue;
+				//if(distanceSq < 100) continue;
 				
 				var distance:Number = Math.sqrt(distanceSq);
 				var massProduct:Number = massedObj.getMass() * gravObj.getMass();	//_player.mass * gravObj.mass;
@@ -178,11 +187,11 @@
 				massedObj.accel.x += force * (xDistance/distance);//xDistance >= 0 ? xForce :-xForce;
 				massedObj.accel.y += force * (yDistance/distance);//yDistance >= 0 ? yForce :-yForce;
 				
-				FlxG.log("xDist:" + xDistance + " yDist:"+yDistance);
-				FlxG.log("xDistSq:" + xDistanceSq + " yDistSq:"+yDistanceSq);
-				FlxG.log("massProduct:" + massProduct);
-				FlxG.log("distance:" + distance);
-				//FlxG.log("force:" + force);
+				//FlxG.log("xDist:" + xDistance + " yDist:"+yDistance);
+				//FlxG.log("xDistSq:" + xDistanceSq + " yDistSq:"+yDistanceSq);
+				//FlxG.log("massProduct:" + massProduct);
+				//FlxG.log("distance:" + distance);
+				FlxG.log("force:" + force);
 				//FlxG.log("xForce:" + xForce + " yForce:" + yForce);
 			  }
 			}

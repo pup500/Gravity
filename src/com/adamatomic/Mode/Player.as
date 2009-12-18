@@ -81,6 +81,8 @@ package com.adamatomic.Mode
 				return;
 			}
 			
+			//facing = acceleration.x < 0;
+			
 			//MOVEMENT
 			//acceleration.x = 0;
 			if(FlxG.kLeft)
@@ -123,7 +125,11 @@ package com.adamatomic.Mode
 			else
 			{
 				if(_up) play("run_up");
-				else play("run");
+				
+				if(FlxG.kRight || FlxG.kLeft)
+					play("run");
+				else
+					play("idle");
 			}
 				
 			//UPDATE POSITION AND ANIMATION
@@ -210,6 +216,14 @@ package com.adamatomic.Mode
 				FlxG.play(SndLand);
 			return super.hitFloor();
 		}
+		
+		/*
+		override public function hitWall():Boolean
+		{
+			acceleration.x = 0;
+			acceleration.y = 0;
+			return super.hitWall();
+		}*/
 		
 		override public function hurt(Damage:Number):void
 		{
