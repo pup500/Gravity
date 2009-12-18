@@ -17,6 +17,10 @@ package com.adamatomic.Mode
 		[Embed(source="../../../data/hurt.mp3")] private var SndHurt:Class;
 		[Embed(source="../../../data/jam.mp3")] private var SndJam:Class;
 		
+		
+		private var _lastVel:Point;
+		private var _moving:Boolean;
+		
 		private var _jumpPower:int;
 		private var _bullets:FlxArray;
 		private var _curBullet:uint;
@@ -43,7 +47,7 @@ package com.adamatomic.Mode
 			
 			//basic player physics
 			var runSpeed:uint = 40;//80;
-			drag.x = runSpeed*8;
+			//drag.x = runSpeed*8;
 			//acceleration.y = 420;
 			_jumpPower = 100;
 			maxVelocity.x = runSpeed;
@@ -68,6 +72,10 @@ package com.adamatomic.Mode
 			_coolDown = new Timer(500,1);
 			_coolDown.addEventListener(TimerEvent.TIMER_COMPLETE, stopTimer);
 			_canShoot = true;
+			
+			_moving = false;
+			_lastVel = new Point();
+			_lastVel.x = velocity.x;
 		}
 		
 		override public function update():void
@@ -89,17 +97,39 @@ package com.adamatomic.Mode
 			if(FlxG.kLeft)
 			{
 				facing = LEFT;
-				acceleration.x -= drag.x;
+				acceleration.x -= (40 * 8);//drag.x;
+				_moving = true;
 			}
 			else if(FlxG.kRight)
 			{
 				facing = RIGHT;
-				acceleration.x += drag.x;
+				acceleration.x += (40 * 8);//drag.x;
+				_moving = true;
 			}
 			
+			if(!velocity.x || (_lastVel.x > 0 && velocity.x < 0) || (_lastVel.x < 0 && velocity.x > 0)){
+				_moving = false;
+			}
 			
-			if(!velocity.y && !FlxG.kRight && !FlxG.kLeft){
-				acceleration.x = 0;
+			//if(!velocity.y && !FlxG.kRight && !FlxG.kLeft){
+			
+			if(!velocity.y){
+				var mu:Number = _moving ? .9 : 1.59;
+				
+				var friction:Number = acceleration.y * mu;
+				
+				var pullRight:Boolean = velocity.x > 0;
+				
+				friction = pullRight ? -friction : friction;
+				trace("fr: " + friction + " acce.y" + acceleration.y +  " acce.x" + acceleration.x + " vel.x" + velocity.x + " last.vx" + _lastVel.x);
+				
+				if(Math.abs(friction) - Math.abs(acceleration.x) >= 0) {
+					acceleration.x = 0;
+					velocity.x = 0;
+				}
+				else{
+					acceleration.x += friction;
+				}
 			}
 			
 			//if(!velocity.x && !FlxG.kRight && !FlxG.kLeft){
@@ -143,6 +173,8 @@ package com.adamatomic.Mode
 			}
 				
 			//UPDATE POSITION AND ANIMATION
+			
+			_lastVel.x = velocity.x;
 			super.update();
 			
 			mouseShoot();
@@ -244,9 +276,6 @@ package com.adamatomic.Mode
 		
 		override public function hitWall():Boolean
 		{
-			velocity.x = 0;
-			//acceleration.x = 0;
-			//acceleration.y = 0;
 			return super.hitWall();
 		}
 		

@@ -188,7 +188,9 @@
 					
 					var G:Number = 1; //gravitation constant
 					
-					var force:Number = 100;//G*(massProduct / distanceSq);
+					var force:Number = G*(massProduct / distanceSq);
+					
+					force = Math.log(force) * 20;
 					
 					massedObj.accel.x += force * (xDistance/distance);//xDistance >= 0 ? xForce :-xForce;
 					massedObj.accel.y += force * (yDistance/distance);//yDistance >= 0 ? yForce :-yForce;
