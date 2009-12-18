@@ -93,19 +93,23 @@
 		override public function update():void
 		{
 			super.update();
+			
+			updateGravity();
 			//FlxG.collideArray2(_tilemap,_bullets);
+			FlxG.overlapArrays(_bullets, _gravityGenerators, bulletHitGravityObj);
 			
 			FlxG.collideArray2(_map.layerMain,_bullets);
 			
-			FlxG.overlapArrays(_bullets, _gravityGenerators, bulletHitGravityObj);
 			_map.layerMain.collide(_player);
+			
+			
+			
 			
 			//FlxG.overlapArray(_bullets, _map.layerMain, bulletHitBlocks);
 			
 			//FlxG.collideArrays(_gravityObjs,_bullets);
 			//FlxG.collideArray(_gravityObjs,_player);
 			
-			updateGravity();
 			
 			//FlxG.overlapArrays(_bullets,_gravityObjs,bulletHitObj);
 			
@@ -159,42 +163,46 @@
 		
 		//TODO: Encapsulate gravity logic so it is independant of PlayState
 		private function updateGravity():void{
-			_player.acceleration.x = 0;
-			_player.acceleration.y = 200;
-			for each(var gravObj:GravityObj in _gravityGenerators) {
-			  for each(var massedObj:Massed in _affectedByGravity){	
-				if(gravObj.getMass() == 0) continue;
+			for each(var massedObj:Massed in _affectedByGravity){	
+				massedObj.accel.x = 0;
+				massedObj.accel.y = 200;
 				
-				var xDistance:Number = gravObj.x - massedObj.xpos;
-				var yDistance:Number = gravObj.y - massedObj.ypos;
-				var xDistanceSq:Number = xDistance * xDistance;
-				var yDistanceSq:Number = yDistance * yDistance;
-				var distanceSq:Number = xDistanceSq + yDistanceSq;
+				for each(var gravObj:GravityObj in _gravityGenerators) {
+					if(gravObj.getMass() == 0) continue;
+					
+					var xDistance:Number = gravObj.x - massedObj.xpos;
+					var yDistance:Number = gravObj.y - massedObj.ypos;
+					var xDistanceSq:Number = xDistance * xDistance;
+					var yDistanceSq:Number = yDistance * yDistance;
+					var distanceSq:Number = xDistanceSq + yDistanceSq;
+					
+					//For performance reasons....  assume force is 0 when distance is pretty far
+					if(distanceSq > 100000 ) continue;
+					
+					//This is a physics hack to stop adding gravity to objects when they are too close
+					//they aren't pulling anymore because of normal force
+					if(distanceSq < 100) continue;
+					
+					var distance:Number = Math.sqrt(distanceSq);
+					var massProduct:Number = massedObj.getMass() * gravObj.getMass();	//_player.mass * gravObj.mass;
+					
+					var G:Number = 1; //gravitation constant
+					
+					var force:Number = 100;//G*(massProduct / distanceSq);
+					
+					massedObj.accel.x += force * (xDistance/distance);//xDistance >= 0 ? xForce :-xForce;
+					massedObj.accel.y += force * (yDistance/distance);//yDistance >= 0 ? yForce :-yForce;
+					
+					//FlxG.log("xDist:" + xDistance + " yDist:"+yDistance);
+					//FlxG.log("xDistSq:" + xDistanceSq + " yDistSq:"+yDistanceSq);
+					//FlxG.log("massProduct:" + massProduct);
+					//FlxG.log("distance:" + distance);
+					FlxG.log("force:" + force);
+					FlxG.log("xForce:" + force * (xDistance/distance) + " yForce:" + force * (yDistance/distance));
+				}
 				
-				//For performance reasons....  assume force is 0 when distance is pretty far
-				if(distanceSq > 100000 ) continue;
-				
-				//This is a physics hack to stop adding gravity to objects when they are too close
-				//they aren't pulling anymore because of normal force
-				if(distanceSq < 100) continue;
-				
-				var distance:Number = Math.sqrt(distanceSq);
-				var massProduct:Number = massedObj.getMass() * gravObj.getMass();	//_player.mass * gravObj.mass;
-				
-				var G:Number = 1; //gravitation constant
-				
-				var force:Number = G*(massProduct / distanceSq);
-				
-				massedObj.accel.x += force * (xDistance/distance);//xDistance >= 0 ? xForce :-xForce;
-				massedObj.accel.y += force * (yDistance/distance);//yDistance >= 0 ? yForce :-yForce;
-				
-				//FlxG.log("xDist:" + xDistance + " yDist:"+yDistance);
-				//FlxG.log("xDistSq:" + xDistanceSq + " yDistSq:"+yDistanceSq);
-				//FlxG.log("massProduct:" + massProduct);
-				//FlxG.log("distance:" + distance);
-				FlxG.log("force:" + force);
-				//FlxG.log("xForce:" + xForce + " yForce:" + yForce);
-			  }
+				//Add friction?
+				//if(massedOb.accel.y massedObj.accel.x = 0;
 			}
 		}
 		

@@ -2,9 +2,9 @@ package com.adamatomic.Mode
 {
 	import com.adamatomic.flixel.*;
 	
+	import flash.events.TimerEvent;
 	import flash.geom.Point;
 	import flash.utils.Timer;
-	import flash.events.TimerEvent;
 	
 	public class Player extends MassedFlxSprite
 	{
@@ -42,8 +42,8 @@ package com.adamatomic.Mode
 			offset.y = 1;
 			
 			//basic player physics
-			var runSpeed:uint = 80;
-			drag.x = 10;//runSpeed*8;
+			var runSpeed:uint = 40;//80;
+			drag.x = runSpeed*8;
 			//acceleration.y = 420;
 			_jumpPower = 100;
 			maxVelocity.x = runSpeed;
@@ -85,6 +85,7 @@ package com.adamatomic.Mode
 			
 			//MOVEMENT
 			//acceleration.x = 0;
+			
 			if(FlxG.kLeft)
 			{
 				facing = LEFT;
@@ -95,6 +96,15 @@ package com.adamatomic.Mode
 				facing = RIGHT;
 				acceleration.x += drag.x;
 			}
+			
+			
+			if(!velocity.y && !FlxG.kRight && !FlxG.kLeft){
+				acceleration.x = 0;
+			}
+			
+			//if(!velocity.x && !FlxG.kRight && !FlxG.kLeft){
+			//	acceleration.x = 0;
+			//}
 			
 			//Trying to see if we don't have to use C, instead just use up....
 			//if(FlxG.justPressed(FlxG.A) && !velocity.y)
@@ -200,7 +210,21 @@ package com.adamatomic.Mode
 				trace("angle.x: " + angle.x + " angle.y: " + angle.y);
 				trace("dist" + dist);
 				
-				_bullets[_curBullet].shoot(x,y,_bulletVel * angle.x/dist, _bulletVel * angle.y/dist);
+				facing = angle.x > 0 ? RIGHT : angle.x < 0 ? LEFT : facing;
+				
+				var bX:Number = x;
+				var bY:Number = y;
+				
+				if(facing == RIGHT)
+				{
+					bX += width - 4;
+				}
+				else
+				{
+					bX -= _bullets[_curBullet].width - 4;
+				}
+				
+				_bullets[_curBullet].shoot(bX,bY,_bulletVel * angle.x/dist, _bulletVel * angle.y/dist);
 				if(++_curBullet >= _bullets.length)
 					_curBullet = 0;
 					
@@ -217,13 +241,14 @@ package com.adamatomic.Mode
 			return super.hitFloor();
 		}
 		
-		/*
+		
 		override public function hitWall():Boolean
 		{
-			acceleration.x = 0;
-			acceleration.y = 0;
+			velocity.x = 0;
+			//acceleration.x = 0;
+			//acceleration.y = 0;
 			return super.hitWall();
-		}*/
+		}
 		
 		override public function hurt(Damage:Number):void
 		{
