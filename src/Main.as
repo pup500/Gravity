@@ -1,6 +1,6 @@
 package {
-	import com.adamatomic.flixel.FlxGame;
-	import com.adamatomic.flixel.FlxG;
+	import org.flixel.FlxGame;
+	import org.flixel.FlxG;
 	import com.adamatomic.Mode.*;
 	
 	[SWF(width="640", height="480", backgroundColor="#000000")]

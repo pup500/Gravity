@@ -1,6 +1,6 @@
 ﻿package com.adamatomic.Mode
 {
-	import com.adamatomic.flixel.*;
+	import org.flixel.*;
 	import flash.utils.getDefinitionByName;
 	
 	public class PlayStateFlanTiles extends FlxState

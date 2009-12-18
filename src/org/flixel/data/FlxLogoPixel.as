@@ -1,4 +1,4 @@
-package com.adamatomic.flixel.data
+package org.flixel.data
 {
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;

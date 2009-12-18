@@ -1,4 +1,4 @@
-package com.adamatomic.flixel
+package org.flixel
 {
 	import flash.display.BitmapData;
 	import flash.geom.Point;
@@ -7,8 +7,8 @@ package com.adamatomic.flixel
 	//@desc		This is the basic "environment object" class, used to create walls and floors
 	public class FlxBlock extends FlxCore
 	{
-		protected var _pixels:BitmapData;  //changed for access in subclasses.  SRS 12/6/09
-		protected var _rects:FlxArray;
+		protected var _pixels:BitmapData;
+		protected var _rects:Array;
 		protected var _tileSize:uint;
 		protected var _p:Point;
 		
@@ -17,20 +17,26 @@ package com.adamatomic.flixel
 		//@param	Y			The Y position of the block
 		//@param	Width		The width of the block
 		//@param	Height		The height of the block
-		//@param	TileGraphic The graphic class that contains the tiles that should fill this block
-		//@param	Empties		The number of "empty" tiles to add to the auto-fill algorithm (e.g. 8 tiles + 4 empties = 1/3 of block will be open holes)
-		public function FlxBlock(X:int,Y:int,Width:uint,Height:uint,TileGraphic:Class,Empties:uint=0)
+		public function FlxBlock(X:int,Y:int,Width:uint,Height:uint)
 		{
 			super();
 			x = X;
 			y = Y;
 			width = Width;
 			height = Height;
+			fixed = true;
+		}
+		
+		//@desc		Fills the block with a randomly arranged selection of graphics from the image provided
+		//@param	TileGraphic The graphic class that contains the tiles that should fill this block
+		//@param	Empties		The number of "empty" tiles to add to the auto-fill algorithm (e.g. 8 tiles + 4 empties = 1/3 of block will be open holes)
+		public function loadGraphic(TileGraphic:Class,Empties:uint=0):void
+		{
 			if(TileGraphic == null)
 				return;
 
 			_pixels = FlxG.addBitmap(TileGraphic);
-			_rects = new FlxArray();
+			_rects = new Array();
 			_p = new Point();
 			_tileSize = _pixels.height;
 			var widthInTiles:uint = Math.ceil(width/_tileSize);
@@ -41,8 +47,8 @@ package com.adamatomic.flixel
 			var numGraphics:uint = _pixels.width/_tileSize;
 			for(var i:uint = 0; i < numTiles; i++)
 			{
-				if(Math.random()*(numGraphics+Empties) > Empties)
-					_rects.push(new Rectangle(_tileSize*Math.floor(Math.random()*numGraphics),0,_tileSize,_tileSize));
+				if(FlxG.random()*(numGraphics+Empties) > Empties)
+					_rects.push(new Rectangle(_tileSize*Math.floor(FlxG.random()*numGraphics),0,_tileSize,_tileSize));
 				else
 					_rects.push(null);
 			}
@@ -54,7 +60,8 @@ package com.adamatomic.flixel
 			super.render();
 			getScreenXY(_p);
 			var opx:int = _p.x;
-			for(var i:uint = 0; i < _rects.length; i++)
+			var rl:uint = _rects.length;
+			for(var i:uint = 0; i < rl; i++)
 			{
 				if(_rects[i] != null) FlxG.buffer.copyPixels(_pixels,_rects[i],_p,null,null,true);
 				_p.x += _tileSize;

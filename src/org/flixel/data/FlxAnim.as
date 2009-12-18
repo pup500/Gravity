@@ -1,4 +1,4 @@
-package com.adamatomic.flixel.data
+package org.flixel.data
 {
 	//@desc		Just a helper structure for the FlxSprite animation system
 	public class FlxAnim

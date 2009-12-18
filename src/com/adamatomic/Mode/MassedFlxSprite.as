@@ -1,7 +1,7 @@
 ﻿package com.adamatomic.Mode 
 {
 	import com.adamatomic.Mode.Massed;
-	import com.adamatomic.flixel.FlxSprite;
+	import org.flixel.FlxSprite;
 	import flash.geom.Point;
 	
 	/**

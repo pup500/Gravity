@@ -1,6 +1,6 @@
 ﻿package com.adamatomic.Mode 
 {
-	import com.adamatomic.flixel.FlxEmitter;
+	import org.flixel.FlxEmitter;
 	import com.adamatomic.Mode.MassedFlxSprite;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;

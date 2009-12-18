@@ -1,6 +1,6 @@
 ﻿package com.adamatomic.Mode
 {
-	import com.adamatomic.flixel.*;
+	import org.flixel.*;
 	
 	import flash.events.Event;
 	import flash.utils.getDefinitionByName;

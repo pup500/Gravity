@@ -1,6 +1,6 @@
 package com.adamatomic.Mode
 {
-	import com.adamatomic.flixel.*;
+	import org.flixel.*;
 
 	public class Bullet extends FlxSprite
 	{

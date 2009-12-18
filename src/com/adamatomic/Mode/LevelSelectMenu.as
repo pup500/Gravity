@@ -1,6 +1,6 @@
 ﻿package com.adamatomic.Mode 
 {
-	import com.adamatomic.flixel.*;
+	import org.flixel.*;
 	
 	/**
 	 * TODO: Does NOT work yet. Need to figure architecture for calling different levels.

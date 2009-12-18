@@ -1,5 +1,6 @@
-package com.adamatomic.flixel
+package org.flixel
 {
+	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	
 	//@desc		A simple button class that calls a function when mouse-clicked
@@ -14,49 +15,76 @@ package com.adamatomic.flixel
 		protected var _onTO:Point;
 		protected var _callback:Function;
 		protected var _pressed:Boolean;
+		protected var _initialized:Boolean;
 		
-		//@desc		Constructor
+		//@desc		The FlxButton constructor generates a gray button with a callback function on the UI thread
 		//@param	X			The X position of the button
 		//@param	Y			The Y position of the button
-		//@param	Image		A FlxSprite object to use for the button background
 		//@param	Callback	The function to call whenever the button is clicked
-		//@param	ImageOn		A FlxSprite object to use for the button background when highlighted (optional)
-		//@param	Text		A FlxText object to use to display text on this button (optional)
-		//@param	TextOn		A FlxText object that is used when the button is highlighted (optional)
-		public function FlxButton(X:int,Y:int,Image:FlxSprite,Callback:Function,ImageOn:FlxSprite=null,Text:FlxText=null,TextOn:FlxText=null)
+		public function FlxButton(X:int,Y:int,Callback:Function)
 		{
 			super();
 			x = X;
 			y = Y;
-			_off = Image;
-			if(ImageOn == null) _on = _off;
-			else _on = ImageOn;
-			width = _off.width;
-			height = _off.height;
-			if(Text != null) _offT = Text;
-			if(TextOn == null) _onT = _offT;
-			else _onT = TextOn;
-			if(_offT != null) _offTO = new Point(_offT.x,_offT.y);
-			if(_onT != null) _onTO = new Point(_onT.x,_onT.y);
-			
-			_off.scrollFactor = scrollFactor;
-			_on.scrollFactor = scrollFactor;
-			if(_offT != null)
-			{
-				_offT.scrollFactor = scrollFactor;
-				_onT.scrollFactor = scrollFactor;
-			}
-			
+			width = 100;
+			height = 10;
+			_off = new FlxSprite();
+			_off.createGraphic(width,height,0xff7f7f7f);
+			_on  = new FlxSprite();
+			_off.createGraphic(width,height,0xffffffff);
 			_callback = Callback;
 			_onToggle = false;
 			_pressed = false;
-			
 			updatePositions();
+			_initialized = false;
+		}
+		
+		//@desc		Set your own image as the button background
+		//@param	Image				A FlxSprite object to use for the button background
+		//@param	ImageHighlight		A FlxSprite object to use for the button background when highlighted (optional)
+		//@return	This FlxButton instance (nice for chaining stuff together, if you're into that)
+		public function loadGraphic(Image:FlxSprite,ImageHighlight:FlxSprite=null):FlxButton
+		{
+			_off = Image;
+			if(ImageHighlight == null) _on = _off;
+			else _on = ImageHighlight;
+			width = _off.width;
+			height = _off.height;
+			_off.scrollFactor = scrollFactor;
+			_on.scrollFactor = scrollFactor;
+			updatePositions();
+			return this;
+		}
+
+		//@desc		Add a text field to the button
+		//@param	Text				A FlxText object to use to display text on this button (optional)
+		//@param	TextHighlight		A FlxText object that is used when the button is highlighted (optional)
+		//@return	This FlxButton instance (nice for chaining stuff together, if you're into that)
+		public function loadText(Text:FlxText,TextHighlight:FlxText=null):FlxButton
+		{
+			if(Text != null) _offT = Text;
+			if(TextHighlight == null) _onT = _offT;
+			else _onT = TextHighlight;
+			if(_offT != null) _offTO = new Point(_offT.x,_offT.y);
+			if(_onT != null) _onTO = new Point(_onT.x,_onT.y);
+			_offT.scrollFactor = scrollFactor;
+			_onT.scrollFactor = scrollFactor;
+			updatePositions();
+			return this;
 		}
 		
 		//@desc		Called by the game loop automatically, handles mouseover and click detection
 		override public function update():void
 		{
+			if(!_initialized)
+			{
+				if(FlxG.state == null) return;
+				if(FlxG.state.parent == null) return;
+				if(FlxG.state.parent.stage == null) return;
+				FlxG.state.parent.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+				_initialized = true;
+			}
+			
 			super.update();
 
 			if((_off != null) && _off.exists && _off.active) _off.update();
@@ -70,12 +98,12 @@ package com.adamatomic.flixel
 			visibility(false);
 			if(_off.overlapsPoint(FlxG.mouse.x,FlxG.mouse.y))
 			{
-				if(!FlxG.kMouse)
+				if(!FlxG.mouse.pressed())
 					_pressed = false;
 				else if(!_pressed)
 				{
 					_pressed = true;
-					_callback();
+					if(!_initialized) _callback();
 				}
 				visibility(!_pressed);
 			}
@@ -83,6 +111,7 @@ package com.adamatomic.flixel
 			updatePositions();
 		}
 		
+		//@desc		Called by the game loop automatically, renders button to screen
 		override public function render():void
 		{
 			super.render();
@@ -112,6 +141,12 @@ package com.adamatomic.flixel
 		public function on():Boolean
 		{
 			return _onToggle;
+		}
+		
+		//@desc		Called by the game state when state is changed (if this object belongs to the state)
+		override public function destroy():void
+		{
+			FlxG.state.parent.stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 		}
 		
 		//@desc		Internal function for handling the visibility of the off and on graphics
@@ -151,6 +186,13 @@ package com.adamatomic.flixel
 				_onT.x = _onTO.x+x;
 				_onT.y = _onTO.y+y;
 			}
+		}
+		
+		//@desc		Internal function for handling the actual callback call (for UI thread dependent calls)
+		protected function onMouseUp(event:MouseEvent):void
+		{
+			if(!exists || !visible || !active || !FlxG.mouse.justReleased()) return;
+			if(_off.overlapsPoint(FlxG.mouse.x+(1-scrollFactor.x)*FlxG.scroll.x,FlxG.mouse.y+(1-scrollFactor.y)*FlxG.scroll.y)) _callback();
 		}
 	}
 }
