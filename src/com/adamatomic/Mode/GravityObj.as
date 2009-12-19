@@ -23,7 +23,7 @@
 		
 		public function GravityObj(X:int = 0,Y:int = 0) 
 		{
-			super(ImgGravSink, X, Y);
+			super(X, Y, ImgGravSink);
 			_mass = initialMass;
 			_dispatcher = new EventDispatcher(this);
 			_coolDown = new Timer(50,1);
@@ -33,12 +33,14 @@
 		/**
 		 * called when re-added from active pool
 		 */
-		public function reset():void {
-			exists = true;
+		public override function reset(X:Number, Y:Number):void {
+			//exists = true;
 			alpha = 1;
 			_mass = initialMass;
 			_coolDown.reset();
 			_coolDown.start();
+			
+			super.reset(X, Y);
 		}
 		
 		private function stopTimer($e:TimerEvent):void{

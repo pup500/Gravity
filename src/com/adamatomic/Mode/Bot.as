@@ -1,8 +1,8 @@
 package com.adamatomic.Mode
 {
-	import org.flixel.*;
-	
 	import flash.geom.Point;
+	
+	import org.flixel.*;
 
 	public class Bot extends FlxSprite
 	{
@@ -15,16 +15,17 @@ package com.adamatomic.Mode
 		
 		private var _gibs:FlxEmitter;
 		private var _jets:FlxEmitter;
-		private var _p:Player;
+		private var _player:Player;
 		private var _timer:Number;
-		private var _b:FlxArray;
+		private var _b:Array;
 		static private var _cb:uint = 0;
 		private var _shotClock:Number;
 		
-		public function Bot(xPos:int,yPos:int,Bullets:FlxArray,ThePlayer:Player)
+		public function Bot(xPos:int,yPos:int,Bullets:Array,ThePlayer:Player)
 		{
-			super(ImgBot,xPos,yPos,true);
-			_p = ThePlayer;
+			super(xPos,yPos);
+			loadGraphic(ImgBot,true);
+			_player = ThePlayer;
 			_b = Bullets;
 			
 			width = 12;
@@ -34,14 +35,26 @@ package com.adamatomic.Mode
 			maxAngular = 120;
 			angularDrag = 400;
 			maxThrust = 100;
-			drag.x = 40;
-			drag.y = 40;
+			drag.x = 80;
+			drag.y = 80;
 			
 			addAnimation("idle", [0]);
 			addAnimation("dead", [1, 2, 3, 4, 5], 15, false);
 
-			_gibs = FlxG.state.add(new FlxEmitter(0,0,0,0,null,-1.5,-150,150,-200,0,-720,720,400,0,ImgGibs,20,true)) as FlxEmitter;
-			_jets = FlxG.state.add(new FlxEmitter(0,0,0,0,null,0.01,0,0,0,0,0,0,0,0,ImgJet,15)) as FlxEmitter;
+			//Gibs emitted upon death
+			_gibs = new FlxEmitter(0,0,-1.5);
+			_gibs.setXVelocity(-150,150);
+			_gibs.setYVelocity(-200,0);
+			_gibs.setRotation(-720,-720);
+			_gibs.createSprites(ImgGibs,20);
+			FlxG.state.add(_gibs);
+			
+			//Jet effect that shoots out from behind the bot
+			_jets = new FlxEmitter(0,0,0.01);
+			_jets.setRotation();
+			_jets.gravity = 0;
+			_jets.createSprites(ImgJet,15);
+			FlxG.state.add(_jets);
 
 			reset(x,y);
 		}
@@ -59,12 +72,12 @@ package com.adamatomic.Mode
 			var ot:Number = _timer;
 			if((_timer == 0) && onScreen()) FlxG.play(SndJet);
 			_timer += FlxG.elapsed;
-			if((ot < 4) && (_timer >= 4))
+			if((ot < 8) && (_timer >= 8))
 				_jets.kill();
 
 			//Aiming
-			var dx:Number = x-_p.x;
-			var dy:Number = y-_p.y;
+			var dx:Number = x-_player.x;
+			var dy:Number = y-_player.y;
 			var da:Number = FlxG.getAngle(dx,dy);
 			if(da < 0)
 				da += 360;
@@ -80,20 +93,18 @@ package com.adamatomic.Mode
 
 			//Jets
 			thrust = 0;
-			if(_timer > 6)
+			if(_timer > 9)
 				_timer = 0;
-			else if(_timer < 4)
+			else if(_timer < 8)
 			{
 				if(!_jets.active)
-					_jets.reset();
-				thrust = 50;
+					_jets.restart();
+				thrust = 40;
 				_jets.x = x + width/2;
 				_jets.y = y + height/2;
-				var v:Point = FlxG.rotatePoint(50,0,0,0,angle);
-				_jets.maxVelocity.x = v.x+30;
-				_jets.minVelocity.x = v.x-30;
-				_jets.maxVelocity.y = v.y+30;
-				_jets.minVelocity.y = v.y-30;
+				var v:Point = FlxG.rotatePoint(thrust,0,0,0,angle);
+				_jets.setXVelocity(v.x-30,v.x+30);
+				_jets.setYVelocity(v.y-30,v.y+30);
 			}
 
 			//Shooting
@@ -135,18 +146,13 @@ package com.adamatomic.Mode
 			_jets.kill();
 			_gibs.x = x + width/2;
 			_gibs.y = y + height/2;
-			_gibs.reset();
+			_gibs.restart();
 			FlxG.score += 200;
 		}
 		
-		public function reset(X:Number, Y:Number):void
+		override public function reset(X:Number, Y:Number):void
 		{
-			exists = true;
-			dead = false;
-			visible = true;
-			active = true;
-			x = X;
-			y = Y;
+			super.reset(X,Y);
 			thrust = 0;
 			velocity.x = 0;
 			velocity.y = 0;

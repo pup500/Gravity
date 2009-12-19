@@ -12,9 +12,10 @@
 	{
 		protected var _mass:Number;
 		
-		public function MassedFlxSprite(Graphic:Class=null,X:int=0,Y:int=0,Animated:Boolean=false,Reverse:Boolean=false,Width:uint=0,Height:uint=0,Color:uint=0) 
+		public function MassedFlxSprite(X:int=0,Y:int=0,Graphic:Class=null) 
 		{
-			super(Graphic,X,Y,Animated,Reverse, Width, Height, Color);
+			super(X, Y, Graphic);
+			//super(Graphic,X,Y,Animated,Reverse, Width, Height, Color);
 		}
 		
 		public function get xpos():Number {

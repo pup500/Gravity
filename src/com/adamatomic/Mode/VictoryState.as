@@ -16,8 +16,18 @@ package com.adamatomic.Mode
 			_timer = 0;
 			_fading = false;
 			FlxG.flash(0xffd8eba2);
-			this.add(new FlxEmitter(0,-50,FlxG.width,0,null,0.03,0,0,0,100,-360,360,80,0,ImgGibs,120,true)) as FlxEmitter;
-			this.add(new FlxText(0,FlxG.height/2-35,FlxG.width,80,"VICTORY\n\nSCORE: "+FlxG.score,0xd8eba2,null,16,"center"));
+			
+			//Gibs emitted upon death
+			var gibs:FlxEmitter = new FlxEmitter(0,-50,0.03);
+			gibs.setSize(FlxG.width,0);
+			gibs.setXVelocity();
+			gibs.setYVelocity(0,100);
+			gibs.setRotation(-360,-360);
+			gibs.gravity = 80;
+			gibs.createSprites(ImgGibs,120);
+			add(gibs);
+			
+			add((new FlxText(0,FlxG.height/2-35,FlxG.width,"VICTORY\n\nSCORE: "+FlxG.score)).setFormat(null,16,0xd8eba2,"center"));
 		}
 
 		override public function update():void
@@ -26,7 +36,7 @@ package com.adamatomic.Mode
 			if(!_fading)
 			{
 				_timer += FlxG.elapsed;
-				if((_timer > 0.35) && ((_timer > 10) || FlxG.justPressed(FlxG.A) || FlxG.justPressed(FlxG.B)))
+				if((_timer > 0.35) && ((_timer > 10) || FlxG.keys.justPressed("X") || FlxG.keys.justPressed("C")))
 				{
 					_fading = true;
 					FlxG.play(SndMenu);
@@ -35,6 +45,6 @@ package com.adamatomic.Mode
 			}
 		}
 		
-		private function onPlay():void { FlxG.switchState(NewPlayState); }
+		private function onPlay():void { FlxG.switchState(PlayState); }
 	}
 }

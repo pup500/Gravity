@@ -1,7 +1,7 @@
 package com.adamatomic.Mode
 {
 	import org.flixel.*;
-	
+
 	import flash.geom.Point;
 	import flash.utils.Timer;
 	import flash.events.TimerEvent;
@@ -18,7 +18,7 @@ package com.adamatomic.Mode
 		[Embed(source="../../../data/jam.mp3")] private var SndJam:Class;
 		
 		private var _jumpPower:int;
-		private var _bullets:FlxArray;
+		private var _bullets:Array;
 		private var _curBullet:uint;
 		private var _bulletVel:int;
 		private var _up:Boolean;
@@ -29,9 +29,10 @@ package com.adamatomic.Mode
 		private var _coolDown:Timer;
 		private var _canShoot:Boolean;
 		
-		public function Player(X:int,Y:int,Bullets:FlxArray)
+		public function Player(X:int,Y:int,Bullets:Array)
 		{
-			super(ImgSpaceman,X,Y,true,true);
+			super(X, Y, ImgSpaceman);
+			loadGraphic(ImgSpaceman,true,true,8);
 			_restart = 0;
 			_mass = 100; //default
 			
@@ -63,7 +64,7 @@ package com.adamatomic.Mode
 			_curBullet = 0;
 			_bulletVel = 200;//360;
 			
-			_gibs = FlxG.state.add(new FlxEmitter(0,0,0,0,null,-1.5,-150,150,-200,0,-720,720,400,0,ImgGibs,60,true)) as FlxEmitter;
+			//_gibs = FlxG.state.add(new FlxEmitter());//0,0,0,0,null,-1.5,-150,150,-200,0,-720,720,400,0,ImgGibs,60,true)) as FlxEmitter;
 		
 			_coolDown = new Timer(500,1);
 			_coolDown.addEventListener(TimerEvent.TIMER_COMPLETE, stopTimer);
@@ -77,18 +78,18 @@ package com.adamatomic.Mode
 			{
 				_restart += FlxG.elapsed;
 				if(_restart > 2)
-					FlxG.switchState(NewPlayState);
+					FlxG.switchState(GravSpawnFlanTilesState);
 				return;
 			}
 			
 			//MOVEMENT
-			//acceleration.x = 0;
-			if(FlxG.kLeft)
+			acceleration.x = 0;
+			if(FlxG.keys.LEFT)
 			{
 				facing = LEFT;
 				acceleration.x -= drag.x;
 			}
-			else if(FlxG.kRight)
+			else if(FlxG.keys.RIGHT)
 			{
 				facing = RIGHT;
 				acceleration.x += drag.x;
@@ -96,7 +97,7 @@ package com.adamatomic.Mode
 			
 			//Trying to see if we don't have to use C, instead just use up....
 			//if(FlxG.justPressed(FlxG.A) && !velocity.y)
-			if(FlxG.kUp && !velocity.y)
+			if(FlxG.keys.UP && !velocity.y)
 			{
 				velocity.y = -_jumpPower;
 				FlxG.play(SndJump);
@@ -105,8 +106,8 @@ package com.adamatomic.Mode
 			//AIMING
 			_up = false;
 			_down = false;
-			if(FlxG.kUp) _up = true;
-			else if(FlxG.kDown && velocity.y) _down = true;
+			if(FlxG.keys.UP) _up = true;
+			else if(FlxG.keys.DOWN && velocity.y) _down = true;
 			
 			//ANIMATION
 			if(velocity.y != 0)
@@ -125,7 +126,7 @@ package com.adamatomic.Mode
 				if(_up) play("run_up");
 				else play("run");
 			}
-				
+			
 			//UPDATE POSITION AND ANIMATION
 			super.update();
 			
@@ -137,11 +138,11 @@ package com.adamatomic.Mode
 		private function keyShoot():void{
 			if(flickering())
 			{
-				if(FlxG.justPressed(FlxG.B))
+				if(FlxG.keys.C)
 					FlxG.play(SndJam);
 				return;
 			}
-			if(FlxG.justPressed(FlxG.B))
+			if(FlxG.keys.C)
 			{
 				var bXVel:int = 0;
 				var bYVel:int = 0;
@@ -184,7 +185,7 @@ package com.adamatomic.Mode
 		}
 		
 		private function mouseShoot():void{
-			if(FlxG.kMouse && _canShoot){
+			if(FlxG.mouse.justPressed() && _canShoot){
 				trace("mouse x: " + FlxG.mouse.x + " mouse y: " + FlxG.mouse.y);
 				trace("player x: " + x + " player y: " + y);
 				
@@ -204,7 +205,7 @@ package com.adamatomic.Mode
 			}
 		}
 		
-		override public function hitFloor():Boolean
+		override public function hitFloor(Contact:FlxCore=null):Boolean
 		{
 			if(velocity.y > 50)
 				FlxG.play(SndLand);
@@ -240,7 +241,7 @@ package com.adamatomic.Mode
 			FlxG.flash(0xffd8eba2,0.35);
 			_gibs.x = x + width/2;
 			_gibs.y = y + height/2;
-			_gibs.reset();
+			_gibs.restart();
 		}
 	}
 }

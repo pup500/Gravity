@@ -15,10 +15,10 @@
 		private var _map:MapBase;
 
 		//major game objects
-		private var _blocks:FlxArray;
-		private var _gravityGenerators:FlxArray;
-		private var _affectedByGravity:FlxArray;
-		private var _bullets:FlxArray;
+		private var _blocks:Array;
+		private var _gravityGenerators:Array;
+		private var _affectedByGravity:Array;
+		private var _bullets:Array;
 		private var _player:Player;
 		
 		private var gravityPool:ObjectPool;
@@ -35,7 +35,6 @@
 			trace(FlxG.levels[FlxG.level]);
 			var ClassReference:Class = getDefinitionByName(FlxG.levels[FlxG.level]) as Class;
 			return new ClassReference() as MapBase;
-			//new MapSmallOnePlatform();
 		}
 		
 		function GravSpawnFlanTilesState():void
@@ -46,21 +45,21 @@
 			_map = getMapByLevel();
 
 			//Add the layers to current the FlxState
-			FlxG.state.add(_map.layerBackground);
-			_map.addSpritesToLayerBackground(onAddSpriteCallback);
+			//FlxG.state.add(_map.layerBackground);
+			//_map.addSpritesToLayerBackground(onAddSpriteCallback);
 			FlxG.state.add(_map.layerMain);
 			_map.addSpritesToLayerMain(onAddSpriteCallback);
-			FlxG.state.add(_map.layerForeground);
-			_map.addSpritesToLayerForeground(onAddSpriteCallback);
+			//FlxG.state.add(_map.layerForeground);
+			//_map.addSpritesToLayerForeground(onAddSpriteCallback);
 
 			FlxG.followBounds(_map.boundsMinX, _map.boundsMinY, _map.boundsMaxX, _map.boundsMaxY);
 
 			//create basic objects
-			_bullets = new FlxArray();
+			_bullets = new Array();
 			_player = new Player(100,_map.layerMain.height/2-4,_bullets);
-			_gravityGenerators = new FlxArray();
-			_affectedByGravity = new FlxArray();
-			_affectedByGravity.add(_player);
+			_gravityGenerators = new Array();
+			_affectedByGravity = new Array();
+			_affectedByGravity.push(_player);
 			
 			gravityPool = new ObjectPool(GravityObj);
 			
@@ -71,7 +70,7 @@
 			
 			_player.addAnimationCallback(AnimationCallbackTest);
 			for(var i:uint = 0; i < 8; i++)
-				_bullets.add(this.add(new BotBullet()));
+				_bullets.push(this.add(new BotBullet()));
 				
 			//add player and set up camera
 			this.add(_player);
@@ -86,7 +85,7 @@
 			//FlxG.setMusic(SndMode);
 			FlxG.flash(0xff131c1b);
 			
-			FlxG.setCursor(ImgCursor);
+			FlxG.showCursor(ImgCursor);
 		}
 
 		override public function update():void
@@ -94,7 +93,8 @@
 			super.update();
 			//FlxG.collideArray2(_tilemap,_bullets);
 			
-			FlxG.collideArray2(_map.layerMain,_bullets);
+			//FlxG.collideArray2(_map.layerMain,_bullets);
+			_map.layerMain.collideArray(_bullets);
 			_map.layerMain.collide(_player);
 			
 			//FlxG.overlapArray(_bullets, _map.layerMain, bulletHitBlocks);
@@ -135,7 +135,7 @@
 			if (!ggen.hasEventListener(die)) {
 				ggen.addEventListener(die, removeGravityObj);
 			}
-			ggen.reset();
+			ggen.reset(0,0);//TODO OMG invalid override!! What will passing x=0 and y=0 do?
 			_gravityGenerators.add(ggen);
 			return ggen;
 		}
@@ -143,7 +143,7 @@
 		private function removeGravityObj(e:Event):void {
 			var ggen:GravityObj = GravityObj(e.target);
 			_gravityGenerators.remove(ggen, true);
-			remove(ggen, true);
+			//remove(ggen, true); //TODO: commented out with new Flixel build
 			gravityPool.returnObject(ggen);	
 		}
 		

@@ -17,13 +17,13 @@
 		protected var _btnSmallOnePlatform:FlxButton;
 		protected var _btnValley:FlxButton;
 		
-		protected var _buttons:FlxArray;
+		protected var _buttons:Array;
 		
 		public function LevelSelectMenu() 
 		{
-			_buttons = new FlxArray();
+			_buttons = new Array();
 			
-			FlxG.setCursor(ImgCursor);
+			FlxG.showCursor(ImgCursor);
 			
 			var t1m:uint = FlxG.width/2-54;
 			
@@ -34,40 +34,54 @@
 				//_buttons.add(this.add(new ArgsButton(10,buttonHeight,new FlxSprite(null,0,0,false,false,104,15,0xff3a5c39),onButtonClick,new FlxSprite(null,0,0,false,false,104,15,0xff729954),new FlxText(25,1,100,10,,0x729954),new FlxText(25,1,100,10,level,0xd8eba2), new ButtonArgs(i))) as FlxButton);
 				//
 			//}
-			//One Gap Map button
-			_btnOneGap = this.add(new FlxButton(10,10,new FlxSprite(null,0,0,false,false,104,15,0xff3a5c39),onOneGap,new FlxSprite(null,0,0,false,false,104,15,0xff729954),new FlxText(25,1,100,10,"One Gap",0x729954),new FlxText(25,1,100,10,"One Gap",0xd8eba2))) as FlxButton;
-		
-			_btnSmallOnePlatform = this.add(new FlxButton(10, 30, new FlxSprite(null, 0, 0, false, false, 104, 15, 0xff3a5c39), onSmallOnePlatform, new FlxSprite(null, 0, 0, false, false, 104, 15, 0xff729954), new FlxText(25, 1, 100, 10, "Small One Platform", 0x729954), new FlxText(25, 1, 100, 10, "Small One Platform", 0xd8eba2))) as FlxButton;
-			
-			_btnValley = this.add(new FlxButton(10,50,new FlxSprite(null,0,0,false,false,104,15,0xff3a5c39),onValley,new FlxSprite(null,0,0,false,false,104,15,0xff729954),new FlxText(25,1,100,10,"Valley",0x729954),new FlxText(25,1,100,10,"Valley",0xd8eba2))) as FlxButton;
+			var x:int = 10;
+			var y:int = 10;
+			addButton(_btnOneGap,onOneGap, x, y, "One Gap");
+			addButton(_btnSmallOnePlatform, onSmallOnePlatform, x, y+=30, "Small One Plat'");
+			addButton(_btnValley, onValley, x, y+=30, "Valley");
 		}
 		
-		private function onButtonClick(args:ButtonArgs = null):void
+		private function addButton(button:FlxButton, onClick:Function, x:int, y:int, text:String):void
 		{
-			if(args != null)
-				FlxG.level = args.level;
+			button = new FlxButton(x,y,onClick);
+			button.loadGraphic((new FlxSprite()).createGraphic(104,15,0xff3a5c39),(new FlxSprite()).createGraphic(104,15,0xff729954));
 			
-			FlxG.play(SndHit);
-			FlxG.switchState(PlayStateFlanTiles);
+			var t1:FlxText = new FlxText(25,1,100,text);
+			t1.color = 0x729954;
+			var t2:FlxText = new FlxText(t1.x,t1.y,t1.width,t1.text);
+			t2.color = 0xd8eba2;
+			
+			button.loadText(t1,t2);
+			add(button);
 		}
+		
+		//private function onButtonClick(args:ButtonArgs = null):void
+		//{
+			//if(args != null)
+				//FlxG.level = args.level;
+			//
+			//FlxG.play(SndHit);
+			//FlxG.switchState(GravSpawnFlanTilesState);
+		//}
 		
 		private function onOneGap():void
 		{
-			FlxG.level = 0;
-			FlxG.play(SndHit);
-			FlxG.switchState(GravSpawnFlanTilesState);
+			loadLevel(0);
 		}
 		
 		private function onSmallOnePlatform():void
 		{
-			FlxG.level = 1;
-			FlxG.play(SndHit);
-			FlxG.switchState(GravSpawnFlanTilesState);
+			loadLevel(1);
 		}
 		
 		private function onValley():void
 		{
-			FlxG.level = 2;
+			loadLevel(2);
+		}
+		
+		private function loadLevel(levelNum:int):void
+		{
+			FlxG.level = levelNum;
 			FlxG.play(SndHit);
 			FlxG.switchState(GravSpawnFlanTilesState);
 		}

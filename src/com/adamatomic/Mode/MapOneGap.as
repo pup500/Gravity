@@ -23,22 +23,13 @@
 			bgColor = 0xff000000;
 			
 			layerBackground = new FlxTilemap();
-			layerBackground.loadMap(new CSV_Background, new Img_Background);
-			layerBackground.x = 0;
-			layerBackground.y = 0;
-			layerBackground.scrollFactor.x = 1.000000;
-			layerBackground.scrollFactor.y = 1.000000;
-			layerMain = new FlxTilemap(new CSV_Main, Img_Main, 3, 1);
-			layerMain.loadMap(new CSV_Main, new Img_Main);
-			layerMain.x = 0;
-			layerMain.y = 0;
-			layerMain.scrollFactor.x = 1.000000;
-			layerMain.scrollFactor.y = 1.000000;
-			layerForeground = new FlxTilemap(new CSV_Foreground, Img_Foreground,1,1);
-			layerForeground.x = 0;
-			layerForeground.y = 0;
-			layerForeground.scrollFactor.x = 1.000000;
-			layerForeground.scrollFactor.y = 1.000000;
+			layerBackground.loadMap(new CSV_Background, Img_Background);
+			
+			layerMain = new FlxTilemap();
+			layerMain.loadMap(new CSV_Main, Img_Main);
+			
+			layerForeground = new FlxTilemap();
+			layerMain.loadMap(new CSV_Foreground, Img_Foreground);
 
 			allLayers = [ layerBackground, layerMain, layerForeground ];
 
