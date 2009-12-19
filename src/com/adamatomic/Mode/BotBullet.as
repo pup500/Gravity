@@ -29,6 +29,7 @@ package com.adamatomic.Mode
 		override public function hurt(Damage:Number):void
 		{
 			if(dead) return;
+
 			velocity.x = 0;
 			velocity.y = 0;
 			if(onScreen()) FlxG.play(SndHit);

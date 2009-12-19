@@ -16,6 +16,7 @@
 		protected var _btnOneGap:FlxButton;
 		protected var _btnSmallOnePlatform:FlxButton;
 		protected var _btnValley:FlxButton;
+		protected var _btnTestLevel:FlxButton;
 		
 		protected var _buttons:Array;
 		
@@ -38,7 +39,8 @@
 			var y:int = 10;
 			addButton(_btnOneGap,onOneGap, x, y, "One Gap");
 			addButton(_btnSmallOnePlatform, onSmallOnePlatform, x, y+=30, "Small One Plat'");
-			addButton(_btnValley, onValley, x, y+=30, "Valley");
+			addButton(_btnValley, onValley, x, y += 30, "Valley");
+			addButton(_btnTestLevel, onTestLevel, x, y += 30, "Test Level");
 		}
 		
 		private function addButton(button:FlxButton, onClick:Function, x:int, y:int, text:String):void
@@ -79,12 +81,18 @@
 			loadLevel(2);
 		}
 		
+		private function onTestLevel():void
+		{
+			loadLevel(3);
+		}
+		
 		private function loadLevel(levelNum:int):void
 		{
 			FlxG.level = levelNum;
 			FlxG.play(SndHit);
 			FlxG.switchState(GravSpawnFlanTilesState);
 		}
+
 	}
 
 }

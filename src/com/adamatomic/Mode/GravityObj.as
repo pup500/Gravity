@@ -25,6 +25,7 @@
 		{
 			super(X, Y, ImgGravSink);
 			_mass = initialMass;
+			
 			_dispatcher = new EventDispatcher(this);
 			_coolDown = new Timer(50,1);
 			_coolDown.addEventListener(TimerEvent.TIMER_COMPLETE, stopTimer);
