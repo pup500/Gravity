@@ -50,6 +50,10 @@
 			}
 			else {
 				alpha = _mass / initialMass;
+				
+				//scale.x = (_mass / initialMass) * 20;
+				//scale.y = (_mass / initialMass) * 20;
+				
 				_coolDown.reset();
 				_coolDown.start();
 			}

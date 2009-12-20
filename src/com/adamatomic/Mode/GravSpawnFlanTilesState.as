@@ -190,7 +190,7 @@
 					
 					var force:Number = G*(massProduct / distanceSq);
 					
-					force = Math.log(force) * 20;
+					force = Math.log(force) * 50;
 					
 					massedObj.accel.x += force * (xDistance/distance);//xDistance >= 0 ? xForce :-xForce;
 					massedObj.accel.y += force * (yDistance/distance);//yDistance >= 0 ? yForce :-yForce;

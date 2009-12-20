@@ -47,7 +47,7 @@ package com.adamatomic.Mode
 			
 			//basic player physics
 			var runSpeed:uint = 40;//80;
-			//drag.x = runSpeed*8;
+			drag.x = runSpeed*8;
 			//acceleration.y = 420;
 			_jumpPower = 100;
 			maxVelocity.x = runSpeed;
@@ -125,7 +125,7 @@ package com.adamatomic.Mode
 				
 				if(Math.abs(friction) - Math.abs(acceleration.x) >= 0) {
 					acceleration.x = 0;
-					velocity.x = 0;
+					//velocity.x = 0;
 				}
 				else{
 					acceleration.x += friction;
