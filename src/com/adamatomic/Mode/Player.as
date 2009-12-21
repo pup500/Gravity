@@ -92,7 +92,7 @@ package com.adamatomic.Mode
 			//facing = acceleration.x < 0;
 			
 			//MOVEMENT
-			acceleration.x = 0;
+			//acceleration.x = 0;
 			if(FlxG.keys.LEFT)
 			{
 				facing = LEFT;
