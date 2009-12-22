@@ -87,7 +87,7 @@ package PhysicsGame
 			{
 				facing = LEFT;
 				//final_body.SetLinearVelocity(new b2Vec2(-40,0));
-				final_body.m_linearVelocity.x = -10;
+				final_body.m_linearVelocity.x = -20;
 				
 				//_applyForce.x = -10;
 				//_applyForce.y = 0;
@@ -100,7 +100,7 @@ package PhysicsGame
 			else if(FlxG.keys.RIGHT)
 			{
 				facing = RIGHT;
-				final_body.m_linearVelocity.x = 10;
+				final_body.m_linearVelocity.x = 20;
 				
 				//_applyForce.x = 10;
 				//_applyForce.y = 0;
@@ -122,7 +122,7 @@ package PhysicsGame
 			//	velocity.y = -_jumpPower;
 				//final_body.SetLinearVelocity(new b2Vec2(0,-_jumpPower));
 				_applyForce.x = 0;
-				_applyForce.y = -20;
+				_applyForce.y = -40;
 				_applyForce.Multiply(final_body.GetMass());
 				
 				trace("mass" + final_body.GetMass());
@@ -131,7 +131,7 @@ package PhysicsGame
 				FlxG.play(SndJump);
 			}
 			
-			//final_body.m_sweep.a0 = 0;
+			final_body.m_sweep.a = 0;
 			
 			//AIMING
 			_up = false;
@@ -140,13 +140,14 @@ package PhysicsGame
 			else if(FlxG.keys.DOWN && velocity.y) _down = true;
 			
 			//ANIMATION
-			if(velocity.y != 0)
+			if(Math.abs(final_body.m_linearVelocity.y) > 0.1)
 			{
 				if(_up) play("jump_up");
 				else if(_down) play("jump_down");
 				else play("jump");
+				trace("jumping");
 			}
-			else if(velocity.x == 0)
+			else if(Math.abs(final_body.m_linearVelocity.x) < 0.1)
 			{
 				if(_up) play("idle_up");
 				else play("idle");

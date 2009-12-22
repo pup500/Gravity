@@ -4,14 +4,12 @@
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
 	
-	//For box2d's debug rendering.
-	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	
-	import org.overrides.*;
 	import org.flixel.*;
+	import org.overrides.*;
 	
 	/**
 	 * Rains physics objects onto a stationary object.
@@ -25,12 +23,13 @@
 		
 		private var b2:ExSprite;
 		private var time_count:Timer=new Timer(1000);
+		private var spawned:uint = 0;
 		
 		public function PhysState() 
 		{
 			super();
 			
-			_map = new MapOneGap();
+			/*_map = new MapOneGap();
 			for(var i:uint = 0; i < _map.mainLayer._sprites.length; i++){
 				b2 = _map.mainLayer._sprites[i] as ExSprite;
 				b2.createPhysBody(the_world);
@@ -41,23 +40,23 @@
 			}
 			
 			
-			add(_map.mainLayer);
+			add(_map.mainLayer);*/
 			
 			//_map.mainLayer
 			
 			//--Box2D's Debug rendering--//
-			var debug_draw:b2DebugDraw = new b2DebugDraw();
-			var debug_sprite:Sprite = new Sprite();
-			addChild(debug_sprite);
-			debug_draw.m_sprite=debug_sprite;
-			debug_draw.m_drawScale=1;
-			debug_draw.m_fillAlpha=0.5;
-			debug_draw.m_lineThickness=1;
-			debug_draw.m_drawFlags=b2DebugDraw.e_shapeBit |b2DebugDraw.e_centerOfMassBit;
-			the_world.SetDebugDraw(debug_draw);
+//			var debug_draw:b2DebugDraw = new b2DebugDraw();
+//			var debug_sprite:Sprite = new Sprite();
+//			addChild(debug_sprite);
+//			debug_draw.m_sprite=debug_sprite;
+//			debug_draw.m_drawScale=1;
+//			debug_draw.m_fillAlpha=0.5;
+//			debug_draw.m_lineThickness=1;
+//			debug_draw.m_drawFlags=b2DebugDraw.e_shapeBit |b2DebugDraw.e_centerOfMassBit;
+//			the_world.SetDebugDraw(debug_draw);
 			//-------------------------//
 			
-			/*
+			
 			//Platform for raining objects to interact with.
 			b2 = new ExSprite(150, 150, playerSprite);
 			b2.initShape();
@@ -72,11 +71,12 @@
 			b2._shape.SetAsBox(10, 100);
 			b2.createPhysBody(the_world); //Add b2 as a physical body to Box2D's world.
 			add(b2); //Add b2 as a sprite to Flixel's update loop.
-			*/
+			
 			
 			
 			var body:Player = new Player(150, 100, playerSprite);
 			body.createPhysBody(the_world);
+			body.final_body.AllowSleeping(false);
 			add(body);
 			
 			//This works, in debug mode it looks weird but that's because of layer offset...
@@ -86,7 +86,7 @@
 			
 			//Timer to rain physical objects every second.
 			time_count.addEventListener(TimerEvent.TIMER, on_time);
-			//time_count.start();
+			time_count.start();
 			
 		}
 		
@@ -98,6 +98,9 @@
 			body.initShape();
 			body.createPhysBody(the_world);
 			add(body);
+			
+			spawned++;
+			FlxG.log("item spawned" + spawned);
 		}
 		
 		override public function update():void
