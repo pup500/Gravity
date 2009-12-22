@@ -1,9 +1,9 @@
 ﻿package com.adamatomic.Mode
 {
+	import org.flixel.*;
+	
 	import flash.events.Event;
 	import flash.utils.getDefinitionByName;
-	
-	import org.flixel.*;
 
 	
 	public class GravSpawnFlanTilesState extends FlxState
@@ -121,7 +121,7 @@
 		{
 			Bullet.hurt(1);
 			var ggen:GravityObj = gravityObj as GravityObj;
-			ggen.reset(ggen.x, ggen.y);
+			//ggen.reset();//TODO OMG new Flixel doesn't have reset defined!!
 		}
 		
 		private function bulletHitBlocks(Bullet:FlxSprite,Block:FlxCore):void
@@ -137,15 +137,14 @@
 			if (!ggen.hasEventListener(die)) {
 				ggen.addEventListener(die, removeGravityObj);
 			}
-			ggen.reset(0,0);
-			_gravityGenerators.push(ggen);
+			ggen.reset(0,0);//TODO OMG invalid override!! What will passing x=0 and y=0 do?
+			_gravityGenerators.add(ggen);
 			return ggen;
 		}
 		
 		private function removeGravityObj(e:Event):void {
 			var ggen:GravityObj = GravityObj(e.target);
-			var index:int = _gravityGenerators.indexOf(ggen);
-			_gravityGenerators.splice(index,1);
+			_gravityGenerators.remove(ggen, true);
 			//remove(ggen, true); //TODO: commented out with new Flixel build
 			gravityPool.returnObject(ggen);	
 		}
@@ -179,7 +178,7 @@
 					
 					var force:Number = G*(massProduct / distanceSq);
 					
-					//force = Math.log(force) * 20;
+					force = Math.log(force) * 20;
 					
 					massedObj.accel.x += force * (xDistance/distance);//xDistance >= 0 ? xForce :-xForce;
 					massedObj.accel.y += force * (yDistance/distance);//yDistance >= 0 ? yForce :-yForce;
