@@ -29,6 +29,11 @@ package com.adamatomic.Mode
 		override public function hurt(Damage:Number):void
 		{
 			if(dead) return;
+			
+			if(Damage == 0){
+				var gravityState:GravSpawnFlanTilesState =  FlxG.state as GravSpawnFlanTilesState;
+				gravityState.createGravityAtLocation(this);
+			}
 
 			velocity.x = 0;
 			velocity.y = 0;

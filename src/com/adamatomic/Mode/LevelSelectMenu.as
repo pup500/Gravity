@@ -3,8 +3,9 @@
 	import org.flixel.*;
 	
 	/**
-	 * A menu of buttons that leads to each level we've created. These classes must be added to FlxG in Main.as.
-	 * 
+	 * TODO: Does NOT work yet. Need to figure architecture for calling different levels.
+	 * 			For now, change levels by changing the MapBase class that's instantiated
+	 * 			in PlayStateFlanTiles.as. 
 	 * @author Norman
 	 */
 	public class LevelSelectMenu extends FlxState
