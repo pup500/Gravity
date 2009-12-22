@@ -10,14 +10,14 @@ package PhysicsGame
 
 	public class Player extends ExSprite
 	{
-		[Embed(source="data/spaceman.png")] private var ImgSpaceman:Class;
-		[Embed(source="data/gibs.png")] private var ImgGibs:Class;
-		[Embed(source="data/jump.mp3")] private var SndJump:Class;
-		[Embed(source="data/land.mp3")] private var SndLand:Class;
-		[Embed(source="data/asplode.mp3")] private var SndExplode:Class;
-		[Embed(source="data/menu_hit_2.mp3")] private var SndExplode2:Class;
-		[Embed(source="data/hurt.mp3")] private var SndHurt:Class;
-		[Embed(source="data/jam.mp3")] private var SndJam:Class;
+		[Embed(source="../data/spaceman.png")] private var ImgSpaceman:Class;
+		[Embed(source="../data/gibs.png")] private var ImgGibs:Class;
+		[Embed(source="../data/jump.mp3")] private var SndJump:Class;
+		[Embed(source="../data/land.mp3")] private var SndLand:Class;
+		[Embed(source="../data/asplode.mp3")] private var SndExplode:Class;
+		[Embed(source="../data/menu_hit_2.mp3")] private var SndExplode2:Class;
+		[Embed(source="../data/hurt.mp3")] private var SndHurt:Class;
+		[Embed(source="../data/jam.mp3")] private var SndJam:Class;
 		
 		
 		private var _lastVel:Point;
@@ -93,9 +93,6 @@ package PhysicsGame
 				//_applyForce.y = 0;
 				//_applyForce.Multiply(final_body.GetMass());
 				//final_body.ApplyForce(_applyForce, final_body.GetWorldCenter());
-				
-				
-				//acceleration.x -= (40 * 8);//drag.x;
 			}
 			else if(FlxG.keys.RIGHT)
 			{
@@ -106,7 +103,6 @@ package PhysicsGame
 				//_applyForce.y = 0;
 				//_applyForce.Multiply(final_body.GetMass());
 				//final_body.ApplyForce(_applyForce, final_body.GetWorldCenter());
-				//acceleration.x += (40 * 8);//drag.x;
 			}
 			
 			//if(!velocity.x && !FlxG.kRight && !FlxG.kLeft){
@@ -115,23 +111,24 @@ package PhysicsGame
 			
 			trace("vel" + final_body.m_linearVelocity.y);
 			
-			//Trying to see if we don't have to use C, instead just use up....
-			//if(FlxG.justPressed(FlxG.A) && !velocity.y)
+			////TODO only when collision from bottom
 			if(FlxG.keys.UP && Math.abs(final_body.m_linearVelocity.y) < 0.1)
 			{
-			//	velocity.y = -_jumpPower;
+				//velocity.y = -_jumpPower;
 				//final_body.SetLinearVelocity(new b2Vec2(0,-_jumpPower));
 				_applyForce.x = 0;
 				_applyForce.y = -20;
 				_applyForce.Multiply(final_body.GetMass());
 				
 				trace("mass" + final_body.GetMass());
-			
+				
+				//Apply a instantaneous upward force.
 				final_body.ApplyImpulse(_applyForce, final_body.GetWorldCenter());
 				FlxG.play(SndJump);
 			}
 			
-			//final_body.m_sweep.a0 = 0;
+			//Make it so player doesn't rotate.
+			final_body.m_sweep.a = 0;
 			
 			//AIMING
 			_up = false;
