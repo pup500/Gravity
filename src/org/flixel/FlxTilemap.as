@@ -402,6 +402,8 @@ package org.flixel
 				rx %= _pixels.width;
 			}
 			_rects[Index] = (new Rectangle(rx,ry,_tileSize,_tileSize));
+			
+			trace("tile: x:" + rx + " y:" + ry);
 		}
 	}
 }
