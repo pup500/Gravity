@@ -22,7 +22,6 @@ package org.overrides
 			
 			_body = new b2BodyDef();
 			_body.position.Set(x, y);
-			
 			_shape = new b2PolygonDef();
 			
 		}
