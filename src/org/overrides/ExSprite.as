@@ -22,11 +22,13 @@
 			
 			_body = new b2BodyDef();
 			_body.position.Set(x, y);
+			
+			_shape = new b2PolygonDef();
+			
 		}
 		
 		public function initShape():void {
-			_shape = new b2PolygonDef();
-			_shape.SetAsBox(_bw/2, _bh/2); 
+			_shape.SetAsBox(width/2, height/2); 
 			_shape.friction = 0.3;
 			_shape.density = 1;
 		}

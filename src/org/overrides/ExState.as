@@ -16,7 +16,7 @@ package org.overrides
 			
 			var environment:b2AABB = new b2AABB();
 			environment.lowerBound.Set(0.0, 0.0);
-			environment.upperBound.Set(320.0, 240.0);
+			environment.upperBound.Set(10000, 10000);//320.0, 240.0);
 			var gravity:b2Vec2=new b2Vec2(0.0,10.0);
 			
 			the_world = new b2World(environment, gravity, true);
