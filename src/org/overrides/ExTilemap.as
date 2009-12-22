@@ -28,7 +28,7 @@ package org.overrides
 			
 			for(var row:uint = 0; row < heightInTiles; row++){
 				for(var col:uint = 0; col < widthInTiles; col++){
-					var i:uint = row * heightInTiles + col;
+					var i:uint = row * widthInTiles + col;
 					if(_rects[i]){
 					//	var rect:Rectangle = _rects[i] as Rectangle;
 						var rect:Rectangle = new Rectangle(0,0,8,8);
@@ -38,6 +38,8 @@ package org.overrides
 						body.height = _tileSize;
 						
 						trace("x,y:" +col * _tileSize + ", " + row * _tileSize);
+						body._body.position.x += body.width/2;
+						body._body.position.y += body.height/2;
 						
 						//trace("x: " + rect.x + " y: " + rect.y + "height:" + rect.height + "wi:" + rect.width);
 						//trace("body" + body);

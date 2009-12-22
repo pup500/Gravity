@@ -1,4 +1,4 @@
-﻿package PhysicsGame
+package PhysicsGame
 {
 	import Box2D.Collision.*;
 	import Box2D.Common.Math.*;
@@ -41,18 +41,20 @@
 			}
 			
 			
+			add(_map.mainLayer);
+			
 			//_map.mainLayer
 			
 			//--Box2D's Debug rendering--//
-			var debug_draw:b2DebugDraw = new b2DebugDraw();
-			var debug_sprite:Sprite = new Sprite();
-			addChild(debug_sprite);
-			debug_draw.m_sprite=debug_sprite;
-			debug_draw.m_drawScale=1;
-			debug_draw.m_fillAlpha=0.5;
-			debug_draw.m_lineThickness=1;
-			debug_draw.m_drawFlags=b2DebugDraw.e_shapeBit |b2DebugDraw.e_centerOfMassBit;
-			the_world.SetDebugDraw(debug_draw);
+			//var debug_draw:b2DebugDraw = new b2DebugDraw();
+			//var debug_sprite:Sprite = new Sprite();
+			//addChild(debug_sprite);
+			//debug_draw.m_sprite=debug_sprite;
+			//debug_draw.m_drawScale=1;
+			//debug_draw.m_fillAlpha=0.5;
+			//debug_draw.m_lineThickness=1;
+			//debug_draw.m_drawFlags=b2DebugDraw.e_shapeBit |b2DebugDraw.e_centerOfMassBit;
+			//the_world.SetDebugDraw(debug_draw);
 			//-------------------------//
 			
 			/*
@@ -84,9 +86,8 @@
 			
 			//Timer to rain physical objects every second.
 			time_count.addEventListener(TimerEvent.TIMER, on_time);
-			time_count.start();
+			//time_count.start();
 			
-			//add(_map.mainLayer);
 		}
 		
 		public function on_time(e:Event):void {
