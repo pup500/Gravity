@@ -41,6 +41,8 @@
 			}
 			
 			
+			add(_map.mainLayer);
+			
 			//_map.mainLayer
 			
 			//--Box2D's Debug rendering--//
@@ -84,9 +86,8 @@
 			
 			//Timer to rain physical objects every second.
 			time_count.addEventListener(TimerEvent.TIMER, on_time);
-			time_count.start();
+			//time_count.start();
 			
-			//add(_map.mainLayer);
 		}
 		
 		public function on_time(e:Event):void {
