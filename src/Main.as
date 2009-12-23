@@ -6,7 +6,7 @@ package {
 	import PhysicsGame.*;
 	
 	[SWF(width="640", height="480", backgroundColor="#000000")]
-	[Frame(factoryClass="Preloader")]
+	//[Frame(factoryClass="Preloader")]
 
 	public class Main extends ExGame
 	{

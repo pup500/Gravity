@@ -12,30 +12,33 @@ package org.overrides
 	 */
 	public class ExSprite extends FlxSprite
 	{
-		public var _body:b2BodyDef;
-		public var _shape:b2PolygonDef;
-		public var final_body:b2Body;
+		public var body:b2BodyDef;
+		public var shape:b2PolygonDef;
+		public var final_body:b2Body; //The physical representation in the Body2D b2World.
+		public var final_shape:b2Shape; //Needs to be defined in order to destroy the physical representation.
 		
 		public function ExSprite(x:int=0, y:int=0, sprite:Class=null)
 		{
 			super(x, y, sprite);
 			
-			_body = new b2BodyDef();
-			_body.position.Set(x, y);
-			_shape = new b2PolygonDef();
-			
+			body = new b2BodyDef();
+			body.position.Set(x, y);
+			shape = new b2PolygonDef();
 		}
-		
+		//We're calling this outside the constructor because we need Flixel to define its sprite dimensions first in loadGraphic().
+		//TODO: Refactor. Can this go into the constructor somehow? Having to call it everytime you construct the an ExSprite sucks
 		public function initShape():void {
-			_shape.SetAsBox(width/2, height/2); 
-			_shape.friction = 0.3;
-			_shape.density = 1;
+			shape.SetAsBox(_bw/2, _bh/2); 
+			shape.friction = 0.3;
+			shape.density = 1;
 		}
 		
+		//@desc Create the physical representation in the Box2D World.
+		//@param	world The Box2D b2World for this object to exist in.
 		public function createPhysBody(world:b2World):void
 		{
-			final_body=world.CreateBody(_body);
-			final_body.CreateShape(_shape);
+			final_body=world.CreateBody(body);
+			final_shape = final_body.CreateShape(shape);
 			final_body.SetMassFromShapes();
 		}
 		

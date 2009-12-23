@@ -4,10 +4,11 @@ package PhysicsGame
 	
 	import flash.geom.Point;
 	import flash.utils.Timer;
+	import flash.events.TimerEvent;
 	
 	import org.flixel.*;
 	import org.overrides.ExSprite;
-
+	
 	public class Player extends ExSprite
 	{
 		[Embed(source="../data/spaceman.png")] private var ImgSpaceman:Class;
@@ -23,21 +24,21 @@ package PhysicsGame
 		private var _moving:Boolean;
 		
 		private var _jumpPower:int;
-		private var _bullets:Array;
-		private var _curBullet:uint;
-		private var _bulletVel:int;
 		private var _up:Boolean;
 		private var _down:Boolean;
 		private var _restart:Number;
 		private var _gibs:FlxEmitter;
 		
+		private var _bullets:Array;
+		private var _curBullet:uint;
+		private var _bulletVel:int;
 		private var _coolDown:Timer;
 		private var _canShoot:Boolean;
 		
-		public function Player(x:int=0, y:int=0, sprite:Class=null)
+		public function Player(x:int=0, y:int=0, bullets:Array=null)
 		{
 			super(x, y, ImgSpaceman);
-			loadGraphic(ImgSpaceman,true,true,8);
+			loadGraphic(ImgSpaceman,true,true);
 			initShape();
 			
 			_restart = 0;
@@ -65,6 +66,14 @@ package PhysicsGame
 			addAnimation("run_up", [6, 7, 8, 5], 12);
 			addAnimation("jump_up", [9]);
 			addAnimation("jump_down", [10]);
+			
+			//Bullet shooting stuff
+			_bullets = bullets;
+			_curBullet = 0;
+			_bulletVel = 200;
+			_canShoot = true;
+			_coolDown = new Timer(500,1);
+			_coolDown.addEventListener(TimerEvent.TIMER_COMPLETE, stopTimer);
 		}
 		
 		
@@ -162,22 +171,22 @@ package PhysicsGame
 			
 			super.update();
 			
-			//mouseShoot();
+			mouseShoot();
 			
 			//keyShoot();
 		}
 		
-		/*
+		
 		private function mouseShoot():void{
 			if(FlxG.mouse.justPressed() && _canShoot){
-				trace("mouse x: " + FlxG.mouse.x + " mouse y: " + FlxG.mouse.y);
-				trace("player x: " + x + " player y: " + y);
+				FlxG.log("mouse x: " + FlxG.mouse.x + " mouse y: " + FlxG.mouse.y);
+				FlxG.log("player x: " + x + " player y: " + y);
 				
 				var angle:Point = new Point(FlxG.mouse.x - x, FlxG.mouse.y - y);
 				var dist:Number = Math.sqrt(angle.x * angle.x + angle.y * angle.y);
 				
-				trace("angle.x: " + angle.x + " angle.y: " + angle.y);
-				trace("dist" + dist);
+				FlxG.log("angle.x: " + angle.x + " angle.y: " + angle.y);
+				FlxG.log("dist" + dist);
 				
 				facing = angle.x > 0 ? RIGHT : angle.x < 0 ? LEFT : facing;
 				
@@ -192,8 +201,12 @@ package PhysicsGame
 				{
 					bX -= _bullets[_curBullet].width - 4;
 				}
-				
+				//If we're recycling this bullet destroy it first.
+				if (_bullets[_curBullet].final_shape != null)
+					_bullets[_curBullet].final_body.DestroyShape(_bullets[_curBullet].final_shape);
+				//Shoot it!!
 				_bullets[_curBullet].shoot(bX,bY,_bulletVel * angle.x/dist, _bulletVel * angle.y/dist);
+				//Set the next bullet to be shot to the first in the array for recycling.
 				if(++_curBullet >= _bullets.length)
 					_curBullet = 0;
 					
@@ -202,6 +215,9 @@ package PhysicsGame
 				_coolDown.start();
 			}
 		}
-		*/
+		
+		private function stopTimer($e:TimerEvent):void{
+			_canShoot = true;
+		}
 	}
 }

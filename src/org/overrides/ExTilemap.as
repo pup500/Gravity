@@ -38,13 +38,13 @@ package org.overrides
 						body.height = _tileSize;
 						
 						trace("x,y:" +col * _tileSize + ", " + row * _tileSize);
-						body._body.position.x += body.width/2;
-						body._body.position.y += body.height/2;
+						body.body.position.x += body.width/2;
+						body.body.position.y += body.height/2;
 						
 						//trace("x: " + rect.x + " y: " + rect.y + "height:" + rect.height + "wi:" + rect.width);
 						//trace("body" + body);
 						body.initShape();
-						body._shape.density = 0; //0 density makes object stationary.
+						body.shape.density = 0; //0 density makes object stationary.
 						//body._shape.SetAsBox(_tileSize, _tileSize);
 						_sprites.push(body);
 					}
