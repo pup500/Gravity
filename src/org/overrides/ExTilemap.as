@@ -37,7 +37,7 @@ package org.overrides
 						body.width = _tileSize;
 						body.height = _tileSize;
 						
-						trace("x,y:" +col * _tileSize + ", " + row * _tileSize);
+						//trace("x,y:" +col * _tileSize + ", " + row * _tileSize);
 						body.body.position.x += body.width/2;
 						body.body.position.y += body.height/2;
 						

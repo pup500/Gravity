@@ -26,6 +26,11 @@
 			super();
 			loadGraphic(ImgBullet, true);
 			initShape();
+			shape.friction = 1;
+			//Make this part of group -2, and do not collide with other in the same negative group...
+			shape.filter.groupIndex = -2;
+			
+			name = "Bullet";
 			
 			_world = world; //For use when we shoot.
 			
@@ -38,12 +43,25 @@
 		}
 		
 		//TODO: prevent super.createPhysBody(world) form being called?
-		
+		public function destroyPhys():void{
+			if(exists){
+				exists = false;
+				//We might not need to save shape as destroy body should work already...
+				final_body.DestroyShape(final_shape);
+				_world.DestroyBody(final_body);
+				final_shape = null;
+				final_body = null;
+			}
+		}
 		
 		override public function update():void
 		{
-			if(dead && finished) exists = false;
-			else super.update();
+			if(dead && finished){
+				destroyPhys();
+			}
+			else { 
+				super.update();
+			}
 		}
 		
 		override public function render():void
@@ -70,11 +88,14 @@
 		
 		public function shoot(X:int, Y:int, VelocityX:int, VelocityY:int):void
 		{
+			destroyPhys();
+			
 			body.position.Set(X, Y);
-			super.createPhysBody(_world);
+			createPhysBody(_world);
 			final_body.SetBullet(true);
 			final_body.m_linearVelocity.Set(VelocityX, VelocityY);
 			
+			play("idle");
 			FlxG.play(SndShoot);
 			
 			super.reset(X,Y);

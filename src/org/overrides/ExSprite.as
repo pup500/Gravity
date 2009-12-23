@@ -1,10 +1,11 @@
 package org.overrides
 {
-	import org.flixel.*;
-	import Box2D.Dynamics.*;
 	import Box2D.Collision.*;
 	import Box2D.Collision.Shapes.*;
 	import Box2D.Common.Math.*;
+	import Box2D.Dynamics.*;
+	
+	import org.flixel.*;
 	
 	/**
 	 * ...
@@ -12,6 +13,7 @@ package org.overrides
 	 */
 	public class ExSprite extends FlxSprite
 	{
+		public var name:String;
 		public var body:b2BodyDef;
 		public var shape:b2PolygonDef;
 		public var final_body:b2Body; //The physical representation in the Body2D b2World.
@@ -20,6 +22,7 @@ package org.overrides
 		public function ExSprite(x:int=0, y:int=0, sprite:Class=null)
 		{
 			super(x, y, sprite);
+			name = "ExSprite";
 			
 			body = new b2BodyDef();
 			body.position.Set(x, y);
@@ -40,6 +43,10 @@ package org.overrides
 			final_body=world.CreateBody(body);
 			final_shape = final_body.CreateShape(shape);
 			final_body.SetMassFromShapes();
+			
+			//shape.userData = this;
+			//body.userData = this;
+			final_body.SetUserData(this);
 		}
 		
 		override public function update():void
@@ -72,6 +79,10 @@ package org.overrides
 			if(angle != 0) _mtx.rotate(angle);
 			_mtx.translate(_p.x+origin.x,_p.y+origin.y);
 			FlxG.buffer.draw(_framePixels,_mtx,null,blend,null,antialiasing);
+		}
+		
+		override public function hurt(Damage:Number):void{
+			
 		}
 	}
 }

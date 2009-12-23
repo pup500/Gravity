@@ -1,14 +1,15 @@
 package org.overrides
 {
-	import org.flixel.FlxState;
-	import org.flixel.FlxG;
 	import Box2D.Collision.*;
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
+	
+	import org.flixel.FlxState;
 
 	public class ExState extends FlxState
 	{
 		public var the_world:b2World;
+		protected var debug:Boolean;
 
 		public function ExState()
 		{
@@ -20,6 +21,7 @@ package org.overrides
 			var gravity:b2Vec2=new b2Vec2(0.0,50.0);
 			
 			the_world = new b2World(environment, gravity, true);
+			debug = false;
 		}
 		
 		override public function update():void

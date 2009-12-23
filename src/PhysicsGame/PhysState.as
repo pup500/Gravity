@@ -6,8 +6,9 @@ package PhysicsGame
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
-	import flash.events.TimerEvent;
+	import flash.geom.Point;
 	import flash.utils.Timer;
+	import flash.events.TimerEvent;
 	
 	import org.flixel.*;
 	import org.overrides.*;
@@ -31,18 +32,9 @@ package PhysicsGame
 		{
 			super();
 			
-			var i:uint; //For the loops.
+			//debug = true;
 			
-			_map = new MapOneGap();
-			for(i= 0; i < _map.mainLayer._sprites.length; i++){
-				b2 = _map.mainLayer._sprites[i] as ExSprite;
-				b2.createPhysBody(the_world);
-				
-				//Don't add the sprite because it doesn't have any graphics...
-				//It should be taken care of in the tile map...
-				//add(b2);
-			}
-			add(_map.mainLayer);
+			createMap();
 			
 			_bullets = new Array();
 			var body:Player = new Player(150, 100, _bullets);
@@ -51,7 +43,7 @@ package PhysicsGame
 			add(body);
 			
 			//Create bullets
-			for(i= 0; i < 8; i++){
+			for(var i:uint= 0; i < 8; i++){
 				_bullets.push(this.add(new Bullet(the_world)));
 				//don't create physical body, wait till bullet is shot.
 			}
@@ -68,13 +60,29 @@ package PhysicsGame
 			initBox2DDebugRendering();
 			//createDebugPlatform();
 			//Timer to rain physical objects every second.
-			//time_count.addEventListener(TimerEvent.TIMER, on_time);
-			//time_count.start();
+			time_count.addEventListener(TimerEvent.TIMER, on_time);
+			time_count.start();
+			
+			initContactListener();
+		}
+		
+		public function createMap():void{
+			_map = new MapOneGap();
+			for(var i:uint= 0; i < _map.mainLayer._sprites.length; i++){
+				b2 = _map.mainLayer._sprites[i] as ExSprite;
+				b2.createPhysBody(the_world);
+				
+				//Don't add the sprite because it doesn't have any graphics...
+				//It should be taken care of in the tile map...
+				//add(b2);
+			}
+			add(_map.mainLayer);
 		}
 		
 		public function on_time(e:Event):void {
 			//Create an ExSprite somewhere above the screen so it falls downward.
 			var body:ExSprite = new ExSprite(Math.random()*300+10, 0, botSprite);
+			body.name = "Player";
 			body.loadGraphic(botSprite,true, true); //Loading again to set animation.
 			body.initShape();
 			body.createPhysBody(the_world);
@@ -86,15 +94,21 @@ package PhysicsGame
 		
 		private function initBox2DDebugRendering():void
 		{
-			var debug_draw:b2DebugDraw = new b2DebugDraw();
-			var debug_sprite:Sprite = new flash.display.Sprite();
-			addChild(debug_sprite);
-			debug_draw.m_sprite=debug_sprite;
-			debug_draw.m_drawScale=1;
-			debug_draw.m_fillAlpha=0.5;
-			debug_draw.m_lineThickness=1;
-			debug_draw.m_drawFlags=b2DebugDraw.e_shapeBit |b2DebugDraw.e_centerOfMassBit;
-			the_world.SetDebugDraw(debug_draw);
+			if(debug){
+				var debug_draw:b2DebugDraw = new b2DebugDraw();
+				var debug_sprite:Sprite = new flash.display.Sprite();
+				addChild(debug_sprite);
+				debug_draw.m_sprite=debug_sprite;
+				debug_draw.m_drawScale=1;
+				debug_draw.m_fillAlpha=0.5;
+				debug_draw.m_lineThickness=1;
+				debug_draw.m_drawFlags=b2DebugDraw.e_shapeBit |b2DebugDraw.e_centerOfMassBit;
+				the_world.SetDebugDraw(debug_draw);
+			}
+		}
+		
+		private function initContactListener():void{
+			the_world.SetContactListener(new ContactListener());
 		}
 		
 		private function createDebugPlatform():void
@@ -111,6 +125,45 @@ package PhysicsGame
 		override public function update():void
 		{
 			super.update();
+			
+			//Testing
+			for (var bb:b2Body = the_world.m_bodyList; bb; bb = bb.m_next) {
+				
+				if(bb.GetUserData() && bb.GetUserData().name == "Player"){
+					//if(FlxG.mouse.justPressed()){
+						
+						var gMass:Number = 5000;
+						var gPoint:Point = new Point(FlxG.mouse.x, FlxG.mouse.y);
+						var bbPoint:Point = new Point(bb.GetPosition().x, bb.GetPosition().y);
+						var dist:Point = gPoint.subtract(bbPoint);
+						var distSq:Number = dist.x * dist.x + dist.y * dist.y;
+						
+						//For performance reasons....  assume force is 0 when distance is pretty far
+						//if(distSq > 1000 ) continue;
+						
+						//This is a physics hack to stop adding gravity to objects when they are too close
+						//they aren't pulling anymore because of normal force
+						//if(distanceSq < 100) continue;
+						
+						var distance:Number = Math.sqrt(distSq);
+						var massProduct:Number = bb.m_mass * gMass;
+						//var massProduct:Number = massedObj.getMass() * gravObj.getMass();	//_player.mass * gravObj.mass;
+						
+						var Gconst:Number = 1; //gravitation constant
+						
+						var force:Number = Gconst*(massProduct/distSq);
+						
+						//force = Math.log(force) * 20;
+						//trace(distance);
+						trace("dist:" + distance + " force:" + force + " forx:" + force * (dist.x/distance) + " fory:" + force * (dist.y/distance));
+						
+						bb.ApplyImpulse(new b2Vec2(force * (dist.x/distance), force * (dist.y/distance)),bb.GetWorldCenter());
+						
+						//massedObj.accel.x += ;//xDistance >= 0 ? xForce :-xForce;
+						//massedObj.accel.y += force * (yDistance/distance);//yDistance >= 0 ? yForce :-yForce;
+				//	}
+				}
+			}
 		}
 	}
 }

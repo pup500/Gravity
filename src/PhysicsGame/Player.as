@@ -2,9 +2,9 @@ package PhysicsGame
 {
 	import Box2D.Common.Math.b2Vec2;
 	
+	import flash.events.TimerEvent;
 	import flash.geom.Point;
 	import flash.utils.Timer;
-	import flash.events.TimerEvent;
 	
 	import org.flixel.*;
 	import org.overrides.ExSprite;
@@ -40,6 +40,10 @@ package PhysicsGame
 			super(x, y, ImgSpaceman);
 			loadGraphic(ImgSpaceman,true,true);
 			initShape();
+			//Make this part of group -2, and do not collide with other in the same negative group...
+			shape.filter.groupIndex = -2;
+			
+			name = "Player";
 			
 			_restart = 0;
 			//_mass = 100; //default
@@ -117,7 +121,7 @@ package PhysicsGame
 			//	acceleration.x = 0;
 			//}
 			
-			trace("vel" + final_body.m_linearVelocity.y);
+			//trace("vel" + final_body.m_linearVelocity.y);
 			
 			////TODO only when collision from bottom
 			if(FlxG.keys.UP && Math.abs(final_body.m_linearVelocity.y) < 0.1)
@@ -128,7 +132,7 @@ package PhysicsGame
 				_applyForce.y = -40;
 				_applyForce.Multiply(final_body.GetMass());
 				
-				trace("mass" + final_body.GetMass());
+				//trace("mass" + final_body.GetMass());
 				
 				//Apply a instantaneous upward force.
 				final_body.ApplyImpulse(_applyForce, final_body.GetWorldCenter());
@@ -150,7 +154,7 @@ package PhysicsGame
 				if(_up) play("jump_up");
 				else if(_down) play("jump_down");
 				else play("jump");
-				trace("jumping");
+				//trace("jumping");
 			}
 			else if(Math.abs(final_body.m_linearVelocity.x) < 0.1)
 			{
@@ -201,15 +205,20 @@ package PhysicsGame
 				{
 					bX -= _bullets[_curBullet].width - 4;
 				}
+				
+				//This is cleaner inside the bullet object
 				//If we're recycling this bullet destroy it first.
-				if (_bullets[_curBullet].final_shape != null)
-					_bullets[_curBullet].final_body.DestroyShape(_bullets[_curBullet].final_shape);
+				//if (_bullets[_curBullet].final_shape != null)
+				//	_bullets[_curBullet].final_body.DestroyShape(_bullets[_curBullet].final_shape);
+				
+				
 				//Shoot it!!
 				_bullets[_curBullet].shoot(bX,bY,_bulletVel * angle.x/dist, _bulletVel * angle.y/dist);
 				//Set the next bullet to be shot to the first in the array for recycling.
 				if(++_curBullet >= _bullets.length)
 					_curBullet = 0;
-					
+				
+				//Maybe we should try to work with elapsed time instead of creating timer events...
 				_canShoot = false;
 				_coolDown.reset();
 				_coolDown.start();
@@ -218,6 +227,10 @@ package PhysicsGame
 		
 		private function stopTimer($e:TimerEvent):void{
 			_canShoot = true;
+		}
+		
+		override public function hurt(Damage:Number):void{
+			
 		}
 	}
 }
