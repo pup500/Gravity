@@ -26,6 +26,12 @@ package PhysicsGame
 		override public function Persist(point:b2ContactPoint) : void{
 			//point.shape1.GetUserData().hurt(0);
 			//point.shape2.GetUserData().hurt(0);
+			//var body1:b2Body = point.shape1.GetBody();
+			//var body2:b2Body = point.shape2.GetBody();
+			//trace("Body1: "+ body1.GetUserData().name + " Body2: " + body2.GetUserData().name);
+			//trace("normal: " + point.normal.x + ", " + point.normal.y);
+			//point.separation;
+			
 		}
 	
 		/// Called when a contact point is removed. This includes the last

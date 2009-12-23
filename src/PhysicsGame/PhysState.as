@@ -8,7 +8,6 @@ package PhysicsGame
 	import flash.events.Event;
 	import flash.geom.Point;
 	import flash.utils.Timer;
-	import flash.events.TimerEvent;
 	
 	import org.flixel.*;
 	import org.overrides.*;
@@ -24,6 +23,7 @@ package PhysicsGame
 		
 		private var _map:MapBase;
 		private var _bullets:Array;
+		private var _gravObjects:Array;
 		private var b2:ExSprite; //For creating environment physical objects.
 		private var time_count:Timer=new Timer(1000);
 		private var spawned:uint = 0;
@@ -32,19 +32,29 @@ package PhysicsGame
 		{
 			super();
 			
-			//debug = true;
+			debug = true;
 			
 			createMap();
 			
 			_bullets = new Array();
+			_gravObjects = new Array();
 			var body:Player = new Player(150, 100, _bullets);
 			body.createPhysBody(the_world);
 			body.final_body.AllowSleeping(false);
 			add(body);
 			
-			//Create bullets
+			//Create GravityObjects
 			for(var i:uint= 0; i < 8; i++){
-				_bullets.push(this.add(new Bullet(the_world)));
+				_gravObjects.push(this.add(new GravityObject(the_world)));
+				//don't create physical body, wait till bullet is shot.
+			}
+			
+			
+			//Create bullets
+			for(i = 0; i < 8; i++){
+				var bullet:Bullet = new Bullet(the_world);
+				bullet.setGravityObject(_gravObjects[i]);
+				_bullets.push(this.add(bullet));
 				//don't create physical body, wait till bullet is shot.
 			}
 			
@@ -60,8 +70,8 @@ package PhysicsGame
 			initBox2DDebugRendering();
 			//createDebugPlatform();
 			//Timer to rain physical objects every second.
-			time_count.addEventListener(TimerEvent.TIMER, on_time);
-			time_count.start();
+			//time_count.addEventListener(TimerEvent.TIMER, on_time);
+			//time_count.start();
 			
 			initContactListener();
 		}
@@ -130,10 +140,13 @@ package PhysicsGame
 			for (var bb:b2Body = the_world.m_bodyList; bb; bb = bb.m_next) {
 				
 				if(bb.GetUserData() && bb.GetUserData().name == "Player"){
-					//if(FlxG.mouse.justPressed()){
+					for(var i:uint = 0; i < _gravObjects.length; i++){
+						var gObj:GravityObject = _gravObjects[i] as GravityObject;
 						
-						var gMass:Number = 5000;
-						var gPoint:Point = new Point(FlxG.mouse.x, FlxG.mouse.y);
+						if(!gObj.exists) continue;
+						
+						var gMass:Number = gObj.mass;// Hack - use object's mass not physics mass because density = 0//gObj.final_body.m_mass;
+						var gPoint:Point = new Point(gObj.final_body.GetPosition().x, gObj.final_body.GetPosition().y);
 						var bbPoint:Point = new Point(bb.GetPosition().x, bb.GetPosition().y);
 						var dist:Point = gPoint.subtract(bbPoint);
 						var distSq:Number = dist.x * dist.x + dist.y * dist.y;
@@ -149,11 +162,15 @@ package PhysicsGame
 						var massProduct:Number = bb.m_mass * gMass;
 						//var massProduct:Number = massedObj.getMass() * gravObj.getMass();	//_player.mass * gravObj.mass;
 						
-						var Gconst:Number = 1; //gravitation constant
+						var G:Number = 1; //gravitation constant
 						
-						var force:Number = Gconst*(massProduct/distSq);
+						var force:Number = G*(massProduct/distSq);
 						
 						//force = Math.log(force) * 20;
+						
+						if(force > 200) force = 200;
+						if(force < -200) force = -200;
+						
 						//trace(distance);
 						trace("dist:" + distance + " force:" + force + " forx:" + force * (dist.x/distance) + " fory:" + force * (dist.y/distance));
 						
@@ -161,7 +178,7 @@ package PhysicsGame
 						
 						//massedObj.accel.x += ;//xDistance >= 0 ? xForce :-xForce;
 						//massedObj.accel.y += force * (yDistance/distance);//yDistance >= 0 ? yForce :-yForce;
-				//	}
+					}
 				}
 			}
 		}
