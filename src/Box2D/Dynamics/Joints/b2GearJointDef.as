@@ -21,11 +21,17 @@ package Box2D.Dynamics.Joints{
 	
 import Box2D.Common.Math.*;
 
+import Box2D.Common.b2internal;
+use namespace b2internal;
 
 
-/// Gear joint definition. This definition requires two existing
-/// revolute or prismatic joints (any combination will work).
-/// The provided joints must attach a dynamic body to a static body.
+
+/**
+* Gear joint definition. This definition requires two existing
+* revolute or prismatic joints (any combination will work).
+* The provided joints must attach a dynamic body to a static body.
+* @see b2GearJoint
+*/
 
 public class b2GearJointDef extends b2JointDef
 {
@@ -37,12 +43,18 @@ public class b2GearJointDef extends b2JointDef
 		ratio = 1.0;
 	}
 
-	/// The first revolute/prismatic joint attached to the gear joint.
+	/**
+	* The first revolute/prismatic joint attached to the gear joint.
+	*/
 	public var joint1:b2Joint;
-	/// The second revolute/prismatic joint attached to the gear joint.
+	/**
+	* The second revolute/prismatic joint attached to the gear joint.
+	*/
 	public var joint2:b2Joint;
-	/// The gear ratio.
-	/// @see b2GearJoint for explanation.
+	/**
+	* The gear ratio.
+	* @see b2GearJoint for explanation.
+	*/
 	public var ratio:Number;
 };
 

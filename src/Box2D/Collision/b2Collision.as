@@ -23,7 +23,13 @@ import Box2D.Common.*;
 import Box2D.Collision.*;
 import Box2D.Collision.Shapes.*;
 
+import Box2D.Common.b2internal;
+use namespace b2internal;
 
+
+/**
+* @private
+*/
 public class b2Collision{
 	
 	// Null feature
@@ -434,23 +440,26 @@ public class b2Collision{
 		np = ClipSegmentToLine(clipPoints1, incidentEdge, sideNormal.Negative(), sideOffset1);
 
 		if (np < 2)
+		{
 			return;
+		}
 
 		// Clip to negative box side 1
 		np = ClipSegmentToLine(clipPoints2, clipPoints1,  sideNormal, sideOffset2);
 
 		if (np < 2)
+		{
 			return;
+		}
 
 		// Now clipPoints2 contains the clipped points.
 		manifold.normal = flip ? frontNormal.Negative() : frontNormal.Copy();
-
+		
 		var pointCount:int = 0;
-		for (var i:int = 0; i < b2Settings.b2_maxManifoldPoints; ++i)
+		for (var i:int = 0; i < b2Settings.b2_maxManifoldPoints;++i)
 		{
 			cv = clipPoints2[i];
-			var separation:Number = b2Math.b2Dot(frontNormal, cv.v) - frontOffset;
-
+			var separation:Number = frontNormal.x * cv.v.x + frontNormal.y * cv.v.y - frontOffset;
 			if (separation <= 0.0)
 			{
 				var cp:b2ManifoldPoint = manifold.points[ pointCount ];
@@ -462,7 +471,7 @@ public class b2Collision{
 				++pointCount;
 			}
 		}
-
+		
 		manifold.pointCount = pointCount;
 	}
 	
@@ -683,7 +692,7 @@ public class b2Collision{
 			pX = eX * u + tVec.x;
 			pY = eY * u + tVec.y;
 			tPoint.id.features.incidentEdge = normalIndex;
-			tPoint.id.features.incidentVertex = 0;
+			tPoint.id.features.incidentVertex = b2_nullFeature;
 		}
 		
 		//d = b2Math.SubtractVV(xLocal , p);

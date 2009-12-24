@@ -23,6 +23,12 @@ import Box2D.Common.*;
 import Box2D.Collision.Shapes.*;
 import Box2D.Collision.*;
 
+import Box2D.Common.b2internal;
+use namespace b2internal;
+
+/**
+* @private
+*/
 public class b2Distance
 {
 
@@ -226,23 +232,20 @@ static public function ProcessThree(x1:b2Vec2, x2:b2Vec2, p1s:Array, p2s:Array, 
 
 static public function InPoints(w:b2Vec2, points:Array, pointCount:int):Boolean
 {
-	const k_tolerance:Number = 100.0 * Number.MIN_VALUE;
-	for (var i:int = 0; i < pointCount; ++i)
-	{
+	const k_tolerance:Number = 100 * Number.MIN_VALUE;
+	for (var i:int = 0; i < pointCount; i++){
 		var points_i:b2Vec2 = points[i];
-		//b2Vec2 d = b2Abs(w - points[i]);
-		var dX:Number = Math.abs(w.x - points_i.x);
-		var dY:Number = Math.abs(w.y - points_i.y);
-		//b2Vec2 m = b2Max(b2Abs(w), b2Abs(points[i]));
-		var mX:Number = Math.max(Math.abs(w.x), Math.abs(points_i.x));
-		var mY:Number = Math.max(Math.abs(w.y), Math.abs(points_i.y));
-		
-		if (dX < k_tolerance * (mX + 1.0) &&
-			dY < k_tolerance * (mY + 1.0)){
+		var dX:Number = w.x - points_i.x < 0 ? -(w.x - points_i.x) : w.x - points_i.x;
+		var dY:Number = w.y - points_i.y < 0 ? -(w.y - points_i.y) : w.y - points_i.y;
+		var mX:Number = w.x < 0 ? -w.x : w.x >  points_i.x < 0 ? -points_i.x : points_i.x ? w.x < 0 ? -w.x : w.x : points_i.x < 0 ? -points_i.x : points_i.x;
+		var mY:Number = w.x < 0 ? -w.y : w.y >  points_i.y < 0 ? -points_i.y : points_i.y ? w.y < 0 ? -w.y : w.y : points_i.y < 0 ? -points_i.y : points_i.y;
+
+		if (dX < k_tolerance * (mX + 1) &&
+			dY < k_tolerance * (mY + 1))
+		{
 			return true;
 		}
 	}
-
 	return false;
 }
 
@@ -290,7 +293,7 @@ static public function DistanceGeneric(x1:b2Vec2, x2:b2Vec2,
 		//float32 vw = b2Dot(v, w);
 		var vw:Number = (vX*wX + vY*wY);
 		//if (vSqr - b2Dot(v, w) <= 0.01f * vSqr) // or w in points
-		if (vSqr - (vX * wX + vY * wY) <= 0.01 * vSqr) // or w in points
+		if (vSqr - vw <= 0.01 * vSqr) // or w in points
 		{
 			if (pointCount == 0)
 			{
@@ -368,7 +371,7 @@ static public function DistanceGeneric(x1:b2Vec2, x2:b2Vec2,
 			maxSqr = b2Math.b2Max(maxSqr, (tVec.x*tVec.x + tVec.y*tVec.y));
 		}
 		
-		if (pointCount == 3 || vSqr <= 100.0 * Number.MIN_VALUE * maxSqr)
+		if (vSqr <= 100.0 * Number.MIN_VALUE * maxSqr)
 		{
 			g_GJK_Iterations = iter;
 			//v = *x2 - *x1;
@@ -413,7 +416,7 @@ static public function DistanceCC(
 	if (dSqr > r * r)
 	{
 		//var dLen:Number = d.Normalize();
-		var dLen:Number = Math.sqrt(dX*dX + dY*dY);
+		var dLen:Number = Math.sqrt(dSqr);
 		dX /= dLen;
 		dY /= dLen;
 		var distance:Number = dLen - r;
@@ -428,7 +431,7 @@ static public function DistanceCC(
 	else if (dSqr > Number.MIN_VALUE * Number.MIN_VALUE)
 	{
 		//d.Normalize();
-		dLen = Math.sqrt(dX*dX + dY*dY);
+		dLen = Math.sqrt(dSqr);
 		dX /= dLen;
 		dY /= dLen;
 		//*x1 = p1 + r1 * d;
@@ -449,12 +452,110 @@ static public function DistanceCC(
 	return 0.0;
 }
 
+static public function DistanceEdgeCircle(
+	x1: b2Vec2, x2: b2Vec2,
+	edge: b2EdgeShape, xf1: b2XForm,
+	circle: b2CircleShape, xf2: b2XForm): Number
+{
+	var vWorld: b2Vec2;
+	var r: Number = circle.m_radius - b2Settings.b2_toiSlop;
+	
+	var tMat: b2Mat22;
+	var tVec: b2Vec2;
+	//b2Vec2 cWorld = b2Mul(xf2, circle->GetLocalPosition());
+	tMat = xf2.R;
+	tVec = circle.m_localPosition;
+	var cWorldX: Number = xf2.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+	var cWorldY: Number = xf2.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+	
+	//b2Vec2 cLocal = b2MulT(xf1, cWorld);
+	tMat = xf1.R;
+	var tX: Number = cWorldX - xf1.position.x;
+	var tY: Number = cWorldY - xf1.position.y;
+	var cLocalX: Number = (tX * tMat.col1.x + tY * tMat.col1.y );
+	var cLocalY: Number = (tX * tMat.col2.x + tY * tMat.col2.y );
+	
+	//float32 dLen = b2Dot(cLocal - edge->GetCoreVertex1(), edge->GetDirectionVector());
+	var dLen: Number = (cLocalX - edge.m_coreV1.x) * edge.m_direction.x + 
+	                   (cLocalY - edge.m_coreV1.y) * edge.m_direction.y;
+	
+	if (dLen <= 0.0) {
+		//x1 = b2Mul(xf1, edge->GetCoreVertex1());
+		tMat = xf1.R;
+		tVec = edge.m_coreV1;
+		x1.x = xf1.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+		x1.y = xf1.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+	} else if (dLen >= edge.m_length) {
+		//x1 = b2Mul(xf1, edge->GetCoreVertex2());
+		tMat = xf1.R;
+		tVec = edge.m_coreV2;
+		x1.x = xf1.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+		x1.y = xf1.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+	} else {
+		//x1 = b2Mul(xf1, edge->GetCoreVertex1() + dLen * edge->GetDirectionVector());
+		tMat = xf1.R;
+		tX = edge.m_coreV1.x + dLen * edge.m_direction.x;
+		tY = edge.m_coreV1.y + dLen * edge.m_direction.y;
+		x1.x = xf1.position.x + (tMat.col1.x * tX + tMat.col2.x * tY);
+		x1.y = xf1.position.y + (tMat.col1.y * tX + tMat.col2.y * tY);
+		
+		//dLen = b2Dot(cLocal - edge->GetCoreVertex1(), edge->GetNormalVector());
+		dLen = (cLocalX - edge.m_coreV1.x) * edge.m_normal.x + 
+		       (cLocalY - edge.m_coreV1.y) * edge.m_normal.y;
+		
+		if (dLen < 0.0) {
+			if (dLen < -r) {
+				//x2 = b2Mul(xf1, cLocal + r * edge->GetNormalVector());
+				tMat = xf1.R;
+				tX = cLocalX + r * edge.m_normal.x;
+				tY = cLocalY + r * edge.m_normal.y;
+				x2.x = xf1.position.x + (tMat.col1.x * tX + tMat.col2.x * tY);
+				x2.y = xf1.position.y + (tMat.col1.y * tX + tMat.col2.y * tY);
+				return -dLen - r;
+			} else {
+				x2.x = x1.x;
+				x2.y = x1.y;
+				return 0.0;
+			}
+		} else {
+			if (dLen > r) {
+				//x2 = b2Mul(xf1, cLocal - r * edge->GetNormalVector());
+				tMat = xf1.R;
+				tX = cLocalX - r * edge.m_normal.x;
+				tY = cLocalY - r * edge.m_normal.y;
+				x2.x = xf1.position.x + (tMat.col1.x * tX + tMat.col2.x * tY);
+				x2.y = xf1.position.y + (tMat.col1.y * tX + tMat.col2.y * tY);
+				return dLen - r;
+			} else {
+				x2.x = x1.x;
+				x2.y = x1.y;
+				return 0.0;
+			}
+		}
+	}
+	
+	tX = cWorldX - x1.x;
+	tY = cWorldY - x1.y;
+	dLen = tX * tX + tY * tY;
+	if (dLen > r * r) {
+		dLen = Math.sqrt(dLen);
+		x2.x = cWorldX - r * tX / dLen;
+		x2.y = cWorldY - r * tY / dLen;
+		return dLen - r;
+	} else {
+		x2.x = x1.x;
+		x2.y = x1.y;
+		return 0.0;
+	}
+}
+
 
 
 // GJK is more robust with polygon-vs-point than polygon-vs-circle.
 // So we convert polygon-vs-circle to polygon-vs-point.
 static private var gPoint:b2Point = new b2Point();
-///
+/**
+* */
 static public function DistancePC(
 	x1:b2Vec2, x2:b2Vec2,
 	polygon:b2PolygonShape, xf1:b2XForm,
@@ -530,9 +631,29 @@ static public function Distance(x1:b2Vec2, x2:b2Vec2,
 
 	if (type1 == b2Shape.e_polygonShape && type2 == b2Shape.e_polygonShape)
 	{
-		return DistanceGeneric(x1, x2, shape1 as b2PolygonShape, xf1, shape2 as b2PolygonShape, xf2);
+		return DistanceGeneric(x1, x2, shape1, xf1, shape2, xf2);
 	}
 	
+	if (type1 == b2Shape.e_edgeShape && type2 == b2Shape.e_circleShape)
+	{
+		return DistanceEdgeCircle(x1, x2, shape1 as b2EdgeShape, xf1, shape2 as b2CircleShape, xf2);
+	}
+	
+	if (type1 == b2Shape.e_circleShape && type2 == b2Shape.e_edgeShape)
+	{
+		return DistanceEdgeCircle(x2, x1, shape2 as b2EdgeShape, xf2, shape1 as b2CircleShape, xf1);
+	}
+
+	if (type1 == b2Shape.e_polygonShape && type2 == b2Shape.e_edgeShape)
+	{
+		return DistanceGeneric(x2, x1, shape2, xf2, shape1, xf1);
+	}
+
+	if (type1 == b2Shape.e_edgeShape && type2 == b2Shape.e_polygonShape)
+	{
+		return DistanceGeneric(x1, x2, shape1, xf1, shape2, xf2);
+	}
+
 	return 0.0;
 }
 

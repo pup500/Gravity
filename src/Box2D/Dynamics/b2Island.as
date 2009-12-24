@@ -25,6 +25,9 @@ import Box2D.Dynamics.Contacts.*;
 import Box2D.Dynamics.Joints.*;
 import Box2D.Collision.*;
 
+import Box2D.Common.b2internal;
+use namespace b2internal;
+
 
 /*
 Position Correction Notes
@@ -106,6 +109,9 @@ Baumgarte method in performance critical scenarios.
 */
 
 
+/**
+* @private
+*/
 public class b2Island
 {
 	public function b2Island(
@@ -142,8 +148,6 @@ public class b2Island
 		for (i = 0; i < jointCapacity; i++)
 			m_joints[i] = null;
 		
-		m_positionIterationCount = 0;
-		
 	}
 	//~b2Island();
 	
@@ -154,9 +158,10 @@ public class b2Island
 		m_jointCount = 0;
 	}
 
-	public function Solve(step:b2TimeStep, gravity:b2Vec2, correctPositions:Boolean, allowSleep:Boolean) : void
+	public function Solve(step:b2TimeStep, gravity:b2Vec2, allowSleep:Boolean) : void
 	{
 		var i:int;
+		var j:int;
 		var b:b2Body;
 		var joint:b2Joint;
 		
@@ -222,15 +227,15 @@ public class b2Island
 		}
 		
 		// Solve velocity constraints.
-		for (i = 0; i < step.maxIterations; ++i)
-		{
-			contactSolver.SolveVelocityConstraints();
-			
-			for (var j:int = 0; j < m_jointCount; ++j)
+		for (i = 0; i < step.velocityIterations; ++i)
+		{	
+			for (j = 0; j < m_jointCount; ++j)
 			{
 				joint = m_joints[j];
 				joint.SolveVelocityConstraints(step);
 			}
+			
+			contactSolver.SolveVelocityConstraints();
 		}
 		
 		// Post-solve (store impulses for warm starting).
@@ -260,33 +265,22 @@ public class b2Island
 			// Note: shapes are synchronized later.
 		}
 		
-		if (correctPositions)
+		// Iterate over constraints.
+		for (i = 0; i < step.positionIterations; ++i)
 		{
-			// Initialize position constraints.
-			// Contacts don't need initialization.
-			for (i = 0; i < m_jointCount; ++i)
+			var contactsOkay:Boolean = contactSolver.SolvePositionConstraints(b2Settings.b2_contactBaumgarte);
+			
+			var jointsOkay:Boolean = true;
+			for (j = 0; j < m_jointCount; ++j)
 			{
-				joint = m_joints[i];
-				joint.InitPositionConstraints();
+				joint = m_joints[j];
+				var jointOkay:Boolean = joint.SolvePositionConstraints(b2Settings.b2_contactBaumgarte);
+				jointsOkay = jointsOkay && jointOkay;
 			}
 			
-			// Iterate over constraints.
-			for (m_positionIterationCount = 0; m_positionIterationCount < step.maxIterations; ++m_positionIterationCount)
+			if (contactsOkay && jointsOkay)
 			{
-				var contactsOkay:Boolean = contactSolver.SolvePositionConstraints(b2Settings.b2_contactBaumgarte);
-				
-				var jointsOkay:Boolean = true;
-				for (i = 0; i < m_jointCount; ++i)
-				{
-					joint = m_joints[i];
-					var jointOkay:Boolean = joint.SolvePositionConstraints();
-					jointsOkay = jointsOkay && jointOkay;
-				}
-				
-				if (contactsOkay && jointsOkay)
-				{
-					break;
-				}
+				break;
 			}
 		}
 		
@@ -344,14 +338,28 @@ public class b2Island
 	public function SolveTOI(subStep:b2TimeStep) : void
 	{
 		var i:int;
+		var j:int;
 		var contactSolver:b2ContactSolver = new b2ContactSolver(subStep, m_contacts, m_contactCount, m_allocator);
 		
 		// No warm starting needed for TOI events.
 		
+		// For joints, initialize with the last full step warm starting values
+		subStep.warmStarting = true;
+		
+		for (i = 0; i < m_jointCount;++i)
+		{
+			m_joints[i].InitVelocityConstraints(subStep);
+		}
+		
+		
 		// Solve velocity constraints.
-		for (i = 0; i < subStep.maxIterations; ++i)
+		for (i = 0; i < subStep.velocityIterations; ++i)
 		{
 			contactSolver.SolveVelocityConstraints();
+			for (j = 0; j < m_jointCount;++j)
+			{
+				m_joints[j].InitVelocityConstraints(subStep);
+			}
 		}
 		
 		// Don't store the TOI contact forces for warm starting
@@ -382,15 +390,21 @@ public class b2Island
 		
 		// Solve position constraints.
 		var k_toiBaumgarte:Number = 0.75;
-		for (i = 0; i < subStep.maxIterations; ++i)
+		for (i = 0; i < subStep.positionIterations; ++i)
 		{
 			var contactsOkay:Boolean = contactSolver.SolvePositionConstraints(k_toiBaumgarte);
-			if (contactsOkay)
+			var jointsOkay:Boolean = true;
+			for (j = 0; j < m_jointCount;++j)
+			{
+				var jointOkay:Boolean = m_joints[j].SolvePositionConstraints(b2Settings.b2_contactBaumgarte);
+				jointsOkay = jointsOkay && jointOkay;
+			}
+			
+			if (contactsOkay && jointsOkay)
 			{
 				break;
 			}
 		}
-		
 		Report(contactSolver.m_constraints);
 	}
 
@@ -440,6 +454,7 @@ public class b2Island
 	public function AddBody(body:b2Body) : void
 	{
 		//b2Settings.b2Assert(m_bodyCount < m_bodyCapacity);
+		body.m_islandIndex = m_bodyCount;
 		m_bodies[m_bodyCount++] = body;
 	}
 
@@ -455,22 +470,20 @@ public class b2Island
 		m_joints[m_jointCount++] = joint;
 	}
 
-	public var m_allocator:*;
-	public var m_listener:b2ContactListener;
+	private var m_allocator:*;
+	private var m_listener:b2ContactListener;
 
-	public var m_bodies:Array;
-	public var m_contacts:Array;
-	public var m_joints:Array;
+	b2internal var m_bodies:Array;
+	b2internal var m_contacts:Array;
+	b2internal var m_joints:Array;
 
-	public var m_bodyCount:int;
-	public var m_jointCount:int;
-	public var m_contactCount:int;
+	b2internal var m_bodyCount:int;
+	b2internal var m_jointCount:int;
+	b2internal var m_contactCount:int;
 
-	public var m_bodyCapacity:int;
-	public var m_contactCapacity:int;
-	public var m_jointCapacity:int;
-
-	public var m_positionIterationCount:int;
+	private var m_bodyCapacity:int;
+	b2internal var m_contactCapacity:int;
+	b2internal var m_jointCapacity:int;
 	
 };
 

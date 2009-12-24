@@ -23,56 +23,82 @@ import Box2D.Common.Math.*;
 import Box2D.Common.*;
 import Box2D.Dynamics.*;
 
+import Box2D.Common.b2internal;
+use namespace b2internal;
 
-/// The base joint class. Joints are used to constraint two bodies together in
-/// various fashions. Some joints also feature limits and motors.
+
+/**
+* The base joint class. Joints are used to constraint two bodies together in
+* various fashions. Some joints also feature limits and motors.
+* @see b2JointDef
+*/
 public class b2Joint
 {
-	/// Get the type of the concrete joint.
+	/**
+	* Get the type of the concrete joint.
+	*/
 	public function GetType():int{
 		return m_type;
 	}
 	
-	/// Get the anchor point on body1 in world coordinates.
+	/**
+	* Get the anchor point on body1 in world coordinates.
+	*/
 	public virtual function GetAnchor1():b2Vec2{return null};
-	/// Get the anchor point on body2 in world coordinates.
+	/**
+	* Get the anchor point on body2 in world coordinates.
+	*/
 	public virtual function GetAnchor2():b2Vec2{return null};
 	
-	/// Get the reaction force on body2 at the joint anchor.
-	public virtual function GetReactionForce():b2Vec2 {return null};
-	/// Get the reaction torque on body2.
-	public virtual function GetReactionTorque():Number {return 0.0}
+	/**
+	* Get the reaction force on body2 at the joint anchor.
+	*/
+	public virtual function GetReactionForce(inv_dt:Number):b2Vec2 {return null};
+	/**
+	* Get the reaction torque on body2.
+	*/
+	public virtual function GetReactionTorque(inv_dt:Number):Number {return 0.0}
 	
-	/// Get the first body attached to this joint.
+	/**
+	* Get the first body attached to this joint.
+	*/
 	public function GetBody1():b2Body
 	{
 		return m_body1;
 	}
 	
-	/// Get the second body attached to this joint.
+	/**
+	* Get the second body attached to this joint.
+	*/
 	public function GetBody2():b2Body
 	{
 		return m_body2;
 	}
 
-	/// Get the next joint the world joint list.
+	/**
+	* Get the next joint the world joint list.
+	*/
 	public function GetNext():b2Joint{
 		return m_next;
 	}
 
-	/// Get the user data pointer.
+	/**
+	* Get the user data pointer.
+	*/
 	public function GetUserData():*{
 		return m_userData;
 	}
 
-	/// Set the user data pointer.
+	/**
+	* Set the user data pointer.
+	*/
 	public function SetUserData(data:*):void{
 		m_userData = data;
 	}
 
 	//--------------- Internals Below -------------------
 
-	static public function Create(def:b2JointDef, allocator:*):b2Joint{
+	static b2internal function Create(def:b2JointDef, allocator:*):b2Joint{
 		var joint:b2Joint = null;
 		
 		switch (def.type)
@@ -119,6 +145,13 @@ public class b2Joint
 			}
 			break;
 		
+		case e_lineJoint:
+			{
+				//void* mem = allocator->Allocate(sizeof(b2LineJoint));
+				joint = new b2LineJoint(def as b2LineJointDef);
+			}
+			break;
+			
 		default:
 			//b2Settings.b2Assert(false);
 			break;
@@ -127,7 +160,7 @@ public class b2Joint
 		return joint;
 	}
 	
-	static public function Destroy(joint:b2Joint, allocator:*) : void{
+	static b2internal function Destroy(joint:b2Joint, allocator:*) : void{
 		/*joint->~b2Joint();
 		switch (joint.m_type)
 		{
@@ -155,12 +188,17 @@ public class b2Joint
 			allocator->Free(joint, sizeof(b2GearJoint));
 			break;
 		
+		case e_lineJoint:
+			allocator->Free(joint, sizeof(b2LineJoint));
+			break;
+		
 		default:
 			b2Assert(false);
 			break;
 		}*/
 	}
 
+	/** @private */
 	public function b2Joint(def:b2JointDef){
 		m_type = def.type;
 		m_prev = null;
@@ -173,45 +211,57 @@ public class b2Joint
 	}
 	//virtual ~b2Joint() {}
 
-	public virtual function InitVelocityConstraints(step:b2TimeStep) : void{};
-	public virtual function SolveVelocityConstraints(step:b2TimeStep) : void{};
+	b2internal virtual function InitVelocityConstraints(step:b2TimeStep) : void{};
+	b2internal virtual function SolveVelocityConstraints(step:b2TimeStep) : void{};
 
 	// This returns true if the position errors are within tolerance.
-	public virtual function InitPositionConstraints() : void{};
-	public virtual function SolvePositionConstraints():Boolean{return false};
-
-	public var m_type:int;
-	public var m_prev:b2Joint;
-	public var m_next:b2Joint;
-	public var m_node1:b2JointEdge = new b2JointEdge();
-	public var m_node2:b2JointEdge = new b2JointEdge();
-	public var m_body1:b2Body;
-	public var m_body2:b2Body;
-
-	public var m_inv_dt:Number;
-
-	public var m_islandFlag:Boolean;
-	public var m_collideConnected:Boolean;
-
-	public var m_userData:*;
+	b2internal virtual function SolvePositionConstraints(baumgarte:Number):Boolean { return false };
 	
+	b2internal function ComputeXForm(xf:b2XForm, center:b2Vec2, localCenter:b2Vec2, angle:Number):void
+	{
+		xf.R.Set(angle);
+		//xf->position = center - b2Mul(xf->R, localCenter);
+		xf.position.SetV(b2Math.SubtractVV(center, b2Math.b2MulMV(xf.R, localCenter)));
+	}
+
+	b2internal var m_type:int;
+	b2internal var m_prev:b2Joint;
+	b2internal var m_next:b2Joint;
+	b2internal var m_node1:b2JointEdge = new b2JointEdge();
+	b2internal var m_node2:b2JointEdge = new b2JointEdge();
+	b2internal var m_body1:b2Body;
+	b2internal var m_body2:b2Body;
+
+	b2internal var m_islandFlag:Boolean;
+	b2internal var m_collideConnected:Boolean;
+
+	private var m_userData:*;
+	
+	// Cache here per time step to reduce cache misses.
+	b2internal var m_localCenter1:b2Vec2 = new b2Vec2();
+	b2internal var m_localCenter2:b2Vec2 = new b2Vec2();
+	b2internal var m_invMass1:Number;
+	b2internal var m_invMass2:Number;
+	b2internal var m_invI1:Number;
+	b2internal var m_invI2:Number;
 	
 	// ENUMS
 	
 	// enum b2JointType
-	static public const e_unknownJoint:int = 0;
-	static public const e_revoluteJoint:int = 1;
-	static public const e_prismaticJoint:int = 2;
-	static public const e_distanceJoint:int = 3;
-	static public const e_pulleyJoint:int = 4;
-	static public const e_mouseJoint:int = 5;
-	static public const e_gearJoint:int = 6;
+	static b2internal const e_unknownJoint:int = 0;
+	static b2internal const e_revoluteJoint:int = 1;
+	static b2internal const e_prismaticJoint:int = 2;
+	static b2internal const e_distanceJoint:int = 3;
+	static b2internal const e_pulleyJoint:int = 4;
+	static b2internal const e_mouseJoint:int = 5;
+	static b2internal const e_gearJoint:int = 6;
+	static b2internal const e_lineJoint:int = 7;
 
 	// enum b2LimitState
-	static public const e_inactiveLimit:int = 0;
-	static public const e_atLowerLimit:int = 1;
-	static public const e_atUpperLimit:int = 2;
-	static public const e_equalLimits:int = 3;
+	static b2internal const e_inactiveLimit:int = 0;
+	static b2internal const e_atLowerLimit:int = 1;
+	static b2internal const e_atUpperLimit:int = 2;
+	static b2internal const e_equalLimits:int = 3;
 	
 };
 

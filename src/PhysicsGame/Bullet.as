@@ -90,7 +90,7 @@
 			old.x = x;
 			old.y = y;
 			
-			final_body.m_linearVelocity.SetZero();
+			final_body.GetLinearVelocity().SetZero();
 			if(onScreen()) FlxG.play(SndHit);
 			dead = true;
 			play("poof");
@@ -112,7 +112,7 @@
 			body.position.Set(X, Y);
 			createPhysBody(_world);
 			final_body.SetBullet(true);
-			final_body.m_linearVelocity.Set(VelocityX, VelocityY);
+			final_body.GetLinearVelocity().Set(VelocityX, VelocityY);
 			
 			play("idle");
 			FlxG.play(SndShoot);

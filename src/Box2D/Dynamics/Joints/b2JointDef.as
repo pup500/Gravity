@@ -22,8 +22,14 @@ package Box2D.Dynamics.Joints{
 import Box2D.Common.Math.*;
 import Box2D.Dynamics.*;
 
+import Box2D.Common.b2internal;
+use namespace b2internal;
 
-/// Joint definitions are used to construct joints.
+
+/**
+* Joint definitions are used to construct joints.
+* @see b2Joint
+*/
 public class b2JointDef
 {
 	
@@ -36,15 +42,25 @@ public class b2JointDef
 		collideConnected = false;
 	}
 
-	/// The joint type is set automatically for concrete joint types.
+	/**
+	* The joint type is set automatically for concrete joint types.
+	*/
 	public var type:int;
-	/// Use this to attach application specific data to your joints.
+	/**
+	* Use this to attach application specific data to your joints.
+	*/
 	public var userData:*;
-	/// The first attached body.
+	/**
+	* The first attached body.
+	*/
 	public var body1:b2Body;
-	/// The second attached body.
+	/**
+	* The second attached body.
+	*/
 	public var body2:b2Body;
-	/// Set this flag to true if the attached bodies should collide.
+	/**
+	* Set this flag to true if the attached bodies should collide.
+	*/
 	public var collideConnected:Boolean;
 	
 }

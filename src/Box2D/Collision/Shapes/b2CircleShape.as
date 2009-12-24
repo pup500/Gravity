@@ -26,11 +26,20 @@ import Box2D.Collision.Shapes.*;
 import Box2D.Dynamics.*;
 import Box2D.Collision.*;
 
+import Box2D.Common.b2internal;
+use namespace b2internal;
 
 
+
+/**
+* A circle shape.
+* @see b2CircleDef
+*/
 public class b2CircleShape extends b2Shape
 {
-	/// @see b2Shape::TestPoint
+	/**
+	* @inheritDoc
+	*/
 	public override function TestPoint(transform:b2XForm, p:b2Vec2) : Boolean{
 		//b2Vec2 center = transform.position + b2Mul(transform.R, m_localPosition);
 		var tMat:b2Mat22 = transform.R;
@@ -43,17 +52,19 @@ public class b2CircleShape extends b2Shape
 		return (dX*dX + dY*dY) <= m_radius * m_radius;
 	}
 
-	/// @see b2Shape::TestSegment
+	/**
+	* @inheritDoc
+	*/
 	public override function TestSegment(	transform:b2XForm,
 						lambda:Array, // float pointer
 						normal:b2Vec2, // pointer
 						segment:b2Segment,
-						maxLambda:Number) :Boolean
+						maxLambda:Number) :int
 	{
 		//b2Vec2 position = transform.position + b2Mul(transform.R, m_localPosition);
 		var tMat:b2Mat22 = transform.R;
 		var positionX:Number = transform.position.x + (tMat.col1.x * m_localPosition.x + tMat.col2.x * m_localPosition.y);
-		var positionY:Number = transform.position.x + (tMat.col1.y * m_localPosition.x + tMat.col2.y * m_localPosition.y);
+		var positionY:Number = transform.position.y + (tMat.col1.y * m_localPosition.x + tMat.col2.y * m_localPosition.y);
 		
 		//b2Vec2 s = segment.p1 - position;
 		var sX:Number = segment.p1.x - positionX;
@@ -64,7 +75,8 @@ public class b2CircleShape extends b2Shape
 		// Does the segment start inside the circle?
 		if (b < 0.0)
 		{
-			return false;
+			lambda[0]=0;
+			return e_startsInsideCollide;
 		}
 		
 		// Solve quadratic equation.
@@ -80,7 +92,7 @@ public class b2CircleShape extends b2Shape
 		// Check for negative discriminant and short segment.
 		if (sigma < 0.0 || rr < Number.MIN_VALUE)
 		{
-			return false;
+			return e_missCollide;
 		}
 		
 		// Find the point of intersection of the line with the circle.
@@ -96,13 +108,15 @@ public class b2CircleShape extends b2Shape
 			normal.x = sX + a * rX;
 			normal.y = sY + a * rY;
 			normal.Normalize();
-			return true;
+			return e_hitCollide;
 		}
 		
-		return false;
+		return e_missCollide;
 	}
 
-	/// @see b2Shape::ComputeAABB
+	/**
+	* @inheritDoc
+	*/
 	public override function ComputeAABB(aabb:b2AABB, transform:b2XForm) : void{
 		//b2Vec2 p = transform.position + b2Mul(transform.R, m_localPosition);
 		var tMat:b2Mat22 = transform.R;
@@ -112,7 +126,9 @@ public class b2CircleShape extends b2Shape
 		aabb.upperBound.Set(pX + m_radius, pY + m_radius);
 	}
 
-	/// @see b2Shape::ComputeSweptAABB
+	/**
+	* @inheritDoc
+	*/
 	public override function ComputeSweptAABB(	aabb:b2AABB,
 							transform1:b2XForm,
 							transform2:b2XForm) : void
@@ -136,7 +152,9 @@ public class b2CircleShape extends b2Shape
 		aabb.upperBound.Set((p1X > p2X ? p1X : p2X) + m_radius, (p1Y > p2Y ? p1Y : p2Y) + m_radius);
 	}
 
-	/// @see b2Shape::ComputeMass
+	/**
+	* @inheritDoc
+	*/
 	public override function ComputeMass(massData:b2MassData) : void{
 		massData.mass = m_density * b2Settings.b2_pi * m_radius * m_radius;
 		massData.center.SetV(m_localPosition);
@@ -146,18 +164,25 @@ public class b2CircleShape extends b2Shape
 		massData.I = massData.mass * (0.5 * m_radius * m_radius + (m_localPosition.x*m_localPosition.x + m_localPosition.y*m_localPosition.y));
 	}
 
-	/// Get the local position of this circle in its parent body.
+	/**
+	* Get the local position of this circle in its parent body.
+	*/
 	public function GetLocalPosition() : b2Vec2{
 		return m_localPosition;
 	}
 
-	/// Get the radius of this circle.
+	/**
+	* Get the radius of this circle.
+	*/
 	public function GetRadius() : Number{
 		return m_radius;
 	}
 
 	//--------------- Internals Below -------------------
 
+	/**
+	* @private
+	*/
 	public function b2CircleShape(def:b2ShapeDef){
 		super(def);
 		
@@ -170,7 +195,7 @@ public class b2CircleShape extends b2Shape
 		
 	}
 
-	public override function UpdateSweepRadius(center:b2Vec2) : void{
+	b2internal override function UpdateSweepRadius(center:b2Vec2) : void{
 		// Update the sweep radius (maximum radius) as measured from
 		// a local center point.
 		//b2Vec2 d = m_localPosition - center;
@@ -182,8 +207,8 @@ public class b2CircleShape extends b2Shape
 	}
 
 	// Local position in parent body
-	public var m_localPosition:b2Vec2 = new b2Vec2();
-	public var m_radius:Number;
+	b2internal var m_localPosition:b2Vec2 = new b2Vec2();
+	b2internal var m_radius:Number;
 	
 };
 

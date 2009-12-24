@@ -16,9 +16,12 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-package Box2D.Collision{
+package Box2D.Collision {
 	
 	
+/**
+* @private
+*/
 public class b2BoundValues{
 	public var lowerValues:Array = [0,0];
 	public var upperValues:Array = [0,0];

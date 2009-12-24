@@ -1,6 +1,7 @@
 package PhysicsGame
 {
 	import Box2D.Common.Math.b2Vec2;
+	import Box2D.Dynamics.b2Body;
 	
 	import flash.events.TimerEvent;
 	import flash.geom.Point;
@@ -88,12 +89,12 @@ package PhysicsGame
 			if(FlxG.keys.A)
 			{
 				facing = LEFT;
-				final_body.m_linearVelocity.x = -20;
+				final_body.GetLinearVelocity().x = -20;
 			}
 			else if(FlxG.keys.D)
 			{
 				facing = RIGHT;
-				final_body.m_linearVelocity.x = 20;
+				final_body.GetLinearVelocity().x = 20;
 			}
 
 			//trace("vel" + final_body.m_linearVelocity.y);
@@ -119,7 +120,7 @@ package PhysicsGame
 			}
 			
 			//Make it so player doesn't rotate.
-			final_body.m_sweep.a = 0;
+			//final_body.m_sweep.a = 0;
 			
 			//AIMING
 			_up = false;
@@ -128,14 +129,14 @@ package PhysicsGame
 			else if(FlxG.keys.S && velocity.y) _down = true;
 			
 			//ANIMATION
-			if(Math.abs(final_body.m_linearVelocity.y) > 0.1)
+			if(Math.abs(final_body.GetLinearVelocity().y) > 0.1)
 			{
 				if(_up) play("jump_up");
 				else if(_down) play("jump_down");
 				else play("jump");
 				//trace("jumping");
 			}
-			else if(Math.abs(final_body.m_linearVelocity.x) < 0.1)
+			else if(Math.abs(final_body.GetLinearVelocity().x) < 0.1)
 			{
 				if(_up) play("idle_up");
 				else play("idle");

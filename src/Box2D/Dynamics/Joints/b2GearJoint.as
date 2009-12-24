@@ -24,36 +24,46 @@ import Box2D.Common.Math.*;
 import Box2D.Common.*;
 import Box2D.Dynamics.*;
 
+import Box2D.Common.b2internal;
+use namespace b2internal;
 
 
 
-/// A gear joint is used to connect two joints together. Either joint
-/// can be a revolute or prismatic joint. You specify a gear ratio
-/// to bind the motions together:
-/// coordinate1 + ratio * coordinate2 = constant
-/// The ratio can be negative or positive. If one joint is a revolute joint
-/// and the other joint is a prismatic joint, then the ratio will have units
-/// of length or units of 1/length.
-/// @warning The revolute and prismatic joints must be attached to
-/// fixed bodies (which must be body1 on those joints).
+
+/**
+* A gear joint is used to connect two joints together. Either joint
+* can be a revolute or prismatic joint. You specify a gear ratio
+* to bind the motions together:
+* coordinate1 + ratio * coordinate2 = constant
+* The ratio can be negative or positive. If one joint is a revolute joint
+* and the other joint is a prismatic joint, then the ratio will have units
+* of length or units of 1/length.
+* @warning The revolute and prismatic joints must be attached to
+* fixed bodies (which must be body1 on those joints).
+* @see b2GearJointDef
+*/
 
 public class b2GearJoint extends b2Joint
 {
+	/** @inheritDoc */
 	public override function GetAnchor1():b2Vec2{
 		//return m_body1->GetWorldPoint(m_localAnchor1);
 		return m_body1.GetWorldPoint(m_localAnchor1);
 	}
+	/** @inheritDoc */
 	public override function GetAnchor2():b2Vec2{
 		//return m_body2->GetWorldPoint(m_localAnchor2);
 		return m_body2.GetWorldPoint(m_localAnchor2);
 	}
-
-	public override function GetReactionForce():b2Vec2{
+	/** @inheritDoc */
+	public override function GetReactionForce(inv_dt:Number):b2Vec2{
 		// TODO_ERIN not tested
-		var F:b2Vec2 = new b2Vec2(m_force * m_J.linear2.x, m_force * m_J.linear2.y);
-		return F;
+		// b2Vec2 P = m_impulse * m_J.linear2;
+		//return inv_dt * P;
+		return new b2Vec2(inv_dt * m_impulse * m_J.linear2.x, inv_dt * m_impulse * m_J.linear2.y);
 	}
-	public override function GetReactionTorque():Number{
+	/** @inheritDoc */
+	public override function GetReactionTorque(inv_dt:Number):Number{
 		// TODO_ERIN not tested
 		//b2Vec2 r = b2Mul(m_body2->m_xf.R, m_localAnchor2 - m_body2->GetLocalCenter());
 		var tMat:b2Mat22 = m_body2.m_xf.R;
@@ -62,18 +72,24 @@ public class b2GearJoint extends b2Joint
 		var tX:Number = tMat.col1.x * rX + tMat.col2.x * rY;
 		rY = tMat.col1.y * rX + tMat.col2.y * rY;
 		rX = tX;
-		//b2Vec2 F = m_force * m_J.linear2;
-		//float32 T = m_force * m_J.angular2 - b2Cross(r, F);
-		tX = m_force * m_J.angular2 - (rX * (m_force * m_J.linear2.y) - rY * (m_force * m_J.linear2.x));
-		return tX;
+		//b2Vec2 P = m_impulse * m_J.linear2;
+		var PX:Number = m_impulse * m_J.linear2.x;
+		var PY:Number = m_impulse * m_J.linear2.y;
+		//float32 L = m_impulse * m_J.angular2 - b2Cross(r, P);
+		//return inv_dt * L;
+		return inv_dt * (m_impulse * m_J.angular2 - rX * PY + rY * PX);
 	}
 
+	/**
+	 * Get the gear ratio.
+	 */
 	public function GetRatio():Number{
 		return m_ratio;
 	}
 
 	//--------------- Internals Below -------------------
 
+	/** @private */
 	public function b2GearJoint(def:b2GearJointDef){
 		// parent constructor
 		super(def);
@@ -132,11 +148,11 @@ public class b2GearJoint extends b2Joint
 		
 		m_constant = coordinate1 + m_ratio * coordinate2;
 		
-		m_force = 0.0;
+		m_impulse = 0.0;
 		
 	}
 
-	public override function InitVelocityConstraints(step:b2TimeStep) : void{
+	b2internal override function InitVelocityConstraints(step:b2TimeStep) : void{
 		var g1:b2Body = m_ground1;
 		var g2:b2Body = m_ground2;
 		var b1:b2Body = m_body1;
@@ -218,43 +234,46 @@ public class b2GearJoint extends b2Joint
 		if (step.warmStarting)
 		{
 			// Warm starting.
-			var P:Number = step.dt * m_force;
-			//b1.m_linearVelocity += b1.m_invMass * P * m_J.linear1;
-			b1.m_linearVelocity.x += b1.m_invMass * P * m_J.linear1.x;
-			b1.m_linearVelocity.y += b1.m_invMass * P * m_J.linear1.y;
-			b1.m_angularVelocity += b1.m_invI * P * m_J.angular1;
-			//b2.m_linearVelocity += b2.m_invMass * P * m_J.linear2;
-			b2.m_linearVelocity.x += b2.m_invMass * P * m_J.linear2.x;
-			b2.m_linearVelocity.y += b2.m_invMass * P * m_J.linear2.y;
-			b2.m_angularVelocity += b2.m_invI * P * m_J.angular2;
+			//b1.m_linearVelocity += b1.m_invMass * m_impulse * m_J.linear1;
+			b1.m_linearVelocity.x += b1.m_invMass * m_impulse * m_J.linear1.x;
+			b1.m_linearVelocity.y += b1.m_invMass * m_impulse * m_J.linear1.y;
+			b1.m_angularVelocity += b1.m_invI * m_impulse * m_J.angular1;
+			//b2.m_linearVelocity += b2.m_invMass * m_impulse * m_J.linear2;
+			b2.m_linearVelocity.x += b2.m_invMass * m_impulse * m_J.linear2.x;
+			b2.m_linearVelocity.y += b2.m_invMass * m_impulse * m_J.linear2.y;
+			b2.m_angularVelocity += b2.m_invI * m_impulse * m_J.angular2;
 		}
 		else
 		{
-			m_force = 0.0;
+			m_impulse = 0.0;
 		}
 	}
 	
-	
-	public override function SolveVelocityConstraints(step:b2TimeStep): void{
+	b2internal override function SolveVelocityConstraints(step:b2TimeStep): void
+	{
+		//B2_NOT_USED(step);
+		
 		var b1:b2Body = m_body1;
 		var b2:b2Body = m_body2;
 		
 		var Cdot:Number = m_J.Compute(	b1.m_linearVelocity, b1.m_angularVelocity,
 										b2.m_linearVelocity, b2.m_angularVelocity);
 		
-		var force:Number = -step.inv_dt * m_mass * Cdot;
-		m_force += force;
+		var impulse:Number = - m_mass * Cdot;
+		m_impulse += impulse;
 		
-		var P:Number = step.dt * force;
-		b1.m_linearVelocity.x += b1.m_invMass * P * m_J.linear1.x;
-		b1.m_linearVelocity.y += b1.m_invMass * P * m_J.linear1.y;
-		b1.m_angularVelocity  += b1.m_invI * P * m_J.angular1;
-		b2.m_linearVelocity.x += b2.m_invMass * P * m_J.linear2.x;
-		b2.m_linearVelocity.y += b2.m_invMass * P * m_J.linear2.y;
-		b2.m_angularVelocity  += b2.m_invI * P * m_J.angular2;
+		b1.m_linearVelocity.x += b1.m_invMass * impulse * m_J.linear1.x;
+		b1.m_linearVelocity.y += b1.m_invMass * impulse * m_J.linear1.y;
+		b1.m_angularVelocity  += b1.m_invI * impulse * m_J.angular1;
+		b2.m_linearVelocity.x += b2.m_invMass * impulse * m_J.linear2.x;
+		b2.m_linearVelocity.y += b2.m_invMass * impulse * m_J.linear2.y;
+		b2.m_angularVelocity  += b2.m_invI * impulse * m_J.angular2;
 	}
 	
-	public override function SolvePositionConstraints():Boolean{
+	b2internal override function SolvePositionConstraints(baumgarte:Number):Boolean
+	{
+		//B2_NOT_USED(baumgarte);
+		
 		var linearError:Number = 0.0;
 		
 		var b1:b2Body = m_body1;
@@ -294,36 +313,37 @@ public class b2GearJoint extends b2Joint
 		b1.SynchronizeTransform();
 		b2.SynchronizeTransform();
 		
+		// TODO_ERIN not implemented
 		return linearError < b2Settings.b2_linearSlop;
 	}
 
-	public var m_ground1:b2Body;
-	public var m_ground2:b2Body;
+	private var m_ground1:b2Body;
+	private var m_ground2:b2Body;
 
 	// One of these is NULL.
-	public var m_revolute1:b2RevoluteJoint;
-	public var m_prismatic1:b2PrismaticJoint;
+	private var m_revolute1:b2RevoluteJoint;
+	private var m_prismatic1:b2PrismaticJoint;
 
 	// One of these is NULL.
-	public var m_revolute2:b2RevoluteJoint;
-	public var m_prismatic2:b2PrismaticJoint;
+	private var m_revolute2:b2RevoluteJoint;
+	private var m_prismatic2:b2PrismaticJoint;
 
-	public var m_groundAnchor1:b2Vec2 = new b2Vec2();
-	public var m_groundAnchor2:b2Vec2 = new b2Vec2();
+	private var m_groundAnchor1:b2Vec2 = new b2Vec2();
+	private var m_groundAnchor2:b2Vec2 = new b2Vec2();
 
-	public var m_localAnchor1:b2Vec2 = new b2Vec2();
-	public var m_localAnchor2:b2Vec2 = new b2Vec2();
+	private var m_localAnchor1:b2Vec2 = new b2Vec2();
+	private var m_localAnchor2:b2Vec2 = new b2Vec2();
 
-	public var m_J:b2Jacobian = new b2Jacobian();
+	private var m_J:b2Jacobian = new b2Jacobian();
 
-	public var m_constant:Number;
-	public var m_ratio:Number;
+	private var m_constant:Number;
+	private var m_ratio:Number;
 
 	// Effective mass
-	public var m_mass:Number;
+	private var m_mass:Number;
 
 	// Impulse for accumulation/warm starting.
-	public var m_force:Number;
+	private var m_impulse:Number;
 };
 
 

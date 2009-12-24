@@ -22,6 +22,9 @@ import Box2D.Common.Math.*;
 import Box2D.Common.*;
 import Box2D.Dynamics.*;
 
+import Box2D.Common.b2internal;
+use namespace b2internal;
+
 // 1-D constrained system
 // m (v2 - v1) = lambda
 // v2 + (beta/h) * x1 + gamma * lambda = 0, gamma has units of inverse mass.
@@ -37,14 +40,41 @@ import Box2D.Dynamics.*;
 // K = J * invM * JT
 //   = invMass1 + invI1 * cross(r1, u)^2 + invMass2 + invI2 * cross(r2, u)^2
 
-/// A distance joint constrains two points on two bodies
-/// to remain at a fixed distance from each other. You can view
-/// this as a massless, rigid rod.
-
+/**
+* A distance joint constrains two points on two bodies
+* to remain at a fixed distance from each other. You can view
+* this as a massless, rigid rod.
+* @see b2DistanceJointDef
+*/
 public class b2DistanceJoint extends b2Joint
 {
+	/** @inheritDoc */
+	public override function GetAnchor1():b2Vec2{
+		return m_body1.GetWorldPoint(m_localAnchor1);
+	}
+	/** @inheritDoc */
+	public override function GetAnchor2():b2Vec2{
+		return m_body2.GetWorldPoint(m_localAnchor2);
+	}
+	
+	/** @inheritDoc */
+	public override function GetReactionForce(inv_dt:Number):b2Vec2
+	{
+		//b2Vec2 F = (m_inv_dt * m_impulse) * m_u;
+		//return F;
+		return new b2Vec2(inv_dt * m_impulse * m_u.x, inv_dt * m_impulse * m_u.y);
+	}
+
+	/** @inheritDoc */
+	public override function GetReactionTorque(inv_dt:Number):Number
+	{
+		//B2_NOT_USED(inv_dt);
+		return 0.0;
+	}
+	
 	//--------------- Internals Below -------------------
 
+	/** @private */
 	public function b2DistanceJoint(def:b2DistanceJointDef){
 		super(def);
 		
@@ -62,16 +92,13 @@ public class b2DistanceJoint extends b2Joint
 		m_impulse = 0.0;
 		m_gamma = 0.0;
 		m_bias = 0.0;
-		m_inv_dt = 0.0;
 	}
 
-	public override function InitVelocityConstraints(step:b2TimeStep) : void{
+	b2internal override function InitVelocityConstraints(step:b2TimeStep) : void{
 		
 		var tMat:b2Mat22;
 		var tX:Number;
 		
-		m_inv_dt = step.inv_dt;
-
 		var b1:b2Body = m_body1;
 		var b2:b2Body = m_body2;
 		
@@ -139,7 +166,9 @@ public class b2DistanceJoint extends b2Joint
 		
 		if (step.warmStarting)
 		{
+			// Scale the impulse to support a variable time step
 			m_impulse *= step.dtRatio;
+			
 			//b2Vec2 P = m_impulse * m_u;
 			var PX:Number = m_impulse * m_u.x;
 			var PY:Number = m_impulse * m_u.y;
@@ -162,7 +191,7 @@ public class b2DistanceJoint extends b2Joint
 	
 	
 	
-	public override function SolveVelocityConstraints(step:b2TimeStep): void{
+	b2internal override function SolveVelocityConstraints(step:b2TimeStep): void{
 		
 		var tMat:b2Mat22;
 		
@@ -212,12 +241,15 @@ public class b2DistanceJoint extends b2Joint
 		b2.m_angularVelocity += b2.m_invI * (r2X * PY - r2Y * PX);
 	}
 	
-	public override function SolvePositionConstraints():Boolean{
+	b2internal override function SolvePositionConstraints(baumgarte:Number):Boolean
+	{
+		//B2_NOT_USED(baumgarte);
 		
 		var tMat:b2Mat22;
 		
 		if (m_frequencyHz > 0.0)
 		{
+			// There is no position correction for soft distance constraints
 			return true;
 		}
 		
@@ -275,39 +307,17 @@ public class b2DistanceJoint extends b2Joint
 		return b2Math.b2Abs(C) < b2Settings.b2_linearSlop;
 		
 	}
-	
-	public override function GetAnchor1():b2Vec2{
-		return m_body1.GetWorldPoint(m_localAnchor1);
-	}
-	public override function GetAnchor2():b2Vec2{
-		return m_body2.GetWorldPoint(m_localAnchor2);
-	}
-	
-	public override function GetReactionForce():b2Vec2
-	{
-		//b2Vec2 F = (m_inv_dt * m_impulse) * m_u;
-		var F:b2Vec2 = new b2Vec2();
-		F.SetV(m_u);
-		F.Multiply(m_inv_dt * m_impulse);
-		return F;
-	}
 
-	public override function GetReactionTorque():Number
-	{
-		//NOT_USED(invTimeStep);
-		return 0.0;
-	}
-
-	public var m_localAnchor1:b2Vec2 = new b2Vec2();
-	public var m_localAnchor2:b2Vec2 = new b2Vec2();
-	public var m_u:b2Vec2 = new b2Vec2();
-	public var m_frequencyHz:Number;
-	public var m_dampingRatio:Number;
-	public var m_gamma:Number;
-	public var m_bias:Number;
-	public var m_impulse:Number;
-	public var m_mass:Number;	// effective mass for the constraint.
-	public var m_length:Number;
+	private var m_localAnchor1:b2Vec2 = new b2Vec2();
+	private var m_localAnchor2:b2Vec2 = new b2Vec2();
+	private var m_u:b2Vec2 = new b2Vec2();
+	private var m_frequencyHz:Number;
+	private var m_dampingRatio:Number;
+	private var m_gamma:Number;
+	private var m_bias:Number;
+	private var m_impulse:Number;
+	private var m_mass:Number;	// effective mass for the constraint.
+	private var m_length:Number;
 };
 
 }

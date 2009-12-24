@@ -23,7 +23,9 @@ import Box2D.Common.*;
 import Box2D.Common.Math.*;
 
 
-/// A 2D column vector.
+/**
+* Color for debug drawing. Each value has the range [0,1].
+*/
 
 public class b2Color
 {
@@ -55,7 +57,7 @@ public class b2Color
 	
 	// Color
 	public function get color() : uint{
-		return (_r) | (_g << 8) | (_b << 16);
+		return (_r << 16) | (_g << 8) | (_b);
 	}
 	
 	private var _r:uint = 0;

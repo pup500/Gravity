@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Copyright (c) 2006-2007 Erin Catto http://www.gphysics.com
 *
 * This software is provided 'as-is', without any express or implied
@@ -16,13 +16,39 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-package Box2D.Collision{
+package Box2D.Collision.Shapes{
+
+
+
+import Box2D.Common.Math.*;
+import Box2D.Collision.Shapes.*;
+
+import Box2D.Common.b2internal;
+use namespace b2internal;
+
+
+/**
+* This structure is used to build edge shapes.
+* @see b2EdgeShape
+*/
+public class b2EdgeChainDef extends b2ShapeDef
+{
+	public function b2EdgeChainDef()
+	{
+		type = b2Shape.e_edgeShape;
+		vertexCount = 0;
+		isALoop = true;
+		vertices = [];
+	}
+
+	/** The vertices in local coordinates. */
+	public var vertices: Array;
 	
+	/** The number of vertices in the chain. */
+	public var vertexCount: int;
 	
-public class b2BufferedPair{
-	public var proxyId1:uint;
-	public var proxyId2:uint;
-}
-	
-	
+	/** Whether to create an extra edge between the first and last vertices. */
+	public var isALoop: Boolean;
+};
+
 }

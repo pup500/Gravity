@@ -26,12 +26,20 @@ import Box2D.Collision.Shapes.*;
 import Box2D.Dynamics.*;
 import Box2D.Collision.*;
 
-/// Convex polygon. The vertices must be in CCW order for a right-handed
-/// coordinate system with the z-axis coming out of the screen.
+import Box2D.Common.b2internal;
+use namespace b2internal;
+
+/**
+* Convex polygon. The vertices must be in CCW order for a right-handed
+* coordinate system with the z-axis coming out of the screen.
+* @see b2PolygonDef
+*/
 
 public class b2PolygonShape extends b2Shape
 {
-	/// @see b2Shape::TestPoint
+	/**
+	* @inheritDoc
+	*/
 	public override function TestPoint(xf:b2XForm, p:b2Vec2) : Boolean{
 		var tVec:b2Vec2;
 		
@@ -59,12 +67,14 @@ public class b2PolygonShape extends b2Shape
 		return true;
 	}
 
-	/// @see b2Shape::TestSegment
+	/**
+	* @inheritDoc
+	*/
 	public override function TestSegment( xf:b2XForm,
 		lambda:Array, // float ptr
 		normal:b2Vec2, // ptr
 		segment:b2Segment,
-		maxLambda:Number) : Boolean
+		maxLambda:Number) : int
 	{
 		var lower:Number = 0.0;
 		var upper:Number = maxLambda;
@@ -104,30 +114,39 @@ public class b2PolygonShape extends b2Shape
 			tVec = m_normals[i];
 			var numerator:Number = (tVec.x*tX + tVec.y*tY);
 			//float32 denominator = b2Dot(m_normals[i], d);
-			var denominator:Number = (tVec.x*dX + tVec.y*dY);
+			var denominator:Number = (tVec.x * dX + tVec.y * dY);
 			
-			// Note: we want this predicate without division:
-			// lower < numerator / denominator, where denominator < 0
-			// Since denominator < 0, we have to flip the inequality:
-			// lower < numerator / denominator <==> denominator * lower > numerator.
-			
-			if (denominator < 0.0 && numerator < lower * denominator)
+			if (denominator == 0.0)
 			{
-				// Increase lower.
-				// The segment enters this half-space.
-				lower = numerator / denominator;
-				index = i;
+				if (numerator < 0)
+				{
+					return e_missCollide;
+				}
 			}
-			else if (denominator > 0.0 && numerator < upper * denominator)
+			else
 			{
-				// Decrease upper.
-				// The segment exits this half-space.
-				upper = numerator / denominator;
+				// Note: we want this predicate without division:
+				// lower < numerator / denominator, where denominator < 0
+				// Since denominator < 0, we have to flip the inequality:
+				// lower < numerator / denominator <==> denominator * lower > numerator.
+				if (denominator < 0.0 && numerator < lower * denominator)
+				{
+					// Increase lower.
+					// The segment enters this half-space.
+					lower = numerator / denominator;
+					index = i;
+				}
+				else if (denominator > 0.0 && numerator < upper * denominator)
+				{
+					// Decrease upper.
+					// The segment exits this half-space.
+					upper = numerator / denominator;
+				}
 			}
 			
 			if (upper < lower)
 			{
-				return false;
+				return e_missCollide;
 			}
 		}
 		
@@ -142,16 +161,19 @@ public class b2PolygonShape extends b2Shape
 			tVec = m_normals[index];
 			normal.x = (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
 			normal.y = (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
-			return true;
+			return e_hitCollide;
 		}
 		
-		return false;
+		lambda[0] = 0;
+		return e_startsInsideCollide;
 	}
 
-	/// @see b2Shape::ComputeAABB
+
 	//
 	static private var s_computeMat:b2Mat22 = new b2Mat22();
-	//
+	/**
+	* @inheritDoc
+	*/
 	public override function ComputeAABB(aabb:b2AABB, xf:b2XForm) : void{
 		var tMat:b2Mat22;
 		var tVec:b2Vec2;
@@ -187,11 +209,13 @@ public class b2PolygonShape extends b2Shape
 		aabb.upperBound.Set(positionX + hX, positionY + hY);
 	}
 
-	/// @see b2Shape::ComputeSweptAABB
+
 	//
 	static private var s_sweptAABB1:b2AABB = new b2AABB();
 	static private var s_sweptAABB2:b2AABB = new b2AABB();
-	//
+	/**
+	* @inheritDoc
+	*/
 	public override function ComputeSweptAABB(	aabb:b2AABB,
 		transform1:b2XForm,
 		transform2:b2XForm) : void
@@ -209,10 +233,10 @@ public class b2PolygonShape extends b2Shape
 							(aabb1.upperBound.y > aabb2.upperBound.y ? aabb1.upperBound.y : aabb2.upperBound.y));
 	}
 
-	/// @see b2Shape::ComputeMass
-	//
-	
-	//
+
+	/**
+	* @inheritDoc
+	*/
 	public override function ComputeMass(massData:b2MassData) : void{
 		// Polygon mass, centroid, and inertia.
 		// Let rho be the polygon density in mass per unit area.
@@ -324,52 +348,70 @@ public class b2PolygonShape extends b2Shape
 		massData.I = m_density * I;
 	}
 
-	/// Get the oriented bounding box relative to the parent body.
+	/**
+	* Get the oriented bounding box relative to the parent body.
+	*/
 	public function GetOBB() : b2OBB{
 		return m_obb;
 	}
 
-	/// Get local centroid relative to the parent body.
+	/**
+	* Get local centroid relative to the parent body.
+	*/
 	public function GetCentroid() : b2Vec2{
 		return m_centroid;
 	}
 
-	/// Get the vertex count.
+	/**
+	* Get the vertex count.
+	*/
 	public function GetVertexCount() : int{
 		return m_vertexCount;
 	}
 
-	/// Get the vertices in local coordinates.
+	/**
+	* Get the vertices in local coordinates.
+	*/
 	public function GetVertices() : Array{
 		return m_vertices;
 	}
 
-	/// Get the core vertices in local coordinates. These vertices
-	/// represent a smaller polygon that is used for time of impact
-	/// computations.
+	/**
+	* Get the core vertices in local coordinates. These vertices
+	* represent a smaller polygon that is used for time of impact
+	* computations.
+	*/
 	public function GetCoreVertices() : Array{
 		return m_coreVertices;
 	}
 	
-	/// Get the edge normal vectors. There is one for each vertex.
+	/**
+	* Get the edge normal vectors. There is one for each vertex.
+	*/
 	public function GetNormals() : Array
 	{
 		return m_normals;
 	}
 
-	/// Get the first vertex and apply the supplied transform.
+	/**
+	* Get the first vertex and apply the supplied transform.
+	*/
 	public function GetFirstVertex(xf:b2XForm) : b2Vec2{
 		return b2Math.b2MulX(xf, m_coreVertices[0]);
 	}
 
-	/// Get the centroid and apply the supplied transform.
+	/**
+	* Get the centroid and apply the supplied transform.
+	*/
 	public function Centroid(xf:b2XForm) : b2Vec2{
 		return b2Math.b2MulX(xf, m_centroid);
 	}
 
-	/// Get the support point in the given world direction.
-	/// Use the supplied transform.
 	private var s_supportVec:b2Vec2 = new b2Vec2();
+	/**
+	* Get the support point in the given world direction.
+	* Use the supplied transform.
+	*/
 	public function Support(xf:b2XForm, dX:Number, dY:Number) : b2Vec2{
 		var tVec:b2Vec2;
 		
@@ -406,6 +448,9 @@ public class b2PolygonShape extends b2Shape
 
 	//--------------- Internals Below -------------------
 	
+	/**
+	 * @private
+	 */
 	public function b2PolygonShape(def:b2ShapeDef){
 		super(def);
 		
@@ -521,7 +566,7 @@ public class b2PolygonShape extends b2Shape
 		}
 	}
 
-	public override function UpdateSweepRadius(center:b2Vec2) : void{
+	b2internal override function UpdateSweepRadius(center:b2Vec2) : void{
 		var tVec:b2Vec2;
 		
 		// Update the sweep radius (maximum radius) as measured from
@@ -540,19 +585,24 @@ public class b2PolygonShape extends b2Shape
 	}
 
 	// Local position of the polygon centroid.
-	public var m_centroid:b2Vec2;
+	b2internal var m_centroid:b2Vec2;
 
-	public var m_obb:b2OBB = new b2OBB();
+	private var m_obb:b2OBB = new b2OBB();
 
-	public var m_vertices:Array = new Array(b2Settings.b2_maxPolygonVertices);
-	public var m_normals:Array = new Array(b2Settings.b2_maxPolygonVertices);
-	public var m_coreVertices:Array = new Array(b2Settings.b2_maxPolygonVertices);
+	b2internal var m_vertices:Array = new Array(b2Settings.b2_maxPolygonVertices);
+	b2internal var m_normals:Array = new Array(b2Settings.b2_maxPolygonVertices);
+	private var m_coreVertices:Array = new Array(b2Settings.b2_maxPolygonVertices);
 
-	public var m_vertexCount:int;
+	b2internal var m_vertexCount:int;
 	
 	
 	
-	
+	/**
+	 * Computes the centroid of the given polygon
+	 * @param	vs		array of b2Vec specifying a polygon
+	 * @param	count	length of vs
+	 * @return the polygon centroid
+	 */
 	static public function ComputeCentroid(vs:Array, count:int) : b2Vec2
 	{
 		//b2Settings.b2Assert(count >= 3);
@@ -615,8 +665,11 @@ public class b2PolygonShape extends b2Shape
 		return c;
 	}
 
-	// http://www.geometrictools.com/Documentation/MinimumAreaRectangle.pdf
-	static public function ComputeOBB(obb:b2OBB, vs:Array, count:int) : void
+	/**
+	 * Computes a polygon's OBB
+	 * @see http://www.geometrictools.com/Documentation/MinimumAreaRectangle.pdf
+	 */
+	static b2internal function ComputeOBB(obb:b2OBB, vs:Array, count:int) : void
 	{
 		var i:int;
 		//b2Settings.b2Assert(count <= b2Settings.b2_maxPolygonVertices);

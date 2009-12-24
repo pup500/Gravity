@@ -26,7 +26,6 @@ import Box2D.Dynamics.*;
 import Box2D.Common.b2internal;
 use namespace b2internal;
 
-
 // Linear constraint (point-to-line)
 // d = p2 - p1 = x2 + r2 - x1 - r1
 // C = dot(perp, d)
@@ -34,18 +33,13 @@ use namespace b2internal;
 //      = -dot(perp, v1) - dot(cross(d + r1, perp), w1) + dot(perp, v2) + dot(cross(r2, perp), v2)
 // J = [-perp, -cross(d + r1, perp), perp, cross(r2,perp)]
 //
-// Angular constraint
-// C = a2 - a1 + a_initial
-// Cdot = w2 - w1
-// J = [0 0 -1 0 0 1]
-//
 // K = J * invM * JT
 //
 // J = [-a -s1 a s2]
-//     [0  -1  0  1]
 // a = perp
 // s1 = cross(d + r1, a) = cross(p2 - x1, a)
 // s2 = cross(r2, a) = cross(p2 - x2, a)
+
 
 // Motor/Limit linear constraint
 // C = dot(ax1, d)
@@ -58,7 +52,6 @@ use namespace b2internal;
 //
 // The Jacobian has 3 rows:
 // J = [-uT -s1 uT s2] // linear
-//     [0   -1   0  1] // angular
 //     [-vT -a1 vT a2] // limit
 //
 // u = perp
@@ -81,26 +74,26 @@ use namespace b2internal;
 // f2 = invK * (-Cdot) + f1
 //
 // Clamp accumulated limit impulse.
-// lower: f2(3) = max(f2(3), 0)
-// upper: f2(3) = min(f2(3), 0)
+// lower: f2(2) = max(f2(2), 0)
+// upper: f2(2) = min(f2(2), 0)
 //
-// Solve for correct f2(1:2)
-// K(1:2, 1:2) * f2(1:2) = -Cdot(1:2) - K(1:2,3) * f2(3) + K(1:2,1:3) * f1
-//                       = -Cdot(1:2) - K(1:2,3) * f2(3) + K(1:2,1:2) * f1(1:2) + K(1:2,3) * f1(3)
-// K(1:2, 1:2) * f2(1:2) = -Cdot(1:2) - K(1:2,3) * (f2(3) - f1(3)) + K(1:2,1:2) * f1(1:2)
-// f2(1:2) = invK(1:2,1:2) * (-Cdot(1:2) - K(1:2,3) * (f2(3) - f1(3))) + f1(1:2)
+// Solve for correct f2(1)
+// K(1,1) * f2(1) = -Cdot(1) - K(1,2) * f2(2) + K(1,1:2) * f1
+//                = -Cdot(1) - K(1,2) * f2(2) + K(1,1) * f1(1) + K(1,2) * f1(2)
+// K(1,1) * f2(1) = -Cdot(1) - K(1,2) * (f2(2) - f1(2)) + K(1,1) * f1(1)
+// f2(1) = invK(1,1) * (-Cdot(1) - K(1,2) * (f2(2) - f1(2))) + f1(1)
 //
 // Now compute impulse to be applied:
 // df = f2 - f1
 
 /**
-* A prismatic joint. This joint provides one degree of freedom: translation
-* along an axis fixed in body1. Relative rotation is prevented. You can
-* use a joint limit to restrict the range of motion and a joint motor to
-* drive the motion or to model joint friction.
-* @see b2PrismaticJointDef
-*/
-public class b2PrismaticJoint extends b2Joint
+ * A line joint. This joint provides one degree of freedom: translation
+ * along an axis fixed in body1. You can use a joint limit to restrict
+ * the range of motion and a joint motor to drive the motion or to
+ * model joint friction.
+ * @see b2LineJointDef
+ */
+public class b2LineJoint extends b2Joint
 {
 	/** @inheritDoc */
 	public override function GetAnchor1():b2Vec2{
@@ -113,9 +106,9 @@ public class b2PrismaticJoint extends b2Joint
 	/** @inheritDoc */
 	public override function GetReactionForce(inv_dt:Number) : b2Vec2
 	{
-		//return inv_dt * (m_impulse.x * m_perp + (m_motorImpulse + m_impulse.z) * m_axis);
-		return new b2Vec2(	inv_dt * (m_impulse.x * m_perp.x + (m_motorImpulse + m_impulse.z) * m_axis.x),
-							inv_dt * (m_impulse.x * m_perp.y + (m_motorImpulse + m_impulse.z) * m_axis.y));
+		//return inv_dt * (m_impulse.x * m_perp + (m_motorImpulse + m_impulse.y) * m_axis);
+		return new b2Vec2(	inv_dt * (m_impulse.x * m_perp.x + (m_motorImpulse + m_impulse.y) * m_axis.x),
+							inv_dt * (m_impulse.x * m_perp.y + (m_motorImpulse + m_impulse.y) * m_axis.y));
 	}
 
 	/** @inheritDoc */
@@ -290,7 +283,7 @@ public class b2PrismaticJoint extends b2Joint
 	//--------------- Internals Below -------------------
 
 	/** @private */
-	public function b2PrismaticJoint(def:b2PrismaticJointDef){
+	public function b2LineJoint(def:b2LineJointDef){
 		super(def);
 		
 		var tMat:b2Mat22;
@@ -304,8 +297,6 @@ public class b2PrismaticJoint extends b2Joint
 		//m_localYAxis1 = b2Cross(1.0f, m_localXAxis1);
 		m_localYAxis1.x = -m_localXAxis1.y;
 		m_localYAxis1.y = m_localXAxis1.x;
-		
-		m_refAngle = def.referenceAngle;
 		
 		m_impulse.SetZero();
 		m_motorMass = 0.0;
@@ -329,10 +320,6 @@ public class b2PrismaticJoint extends b2Joint
 		
 		var tMat:b2Mat22;
 		var tX:Number;
-		
-		// You cannot create prismatic joint between bodies that
-		// both have fixed rotation.
-		//b2Settings.b2Assert(b1.m_invI > 0.0 || b2.m_invI > 0.0);
 		
 		m_localCenter1.SetV(b1.GetLocalCenter());
 		m_localCenter2.SetV(b2.GetLocalCenter());
@@ -392,14 +379,9 @@ public class b2PrismaticJoint extends b2Joint
 			var i2:Number = m_invI2;
 			
 			m_K.col1.x = m1 + m2 + i1 * m_s1 * m_s1 + i2 * m_s2 * m_s2;
- 	  	  	m_K.col1.y = i1 * m_s1 + i2 * m_s2;
- 	  	  	m_K.col1.z = i1 * m_s1 * m_a1 + i2 * m_s2 * m_a2;
+ 	  	  	m_K.col1.y = i1 * m_s1 * m_a1 + i2 * m_s2 * m_a2;
 			m_K.col2.x = m_K.col1.y;
- 	  	  	m_K.col2.y = i1 + i2;
- 	  	  	m_K.col2.z = i1 * m_a1 + i2 * m_a2;
-			m_K.col3.x = m_K.col1.z;
-			m_K.col3.y = m_K.col2.z;
- 	  	  	m_K.col3.z = m1 + m2 + i1 * m_a1 * m_a1 + i2 * m_a2 * m_a2; 
+ 	  	  	m_K.col2.y = m1 + m2 + i1 * m_a1 * m_a1 + i2 * m_a2 * m_a2; 
 		}
 		
 		// Compute motor and limit terms
@@ -416,7 +398,7 @@ public class b2PrismaticJoint extends b2Joint
 				if (m_limitState != e_atLowerLimit)
 				{
 					m_limitState = e_atLowerLimit;
-					m_impulse.z = 0.0;
+					m_impulse.y = 0.0;
 				}
 			}
 			else if (jointTransition >= m_upperTranslation)
@@ -424,13 +406,13 @@ public class b2PrismaticJoint extends b2Joint
 				if (m_limitState != e_atUpperLimit)
 				{
 					m_limitState = e_atUpperLimit;
-					m_impulse.z = 0.0;
+					m_impulse.y = 0.0;
 				}
 			}
 			else
 			{
 				m_limitState = e_inactiveLimit;
-				m_impulse.z = 0.0;
+				m_impulse.y = 0.0;
 			}
 		}
 		else
@@ -451,10 +433,10 @@ public class b2PrismaticJoint extends b2Joint
 			m_motorImpulse *= step.dtRatio; 
 			
 			//b2Vec2 P = m_impulse.x * m_perp + (m_motorImpulse + m_impulse.z) * m_axis;
-			var PX:Number = m_impulse.x * m_perp.x + (m_motorImpulse + m_impulse.z) * m_axis.x;
-			var PY:Number = m_impulse.x * m_perp.y + (m_motorImpulse + m_impulse.z) * m_axis.y;
-			var L1:Number = m_impulse.x * m_s1 + m_impulse.y + (m_motorImpulse + m_impulse.z) * m_a1;
-			var L2:Number = m_impulse.x * m_s2 + m_impulse.y + (m_motorImpulse + m_impulse.z) * m_a2; 
+			var PX:Number = m_impulse.x * m_perp.x + (m_motorImpulse + m_impulse.y) * m_axis.x;
+			var PY:Number = m_impulse.x * m_perp.y + (m_motorImpulse + m_impulse.y) * m_axis.y;
+			var L1:Number = m_impulse.x * m_s1     + (m_motorImpulse + m_impulse.y) * m_a1;
+			var L2:Number = m_impulse.x * m_s2     + (m_motorImpulse + m_impulse.y) * m_a2; 
 
 			//b1->m_linearVelocity -= m_invMass1 * P;
 			b1.m_linearVelocity.x -= m_invMass1 * PX;
@@ -514,9 +496,8 @@ public class b2PrismaticJoint extends b2Joint
 			w2 += m_invI2 * L2;
 		}
 		
-		//Cdot1.x = b2Dot(m_perp, v2 - v1) + m_s2 * w2 - m_s1 * w1; 
-		var Cdot1X:Number = m_perp.x * (v2.x - v1.x) + m_perp.y * (v2.y - v1.y) + m_s2 * w2 - m_s1 * w1; 
-		var Cdot1Y:Number = w2 - w1;
+		//Cdot1 = b2Dot(m_perp, v2 - v1) + m_s2 * w2 - m_s1 * w1; 
+		var Cdot1:Number = m_perp.x * (v2.x - v1.x) + m_perp.y * (v2.y - v1.y) + m_s2 * w2 - m_s1 * w1; 
 		
 		if (m_enableLimit && m_limitState != e_inactiveLimit)
 		{
@@ -524,38 +505,32 @@ public class b2PrismaticJoint extends b2Joint
 			//Cdot2 = b2Dot(m_axis, v2 - v1) + m_a2 * w2 - m_a1 * w1; 
 			var Cdot2:Number = m_axis.x * (v2.x - v1.x) + m_axis.y * (v2.y - v1.y) + m_a2 * w2 - m_a1 * w1; 
 			
-			var f1:b2Vec3 = m_impulse.Copy();
-			var df:b2Vec3 = m_K.Solve33(new b2Vec3(), -Cdot1X, -Cdot1Y, -Cdot2);
+			var f1:b2Vec2 = m_impulse.Copy();
+			var df:b2Vec2 = m_K.Solve(new b2Vec2(), -Cdot1, -Cdot2);
 			
 			m_impulse.Add(df);
 			
 			if (m_limitState == e_atLowerLimit)
 			{
-				m_impulse.z = b2Math.b2Max(m_impulse.z, 0.0);
+				m_impulse.y = b2Math.b2Max(m_impulse.y, 0.0);
 			}
 			else if (m_limitState == e_atUpperLimit)
 			{
-				m_impulse.z = b2Math.b2Min(m_impulse.z, 0.0);
+				m_impulse.y = b2Math.b2Min(m_impulse.y, 0.0);
 			}
 			
-			// f2(1:2) = invK(1:2,1:2) * (-Cdot3\(1:2) - K(1:2,3) * (f2(3) - f1(3))) + f1(1:2) 
-			//b2Vec2 b = -Cdot1 - (m_impulse.z - f1.z) * b2Vec2(m_K.col3.x, m_K.col3.y); 
-			var bX:Number = -Cdot1X - (m_impulse.z - f1.z) * m_K.col3.x;
-			var bY:Number = -Cdot1Y - (m_impulse.z - f1.z) * m_K.col3.y;
-			var f2r:b2Vec2 = m_K.Solve22(new b2Vec2(), bX, bY)
-			f2r.x += f1.x;
-			f2r.y += f1.y;
-			m_impulse.x = f2r.x;
-			m_impulse.y = f2r.y;
+			// f2(1) = invK(1,1) * (-Cdot(1) - K(1,3) * (f2(2) - f1(2))) + f1(1) 
+			var b:Number = -Cdot1 - (m_impulse.y - f1.y) * m_K.col2.x;
+			var f2r:Number = b / m_K.col1.x + f1.x;
+			m_impulse.x = f2r;
 			
 			df.x = m_impulse.x - f1.x;
 			df.y = m_impulse.y - f1.y;
-			df.z = m_impulse.z - f1.z;
 			
-			PX = df.x * m_perp.x + df.z * m_axis.x;
-			PY = df.x * m_perp.y + df.z * m_axis.y;
-			L1 = df.x * m_s1 + df.y + df.z * m_a1;
-			L2 = df.x * m_s2 + df.y + df.z * m_a2;
+			PX = df.x * m_perp.x + df.y * m_axis.x;
+			PY = df.x * m_perp.y + df.y * m_axis.y;
+			L1 = df.x * m_s1 + df.y * m_a1;
+			L2 = df.x * m_s2 + df.y * m_a2;
 			
 			v1.x -= m_invMass1 * PX;
 			v1.y -= m_invMass1 * PY;
@@ -568,14 +543,13 @@ public class b2PrismaticJoint extends b2Joint
 		else
 		{
 			// Limit is inactive, just solve the prismatic constraint in block form. 
-			var df2:b2Vec2 = m_K.Solve22(new b2Vec2(), -Cdot1X, -Cdot1Y);
-			m_impulse.x += df2.x;
-			m_impulse.y += df2.y;
+			var df2:Number = (-Cdot1) / m_K.col1.x;
+			m_impulse.x += df2;
 			
-			PX = df2.x * m_perp.x;
-			PY = df2.x * m_perp.y;
-			L1 = df2.x * m_s1 + df2.y;
-			L2 = df2.x * m_s2 + df2.y;
+			PX = df2 * m_perp.x;
+			PY = df2 * m_perp.y;
+			L1 = df2 * m_s1;
+			L2 = df2 * m_s2;
 			
 			v1.x -= m_invMass1 * PX;
 			v1.y -= m_invMass1 * PY;
@@ -684,12 +658,11 @@ public class b2PrismaticJoint extends b2Joint
 		//m_s2 = b2Cross(r2, m_perp); 
 		m_s2 = r2X * m_perp.y - r2Y * m_perp.x;
 		
-		var impulse:b2Vec3 = new b2Vec3();
-		var C1X:Number = m_perp.x * dX + m_perp.y * dY;
-		var C1Y:Number = a2 - a1 - m_refAngle;
+		var impulse:b2Vec2 = new b2Vec2();
+		var C1:Number = m_perp.x * dX + m_perp.y * dY;
 		
-		linearError = b2Math.b2Max(linearError, b2Math.b2Abs(C1X));
-		angularError = b2Math.b2Abs(C1Y);
+		linearError = b2Math.b2Max(linearError, b2Math.b2Abs(C1));
+		angularError = 0.0;
 		
 		if (active)
 		{
@@ -699,16 +672,11 @@ public class b2PrismaticJoint extends b2Joint
 			i2 = m_invI2;
 			
 			m_K.col1.x = m1 + m2 + i1 * m_s1 * m_s1 + i2 * m_s2 * m_s2;
- 	  	  	m_K.col1.y = i1 * m_s1 + i2 * m_s2;
- 	  	  	m_K.col1.z = i1 * m_s1 * m_a1 + i2 * m_s2 * m_a2;
+ 	  	  	m_K.col1.y = i1 * m_s1 * m_a1 + i2 * m_s2 * m_a2;
 			m_K.col2.x = m_K.col1.y;
- 	  	  	m_K.col2.y = i1 + i2;
- 	  	  	m_K.col2.z = i1 * m_a1 + i2 * m_a2;
-			m_K.col3.x = m_K.col1.z;
-			m_K.col3.y = m_K.col2.z;
- 	  	  	m_K.col3.z = m1 + m2 + i1 * m_a1 * m_a1 + i2 * m_a2 * m_a2;
+ 	  	  	m_K.col2.y = m1 + m2 + i1 * m_a1 * m_a1 + i2 * m_a2 * m_a2;
 			
-			m_K.Solve33(impulse, -C1X, -C1Y, -C2);
+			m_K.Solve(impulse, -C1, -C2);
 		}
 		else
 		{
@@ -718,22 +686,16 @@ public class b2PrismaticJoint extends b2Joint
 			i2 = m_invI2;
 			
 			var k11:Number  = m1 + m2 + i1 * m_s1 * m_s1 + i2 * m_s2 * m_s2;
-			var k12:Number = i1 * m_s1 + i2 * m_s2;
-			var k22:Number = i1 + i2; 
 			
-			m_K.col1.Set(k11, k12, 0.0);
-			m_K.col2.Set(k12, k22, 0.0);
-			
-			var impulse1:b2Vec2 = m_K.Solve22(new b2Vec2(), -C1X, -C1Y);
-			impulse.x = impulse1.x;
-			impulse.y = impulse1.y;
-			impulse.z = 0.0;
+			var impulse1:Number = ( -C1) / k11;
+			impulse.x = impulse1;
+			impulse.y = 0.0;
 		}
 		
-		var PX:Number = impulse.x * m_perp.x + impulse.z * m_axis.x;
-		var PY:Number = impulse.x * m_perp.y + impulse.z * m_axis.y;
-		var L1:Number = impulse.x * m_s1 + impulse.y + impulse.z * m_a1;
-		var L2:Number = impulse.x * m_s2 + impulse.y + impulse.z * m_a2;
+		var PX:Number = impulse.x * m_perp.x + impulse.y * m_axis.x;
+		var PY:Number = impulse.x * m_perp.y + impulse.y * m_axis.y;
+		var L1:Number = impulse.x * m_s1 + impulse.y * m_a1;
+		var L2:Number = impulse.x * m_s2 + impulse.y * m_a2;
 		
 		c1.x -= m_invMass1 * PX;
 		c1.y -= m_invMass1 * PY;
@@ -759,7 +721,6 @@ public class b2PrismaticJoint extends b2Joint
 	b2internal var m_localAnchor2:b2Vec2 = new b2Vec2();
 	b2internal var m_localXAxis1:b2Vec2 = new b2Vec2();
 	private var m_localYAxis1:b2Vec2 = new b2Vec2();
-	private var m_refAngle:Number;
 
 	private var m_axis:b2Vec2 = new b2Vec2();
 	private var m_perp:b2Vec2 = new b2Vec2();
@@ -768,8 +729,8 @@ public class b2PrismaticJoint extends b2Joint
 	private var m_a1:Number;
 	private var m_a2:Number;
 	
-	private var m_K:b2Mat33 = new b2Mat33();
-	private var m_impulse:b2Vec3 = new b2Vec3();
+	private var m_K:b2Mat22 = new b2Mat22();
+	private var m_impulse:b2Vec2 = new b2Vec2();
 
 	private var m_motorMass:Number;			// effective mass for motor/limit translational constraint.
 	private var m_motorImpulse:Number;

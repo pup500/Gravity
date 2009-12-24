@@ -25,7 +25,13 @@ import Box2D.Dynamics.*;
 import Box2D.Common.*;
 import Box2D.Common.Math.*;
 
+import Box2D.Common.b2internal;
+use namespace b2internal;
 
+
+/**
+* @private
+*/
 public class b2PolygonContact extends b2Contact
 {
 	static public function Create(shape1:b2Shape, shape2:b2Shape, allocator:*):b2Contact{
@@ -50,7 +56,7 @@ public class b2PolygonContact extends b2Contact
 	private var m0:b2Manifold = new b2Manifold();
 	static private const s_evalCP:b2ContactPoint = new b2ContactPoint();
 	
-	public override function Evaluate(listener:b2ContactListener): void{
+	b2internal override function Evaluate(listener:b2ContactListener): void{
 		var v1:b2Vec2;
 		var v2:b2Vec2;
 		var mp0:b2ManifoldPoint;
@@ -72,8 +78,8 @@ public class b2PolygonContact extends b2Contact
 		cp = s_evalCP;
 		cp.shape1 = m_shape1;
 		cp.shape2 = m_shape2;
-		cp.friction = m_friction;
-		cp.restitution = m_restitution;
+		cp.friction = b2Settings.b2MixFriction(m_shape1.GetFriction(), m_shape2.GetFriction());
+		cp.restitution = b2Settings.b2MixRestitution(m_shape1.GetRestitution(), m_shape2.GetRestitution());
 		
 		// Match contact ids to facilitate warm starting.
 		if (m_manifold.pointCount > 0)
@@ -175,7 +181,7 @@ public class b2PolygonContact extends b2Contact
 	}
 
 	private var m_manifolds:Array = [new b2Manifold()];
-	public var m_manifold:b2Manifold;
+	private var m_manifold:b2Manifold;
 };
 
 }

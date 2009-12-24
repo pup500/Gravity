@@ -46,7 +46,7 @@ package PhysicsGame
 		{
 			super();
 			
-			debug = true;
+			//debug = true;
 			
 			loadSVG();
 			
@@ -57,6 +57,7 @@ package PhysicsGame
 			var body:Player = new Player(_map.playerSpawn_x, _map.playerSpawn_y, _bullets);
 			body.createPhysBody(the_world);
 			body.final_body.AllowSleeping(false);
+			body.final_body.SetFixedRotation(true);
 			add(body);
 			
 			//Create GravityObjects
@@ -136,11 +137,11 @@ package PhysicsGame
 				var debug_draw:b2DebugDraw = new b2DebugDraw();
 				var debug_sprite:Sprite = new flash.display.Sprite();
 				addChild(debug_sprite);
-				debug_draw.m_sprite=debug_sprite;
-				debug_draw.m_drawScale=1;
-				debug_draw.m_fillAlpha=0.5;
-				debug_draw.m_lineThickness=1;
-				debug_draw.m_drawFlags=b2DebugDraw.e_shapeBit |b2DebugDraw.e_centerOfMassBit;
+				debug_draw.SetSprite(debug_sprite);
+				debug_draw.SetDrawScale(1);
+				debug_draw.SetAlpha(0.5);
+				debug_draw.SetLineThickness(1);
+				debug_draw.SetFlags(b2DebugDraw.e_shapeBit |b2DebugDraw.e_centerOfMassBit);
 				the_world.SetDebugDraw(debug_draw);
 			}
 		}
@@ -165,7 +166,7 @@ package PhysicsGame
 			super.update();
 			
 			//Testing
-			for (var bb:b2Body = the_world.m_bodyList; bb; bb = bb.m_next) {
+			for (var bb:b2Body = the_world.GetBodyList(); bb; bb = bb.GetNext()) {
 				
 				if(bb.GetUserData() && bb.GetUserData().name == "Player"){
 					for(var i:uint = 0; i < _gravObjects.length; i++){
@@ -187,7 +188,7 @@ package PhysicsGame
 						//if(distanceSq < 100) continue;
 						
 						var distance:Number = Math.sqrt(distSq);
-						var massProduct:Number = bb.m_mass * gMass;
+						var massProduct:Number = bb.GetMass() * gMass;
 						//var massProduct:Number = massedObj.getMass() * gravObj.getMass();	//_player.mass * gravObj.mass;
 						
 						var G:Number = 1; //gravitation constant

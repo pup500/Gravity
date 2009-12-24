@@ -24,36 +24,48 @@ import Box2D.Common.Math.*;
 import Box2D.Common.*;
 import Box2D.Dynamics.*;
 
+import Box2D.Common.b2internal;
+use namespace b2internal;
+
 	
-/// The pulley joint is connected to two bodies and two fixed ground points.
-/// The pulley supports a ratio such that:
-/// length1 + ratio * length2 <= constant
-/// Yes, the force transmitted is scaled by the ratio.
-/// The pulley also enforces a maximum length limit on both sides. This is
-/// useful to prevent one side of the pulley hitting the top.
-	
+/**
+* The pulley joint is connected to two bodies and two fixed ground points.
+* The pulley supports a ratio such that:
+* length1 + ratio * length2 <= constant
+* Yes, the force transmitted is scaled by the ratio.
+* The pulley also enforces a maximum length limit on both sides. This is
+* useful to prevent one side of the pulley hitting the top.
+* @see b2PulleyJointDef
+*/
 public class b2PulleyJoint extends b2Joint
 {
+	/** @inheritDoc */
 	public override function GetAnchor1():b2Vec2{
 		return m_body1.GetWorldPoint(m_localAnchor1);
 	}
+	/** @inheritDoc */
 	public override function GetAnchor2():b2Vec2{
 		return m_body2.GetWorldPoint(m_localAnchor2);
 	}
 
-	public override function GetReactionForce() :b2Vec2
+	/** @inheritDoc */
+	public override function GetReactionForce(inv_dt:Number) :b2Vec2
 	{
-		//b2Vec2 F = m_force * m_u2;
-		var F:b2Vec2 = m_u2.Copy();
-		F.Multiply(m_force);
-		return F;
+		//b2Vec2 P = m_impulse * m_u2;
+		//return inv_dt * P;
+		return new b2Vec2(inv_dt * m_impulse * m_u2.x, inv_dt * m_impulse * m_u2.y);
 	}
 
-	public override function GetReactionTorque() :Number
+	/** @inheritDoc */
+	public override function GetReactionTorque(inv_dt:Number) :Number
 	{
+		//B2_NOT_USED(inv_dt);
 		return 0.0;
 	}
 
+	/**
+	 * Get the first ground anchor.
+	 */
 	public function GetGroundAnchor1() :b2Vec2
 	{
 		//return m_ground.m_xf.position + m_groundAnchor1;
@@ -62,6 +74,9 @@ public class b2PulleyJoint extends b2Joint
 		return a;
 	}
 
+	/**
+	 * Get the second ground anchor.
+	 */
 	public function GetGroundAnchor2() :b2Vec2
 	{
 		//return m_ground.m_xf.position + m_groundAnchor2;
@@ -70,6 +85,9 @@ public class b2PulleyJoint extends b2Joint
 		return a;
 	}
 
+	/**
+	 * Get the current length of the segment attached to body1.
+	 */
 	public function GetLength1() :Number
 	{
 		var p:b2Vec2 = m_body1.GetWorldPoint(m_localAnchor1);
@@ -83,6 +101,9 @@ public class b2PulleyJoint extends b2Joint
 		return Math.sqrt(dX*dX + dY*dY);
 	}
 
+	/**
+	 * Get the current length of the segment attached to body2.
+	 */
 	public function GetLength2() :Number
 	{
 		var p:b2Vec2 = m_body2.GetWorldPoint(m_localAnchor2);
@@ -96,12 +117,16 @@ public class b2PulleyJoint extends b2Joint
 		return Math.sqrt(dX*dX + dY*dY);
 	}
 
+	/**
+	 * Get the pulley ratio.
+	 */
 	public function GetRatio():Number{
 		return m_ratio;
 	}
 
 	//--------------- Internals Below -------------------
 
+	/** @private */
 	public function b2PulleyJoint(def:b2PulleyJointDef){
 		
 		// parent
@@ -131,13 +156,13 @@ public class b2PulleyJoint extends b2Joint
 		m_maxLength1 = b2Math.b2Min(def.maxLength1, m_constant - m_ratio * b2_minPulleyLength);
 		m_maxLength2 = b2Math.b2Min(def.maxLength2, (m_constant - b2_minPulleyLength) / m_ratio);
 		
-		m_force = 0.0;
-		m_limitForce1 = 0.0;
-		m_limitForce2 = 0.0;
+		m_impulse = 0.0;
+		m_limitImpulse1 = 0.0;
+		m_limitImpulse2 = 0.0;
 		
 	}
 
-	public override function InitVelocityConstraints(step:b2TimeStep) : void{
+	b2internal override function InitVelocityConstraints(step:b2TimeStep) : void{
 		var b1:b2Body = m_body1;
 		var b2:b2Body = m_body2;
 		
@@ -205,34 +230,31 @@ public class b2PulleyJoint extends b2Joint
 		if (C > 0.0)
 		{
 			m_state = e_inactiveLimit;
-			m_force = 0.0;
+			m_impulse = 0.0;
 		}
 		else
 		{
 			m_state = e_atUpperLimit;
-			m_positionImpulse = 0.0;
 		}
 		
 		if (length1 < m_maxLength1)
 		{
 			m_limitState1 = e_inactiveLimit;
-			m_limitForce1 = 0.0;
+			m_limitImpulse1 = 0.0;
 		}
 		else
 		{
 			m_limitState1 = e_atUpperLimit;
-			m_limitPositionImpulse1 = 0.0;
 		}
 		
 		if (length2 < m_maxLength2)
 		{
 			m_limitState2 = e_inactiveLimit;
-			m_limitForce2 = 0.0;
+			m_limitImpulse2 = 0.0;
 		}
 		else
 		{
 			m_limitState2 = e_atUpperLimit;
-			m_limitPositionImpulse2 = 0.0;
 		}
 		
 		// Compute effective mass.
@@ -253,15 +275,18 @@ public class b2PulleyJoint extends b2Joint
 		
 		if (step.warmStarting)
 		{
+			// Scale impulses to support variable time steps.
+			m_impulse *= step.dtRatio;
+			m_limitImpulse1 *= step.dtRatio;
+			m_limitImpulse2 *= step.dtRatio;
+			
 			// Warm starting.
-			//b2Vec2 P1 = step.dt * (-m_force - m_limitForce1) * m_u1;
-			//b2Vec2 P1 = step.dt * (-m_force - m_limitForce1) * m_u1;
-			var P1X:Number = step.dt * (-m_force - m_limitForce1) * m_u1.x;
-			var P1Y:Number = step.dt * (-m_force - m_limitForce1) * m_u1.y;
-			//b2Vec2 P2 = step.dt * (-m_ratio * m_force - m_limitForce2) * m_u2;
-			//b2Vec2 P2 = step.dt * (-m_ratio * m_force - m_limitForce2) * m_u2;
-			var P2X:Number = step.dt * (-m_ratio * m_force - m_limitForce2) * m_u2.x;
-			var P2Y:Number = step.dt * (-m_ratio * m_force - m_limitForce2) * m_u2.y;
+			//b2Vec2 P1 = (-m_impulse - m_limitImpulse1) * m_u1;
+			var P1X:Number = (-m_impulse - m_limitImpulse1) * m_u1.x;
+			var P1Y:Number = (-m_impulse - m_limitImpulse1) * m_u1.y;
+			//b2Vec2 P2 = (-m_ratio * m_impulse - m_limitImpulse2) * m_u2;
+			var P2X:Number = (-m_ratio * m_impulse - m_limitImpulse2) * m_u2.x;
+			var P2Y:Number = (-m_ratio * m_impulse - m_limitImpulse2) * m_u2.y;
 			//b1.m_linearVelocity += b1.m_invMass * P1;
 			b1.m_linearVelocity.x += b1.m_invMass * P1X;
 			b1.m_linearVelocity.y += b1.m_invMass * P1Y;
@@ -275,13 +300,16 @@ public class b2PulleyJoint extends b2Joint
 		}
 		else
 		{
-			m_force = 0.0;
-			m_limitForce1 = 0.0;
-			m_limitForce2 = 0.0;
+			m_impulse = 0.0;
+			m_limitImpulse1 = 0.0;
+			m_limitImpulse2 = 0.0;
 		}
 	}
 	
-	public override function SolveVelocityConstraints(step:b2TimeStep) : void{
+	b2internal override function SolveVelocityConstraints(step:b2TimeStep) : void 
+	{
+		//B2_NOT_USED(step)
+		
 		var b1:b2Body = m_body1;
 		var b2:b2Body = m_body2;
 		
@@ -312,8 +340,8 @@ public class b2PulleyJoint extends b2Joint
 		var P2X:Number;
 		var P2Y:Number;
 		var Cdot:Number;
-		var force:Number;
-		var oldForce:Number;
+		var impulse:Number;
+		var oldImpulse:Number;
 		
 		if (m_state == e_atUpperLimit)
 		{
@@ -326,17 +354,17 @@ public class b2PulleyJoint extends b2Joint
 			
 			//Cdot = -b2Dot(m_u1, v1) - m_ratio * b2Dot(m_u2, v2);
 			Cdot = -(m_u1.x * v1X + m_u1.y * v1Y) - m_ratio * (m_u2.x * v2X + m_u2.y * v2Y);
-			force = -step.inv_dt * m_pulleyMass * Cdot;
-			oldForce = m_force;
-			m_force = b2Math.b2Max(0.0, m_force + force);
-			force = m_force - oldForce;
+			impulse = m_pulleyMass * (-Cdot);
+			oldImpulse = m_impulse;
+			m_impulse = b2Math.b2Max(0.0, m_impulse + impulse);
+			impulse = m_impulse - oldImpulse;
 			
-			//b2Vec2 P1 = -step.dt * force * m_u1;
-			P1X = -step.dt * force * m_u1.x;
-			P1Y = -step.dt * force * m_u1.y;
-			//b2Vec2 P2 = -step.dt * m_ratio * force * m_u2;
-			P2X = -step.dt * m_ratio * force * m_u2.x;
-			P2Y = -step.dt * m_ratio * force * m_u2.y;
+			//b2Vec2 P1 = -impulse * m_u1;
+			P1X = -impulse * m_u1.x;
+			P1Y = -impulse * m_u1.y;
+			//b2Vec2 P2 = - m_ratio * impulse * m_u2;
+			P2X = -m_ratio * impulse * m_u2.x;
+			P2Y = -m_ratio * impulse * m_u2.y;
 			//b1.m_linearVelocity += b1.m_invMass * P1;
 			b1.m_linearVelocity.x += b1.m_invMass * P1X;
 			b1.m_linearVelocity.y += b1.m_invMass * P1Y;
@@ -357,14 +385,14 @@ public class b2PulleyJoint extends b2Joint
 			
 			//float32 Cdot = -b2Dot(m_u1, v1);
 			Cdot = -(m_u1.x * v1X + m_u1.y * v1Y);
-			force = -step.inv_dt * m_limitMass1 * Cdot;
-			oldForce = m_limitForce1;
-			m_limitForce1 = b2Math.b2Max(0.0, m_limitForce1 + force);
-			force = m_limitForce1 - oldForce;
+			impulse = -m_limitMass1 * Cdot;
+			oldImpulse = m_limitImpulse1;
+			m_limitImpulse1 = b2Math.b2Max(0.0, m_limitImpulse1 + impulse);
+			impulse = m_limitImpulse1 - oldImpulse;
 			
-			//b2Vec2 P1 = -step.dt * force * m_u1;
-			P1X = -step.dt * force * m_u1.x;
-			P1Y = -step.dt * force * m_u1.y;
+			//b2Vec2 P1 = -impulse * m_u1;
+			P1X = -impulse * m_u1.x;
+			P1Y = -impulse * m_u1.y;
 			//b1.m_linearVelocity += b1->m_invMass * P1;
 			b1.m_linearVelocity.x += b1.m_invMass * P1X;
 			b1.m_linearVelocity.y += b1.m_invMass * P1Y;
@@ -380,14 +408,14 @@ public class b2PulleyJoint extends b2Joint
 			
 			//float32 Cdot = -b2Dot(m_u2, v2);
 			Cdot = -(m_u2.x * v2X + m_u2.y * v2Y);
-			force = -step.inv_dt * m_limitMass2 * Cdot;
-			oldForce = m_limitForce2;
-			m_limitForce2 = b2Math.b2Max(0.0, m_limitForce2 + force);
-			force = m_limitForce2 - oldForce;
+			impulse = -m_limitMass2 * Cdot;
+			oldImpulse = m_limitImpulse2;
+			m_limitImpulse2 = b2Math.b2Max(0.0, m_limitImpulse2 + impulse);
+			impulse = m_limitImpulse2 - oldImpulse;
 			
-			//b2Vec2 P2 = -step.dt * force * m_u2;
-			P2X = -step.dt * force * m_u2.x;
-			P2Y = -step.dt * force * m_u2.y;
+			//b2Vec2 P2 = -impulse * m_u2;
+			P2X = -impulse * m_u2.x;
+			P2Y = -impulse * m_u2.y;
 			//b2->m_linearVelocity += b2->m_invMass * P2;
 			b2.m_linearVelocity.x += b2.m_invMass * P2X;
 			b2.m_linearVelocity.y += b2.m_invMass * P2Y;
@@ -396,9 +424,10 @@ public class b2PulleyJoint extends b2Joint
 		}
 	}
 	
-	
-	
-	public override function SolvePositionConstraints():Boolean{
+	b2internal override function SolvePositionConstraints(baumgarte:Number):Boolean 
+	{
+		//B2_NOT_USED(baumgarte)
+		
 		var b1:b2Body = m_body1;
 		var b2:b2Body = m_body2;
 		
@@ -489,10 +518,6 @@ public class b2PulleyJoint extends b2Joint
 			C = b2Math.b2Clamp(C + b2Settings.b2_linearSlop, -b2Settings.b2_maxLinearCorrection, 0.0);
 			impulse = -m_pulleyMass * C;
 			
-			oldImpulse = m_positionImpulse;
-			m_positionImpulse = b2Math.b2Max(0.0, m_positionImpulse + impulse);
-			impulse = m_positionImpulse - oldImpulse;
-			
 			p1X = -impulse * m_u1.x;
 			p1Y = -impulse * m_u1.y;
 			p2X = -m_ratio * impulse * m_u2.x;
@@ -542,9 +567,6 @@ public class b2PulleyJoint extends b2Joint
 			linearError = b2Math.b2Max(linearError, -C);
 			C = b2Math.b2Clamp(C + b2Settings.b2_linearSlop, -b2Settings.b2_maxLinearCorrection, 0.0);
 			impulse = -m_limitMass1 * C;
-			oldLimitPositionImpulse = m_limitPositionImpulse1;
-			m_limitPositionImpulse1 = b2Math.b2Max(0.0, m_limitPositionImpulse1 + impulse);
-			impulse = m_limitPositionImpulse1 - oldLimitPositionImpulse;
 			
 			//P1 = -impulse * m_u1;
 			p1X = -impulse * m_u1.x;
@@ -591,9 +613,6 @@ public class b2PulleyJoint extends b2Joint
 			linearError = b2Math.b2Max(linearError, -C);
 			C = b2Math.b2Clamp(C + b2Settings.b2_linearSlop, -b2Settings.b2_maxLinearCorrection, 0.0);
 			impulse = -m_limitMass2 * C;
-			oldLimitPositionImpulse = m_limitPositionImpulse2;
-			m_limitPositionImpulse2 = b2Math.b2Max(0.0, m_limitPositionImpulse2 + impulse);
-			impulse = m_limitPositionImpulse2 - oldLimitPositionImpulse;
 			
 			//P2 = -impulse * m_u2;
 			p2X = -impulse * m_u2.x;
@@ -613,42 +632,37 @@ public class b2PulleyJoint extends b2Joint
 	
 	
 
-	public var m_ground:b2Body;
-	public var m_groundAnchor1:b2Vec2 = new b2Vec2();
-	public var m_groundAnchor2:b2Vec2 = new b2Vec2();
-	public var m_localAnchor1:b2Vec2 = new b2Vec2();
-	public var m_localAnchor2:b2Vec2 = new b2Vec2();
+	private var m_ground:b2Body;
+	private var m_groundAnchor1:b2Vec2 = new b2Vec2();
+	private var m_groundAnchor2:b2Vec2 = new b2Vec2();
+	private var m_localAnchor1:b2Vec2 = new b2Vec2();
+	private var m_localAnchor2:b2Vec2 = new b2Vec2();
 
-	public var m_u1:b2Vec2 = new b2Vec2();
-	public var m_u2:b2Vec2 = new b2Vec2();
+	private var m_u1:b2Vec2 = new b2Vec2();
+	private var m_u2:b2Vec2 = new b2Vec2();
 	
-	public var m_constant:Number;
-	public var m_ratio:Number;
+	private var m_constant:Number;
+	private var m_ratio:Number;
 	
-	public var m_maxLength1:Number;
-	public var m_maxLength2:Number;
+	private var m_maxLength1:Number;
+	private var m_maxLength2:Number;
 
 	// Effective masses
-	public var m_pulleyMass:Number;
-	public var m_limitMass1:Number;
-	public var m_limitMass2:Number;
+	private var m_pulleyMass:Number;
+	private var m_limitMass1:Number;
+	private var m_limitMass2:Number;
 
 	// Impulses for accumulation/warm starting.
-	public var m_force:Number;
-	public var m_limitForce1:Number;
-	public var m_limitForce2:Number;
+	private var m_impulse:Number;
+	private var m_limitImpulse1:Number;
+	private var m_limitImpulse2:Number;
 
-	// Position impulses for accumulation.
-	public var m_positionImpulse:Number;
-	public var m_limitPositionImpulse1:Number;
-	public var m_limitPositionImpulse2:Number;
-
-	public var m_state:int;
-	public var m_limitState1:int;
-	public var m_limitState2:int;
+	private var m_state:int;
+	private var m_limitState1:int;
+	private var m_limitState2:int;
 	
 	// static
-	static public const b2_minPulleyLength:Number = 2.0;
+	static b2internal const b2_minPulleyLength:Number = 2.0;
 };
 	
 	

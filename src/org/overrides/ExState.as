@@ -27,7 +27,7 @@ package org.overrides
 		override public function update():void
 		{
 			//the_world.Step(FlxG.elapsed, 10);
-			the_world.Step(1/30, 10);
+			the_world.Step(1/30, 10, 10);
 			_layer.update();
 		}
 	}

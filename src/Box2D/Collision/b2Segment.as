@@ -22,10 +22,26 @@ import Box2D.Collision.*;
 import Box2D.Common.Math.*;
 import Box2D.Common.*;
 
-// A manifold for two touching convex shapes.
+import Box2D.Common.b2internal;
+use namespace b2internal;
+
+/**
+* A line in space between two given vertices.
+*/
 public class b2Segment
 {
-	/// Ray cast against this segment with another segment.
+	/**
+	* Ray cast against this segment with another segment
+	* @param xf the shape world transform.
+	* @param lambda returns the hit fraction. You can use this to compute the contact point
+	* p = (1 - lambda) * segment.p1 + lambda * segment.p2.
+	* @param normal returns the normal at the contact point. If there is no intersection, the normal
+	* is not set.
+	* @param segment defines the begin and end point of the ray cast.
+	* @param maxLambda a number typically in the range [0,1].
+	* @return true if there was an intersection.
+	* @see Box2D.Collision.Shapes.b2Shape#TestSegment
+	*/
 	// Collision Detection in Interactive 3D Environments by Gino van den Bergen
 	// From Section 3.4.1
 	// x = mu1 * p1 + mu2 * p2
@@ -73,7 +89,7 @@ public class b2Segment
 			
 			if (0.0 <= a && a <= maxLambda * denom)
 			{
-				var mu2:Number = -rY * bY + rY * bX;
+				var mu2:Number = -rX * bY + rY * bX;
 				
 				// Does the segment intersect this segment?
 				if (-k_slop * denom <= mu2 && mu2 <= denom * (1.0 + k_slop))
@@ -95,8 +111,48 @@ public class b2Segment
 		return false;
 	}
 	
-	public var p1:b2Vec2 = new b2Vec2();	///< the starting point
-	public var p2:b2Vec2 = new b2Vec2();	///< the ending point
+	/**
+	* Extends or clips the segment so that it's ends lie on the boundary of the AABB
+	*/
+	public function Extend(aabb:b2AABB) : void{
+		ExtendForward(aabb);
+		ExtendBackward(aabb);
+	}
+	
+	/**
+	* @see Extend
+	*/
+	public function ExtendForward(aabb:b2AABB) : void{
+		var dX:Number = p2.x-p1.x;
+		var dY:Number = p2.y-p1.y;
+		
+		var lambda:Number = Math.min(	dX>0?(aabb.upperBound.x-p1.x)/dX: dX<0?(aabb.lowerBound.x-p1.x)/dX:Number.POSITIVE_INFINITY,
+										dY>0?(aabb.upperBound.y-p1.y)/dY: dY<0?(aabb.lowerBound.y-p1.y)/dY:Number.POSITIVE_INFINITY);
+		
+		p2.x = p1.x + dX * lambda;
+		p2.y = p1.y + dY * lambda;
+		
+	}
+	
+	/**
+	* @see Extend
+	*/
+	public function ExtendBackward(aabb:b2AABB) : void{
+		var dX:Number = -p2.x+p1.x;
+		var dY:Number = -p2.y+p1.y;
+		
+		var lambda:Number = Math.min(	dX>0?(aabb.upperBound.x-p2.x)/dX: dX<0?(aabb.lowerBound.x-p2.x)/dX:Number.POSITIVE_INFINITY,
+										dY>0?(aabb.upperBound.y-p2.y)/dY: dY<0?(aabb.lowerBound.y-p2.y)/dY:Number.POSITIVE_INFINITY);
+		
+		p1.x = p2.x + dX * lambda;
+		p1.y = p2.y + dY * lambda;
+		
+	}
+	
+	/** The starting point */
+	public var p1:b2Vec2 = new b2Vec2();
+	/** The ending point */
+	public var p2:b2Vec2 = new b2Vec2();
 };
 
 

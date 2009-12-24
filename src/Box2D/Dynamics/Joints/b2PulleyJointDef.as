@@ -22,11 +22,17 @@ package Box2D.Dynamics.Joints{
 import Box2D.Common.Math.*;
 import Box2D.Dynamics.*;
 
+import Box2D.Common.b2internal;
+use namespace b2internal;
 
 
-/// Pulley joint definition. This requires two ground anchors,
-/// two dynamic body anchor points, max lengths for each side,
-/// and a pulley ratio.
+
+/**
+* Pulley joint definition. This requires two ground anchors,
+* two dynamic body anchor points, max lengths for each side,
+* and a pulley ratio.
+* @see b2PulleyJoint
+*/
 
 public class b2PulleyJointDef extends b2JointDef
 {
@@ -75,31 +81,49 @@ public class b2PulleyJointDef extends b2JointDef
 		maxLength2 = (C - b2PulleyJoint.b2_minPulleyLength) / ratio;
 	}
 
-	/// The first ground anchor in world coordinates. This point never moves.
+	/**
+	* The first ground anchor in world coordinates. This point never moves.
+	*/
 	public var groundAnchor1:b2Vec2 = new b2Vec2();
 	
-	/// The second ground anchor in world coordinates. This point never moves.
+	/**
+	* The second ground anchor in world coordinates. This point never moves.
+	*/
 	public var groundAnchor2:b2Vec2 = new b2Vec2();
 	
-	/// The local anchor point relative to body1's origin.
+	/**
+	* The local anchor point relative to body1's origin.
+	*/
 	public var localAnchor1:b2Vec2 = new b2Vec2();
 	
-	/// The local anchor point relative to body2's origin.
+	/**
+	* The local anchor point relative to body2's origin.
+	*/
 	public var localAnchor2:b2Vec2 = new b2Vec2();
 	
-	/// The a reference length for the segment attached to body1.
+	/**
+	* The a reference length for the segment attached to body1.
+	*/
 	public var length1:Number;
 	
-	/// The maximum length of the segment attached to body1.
+	/**
+	* The maximum length of the segment attached to body1.
+	*/
 	public var maxLength1:Number;
 	
-	/// The a reference length for the segment attached to body2.
+	/**
+	* The a reference length for the segment attached to body2.
+	*/
 	public var length2:Number;
 	
-	/// The maximum length of the segment attached to body2.
+	/**
+	* The maximum length of the segment attached to body2.
+	*/
 	public var maxLength2:Number;
 	
-	/// The pulley ratio, used to simulate a block-and-tackle.
+	/**
+	* The pulley ratio, used to simulate a block-and-tackle.
+	*/
 	public var ratio:Number;
 	
 };

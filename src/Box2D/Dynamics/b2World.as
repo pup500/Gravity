@@ -26,14 +26,23 @@ import Box2D.Dynamics.*;
 import Box2D.Dynamics.Contacts.*;
 import Box2D.Dynamics.Joints.*;
 
+import Box2D.Common.b2internal;
+use namespace b2internal;
 
+
+/**
+* The world class manages all physics entities, dynamic simulation,
+* and asynchronous queries. 
+*/
 public class b2World
 {
 	
 	// Construct a world object.
-	/// @param worldAABB a bounding box that completely encompasses all your shapes.
-	/// @param gravity the world gravity vector.
-	/// @param doSleep improve performance by not simulating inactive bodies.
+	/**
+	* @param worldAABB a bounding box that completely encompasses all your shapes.
+	* @param gravity the world gravity vector.
+	* @param doSleep improve performance by not simulating inactive bodies.
+	*/
 	public function b2World(worldAABB:b2AABB, gravity:b2Vec2, doSleep:Boolean){
 		
 		m_destructionListener = null;
@@ -50,7 +59,6 @@ public class b2World
 		m_contactCount = 0;
 		m_jointCount = 0;
 		
-		m_positionCorrection = true;
 		m_warmStarting = true;
 		m_continuousPhysics = true;
 		
@@ -69,58 +77,78 @@ public class b2World
 		m_groundBody = CreateBody(bd);
 	}
 
-	/// Destruct the world. All physics entities are destroyed and all heap memory is released.
+	/**
+	* Destruct the world. All physics entities are destroyed and all heap memory is released.
+	*/
 	//~b2World();
 
-	/// Register a destruction listener.
+	/**
+	* Register a destruction listener.
+	*/
 	public function SetDestructionListener(listener:b2DestructionListener) : void{
 		m_destructionListener = listener;
 	}
 
-	/// Register a broad-phase boundary listener.
+	/**
+	* Register a broad-phase boundary listener.
+	*/
 	public function SetBoundaryListener(listener:b2BoundaryListener) : void{
 		m_boundaryListener = listener;
 	}
 
-	/// Register a contact filter to provide specific control over collision.
-	/// Otherwise the default filter is used (b2_defaultFilter).
+	/**
+	* Register a contact filter to provide specific control over collision.
+	* Otherwise the default filter is used (b2_defaultFilter).
+	*/
 	public function SetContactFilter(filter:b2ContactFilter) : void{
 		m_contactFilter = filter;
 	}
 
-	/// Register a contact event listener
+	/**
+	* Register a contact event listener
+	*/
 	public function SetContactListener(listener:b2ContactListener) : void{
 		m_contactListener = listener;
 	}
 
-	/// Register a routine for debug drawing. The debug draw functions are called
-	/// inside the b2World::Step method, so make sure your renderer is ready to
-	/// consume draw commands when you call Step().
+	/**
+	* Register a routine for debug drawing. The debug draw functions are called
+	* inside the b2World::Step method, so make sure your renderer is ready to
+	* consume draw commands when you call Step().
+	*/
 	public function SetDebugDraw(debugDraw:b2DebugDraw) : void{
 		m_debugDraw = debugDraw;
 	}
 	
-	/// Perform validation of internal data structures.
+	/**
+	* Perform validation of internal data structures.
+	*/
 	public function Validate() : void
 	{
 		m_broadPhase.Validate();
 	}
 	
-	/// Get the number of broad-phase proxies.
+	/**
+	* Get the number of broad-phase proxies.
+	*/
 	public function GetProxyCount() : int
 	{
 		return m_broadPhase.m_proxyCount;
 	}
 	
-	/// Get the number of broad-phase pairs.
+	/**
+	* Get the number of broad-phase pairs.
+	*/
 	public function GetPairCount() : int
 	{
 		return m_broadPhase.m_pairManager.m_pairCount;
 	}
 	
-	/// Create a rigid body given a definition. No reference to the definition
-	/// is retained.
-	/// @warning This function is locked during callbacks.
+	/**
+	* Create a rigid body given a definition. No reference to the definition
+	* is retained.
+	* @warning This function is locked during callbacks.
+	*/
 	public function CreateBody(def:b2BodyDef) : b2Body{
 		
 		//b2Settings.b2Assert(m_lock == false);
@@ -146,10 +174,12 @@ public class b2World
 		
 	}
 
-	/// Destroy a rigid body given a definition. No reference to the definition
-	/// is retained. This function is locked during callbacks.
-	/// @warning This automatically deletes all associated shapes and joints.
-	/// @warning This function is locked during callbacks.
+	/**
+	* Destroy a rigid body given a definition. No reference to the definition
+	* is retained. This function is locked during callbacks.
+	* @warning This automatically deletes all associated shapes and joints.
+	* @warning This function is locked during callbacks.
+	*/
 	public function DestroyBody(b:b2Body) : void{
 		
 		//b2Settings.b2Assert(m_bodyCount > 0);
@@ -213,9 +243,11 @@ public class b2World
 		
 	}
 
-	/// Create a joint to constrain bodies together. No reference to the definition
-	/// is retained. This may cause the connected bodies to cease colliding.
-	/// @warning This function is locked during callbacks.
+	/**
+	* Create a joint to constrain bodies together. No reference to the definition
+	* is retained. This may cause the connected bodies to cease colliding.
+	* @warning This function is locked during callbacks.
+	*/
 	public function CreateJoint(def:b2JointDef) : b2Joint{
 		
 		//b2Settings.b2Assert(m_lock == false);
@@ -262,8 +294,10 @@ public class b2World
 		
 	}
 
-	/// Destroy a joint. This may cause the connected bodies to begin colliding.
-	/// @warning This function is locked during callbacks.
+	/**
+	* Destroy a joint. This may cause the connected bodies to begin colliding.
+	* @warning This function is locked during callbacks.
+	*/
 	public function DestroyJoint(j:b2Joint) : void{
 		
 		//b2Settings.b2Assert(m_lock == false);
@@ -350,62 +384,88 @@ public class b2World
 		
 	}
 
-	/// Re-filter a shape. This re-runs contact filtering on a shape.
+	/**
+	* Re-filter a shape. This re-runs contact filtering on a shape.
+	*/
 	public function Refilter(shape:b2Shape) : void
 	{
+		//b2Settings.b2Assert(m_lock == false);
+		
 		shape.RefilterProxy(m_broadPhase, shape.m_body.m_xf);
 	}
 	
-	/// Enable/disable warm starting. For testing.
+	/**
+	* Enable/disable warm starting. For testing.
+	*/
 	public function SetWarmStarting(flag: Boolean) : void { m_warmStarting = flag; }
 
-	/// Enable/disable position correction. For testing.
-	public function SetPositionCorrection(flag: Boolean) : void { m_positionCorrection = flag; }
-
-	/// Enable/disable continuous physics. For testing.
+	/**
+	* Enable/disable continuous physics. For testing.
+	*/
 	public function SetContinuousPhysics(flag: Boolean) : void { m_continuousPhysics = flag; }
 	
-	/// Get the number of bodies.
+	/**
+	* Get the number of bodies.
+	*/
 	public function GetBodyCount() : int
 	{
 		return m_bodyCount;
 	}
 	
-	/// Get the number joints.
+	/**
+	* Get the number of joints.
+	*/
 	public function GetJointCount() : int
 	{
 		return m_jointCount;
 	}
 	
-	/// Get the number of contacts (each may have 0 or more contact points).
+	/**
+	* Get the number of contacts (each may have 0 or more contact points).
+	*/
 	public function GetContactCount() : int
 	{
 		return m_contactCount;
 	}
 	
-	/// Change the global gravity vector.
+	/**
+	* Change the global gravity vector.
+	*/
 	public function SetGravity(gravity: b2Vec2): void
 	{
 		m_gravity = gravity;
 	}
-	
-	/// The world provides a single static ground body with no collision shapes.
-	/// You can use this to simplify the creation of joints and static shapes.
+
+	/**
+	* Get the global gravity vector.
+	*/
+	public function GetGravity():b2Vec2{
+		return m_gravity;
+	}
+
+	/**
+	* The world provides a single static ground body with no collision shapes.
+	* You can use this to simplify the creation of joints and static shapes.
+	*/
 	public function GetGroundBody() : b2Body{
 		return m_groundBody;
 	}
 
-	/// Take a time step. This performs collision detection, integration,
-	/// and constraint solution.
-	/// @param timeStep the amount of time to simulate, this should not vary.
-	/// @param iterations the number of iterations to be used by the constraint solver.
-	public function Step(dt:Number, iterations:int) : void{
+	/**
+	* Take a time step. This performs collision detection, integration,
+	* and constraint solution.
+	* @param timeStep the amount of time to simulate, this should not vary.
+	* @param velocityIterations for the velocity constraint solver.
+	* @param positionIterations for the position constraint solver.
+	*/
+	public function Step(dt:Number, velocityIterations:int, positionIterations:int) : void{
 		
 		m_lock = true;
 		
 		var step:b2TimeStep = new b2TimeStep();
 		step.dt = dt;
-		step.maxIterations	= iterations;
+		step.velocityIterations = velocityIterations;
+		step.positionIterations = positionIterations;
 		if (dt > 0.0)
 		{
 			step.inv_dt = 1.0 / dt;
@@ -417,7 +477,6 @@ public class b2World
 		
 		step.dtRatio = m_inv_dt0 * dt;
 		
-		step.positionCorrection = m_positionCorrection;
 		step.warmStarting = m_warmStarting;
 		
 		// Update contacts.
@@ -442,13 +501,15 @@ public class b2World
 		m_lock = false;
 	}
 
-	/// Query the world for all shapes that potentially overlap the
-	/// provided AABB. You provide a shape pointer buffer of specified
-	/// size. The number of shapes found is returned.
-	/// @param aabb the query box.
-	/// @param shapes a user allocated shape pointer array of size maxCount (or greater).
-	/// @param maxCount the capacity of the shapes array.
-	/// @return the number of shapes found in aabb.
+	/**
+	* Query the world for all shapes that potentially overlap the
+	* provided AABB. You provide a shape pointer buffer of specified
+	* size. The number of shapes found is returned.
+	* @param aabb the query box.
+	* @param shapes a user allocated shape pointer array of size maxCount (or greater).
+	* @param maxCount the capacity of the shapes array.
+	* @return the number of shapes found in aabb.
+	*/
 	public function Query(aabb:b2AABB, shapes:Array, maxCount:int) : int{
 		
 		//void** results = (void**)m_stackAllocator.Allocate(maxCount * sizeof(void*));
@@ -466,16 +527,99 @@ public class b2World
 		
 	}
 
-	/// Get the world body list. With the returned body, use b2Body::GetNext to get
-	/// the next body in the world list. A NULL body indicates the end of the list.
-	/// @return the head of the world body list.
+	/**
+	* Check if the AABB is within the broadphase limits.
+	*/
+	public function InRange(aabb:b2AABB):Boolean{
+		 return m_broadPhase.InRange(aabb);
+	}
+	
+	/**
+	* Query the world for all shapes that intersect a given segment. You provide a shap
+	* pointer buffer of specified size. The number of shapes found is returned, and the buffer
+	* is filled in order of intersection
+	* @param segment defines the begin and end point of the ray cast, from p1 to p2.
+	* Use b2Segment.Extend to create (semi-)infinite rays
+	* @param shapes a user allocated shape pointer array of size maxCount (or greater).
+	* @param maxCount the capacity of the shapes array
+	* @param solidShapes determines if shapes that the ray starts in are counted as hits.
+	* @param userData passed through the world's contact filter, with method RayCollide. This can be used to filter valid shapes
+	* @return the number of shapes found.
+	* @see #Query()
+	* @see b2ContactFilter#RayCollide()
+	*/
+	public function Raycast(segment:b2Segment, shapes:Array, maxCount:int, solidShapes:Boolean, userData:*) : int{
+		var results:Array = new Array(maxCount);
+		
+		m_raycastSegment = segment;
+		m_raycastUserData = userData;
+		var count:int;
+		if(solidShapes)
+			count = m_broadPhase.QuerySegment(segment, results, maxCount, RaycastSortKey);
+		else
+			count = m_broadPhase.QuerySegment(segment, results, maxCount, RaycastSortKey2);
+		
+		
+		for (var i:int = 0; i < count; ++i)
+		{
+			shapes[i] = results[i];
+		}
+		
+		//m_stackAllocator.Free(results);
+		return count;
+	}
+	
+	/**
+	* Performs a raycast as with Raycast, finding the first intersecting shape.
+	* @param segment defines the begin and end point of the ray cast, from p1 to p2.
+	* Use b2Segment.Extend to create (semi-)infinite rays	
+	* @param lambda returns the hit fraction. You can use this to compute the contact point
+	* p = (1 - lambda) * segment.p1 + lambda * segment.p2.
+	* 
+	* lambda should be an array with one member. After calling TestSegment, you can retrieve the output value with
+	* lambda[0].
+	* @param normal returns the normal at the contact point. If there is no intersection, the normal
+	* is not set.
+	* @param solidShapes determines if shapes that the ray starts in are counted as hits.
+	* @param userData passed through the world's contact filter, with method RayCollide. This can be used to filter valid shapes.
+	* @return the colliding shape shape, or null if not found.
+	* @see Box2D.Collision.Shapes.b2Shape#TestSegment()
+	* @see b2ContactFilter#RayCollide()
+	*/
+	public function RaycastOne(segment:b2Segment,
+								lambda:Array, // float pointer
+								normal:b2Vec2, // pointer
+								solidShapes:Boolean, 
+								userData:*
+								) : b2Shape {
+		var shapes:Array = new Array(1);
+		var count:Number = Raycast(segment,shapes,1,solidShapes,userData);
+		if(count==0)
+			return null;
+		if(count>1)
+			trace(count);
+		//Redundantly do TestSegment a second time, as the previous one's results are inaccessible
+		var shape:b2Shape = shapes[0];
+		var xf:b2XForm = shape.GetBody().GetXForm();
+		shape.TestSegment(xf,lambda,normal,segment,1);
+		//We already know it returned true
+		return shape;
+	}
+
+	/**
+	* Get the world body list. With the returned body, use b2Body::GetNext to get
+	* the next body in the world list. A NULL body indicates the end of the list.
+	* @return the head of the world body list.
+	*/
 	public function GetBodyList() : b2Body{
 		return m_bodyList;
 	}
 
-	/// Get the world joint list. With the returned joint, use b2Joint::GetNext to get
-	/// the next joint in the world list. A NULL joint indicates the end of the list.
-	/// @return the head of the world joint list.
+	/**
+	* Get the world joint list. With the returned joint, use b2Joint::GetNext to get
+	* the next joint in the world list. A NULL joint indicates the end of the list.
+	* @return the head of the world joint list.
+	*/
 	public function GetJointList() : b2Joint{
 		return m_jointList;
 	}
@@ -485,11 +629,9 @@ public class b2World
 	// Internal yet public to make life easier.
 
 	// Find islands, integrate and solve constraints, solve position constraints
-	public function Solve(step:b2TimeStep) : void{
+	b2internal function Solve(step:b2TimeStep) : void{
 		
 		var b:b2Body;
-		
-		m_positionIterationCount = 0;
 		
 		// Size the island for the worst case.
 		var island:b2Island = new b2Island(m_bodyCount, m_contactCount, m_jointCount, m_stackAllocator, m_contactListener);
@@ -604,11 +746,7 @@ public class b2World
 				}
 			}
 			
-			island.Solve(step, m_gravity, m_positionCorrection, m_allowSleep);
-			//m_positionIterationCount = Math.max(m_positionIterationCount, island.m_positionIterationCount);
-			if (island.m_positionIterationCount > m_positionIterationCount) {
-				m_positionIterationCount = island.m_positionIterationCount;
-			}
+			island.Solve(step, m_gravity, m_allowSleep);
 			
 			// Post solve cleanup.
 			for (var i:int = 0; i < island.m_bodyCount; ++i)
@@ -656,21 +794,30 @@ public class b2World
 	}
 	
 	// Find TOI contacts and solve them.
-	public function SolveTOI(step:b2TimeStep) : void{
+	b2internal function SolveTOI(step:b2TimeStep) : void{
 		
 		var b:b2Body;
 		var s1:b2Shape;
 		var s2:b2Shape;
 		var b1:b2Body;
 		var b2:b2Body;
-		var cn:b2ContactEdge;
+		var cEdge:b2ContactEdge;
+		var j:b2Joint;
 		
-		// Reserve an island and a stack for TOI island solution.
-		var island:b2Island = new b2Island(m_bodyCount, b2Settings.b2_maxTOIContactsPerIsland, 0, m_stackAllocator, m_contactListener);
-		var stackSize:int = m_bodyCount;
+		// Reserve an island and a queue for TOI island solution.
+		var island:b2Island = new b2Island(m_bodyCount, b2Settings.b2_maxTOIContactsPerIsland, b2Settings.b2_maxTOIJointsPerIsland, m_stackAllocator, m_contactListener);
 		
-		//b2Body** stack = (b2Body**)m_stackAllocator.Allocate(stackSize * sizeof(b2Body*));
-		var stack:Array = new Array(stackSize);
+		//Simple one pass queue
+		//Relies on the fact that we're only making one pass
+		//through and each body can only be pushed/popped one.
+		//To push:
+		//  queue[queueStart+queueSize++] = newElement;
+		//To pop:
+		//  poppedElement = queue[queueStart++];
+		//  --queueSize;
+		
+		var queueCapacity:int = m_bodyCount;
+		var queue:Array/*b2Body*/ = new Array(queueCapacity);
 		
 		for (b = m_bodyList; b; b = b.m_next)
 		{
@@ -683,6 +830,11 @@ public class b2World
 		{
 			// Invalidate TOI
 			c.m_flags &= ~(b2Contact.e_toiFlag | b2Contact.e_islandFlag);
+		}
+		
+		for (j = m_jointList; j; j = j.m_next)
+		{
+			j.m_islandFlag = false;
 		}
 		
 		// Find TOI events and solve them.
@@ -740,8 +892,10 @@ public class b2World
 					toi = b2TimeOfImpact.TimeOfImpact(c.m_shape1, b1.m_sweep, c.m_shape2, b2.m_sweep);
 					//b2Settings.b2Assert(0.0 <= toi && toi <= 1.0);
 					
+					// If the TOI is in range ...
 					if (toi > 0.0 && toi < 1.0)
 					{
+						// Interpolate on the actual range.
 						//toi = Math.min((1.0 - toi) * t0 + toi, 1.0);
 						toi = (1.0 - toi) * t0 + toi;
 						if (toi > 1) toi = 1;
@@ -792,17 +946,20 @@ public class b2World
 				seed = b2;
 			}
 			
-			// Reset island and stack.
+			// Reset island and queue.
 			island.Clear();
-			var stackCount:int = 0;
-			stack[stackCount++] = seed;
+			var queueStart:int = 0;	//start index for queue
+			var queueSize:int = 0;	//elements in queue
+			queue[queueStart + queueSize++] = seed;
 			seed.m_flags |= b2Body.e_islandFlag;
 			
-			// Perform a depth first search (DFS) on the contact graph.
-			while (stackCount > 0)
+			// Perform a breadth first search (BFS) on the contact graph.
+			while (queueSize > 0)
 			{
 				// Grab the next body off the stack and add it to the island.
-				b = stack[--stackCount];
+				b = queue[queueStart++];
+				--queueSize;
+				
 				island.AddBody(b);
 				
 				// Make sure the body is awake.
@@ -816,7 +973,7 @@ public class b2World
 				}
 				
 				// Search all contacts connected to this body.
-				for (cn = b.m_contactList; cn; cn = cn.next)
+				for (cEdge = b.m_contactList; cEdge; cEdge = cEdge.next)
 				{
 					// Does the TOI island still have space for contacts?
 					if (island.m_contactCount == island.m_contactCapacity)
@@ -825,22 +982,22 @@ public class b2World
 					}
 					
 					// Has this contact already been added to an island? Skip slow or non-solid contacts.
-					if (cn.contact.m_flags & (b2Contact.e_islandFlag | b2Contact.e_slowFlag | b2Contact.e_nonSolidFlag))
+					if (cEdge.contact.m_flags & (b2Contact.e_islandFlag | b2Contact.e_slowFlag | b2Contact.e_nonSolidFlag))
 					{
 						continue;
 					}
 					
 					// Is this contact touching? For performance we are not updating this contact.
-					if (cn.contact.m_manifoldCount == 0)
+					if (cEdge.contact.m_manifoldCount == 0)
 					{
 						continue;
 					}
 					
-					island.AddContact(cn.contact);
-					cn.contact.m_flags |= b2Contact.e_islandFlag;
+					island.AddContact(cEdge.contact);
+					cEdge.contact.m_flags |= b2Contact.e_islandFlag;
 					
 					// Update other body.
-					var other:b2Body = cn.other;
+					var other:b2Body = cEdge.other;
 					
 					// Was the other body already added to this island?
 					if (other.m_flags & b2Body.e_islandFlag)
@@ -855,17 +1012,47 @@ public class b2World
 						other.WakeUp();
 					}
 					
-					//b2Settings.b2Assert(stackCount < stackSize);
-					stack[stackCount++] = other;
+					//b2Settings.b2Assert(queueStart + queueSize < queueCapacity);
+					queue[queueStart + queueSize] = other;
+					++queueSize;
 					other.m_flags |= b2Body.e_islandFlag;
 				}
 			}
 			
+			for (var jEdge:b2JointEdge = b.m_jointList; jEdge; jEdge = jEdge.next) 
+			{
+				if (island.m_jointCount == island.m_jointCapacity) 
+					continue;
+				
+				if (jEdge.joint.m_islandFlag == true)
+					continue;
+				
+				island.AddJoint(jEdge.joint);
+				jEdge.joint.m_islandFlag = true;
+				other = jEdge.other;
+				
+				if (other.m_flags & b2Body.e_islandFlag)
+					continue;
+					
+				if (!other.IsStatic())
+				{
+					other.Advance(minTOI);
+					other.WakeUp();
+				}
+				
+				//b2Settings.b2Assert(queueStart + queueSize < queueCapacity);
+				queue[queueStart + queueSize] = other;
+				++queueSize;
+				other.m_flags |= b2Body.e_islandFlag;
+			}
+			
 			var subStep:b2TimeStep = new b2TimeStep();
+			subStep.warmStarting = false;
 			subStep.dt = (1.0 - minTOI) * step.dt;
-			//b2Settings.b2Assert(subStep.dt > Number.MIN_VALUE);
 			subStep.inv_dt = 1.0 / subStep.dt;
-			subStep.maxIterations = step.maxIterations;
+			subStep.dtRatio = 0.0;
+			subStep.velocityIterations = step.velocityIterations;
+			subStep.positionIterations = step.positionIterations;
 			
 			island.SolveTOI(subStep);
 			
@@ -900,9 +1087,9 @@ public class b2World
 				
 				// Invalidate all contact TOIs associated with this body. Some of these
 				// may not be in the island because they were not touching.
-				for (cn = b.m_contactList; cn; cn = cn.next)
+				for (cEdge = b.m_contactList; cEdge; cEdge = cEdge.next)
 				{
-					cn.contact.m_flags &= ~b2Contact.e_toiFlag;
+					cEdge.contact.m_flags &= ~b2Contact.e_toiFlag;
 				}
 			}
 			
@@ -913,18 +1100,25 @@ public class b2World
 				c.m_flags &= ~(b2Contact.e_toiFlag | b2Contact.e_islandFlag);
 			}
 			
+			for (i = 0; i < island.m_jointCount;++i)
+			{
+				// Allow joints to participate in future TOI islands
+				j = island.m_joints[i];
+				j.m_islandFlag = false;
+			}
+			
 			// Commit shape proxy movements to the broad-phase so that new contacts are created.
 			// Also, some contacts can be destroyed.
 			m_broadPhase.Commit();
 		}
 		
-		//m_stackAllocator.Free(stack);
+		//m_stackAllocator.Free(queue);
 		
 	}
 	
 	static private var s_jointColor:b2Color = new b2Color(0.5, 0.8, 0.8);
 	//
-	public function DrawJoint(joint:b2Joint) : void{
+	b2internal function DrawJoint(joint:b2Joint) : void{
 		
 		var b1:b2Body = joint.m_body1;
 		var b2:b2Body = joint.m_body2;
@@ -969,7 +1163,7 @@ public class b2World
 	}
 	
 	static private var s_coreColor:b2Color = new b2Color(0.9, 0.6, 0.6);
-	public function DrawShape(shape:b2Shape, xf:b2XForm, color:b2Color, core:Boolean) : void{
+	b2internal function DrawShape(shape:b2Shape, xf:b2XForm, color:b2Color, core:Boolean) : void{
 		
 		var coreColor:b2Color = s_coreColor;
 		
@@ -1020,12 +1214,25 @@ public class b2World
 				}
 			}
 			break;
+		
+		case b2Shape.e_edgeShape:
+			{
+				var edge: b2EdgeShape = shape as b2EdgeShape;
+				
+				m_debugDraw.DrawSegment(b2Math.b2MulX(xf, edge.GetVertex1()), b2Math.b2MulX(xf, edge.GetVertex2()), color);
+				
+				if (core)
+				{
+					m_debugDraw.DrawSegment(b2Math.b2MulX(xf, edge.GetCoreVertex1()), b2Math.b2MulX(xf, edge.GetCoreVertex2()), coreColor);
+				}
+			}
+			break;
 		}
 	}
 	
 	
 	static private var s_xf:b2XForm = new b2XForm();
-	public function DrawDebugData() : void{
+	b2internal function DrawDebugData() : void{
 		
 		if (m_debugDraw == null)
 		{
@@ -1094,36 +1301,30 @@ public class b2World
 			//b2Color color(0.9f, 0.9f, 0.3f);
 			color.Set(0.9, 0.9, 0.3);
 			
-			for (i = 0; i < b2Pair.b2_tableCapacity; ++i)
+			for each(var pair:b2Pair in bp.m_pairManager.m_pairs)
 			{
-				var index:uint = bp.m_pairManager.m_hashTable[i];
-				while (index != b2Pair.b2_nullPair)
-				{
-					var pair:b2Pair = bp.m_pairManager.m_pairs[ index ];
-					var p1:b2Proxy = bp.m_proxyPool[ pair.proxyId1 ];
-					var p2:b2Proxy = bp.m_proxyPool[ pair.proxyId2 ];
-					
-					//b2AABB b1, b2;
-					b1.lowerBound.x = bp.m_worldAABB.lowerBound.x + invQ.x * bp.m_bounds[0][p1.lowerBounds[0]].value;
-					b1.lowerBound.y = bp.m_worldAABB.lowerBound.y + invQ.y * bp.m_bounds[1][p1.lowerBounds[1]].value;
-					b1.upperBound.x = bp.m_worldAABB.lowerBound.x + invQ.x * bp.m_bounds[0][p1.upperBounds[0]].value;
-					b1.upperBound.y = bp.m_worldAABB.lowerBound.y + invQ.y * bp.m_bounds[1][p1.upperBounds[1]].value;
-					b2.lowerBound.x = bp.m_worldAABB.lowerBound.x + invQ.x * bp.m_bounds[0][p2.lowerBounds[0]].value;
-					b2.lowerBound.y = bp.m_worldAABB.lowerBound.y + invQ.y * bp.m_bounds[1][p2.lowerBounds[1]].value;
-					b2.upperBound.x = bp.m_worldAABB.lowerBound.x + invQ.x * bp.m_bounds[0][p2.upperBounds[0]].value;
-					b2.upperBound.y = bp.m_worldAABB.lowerBound.y + invQ.y * bp.m_bounds[1][p2.upperBounds[1]].value;
-					
-					//b2Vec2 x1 = 0.5f * (b1.lowerBound + b1.upperBound);
-					x1.x = 0.5 * (b1.lowerBound.x + b1.upperBound.x);
-					x1.y = 0.5 * (b1.lowerBound.y + b1.upperBound.y);
-					//b2Vec2 x2 = 0.5f * (b2.lowerBound + b2.upperBound);
-					x2.x = 0.5 * (b2.lowerBound.x + b2.upperBound.x);
-					x2.y = 0.5 * (b2.lowerBound.y + b2.upperBound.y);
-					
+				var p1:b2Proxy = pair.proxy1;
+				var p2:b2Proxy = pair.proxy2;
+				if (!p1 || !p2)
+					continue;
+				//b2AABB b1, b2;
+				b1.lowerBound.x = bp.m_worldAABB.lowerBound.x + invQ.x * bp.m_bounds[0][p1.lowerBounds[0]].value;
+				b1.lowerBound.y = bp.m_worldAABB.lowerBound.y + invQ.y * bp.m_bounds[1][p1.lowerBounds[1]].value;
+				b1.upperBound.x = bp.m_worldAABB.lowerBound.x + invQ.x * bp.m_bounds[0][p1.upperBounds[0]].value;
+				b1.upperBound.y = bp.m_worldAABB.lowerBound.y + invQ.y * bp.m_bounds[1][p1.upperBounds[1]].value;
+				b2.lowerBound.x = bp.m_worldAABB.lowerBound.x + invQ.x * bp.m_bounds[0][p2.lowerBounds[0]].value;
+				b2.lowerBound.y = bp.m_worldAABB.lowerBound.y + invQ.y * bp.m_bounds[1][p2.lowerBounds[1]].value;
+				b2.upperBound.x = bp.m_worldAABB.lowerBound.x + invQ.x * bp.m_bounds[0][p2.upperBounds[0]].value;
+				b2.upperBound.y = bp.m_worldAABB.lowerBound.y + invQ.y * bp.m_bounds[1][p2.upperBounds[1]].value;
+				
+				//b2Vec2 x1 = 0.5f * (b1.lowerBound + b1.upperBound);
+				x1.x = 0.5 * (b1.lowerBound.x + b1.upperBound.x);
+				x1.y = 0.5 * (b1.lowerBound.y + b1.upperBound.y);
+				//b2Vec2 x2 = 0.5f * (b2.lowerBound + b2.upperBound);
+				x2.x = 0.5 * (b2.lowerBound.x + b2.upperBound.x);
+				x2.y = 0.5 * (b2.lowerBound.y + b2.upperBound.y);
+				
 					m_debugDraw.DrawSegment(x1, x2, color);
-					
-					index = pair.next;
-				}
 			}
 		}
 		
@@ -1137,7 +1338,7 @@ public class b2World
 			invQ.Set(1.0 / bp.m_quantizationFactor.x, 1.0 / bp.m_quantizationFactor.y);
 			//b2Color color(0.9f, 0.3f, 0.9f);
 			color.Set(0.9, 0.3, 0.9);
-			for (i = 0; i < b2Settings.b2_maxProxies; ++i)
+			for (i = 0; i < bp.m_proxyPool.length; ++i)
 			{
 				var p:b2Proxy = bp.m_proxyPool[ i];
 				if (p.IsValid() == false)
@@ -1224,48 +1425,72 @@ public class b2World
 			}
 		}
 	}
+	
+	
+	b2internal var m_raycastUserData:*;
+	b2internal var m_raycastSegment:b2Segment;
+	b2internal var m_raycastNormal:b2Vec2 = new b2Vec2();
+	b2internal function RaycastSortKey(shape:b2Shape):Number{
+		if(m_contactFilter && !m_contactFilter.RayCollide(m_raycastUserData,shape))
+			return -1;
+		
+		var body:b2Body = shape.GetBody();
+		var xf:b2XForm = body.GetXForm();
+		var lambda:Array = [0];
+		if(shape.TestSegment(xf, lambda, m_raycastNormal, m_raycastSegment, 1)==b2Shape.e_missCollide)
+			return -1;
+		return lambda[0];
+	}
+	
+	b2internal function RaycastSortKey2(shape:b2Shape):Number{
+		if(m_contactFilter && !m_contactFilter.RayCollide(m_raycastUserData,shape))
+			return -1;
+		
+		var body:b2Body = shape.GetBody();
+		var xf:b2XForm = body.GetXForm();
+		var lambda:Array = [0];
+		if(shape.TestSegment(xf, lambda, m_raycastNormal, m_raycastSegment, 1)!=b2Shape.e_hitCollide)
+			return -1;
+		return lambda[0];
+	}
+	
+	b2internal var m_blockAllocator:*;
+	b2internal var m_stackAllocator:*;
 
-	public var m_blockAllocator:*;
-	public var m_stackAllocator:*;
+	b2internal var m_lock:Boolean;
 
-	public var m_lock:Boolean;
+	b2internal var m_broadPhase:b2BroadPhase;
+	private var m_contactManager:b2ContactManager = new b2ContactManager();
 
-	public var m_broadPhase:b2BroadPhase;
-	public var m_contactManager:b2ContactManager = new b2ContactManager();
-
-	public var m_bodyList:b2Body;
-	public var m_jointList:b2Joint;
+	b2internal var m_bodyList:b2Body;
+	private var m_jointList:b2Joint;
 
 	// Do not access
-	public var m_contactList:b2Contact;
+	b2internal var m_contactList:b2Contact;
 
-	public var m_bodyCount:int;
-	public var m_contactCount:int;
-	public var m_jointCount:int;
+	private var m_bodyCount:int;
+	b2internal var m_contactCount:int;
+	private var m_jointCount:int;
 
-	public var m_gravity:b2Vec2;
-	public var m_allowSleep:Boolean;
+	private var m_gravity:b2Vec2;
+	private var m_allowSleep:Boolean;
 
-	public var m_groundBody:b2Body;
+	b2internal var m_groundBody:b2Body;
 
-	public var m_destructionListener:b2DestructionListener;
-	public var m_boundaryListener:b2BoundaryListener;
-	public var m_contactFilter:b2ContactFilter;
-	public var m_contactListener:b2ContactListener;
-	public var m_debugDraw:b2DebugDraw;
+	private var m_destructionListener:b2DestructionListener;
+	private var m_boundaryListener:b2BoundaryListener;
+	b2internal var m_contactFilter:b2ContactFilter;
+	b2internal var m_contactListener:b2ContactListener;
+	private var m_debugDraw:b2DebugDraw;
 
-	public var m_inv_dt0:Number;
-
-	public var m_positionIterationCount:int;
-
-	// This is for debugging the solver.
-	static public var m_positionCorrection:Boolean;
+	// This is used to compute the time step ratio to support a variable time step.
+	private var m_inv_dt0:Number;
 
 	// This is for debugging the solver.
-	static public var m_warmStarting:Boolean;
+	static private var m_warmStarting:Boolean;
 
 	// This is for debugging the solver.
-	static public var m_continuousPhysics:Boolean;
+	static private var m_continuousPhysics:Boolean;
 	
 };
 

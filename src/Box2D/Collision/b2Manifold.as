@@ -18,11 +18,17 @@
 
 package Box2D.Collision{
 	
-import Box2D.Collision.*
-import Box2D.Common.Math.*
-import Box2D.Common.*
+import Box2D.Collision.*;
+import Box2D.Common.Math.*;
+import Box2D.Common.*;
 
-// A manifold for two touching convex shapes.
+import Box2D.Common.b2internal;
+use namespace b2internal;
+
+/**
+* A manifold for two touching convex shapes.
+* @private
+*/
 public class b2Manifold
 {
 	public function b2Manifold(){
@@ -46,10 +52,7 @@ public class b2Manifold
 		}
 		normal.SetV(m.normal);
 	}
-	public var points:Array;	///< the points of contact
-	public var normal:b2Vec2;	///< the shared unit normal vector
-	public var pointCount:int = 0;	///< the number of manifold points
-};
+	/** The points of contact */	public var points:Array;	/** The shared unit normal vector */	public var normal:b2Vec2;	/** The number of manifold points */	public var pointCount:int = 0;};
 
 
 }

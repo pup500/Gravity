@@ -24,8 +24,15 @@ import Box2D.Common.Math.*;
 import Box2D.Common.*;
 import Box2D.Collision.Shapes.*;
 
+import Box2D.Common.b2internal;
+use namespace b2internal;
 
 
+
+/**
+* This structure is used to build polygon shapes.
+* @see b2PolygonShape
+*/
 public class b2PolygonDef extends b2ShapeDef
 {
 	public function b2PolygonDef()
@@ -38,9 +45,11 @@ public class b2PolygonDef extends b2ShapeDef
 		}
 	}
 	
-	/// Build vertices to represent an axis-aligned box.
-	/// @param hx the half-width.
-	/// @param hy the half-height.
+	/**
+	* Build vertices to represent an axis-aligned box.
+	* @param hx the half-width.
+	* @param hy the half-height.
+	*/
 	public function SetAsBox(hx:Number, hy:Number) : void{
 		vertexCount = 4;
 		vertices[0].Set(-hx, -hy);
@@ -49,11 +58,13 @@ public class b2PolygonDef extends b2ShapeDef
 		vertices[3].Set(-hx,  hy);
 	}
 
-	/// Build vertices to represent an oriented box.
-	/// @param hx the half-width.
-	/// @param hy the half-height.
-	/// @param center the center of the box in local coordinates.
-	/// @param angle the rotation of the box in local coordinates.
+	/**
+	* Build vertices to represent an oriented box.
+	* @param hx the half-width.
+	* @param hy the half-height.
+	* @param center the center of the box in local coordinates.
+	* @param angle the rotation of the box in local coordinates.
+	*/
 	static private var s_mat:b2Mat22 = new b2Mat22();
 	public function SetAsOrientedBox(hx:Number, hy:Number, center:b2Vec2=null, angle:Number=0.0) : void{
 		//SetAsBox(hx, hy);
@@ -85,9 +96,13 @@ public class b2PolygonDef extends b2ShapeDef
 		}
 	}
 
-	/// The polygon vertices in local coordinates.
+	/**
+	* The polygon vertices in local coordinates.
+	*/
 	public var vertices:Array = new Array(b2Settings.b2_maxPolygonVertices);
-	/// The number of polygon vertices.
+	/**
+	* The number of polygon vertices.
+	*/
 	public var vertexCount:int;
 };
 

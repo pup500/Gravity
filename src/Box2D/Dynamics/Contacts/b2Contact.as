@@ -26,41 +26,59 @@ import Box2D.Collision.*;
 import Box2D.Common.Math.*;
 import Box2D.Common.*;
 
+import Box2D.Common.b2internal;
+use namespace b2internal;
+
 
 //typedef b2Contact* b2ContactCreateFcn(b2Shape* shape1, b2Shape* shape2, b2BlockAllocator* allocator);
 //typedef void b2ContactDestroyFcn(b2Contact* contact, b2BlockAllocator* allocator);
 
 
 
+/**
+* The class manages contact between two shapes. A contact exists for each overlapping
+* AABB in the broad-phase (except if filtered). Therefore a contact object may exist
+* that has no contact points.
+*/
 public class b2Contact
 {
 	public virtual function GetManifolds():Array{return null};
 	
-	/// Get the number of manifolds. This is 0 or 1 between convex shapes.
-	/// This may be greater than 1 for convex-vs-concave shapes. Each
-	/// manifold holds up to two contact points with a shared contact normal.
+	/**
+	* Get the number of manifolds. This is 0 or 1 between convex shapes.
+	* This may be greater than 1 for convex-vs-concave shapes. Each
+	* manifold holds up to two contact points with a shared contact normal.
+	*/
 	public function GetManifoldCount():int
 	{
 		return m_manifoldCount;
 	}
 	
-	/// Is this contact solid?
-	/// @return true if this contact should generate a response.
+	/**
+	* Is this contact solid?
+	* @return true if this contact should generate a response.
+	*/
 	public function IsSolid():Boolean{
 		return (m_flags & e_nonSolidFlag) == 0;
 	}
 	
-	/// Get the next contact in the world's contact list.
+	/**
+	* Get the next contact in the world's contact list.
+	*/
 	public function GetNext():b2Contact{
 		return m_next;
 	}
 	
-	/// Get the first shape in this contact.
+	/**
+	* Get the first shape in this contact.
+	*/
 	public function GetShape1():b2Shape{
 		return m_shape1;
 	}
 	
-	/// Get the second shape in this contact.
+	/**
+	* Get the second shape in this contact.
+	*/
 	public function GetShape2():b2Shape{
 		return m_shape2;
 	}
@@ -69,12 +87,12 @@ public class b2Contact
 	
 	// m_flags
 	// enum
-	static public var e_nonSolidFlag:uint	= 0x0001;
-	static public var e_slowFlag:uint		= 0x0002;
-	static public var e_islandFlag:uint		= 0x0004;
-	static public var e_toiFlag:uint		= 0x0008;
+	static b2internal var e_nonSolidFlag:uint	= 0x0001;
+	static b2internal var e_slowFlag:uint		= 0x0002;
+	static b2internal var e_islandFlag:uint		= 0x0004;
+	static b2internal var e_toiFlag:uint		= 0x0008;
 
-	static public function AddType(createFcn:Function, destroyFcn:Function, type1:int, type2:int) : void
+	static b2internal function AddType(createFcn:Function, destroyFcn:Function, type1:int, type2:int) : void
 	{
 		//b2Settings.b2Assert(b2Shape.e_unknownShape < type1 && type1 < b2Shape.e_shapeTypeCount);
 		//b2Settings.b2Assert(b2Shape.e_unknownShape < type2 && type2 < b2Shape.e_shapeTypeCount);
@@ -90,7 +108,7 @@ public class b2Contact
 			s_registers[type2][type1].primary = false;
 		}
 	}
-	static public function InitializeRegisters() : void{
+	static b2internal function InitializeRegisters() : void{
 		s_registers = new Array(b2Shape.e_shapeTypeCount);
 		for (var i:int = 0; i < b2Shape.e_shapeTypeCount; i++){
 			s_registers[i] = new Array(b2Shape.e_shapeTypeCount);
@@ -103,8 +121,10 @@ public class b2Contact
 		AddType(b2PolyAndCircleContact.Create, b2PolyAndCircleContact.Destroy, b2Shape.e_polygonShape, b2Shape.e_circleShape);
 		AddType(b2PolygonContact.Create, b2PolygonContact.Destroy, b2Shape.e_polygonShape, b2Shape.e_polygonShape);
 		
+		AddType(b2EdgeAndCircleContact.Create, b2EdgeAndCircleContact.Destroy, b2Shape.e_edgeShape, b2Shape.e_circleShape);
+		AddType(b2PolyAndEdgeContact.Create, b2PolyAndEdgeContact.Destroy, b2Shape.e_polygonShape, b2Shape.e_edgeShape);
 	}
-	static public function Create(shape1:b2Shape, shape2:b2Shape, allocator:*):b2Contact{
+	static b2internal function Create(shape1:b2Shape, shape2:b2Shape, allocator:*):b2Contact{
 		if (s_initialized == false)
 		{
 			InitializeRegisters();
@@ -141,7 +161,7 @@ public class b2Contact
 			return null;
 		}
 	}
-	static public function Destroy(contact:b2Contact, allocator:*) : void{
+	static b2internal function Destroy(contact:b2Contact, allocator:*) : void{
 		//b2Settings.b2Assert(s_initialized == true);
 		
 		if (contact.m_manifoldCount > 0)
@@ -161,6 +181,7 @@ public class b2Contact
 		destroyFcn(contact, allocator);
 	}
 
+	/** @private */
 	public function b2Contact(s1:b2Shape=null, s2:b2Shape=null)
 	{
 		m_flags = 0;
@@ -181,9 +202,6 @@ public class b2Contact
 		
 		m_manifoldCount = 0;
 		
-		m_friction = Math.sqrt(m_shape1.m_friction * m_shape2.m_friction);
-		m_restitution = b2Math.b2Max(m_shape1.m_restitution, m_shape2.m_restitution);
-		
 		m_prev = null;
 		m_next = null;
 		
@@ -198,7 +216,7 @@ public class b2Contact
 		m_node2.other = null;
 	}
 	
-	public function Update(listener:b2ContactListener) : void
+	b2internal function Update(listener:b2ContactListener) : void
 	{
 		var oldCount:int = m_manifoldCount;
 		
@@ -228,30 +246,26 @@ public class b2Contact
 
 	//virtual ~b2Contact() {}
 
-	public virtual function Evaluate(listener:b2ContactListener) : void{};
-	static public var s_registers:Array; //[][]
-	static public var s_initialized:Boolean = false;
+	b2internal virtual function Evaluate(listener:b2ContactListener) : void{};
+	static b2internal var s_registers:Array; //[][]
+	static b2internal var s_initialized:Boolean = false;
 
-	public var m_flags:uint;
+	b2internal var m_flags:uint;
 
 	// World pool and list pointers.
-	public var m_prev:b2Contact;
-	public var m_next:b2Contact;
+	b2internal var m_prev:b2Contact;
+	b2internal var m_next:b2Contact;
 
 	// Nodes for connecting bodies.
-	public var m_node1:b2ContactEdge = new b2ContactEdge();
-	public var m_node2:b2ContactEdge = new b2ContactEdge();
+	b2internal var m_node1:b2ContactEdge = new b2ContactEdge();
+	b2internal var m_node2:b2ContactEdge = new b2ContactEdge();
 
-	public var m_shape1:b2Shape;
-	public var m_shape2:b2Shape;
+	b2internal var m_shape1:b2Shape;
+	b2internal var m_shape2:b2Shape;
 
-	public var m_manifoldCount:int;
-
-	// Combined friction
-	public var m_friction:Number;
-	public var m_restitution:Number;
+	b2internal var m_manifoldCount:int;
 	
-	public var m_toi:Number;
+	b2internal var m_toi:Number;
 
 };
 
