@@ -21,7 +21,7 @@
 		//cPoints[2] = end point control point
 		//cPoints[3] = end point
 		
-		public static function parseCurve(cPoints:Array, resolution:Number) 
+		public static function parseCurve(cPoints:Array, resolution:Number) :Array
 		{
 			if (resolution == 0) {
 				return null;
@@ -66,7 +66,7 @@
 				return null;
 			}
 
-			for (var loop = 0; loop < resolution - 1; loop += 1) {
+			for (var loop:uint = 0; loop < resolution - 1; loop += 1) {
 				ret[loop] = new b2Vec2();
 				ret[loop].x = f.x;
 				ret[loop].y = f.y;

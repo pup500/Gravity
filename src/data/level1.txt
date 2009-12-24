@@ -1,0 +1,5 @@
+data/floor.png,100,0
+data/floor.png,100,200
+data/tower-down.png,300,50
+data/tower-down.png,0,100
+data/tower-down.png,200,150

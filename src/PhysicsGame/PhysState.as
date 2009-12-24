@@ -8,6 +8,12 @@ package PhysicsGame
 	
 	import SVG.b2SVG;
 	
+	import flash.display.BitmapData;
+	import flash.net.URLLoader;
+	import flash.display.Loader;
+	import flash.display.Bitmap;
+	import flash.display.LoaderInfo;
+	import flash.net.URLRequest;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.geom.Point;
@@ -25,7 +31,7 @@ package PhysicsGame
 	{
 		[Embed(source="../data/cursor.png")] private var cursorSprite:Class;
 		[Embed(source ="../data/bot.png")] private var botSprite:Class;
-		[Embed(source="../data/Maps/line.svg", mimeType="application/octet-stream")] public var lineSVG:Class;
+		[Embed(source="../data/Maps/box.svg", mimeType="application/octet-stream")] public var lineSVG:Class;
 		
 		
 		private var _map:MapBase;
@@ -46,9 +52,11 @@ package PhysicsGame
 		{
 			super();
 			
-			debug = true;
+			//debug = true;
 			
-			loadSVG();
+			loadConfigFile("data/level1.txt");
+			
+			//loadSVG();
 			
 			//createMap();
 			
@@ -93,6 +101,47 @@ package PhysicsGame
 			//time_count.start();
 			
 			initContactListener();
+		}
+		
+		
+		//Load the png at the specified coordinates
+		private function loadPNG(png:String, x:Number, y:Number):void{
+			var loader:Loader = new Loader();
+    		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(e:Event):void{onComplete(e,x,y)});
+    		loader.load(new URLRequest(png));
+		}
+		
+		//Actual function that creates the sprite with the bitmap data
+		private function onComplete (event:Event, x:Number, y:Number):void
+		{
+		    var bitmapData:BitmapData = Bitmap(LoaderInfo(event.target).content).bitmapData;
+		    b2 = new ExSprite(x,y);
+		    b2.pixels = bitmapData;
+		    b2.initShape();
+			b2.createPhysBody(the_world);
+			b2.final_body.SetStatic();
+			add(b2);
+		}
+
+		//Load the config file to set up world...
+		public function loadConfigFile(file:String):void{
+			var loader:URLLoader = new URLLoader();
+			loader.addEventListener(Event.COMPLETE, onLoadConfigComplete);
+			loader.load(new URLRequest(file));
+		}
+		
+		//Actual callback function for load finish
+		private function onLoadConfigComplete(event:Event):void{
+			var text:String = event.target.data as String;
+			trace(text);
+			
+			//Read the config file... can be replaced by xml later...
+			var cols:Array;
+			var rows:Array = text.split("\n");
+			for(var i:uint = 0; i < rows.length; i++){
+				cols = rows[i].split(",");
+				loadPNG(cols[0], cols[1], cols[2]);
+			}
 		}
 		
 		private function loadSVG():void{
