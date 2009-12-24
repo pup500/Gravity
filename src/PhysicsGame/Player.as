@@ -48,16 +48,8 @@ package PhysicsGame
 			_restart = 0;
 			//_mass = 100; //default
 			
-			//bounding box tweaks
-			width = 6;
-			height = 7;
-			offset.x = 1;
-			offset.y = 1;
-			
 			//basic player physics
 			var runSpeed:uint = 40;//80;
-			//drag.x = runSpeed*8;
-			//acceleration.y = 420;
 			_jumpPower = 100;
 			maxVelocity.x = runSpeed;
 			maxVelocity.y = _jumpPower;
@@ -89,42 +81,25 @@ package PhysicsGame
 				return;
 			}
 			
-			//facing = acceleration.x < 0;
-			
 			var _applyForce:b2Vec2 = new b2Vec2(0,0);
 			
 			//MOVEMENT
 			//acceleration.x = 0;
-			if(FlxG.keys.LEFT)
+			if(FlxG.keys.A)
 			{
 				facing = LEFT;
-				//final_body.SetLinearVelocity(new b2Vec2(-40,0));
 				final_body.m_linearVelocity.x = -20;
-				
-				//_applyForce.x = -10;
-				//_applyForce.y = 0;
-				//_applyForce.Multiply(final_body.GetMass());
-				//final_body.ApplyForce(_applyForce, final_body.GetWorldCenter());
 			}
-			else if(FlxG.keys.RIGHT)
+			else if(FlxG.keys.D)
 			{
 				facing = RIGHT;
 				final_body.m_linearVelocity.x = 20;
-				
-				//_applyForce.x = 10;
-				//_applyForce.y = 0;
-				//_applyForce.Multiply(final_body.GetMass());
-				//final_body.ApplyForce(_applyForce, final_body.GetWorldCenter());
 			}
-			
-			//if(!velocity.x && !FlxG.kRight && !FlxG.kLeft){
-			//	acceleration.x = 0;
-			//}
-			
+
 			//trace("vel" + final_body.m_linearVelocity.y);
 			
 			////TODO only when collision from bottom
-			if(FlxG.keys.UP && Math.abs(final_body.m_linearVelocity.y) < 0.1)
+			if((FlxG.keys.SPACE || FlxG.keys.W)&& Math.abs(final_body.m_linearVelocity.y) < 0.1)
 			{
 				//velocity.y = -_jumpPower;
 				//final_body.SetLinearVelocity(new b2Vec2(0,-_jumpPower));
@@ -145,8 +120,8 @@ package PhysicsGame
 			//AIMING
 			_up = false;
 			_down = false;
-			if(FlxG.keys.UP) _up = true;
-			else if(FlxG.keys.DOWN && velocity.y) _down = true;
+			if(FlxG.keys.W) _up = true;
+			else if(FlxG.keys.S && velocity.y) _down = true;
 			
 			//ANIMATION
 			if(Math.abs(final_body.m_linearVelocity.y) > 0.1)
@@ -177,9 +152,19 @@ package PhysicsGame
 			
 			mouseShoot();
 			
-			//keyShoot();
+			gravObjKillSwitch();
 		}
 		
+		private function gravObjKillSwitch():void
+		{
+			if (FlxG.keys.Q)
+			{
+				for each(var bullet:Bullet in _bullets)
+				{
+					bullet.killGravityObject();
+				}
+			}
+		}
 		
 		private function mouseShoot():void{
 			if(FlxG.mouse.justPressed() && _canShoot){
@@ -205,12 +190,6 @@ package PhysicsGame
 				{
 					bX -= _bullets[_curBullet].width - 4;
 				}
-				
-				//This is cleaner inside the bullet object
-				//If we're recycling this bullet destroy it first.
-				//if (_bullets[_curBullet].final_shape != null)
-				//	_bullets[_curBullet].final_body.DestroyShape(_bullets[_curBullet].final_shape);
-				
 				
 				//Shoot it!!
 				_bullets[_curBullet].shoot(bX,bY,_bulletVel * angle.x/dist, _bulletVel * angle.y/dist);

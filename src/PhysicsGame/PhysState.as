@@ -32,7 +32,7 @@ package PhysicsGame
 		{
 			super();
 			
-			debug = true;
+			//debug = true;
 			
 			createMap();
 			

@@ -19,6 +19,8 @@ package org.overrides
 		public var final_body:b2Body; //The physical representation in the Body2D b2World.
 		public var final_shape:b2Shape; //Needs to be defined in order to destroy the physical representation.
 		
+		protected var _world:b2World;
+		
 		public function ExSprite(x:int=0, y:int=0, sprite:Class=null)
 		{
 			super(x, y, sprite);
@@ -47,6 +49,18 @@ package org.overrides
 			//shape.userData = this;
 			//body.userData = this;
 			final_body.SetUserData(this);
+		}
+		
+		public function destroyPhysBody():void
+		{
+			if(exists){
+				exists = false;
+				//We might not need to save shape as destroy body should work already...
+				final_body.DestroyShape(final_shape);
+				_world.DestroyBody(final_body);
+				final_shape = null;
+				final_body = null;
+			}
 		}
 		
 		override public function update():void

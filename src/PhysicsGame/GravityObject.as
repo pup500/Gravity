@@ -16,7 +16,7 @@
 	{
 		[Embed(source="../data/GravSink.png")] private var GravSink:Class;
 		
-		protected var _world:b2World;
+		//protected var _world:b2World;
 		public var mass:Number;
 		private var initialMass:Number = 5000;
 		
@@ -46,22 +46,10 @@
 			//addAnimation("poof",[2, 3, 4], 50, false);
 		}
 		
-		//TODO: prevent super.createPhysBody(world) form being called?
-		public function destroyPhys():void{
-			if(exists){
-				exists = false;
-				//We might not need to save shape as destroy body should work already...
-				final_body.DestroyShape(final_shape);
-				_world.DestroyBody(final_body);
-				final_shape = null;
-				final_body = null;
-			}
-		}
-		
 		override public function update():void
 		{
 			if(dead && finished){
-				destroyPhys();
+				destroyPhysBody();
 			}
 			else { 
 				super.update();
@@ -74,52 +62,23 @@
 			}
 		}
 		
-		override public function render():void
-		{
-			super.render();
-		}
-		
-		
-		//override public function hitWall(Contact:FlxCore=null):Boolean { hurt(0); return true; }
-		//override public function hitFloor(Contact:FlxCore=null):Boolean { hurt(0); return true; }
-		//override public function hitCeiling(Contact:FlxCore=null):Boolean { hurt(0); return true; }
 		override public function hurt(Damage:Number):void
 		{
-			if(dead) return;
-			
-			//var gravityState:GravSpawnFlanTilesState =  FlxG.state as GravSpawnFlanTilesState;
-			//gravityState.createGravityAtLocation(this);
-			
-			//velocity.x = 0;
-			//velocity.y = 0;
-			//if(onScreen()) FlxG.play(SndHit);
-			//dead = true;
-			//play("poof");
+			if (dead) return;
+			else
+				dead = true;
 		}
 		
 		public function shoot(X:int, Y:int, VelocityX:int, VelocityY:int):void
 		{
-			destroyPhys();
+			destroyPhysBody();
 			
 			body.position.Set(X, Y);
 			createPhysBody(_world);
 			
 			mass=initialMass;
 			
-			/*
-			var bmass:b2MassData = new b2MassData();
-			bmass.center.x = X + width/2;
-			bmass.center.y = Y + height/2;
-			bmass.I = 0;
-			bmass.mass = 0;
-			final_body.SetMass(bmass);
-			*/
-			
-			//final_body.SetBullet(true);
-			//final_body.m_linearVelocity.Set(VelocityX, VelocityY);
-			
 			play("idle");
-			//FlxG.play(SndShoot);
 			
 			super.reset(X,Y);
 		}
