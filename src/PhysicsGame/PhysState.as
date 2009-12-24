@@ -4,18 +4,18 @@ package PhysicsGame
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
 	
+	import PhysicsGame.MapClasses.*;
+	
+	import SVG.b2SVG;
+	
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.geom.Point;
 	import flash.utils.Timer;
-	
-	import SVG.b2SVG;
+	import flash.utils.getDefinitionByName;
 	
 	import org.flixel.*;
 	import org.overrides.*;
-	//For map loading:
-	import flash.utils.getDefinitionByName;
-	import PhysicsGame.MapClasses.*;
 	
 	/**
 	 * Rains physics objects onto a stationary object.
@@ -46,15 +46,17 @@ package PhysicsGame
 		{
 			super();
 			
-			//debug = true;
+			debug = true;
 			
 			loadSVG();
 			
-			createMap();
+			//createMap();
 			
 			_bullets = new Array();
 			_gravObjects = new Array();
-			var body:Player = new Player(_map.playerSpawn_x, _map.playerSpawn_y, _bullets);
+			//var body:Player = new Player(_map.playerSpawn_x, _map.playerSpawn_y, _bullets);
+			var body:Player = new Player(100, 100, _bullets);
+			
 			body.createPhysBody(the_world);
 			body.final_body.AllowSleeping(false);
 			body.final_body.SetFixedRotation(true);
@@ -94,7 +96,8 @@ package PhysicsGame
 		}
 		
 		private function loadSVG():void{
-			//b2SVG.parseSVG(new lineSVG(), the_world);
+			var myxml:XML = new XML(new lineSVG);
+			b2SVG.parseSVG(myxml, the_world, 3,0);
 		}
 		
 		private function getMapByLevel():MapBase{
