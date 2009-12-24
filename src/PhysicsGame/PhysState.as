@@ -9,6 +9,8 @@ package PhysicsGame
 	import flash.geom.Point;
 	import flash.utils.Timer;
 	
+	import SVG.b2SVG;
+	
 	import org.flixel.*;
 	import org.overrides.*;
 	//For map loading:
@@ -22,7 +24,9 @@ package PhysicsGame
 	public class PhysState extends ExState
 	{
 		[Embed(source="../data/cursor.png")] private var cursorSprite:Class;
-		[Embed(source = "../data/bot.png")] private var botSprite:Class;
+		[Embed(source ="../data/bot.png")] private var botSprite:Class;
+		[Embed(source="../data/Maps/line.svg", mimeType="application/octet-stream")] public var lineSVG:Class;
+		
 		
 		private var _map:MapBase;
 		private var _bullets:Array;
@@ -42,7 +46,9 @@ package PhysicsGame
 		{
 			super();
 			
-			//debug = true;
+			debug = true;
+			
+			loadSVG();
 			
 			createMap();
 			
@@ -84,6 +90,10 @@ package PhysicsGame
 			//time_count.start();
 			
 			initContactListener();
+		}
+		
+		private function loadSVG():void{
+			//b2SVG.parseSVG(new lineSVG(), the_world);
 		}
 		
 		private function getMapByLevel():MapBase{

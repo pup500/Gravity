@@ -18,6 +18,7 @@ package org.overrides
 		public var shape:b2PolygonDef;
 		public var final_body:b2Body; //The physical representation in the Body2D b2World.
 		public var final_shape:b2Shape; //Needs to be defined in order to destroy the physical representation.
+		public var impactPoint:b2Vec2;
 		
 		protected var _world:b2World;
 		
@@ -29,6 +30,8 @@ package org.overrides
 			body = new b2BodyDef();
 			body.position.Set(x, y);
 			shape = new b2PolygonDef();
+			
+			impactPoint = new b2Vec2();
 		}
 		//We're calling this outside the constructor because we need Flixel to define its sprite dimensions first in loadGraphic().
 		//TODO: Refactor. Can this go into the constructor somehow? Having to call it everytime you construct the an ExSprite sucks
@@ -43,7 +46,8 @@ package org.overrides
 		public function createPhysBody(world:b2World):void
 		{
 			final_body=world.CreateBody(body);
-			final_shape = final_body.CreateShape(shape);
+			//final_shape = 
+			final_body.CreateShape(shape);
 			final_body.SetMassFromShapes();
 			
 			//shape.userData = this;
@@ -56,7 +60,7 @@ package org.overrides
 			if(exists){
 				exists = false;
 				//We might not need to save shape as destroy body should work already...
-				final_body.DestroyShape(final_shape);
+				//final_body.DestroyShape(final_shape);
 				_world.DestroyBody(final_body);
 				final_shape = null;
 				final_body = null;
@@ -67,8 +71,8 @@ package org.overrides
 		{
 			super.update();
 			var posVec:b2Vec2 = final_body.GetPosition();
-			x = posVec.x - _bw/2;
-			y = posVec.y - _bh/2;
+			x = posVec.x - width/2;//_bw/2;
+			y = posVec.y - height/2;//_bh/2;
 			
 			angle = final_body.GetAngle();
 		}
@@ -97,6 +101,11 @@ package org.overrides
 		
 		override public function hurt(Damage:Number):void{
 			
+		}
+		
+		public function setImpactPoint(point:b2Vec2):void{
+			impactPoint.x = point.x;
+			impactPoint.y = point.y;
 		}
 	}
 }

@@ -99,8 +99,12 @@ package PhysicsGame
 			//trace("vel" + final_body.m_linearVelocity.y);
 			
 			////TODO only when collision from bottom
-			if((FlxG.keys.SPACE || FlxG.keys.W)&& Math.abs(final_body.m_linearVelocity.y) < 0.1)
+			if((FlxG.keys.SPACE || FlxG.keys.W) && impactPoint.y > y)//&& Math.abs(final_body.m_linearVelocity.y) < 0.1)
 			{
+				//Hack... attempt at jumping...
+				impactPoint.y = -100;
+				
+				
 				//velocity.y = -_jumpPower;
 				//final_body.SetLinearVelocity(new b2Vec2(0,-_jumpPower));
 				_applyForce.x = 0;

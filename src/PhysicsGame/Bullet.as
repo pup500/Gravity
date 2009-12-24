@@ -5,6 +5,8 @@
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
 	
+	import flash.geom.Point;
+	
 	import org.flixel.FlxG;
 	import org.overrides.ExSprite;
 	
@@ -21,6 +23,7 @@
 		//protected var _world:b2World;
 		protected var _gravityObject:GravityObject;
 		private var _spawn:Boolean;
+		private var old:Point;
 		
 		//@desc Bullet constructor
 		//@param world	We'll need this to spawn the bullet's physical body when it's shot.
@@ -41,6 +44,7 @@
 			//offset.y = 1;
 			exists = false;
 			_spawn = false;
+			old = new Point();
 			
 			addAnimation("idle",[0, 1], 50);
 			addAnimation("poof",[2, 3, 4], 50, false);
@@ -64,7 +68,7 @@
 				destroyPhysBody();
 				if(_spawn){
 					_spawn = false;
-					_gravityObject.shoot(x,y,0,0);
+					_gravityObject.shoot(impactPoint.x,impactPoint.y,0,0);
 				}
 			}
 			else { 
@@ -83,6 +87,8 @@
 			
 			//Cannot create objects in hurt, this is called in collision....
 			_spawn = true;
+			old.x = x;
+			old.y = y;
 			
 			final_body.m_linearVelocity.SetZero();
 			if(onScreen()) FlxG.play(SndHit);

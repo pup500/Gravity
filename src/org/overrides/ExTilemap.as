@@ -38,6 +38,8 @@ package org.overrides
 						body.height = _tileSize;
 						
 						//trace("x,y:" +col * _tileSize + ", " + row * _tileSize);
+						//Tiles do not behave like sprites.... sprites are rendered normally through the tiles
+						//They aren't regular old sprites... so this hack is just to make the body match the tiles
 						body.body.position.x += body.width/2;
 						body.body.position.y += body.height/2;
 						

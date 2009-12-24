@@ -8,6 +8,8 @@
 	import org.overrides.ExSprite;
 	import org.flixel.FlxG;
 	
+	import flash.display.Shape;
+	
 	/**
 	 * ...
 	 * @author Norman
@@ -81,6 +83,23 @@
 			play("idle");
 			
 			super.reset(X,Y);
+		}
+		
+		override public function render():void
+		{
+			//Somehow super render doesn't line up...
+			
+			super.render();
+			if(!visible)
+				return;
+			getScreenXY(_p);
+
+			var myShape:Shape = new Shape();
+			myShape.graphics.beginFill(0x00ff00,alpha/3+.1);
+			myShape.graphics.lineStyle(1,0x00ff00,alpha/3+.1);
+			myShape.graphics.drawCircle(_p.x,_p.y, alpha*50);
+			myShape.graphics.endFill();
+			FlxG.buffer.draw(myShape);
 		}
 	}
 

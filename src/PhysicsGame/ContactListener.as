@@ -17,8 +17,13 @@ package PhysicsGame
 			var body1:b2Body = point.shape1.GetBody();
 			var body2:b2Body = point.shape2.GetBody();
 			trace("Body1: "+ body1.GetUserData().name + " Body2: " + body2.GetUserData().name);
+			body1.GetUserData().setImpactPoint(point.position);
+			body2.GetUserData().setImpactPoint(point.position);
 			body1.GetUserData().hurt(0);
 			body2.GetUserData().hurt(0);
+			
+			//save contact point... use this info to determine hitwall, hitfloor, hitceiling...
+			//the contact point can be used in bullet to create grav object
 		}
 	
 		/// Called when a contact point persists. This includes the geometry
