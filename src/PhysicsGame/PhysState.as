@@ -11,6 +11,9 @@ package PhysicsGame
 	
 	import org.flixel.*;
 	import org.overrides.*;
+	//For map loading:
+	import flash.utils.getDefinitionByName;
+	import PhysicsGame.MapClasses.*;
 	
 	/**
 	 * Rains physics objects onto a stationary object.
@@ -28,6 +31,13 @@ package PhysicsGame
 		private var time_count:Timer=new Timer(1000);
 		private var spawned:uint = 0;
 		
+		//Our map loading code requires every map object derived classes to be referenced in this class
+		//TODO: Refactor so we don't have to reference each map like this?
+		private var maponegap:MapOneGap;
+		private var mapsmalloneplatform:MapSmallOnePlatform;
+		private var mapvalley:MapValley;
+		private var maptestlevel:MapTestLevel;
+		
 		public function PhysState() 
 		{
 			super();
@@ -38,7 +48,7 @@ package PhysicsGame
 			
 			_bullets = new Array();
 			_gravObjects = new Array();
-			var body:Player = new Player(150, 100, _bullets);
+			var body:Player = new Player(_map.playerSpawn_x, _map.playerSpawn_y, _bullets);
 			body.createPhysBody(the_world);
 			body.final_body.AllowSleeping(false);
 			add(body);
@@ -76,8 +86,16 @@ package PhysicsGame
 			initContactListener();
 		}
 		
+		private function getMapByLevel():MapBase{
+			//trace(FlxG.level);
+			//trace(FlxG.levels[FlxG.level]);
+			var ClassReference:Class = getDefinitionByName(FlxG.levels[FlxG.level]) as Class;
+			return new ClassReference() as MapBase;
+		}
+		
 		public function createMap():void{
-			_map = new MapOneGap();
+			_map = getMapByLevel();
+			
 			for(var i:uint= 0; i < _map.mainLayer._sprites.length; i++){
 				b2 = _map.mainLayer._sprites[i] as ExSprite;
 				b2.createPhysBody(the_world);
