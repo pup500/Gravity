@@ -86,8 +86,5 @@ package common
 			
 			return objects.toXMLString();
 		}
-
-		//public function get config():Array{return _config;}
-		
 	}
 }
