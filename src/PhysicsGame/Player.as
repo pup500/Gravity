@@ -196,6 +196,13 @@ package PhysicsGame
 					bX -= _bullets[_curBullet].width - 4;
 				}
 				
+				if(angle.y > height){
+					bY += height - 4;
+				}
+				else if(angle.y < -height){
+					bY -= height - 4;
+				}
+				
 				//Shoot it!!
 				_bullets[_curBullet].shoot(bX,bY,_bulletVel * angle.x/dist, _bulletVel * angle.y/dist);
 				//Set the next bullet to be shot to the first in the array for recycling.

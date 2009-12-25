@@ -55,7 +55,7 @@ package PhysicsGame
 			
 			//debug = true;
 			
-			loadConfigFile("data/level1.txt");
+			loadConfigFile("data/level2.txt");
 			
 			//loadSVG();
 			

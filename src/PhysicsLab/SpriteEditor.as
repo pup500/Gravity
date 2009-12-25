@@ -33,7 +33,6 @@
 		private var config:Array;
 		
 		private var edit:Boolean;
-		private var preview:Boolean;
 		private var text:FlxText;
 		
 		private var overlay:TextField;
@@ -49,7 +48,7 @@
 			the_world.SetGravity(new b2Vec2(0,0));
 			//debug = true;
 			
-			loadConfigFile("data/level1.txt");
+			loadConfigFile("data/level2.txt");
 			
 			//loadSVG();
 			
@@ -78,6 +77,8 @@
 			//time_count.start();
 			
 			files = new Array();
+			index = 0;
+			
 			//Add new files 
 			var s:String = new configFile;
 			var t:Array = s.split("\n");
@@ -88,10 +89,8 @@
 			}
 			
 			edit = false;
-			preview = true;
 			
 			config = new Array();
-			index = 0;
 			
 			//text = new FlxText(0,100,files[index].length * 20,files[index]);
 			//text.color = WHITE;
@@ -103,16 +102,14 @@
 			addChild(overlay);
 			
 			currentImg = new Shape();
-			currentImg.x = 0;
-			currentImg.y = 15;
+			//currentImg.x = 0;
+			//currentImg.y = 15;
 			addChild(currentImg);
 			setCurrentImg(files[index]);
 			
 			FlxG.log("0-9 - switches between the tiles");
 			FlxG.log("E - enters edit mode (mouse click to add new shape)");
-			FlxG.log("O - turns off edit mode");
-			FlxG.log("[ - turn on preview");
-			FlxG.log("] - turn off preview");
+			FlxG.log("Q - turns off edit mode");
 		}
 
 		private function setOverlay(text:String, color:Number=WHITE):void{
@@ -135,32 +132,40 @@
 			 currentImg.graphics.endFill();
 		}
 		
-		private function setPreview(status:Boolean):void{
-			preview = status;
-			currentImg.alpha = status ? .8 : 0;
-			overlay.alpha = status ? .8 : 0;
-		}
-		
 		//Load the png at the specified coordinates
-		private function loadPNG(png:String, x:uint, y:uint):void{
+		private function loadPNG(png:String, x:uint, y:uint, mouse:Boolean=false):void{
 			var loader:Loader = new Loader();
-    		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(e:Event):void{onComplete(e,x,y)});
+    		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(e:Event):void{onComplete(e,x,y,png,mouse)});
     		loader.load(new URLRequest(png));
-    		
-    		var s:Array = [png, x, y, "static"];
-    		config.push(s.join(","));
 		}
 		
 		//Actual function that creates the sprite with the bitmap data
-		private function onComplete(event:Event, x:uint, y:uint):void
+		private function onComplete(event:Event, x:uint, y:uint, file:String, mouse:Boolean=false):void
 		{
-		    var bitmapData:BitmapData = Bitmap(LoaderInfo(event.target).content).bitmapData;
+			var loadinfo:LoaderInfo = LoaderInfo(event.target);
+		    var bitmapData:BitmapData = Bitmap(loadinfo.content).bitmapData;
+		  
+		  	//Add offset when adding objects using the mouse
+		    if(mouse){
+		    	x += bitmapData.width/2;
+		    	y += bitmapData.height/2;
+		    }
+		    
 		    b2 = new ExSprite(x,y);
 		    b2.pixels = bitmapData;
 		    b2.initShape();
 			b2.createPhysBody(the_world);
 			b2.final_body.SetStatic();
 			add(b2);
+			
+    		var s:Array = [file, x, y, "static"];
+    		config.push(s.join(","));
+    		
+    						
+			trace("----------- CONFIG FILE ---------");
+			for(var i:uint = 0; i < config.length; i++){
+				trace(config[i]);
+			}
 		}
 
 		//Load the config file to set up world...
@@ -180,18 +185,10 @@
 			var rows:Array = text.split("\n");
 			for(var i:uint = 0; i < rows.length; i++){
 				cols = rows[i].split(",");
-				loadPNG(cols[0], cols[1], cols[2]);
+				if(cols[0] != "")
+					loadPNG(cols[0], cols[1], cols[2]);
 			}
 		}
-		
-		 
-		// then make the callback
-		/*
-		public function onMouseClickEvent(event:Event)
-		{
-			var mouseevent:MouseEvent = event as MouseEvent;
-			mouseevent
-		}*/
 		
 		private function addSprite(file:String,x:uint,y:uint):void
 		{
@@ -225,7 +222,7 @@
 			super.update();
 			
 			if(FlxG.keys.E) edit = true;
-			if(FlxG.keys.O) edit = false;
+			if(FlxG.keys.Q) edit = false;
 			
 			if(FlxG.keys.ONE) index = 0;
 			if(FlxG.keys.TWO) index = 1;
@@ -243,21 +240,16 @@
 				FlxG.keys.SIX || FlxG.keys.SEVEN || FlxG.keys.EIGHT || FlxG.keys.NINE || FlxG.keys.ZERO)
 				setCurrentImg(files[index]);
 			
-			if(FlxG.keys.LBRACKET) setPreview(true);
-			if(FlxG.keys.RBRACKET) setPreview(false);
+			currentImg.x = mouseX;
+			currentImg.y = mouseY;
 			
 			var mode:String = edit ? "EDIT" : "LOOK";
-			var prev:String = preview ? "PRVW" : "NOHUD";
-			var status:Array = [mode, prev, files[index]];
+			var status:Array = [mode, files[index]];
 			setOverlay(status.join(" | "), edit ? RED : WHITE);
+			currentImg.alpha = edit ? .3 : 0;
 			
 			if(edit && FlxG.mouse.justPressed()){
-				loadPNG(files[index], FlxG.mouse.x, FlxG.mouse.y);
-				
-				trace("----------- CONFIG FILE ---------");
-				for(var i:uint = 0; i < config.length; i++){
-					trace(config[i]);
-				}
+				loadPNG(files[index], FlxG.mouse.x, FlxG.mouse.y, true);
 			}
 			
 		}

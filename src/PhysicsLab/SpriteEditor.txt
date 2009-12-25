@@ -2,8 +2,8 @@
 2=data/spawner.png
 3=data/GravSink.png
 4=data/tower-down.png
-5=
-6=
-7=
-8=
-9=
+5=data/tech_tiles.png
+6=data/tiles_all.png
+7=data/notch.png
+8=data/gibs.png
+9=data/dirt.png
