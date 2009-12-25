@@ -26,6 +26,10 @@ package org.overrides
 			debug = false;
 		}
 		
+		public function init():void{
+			
+		}
+		
 		protected function initBox2DDebugRendering():void
 		{
 			if(debug){

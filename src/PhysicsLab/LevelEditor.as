@@ -11,11 +11,11 @@
 	import flash.display.*;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.net.URLRequest;
 	import flash.system.System;
 	import flash.text.TextField;
-	import flash.utils.Timer;
 	
 	import org.flixel.*;
 	import org.overrides.*;
@@ -36,6 +36,15 @@
 		private var lastIndex:uint;
 		
 		private var edit:Boolean;
+		private var mode:uint;
+		
+		private const EDIT:uint = 0;
+		private const VIEW:uint = 1;
+		private const START:uint = 2;
+		private const END:uint = 3;
+		private var actions:Array = ["EDIT", "VIEW", "START", "END"];
+		private var doAction:Array = [onEdit, onView, onStart, onEnd];
+		
 		private var text:FlxText;
 		private var copyButton:SimpleButton;
 		
@@ -57,6 +66,7 @@
 			FlxG.showCursor(cursorSprite);
 			
 			edit = false;
+			mode = VIEW;
 			
 			loadLevelConfig();
 			addPlayer();
@@ -175,11 +185,8 @@
 		{
 			super.update();
 			
-			if(FlxG.keys.justReleased("E")) 
-				edit = !edit;
-
 			handlePreview();
-			handleStatusText();
+			handleMode();
 			handleMouse();
 		}
 		
@@ -203,27 +210,55 @@
 			previewImg.x = mouseX;
 			previewImg.y = mouseY;
 			
-			previewImg.alpha = edit ? .7 : .5;
+			previewImg.alpha = (mode == EDIT) ? .7 : .5;
 		}
 		
-		private function handleStatusText():void{
-			var mode:String = edit ? "EDITING MODE" : "VIEWING MODE";
-			var status:Array = [mode, "FILE: " + files[index]];
-			setStatusText(status.join(" | "), edit ? RED : WHITE);
+		private function handleMode():void{
+			if(FlxG.keys.justReleased("E")) 
+				mode = EDIT;
+				
+			if(FlxG.keys.justReleased("V")) 
+				mode = VIEW;
+			
+			if(FlxG.keys.justReleased("F")) 
+				mode = START;
+				
+			if(FlxG.keys.justReleased("T"))
+				mode = END;
+				
+			var status:Array = [actions[mode], "FILE: " + files[index]];
+			setStatusText(status.join(" | "), mode == EDIT ? RED : WHITE);
 		}
 		
 		private function handleMouse():void{
-			if(edit && FlxG.mouse.justPressed()){
-				var shape:XML = new XML(<shape/>);
-				shape.file = files[index];
-				shape.type = "static";
-				shape.angle = 0;
-				shape.x = FlxG.mouse.x;
-				shape.y = FlxG.mouse.y;
-				shape.contour = "";
-				
-				xmlMapLoader.addXMLObject(shape, true);
+			if(FlxG.mouse.justPressed()){
+				doAction[mode]();
 			}
 		}
+		
+		private function onEdit():void{
+			var shape:XML = new XML(<shape/>);
+			shape.file = files[index];
+			shape.type = "static";
+			shape.angle = 0;
+			shape.x = FlxG.mouse.x;
+			shape.y = FlxG.mouse.y;
+			shape.contour = "";
+			
+			xmlMapLoader.addXMLObject(shape, true);
+		}
+		
+		private function onView():void{
+			
+		}
+		
+		private function onStart():void{
+			xmlMapLoader.setStartPoint(new Point(FlxG.mouse.x, FlxG.mouse.y));
+		}
+		
+		private function onEnd():void{
+			xmlMapLoader.setEndPoint(new Point(FlxG.mouse.x, FlxG.mouse.y));
+		}
+		
 	}
 }

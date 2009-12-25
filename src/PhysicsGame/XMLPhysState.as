@@ -39,12 +39,16 @@ package PhysicsGame
 			
 			loadLevelConfig();
 			
-			createBullets();
-			addPlayer();
-			
 			FlxG.showCursor(cursorSprite);
 			
 			initContactListener();
+		}
+		
+		//Level configuration will call init when done...
+		override public function init():void{
+			createBullets();
+			addPlayer();
+			addEndPoint();
 		}
 		
 		private function loadLevelConfig():void{
@@ -72,8 +76,10 @@ package PhysicsGame
 			}
 		}
 		
-		private function addPlayer():void{
-			var body:Player = new Player(100, 100, _bullets);
+		//Player will be called from the xmlMapLoader when the xml file is read...
+		public function addPlayer():void{
+			var start:Point = xmlMapLoader.getStartPoint();
+			var body:Player = new Player(start.x, start.y, _bullets);
 			
 			body.createPhysBody(the_world);
 			body.final_body.AllowSleeping(false);
@@ -85,6 +91,16 @@ package PhysicsGame
 			FlxG.follow(body,2.5);
 			FlxG.followAdjust(0.5,0.0);
 			FlxG.followBounds(0,0,640,640);
+		}
+		
+		public function addEndPoint():void{
+			var end:Point = xmlMapLoader.getEndPoint();
+			var body:ExSprite = new ExSprite(end.x, end.y, cursorSprite);
+			body.initShape();
+			body.createPhysBody(the_world);
+			body.final_body.AllowSleeping(false);
+			body.final_body.SetFixedRotation(true);
+			add(body);
 		}
 		
 		private function initContactListener():void{
