@@ -98,9 +98,9 @@ package PhysicsGame
 			}
 
 			//trace("vel" + final_body.m_linearVelocity.y);
-			
+			trace("ipy: " + impactPoint.y + " y: " + y);
 			////TODO only when collision from bottom
-			if((FlxG.keys.SPACE || FlxG.keys.W) && impactPoint.y > y)//&& Math.abs(final_body.m_linearVelocity.y) < 0.1)
+			if((FlxG.keys.SPACE || FlxG.keys.W) && impactPoint.y > y + height - 1)///&& Math.abs(final_body.m_linearVelocity.y) < 0.1)
 			{
 				//Hack... attempt at jumping...
 				impactPoint.y = -100;
@@ -109,7 +109,7 @@ package PhysicsGame
 				//velocity.y = -_jumpPower;
 				//final_body.SetLinearVelocity(new b2Vec2(0,-_jumpPower));
 				_applyForce.x = 0;
-				_applyForce.y = -40;
+				_applyForce.y = -80;
 				_applyForce.Multiply(final_body.GetMass());
 				
 				//trace("mass" + final_body.GetMass());

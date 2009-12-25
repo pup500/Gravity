@@ -6,12 +6,11 @@
 	
 	import PhysicsGame.MapClasses.*;
 	
-	import SVG.b2SVG;
-	
 	import flash.display.*;
 	import flash.events.Event;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
+	import flash.text.TextField;
 	import flash.utils.Timer;
 	
 	import org.flixel.*;
@@ -24,16 +23,30 @@
 	public class SpriteEditor extends ExState
 	{
 		[Embed(source="../data/cursor.png")] private var cursorSprite:Class;
-		[Embed(source ="../data/bot.png")] private var botSprite:Class;
-		[Embed(source="../data/Maps/box.svg", mimeType="application/octet-stream")] public var lineSVG:Class;
+		[Embed(source="SpriteEditor.txt", mimeType="application/octet-stream")] public var configFile:Class;
 		
 		private var b2:ExSprite; //For creating environment physical objects.
 		private var time_count:Timer=new Timer(1000);
-		private var spawned:uint = 0;
+		
+		private var files:Array;
+		private var index:uint;
+		private var config:Array;
+		
+		private var edit:Boolean;
+		private var preview:Boolean;
+		private var text:FlxText;
+		
+		private var overlay:TextField;
+		private var currentImg:Shape;
+		
+		private const BLACK:Number = 0x0;
+		private const WHITE:Number = 0xFFFFFF;
+		private const RED:Number = 0xFF0000;
 		
 		public function SpriteEditor() 
 		{
 			super();
+			the_world.SetGravity(new b2Vec2(0,0));
 			//debug = true;
 			
 			loadConfigFile("data/level1.txt");
@@ -64,17 +77,82 @@
 			//time_count.addEventListener(TimerEvent.TIMER, on_time);
 			//time_count.start();
 			
+			files = new Array();
+			//Add new files 
+			var s:String = new configFile;
+			var t:Array = s.split("\n");
+			var c:Array;
+			for(var i:uint=0; i < t.length; i++){
+				c = t[i].split("=");
+				files.push(c[1]);
+			}
+			
+			edit = false;
+			preview = true;
+			
+			config = new Array();
+			index = 0;
+			
+			//text = new FlxText(0,100,files[index].length * 20,files[index]);
+			//text.color = WHITE;
+			//add(text);
+			
+			overlay = new TextField();
+			overlay.x = 0;
+			overlay.y = 0;
+			addChild(overlay);
+			
+			currentImg = new Shape();
+			currentImg.x = 0;
+			currentImg.y = 15;
+			addChild(currentImg);
+			setCurrentImg(files[index]);
+			
+			FlxG.log("0-9 - switches between the tiles");
+			FlxG.log("E - enters edit mode (mouse click to add new shape)");
+			FlxG.log("O - turns off edit mode");
+			FlxG.log("[ - turn on preview");
+			FlxG.log("] - turn off preview");
+		}
+
+		private function setOverlay(text:String, color:Number=WHITE):void{
+			overlay.text = text;
+			overlay.width = text.length * 15;
+			overlay.textColor = color;
 		}
 		
-		//Load the png at the specified coordinates
-		private function loadPNG(png:String, x:Number, y:Number):void{
+		private function setCurrentImg(png:String):void{
 			var loader:Loader = new Loader();
-    		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(e:Event):void{onComplete(e,x,y)});
+    		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onPreviewComplete);
     		loader.load(new URLRequest(png));
 		}
 		
+		private function onPreviewComplete(event:Event):void{
+			 var bitmapData:BitmapData = Bitmap(LoaderInfo(event.target).content).bitmapData;
+			 currentImg.graphics.clear();
+			 currentImg.graphics.beginBitmapFill(bitmapData);
+			 currentImg.graphics.drawRect(0,0,bitmapData.width,bitmapData.height);
+			 currentImg.graphics.endFill();
+		}
+		
+		private function setPreview(status:Boolean):void{
+			preview = status;
+			currentImg.alpha = status ? .8 : 0;
+			overlay.alpha = status ? .8 : 0;
+		}
+		
+		//Load the png at the specified coordinates
+		private function loadPNG(png:String, x:uint, y:uint):void{
+			var loader:Loader = new Loader();
+    		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(e:Event):void{onComplete(e,x,y)});
+    		loader.load(new URLRequest(png));
+    		
+    		var s:Array = [png, x, y, "static"];
+    		config.push(s.join(","));
+		}
+		
 		//Actual function that creates the sprite with the bitmap data
-		private function onComplete (event:Event, x:Number, y:Number):void
+		private function onComplete(event:Event, x:uint, y:uint):void
 		{
 		    var bitmapData:BitmapData = Bitmap(LoaderInfo(event.target).content).bitmapData;
 		    b2 = new ExSprite(x,y);
@@ -106,9 +184,25 @@
 			}
 		}
 		
-		private function loadSVG():void{
-			var myxml:XML = new XML(new lineSVG);
-			b2SVG.parseSVG(myxml, the_world, 3,0);
+		 
+		// then make the callback
+		/*
+		public function onMouseClickEvent(event:Event)
+		{
+			var mouseevent:MouseEvent = event as MouseEvent;
+			mouseevent
+		}*/
+		
+		private function addSprite(file:String,x:uint,y:uint):void
+		{
+			loadPNG(file,x,y);
+		}
+		
+		//Can't do this effectively well in flash 9...
+		public function saveFile():void{
+			//var fileRef:FileReference = new FileReference();
+			//fileRef.save( 'Here is some text', 'some.txt');
+
 		}
 		
 		private function initBox2DDebugRendering():void
@@ -126,20 +220,46 @@
 			}
 		}
 		
-		private function createDebugPlatform():void
-		{
-			//Platform for raining objects to interact with.
-			b2 = new ExSprite(150, 150, botSprite);
-			b2.initShape();
-			b2.shape.density = 0; //0 density makes object stationary.
-			b2.shape.SetAsBox(175, 10);
-			b2.createPhysBody(the_world); //Add b2 as a physical body to Box2D's world.
-			add(b2); //Add b2 as a sprite to Flixel's update loop.
-		}
-		
 		override public function update():void
 		{
 			super.update();
+			
+			if(FlxG.keys.E) edit = true;
+			if(FlxG.keys.O) edit = false;
+			
+			if(FlxG.keys.ONE) index = 0;
+			if(FlxG.keys.TWO) index = 1;
+			if(FlxG.keys.THREE) index = 2;
+			if(FlxG.keys.FOUR) index = 3;
+			if(FlxG.keys.FIVE) index = 4;
+			if(FlxG.keys.SIX) index = 5;
+			if(FlxG.keys.SEVEN) index = 6;
+			if(FlxG.keys.EIGHT) index = 7;
+			if(FlxG.keys.NINE) index = 8;
+			
+			if(index >= files.length) index = 0;
+			
+			if(FlxG.keys.ONE || FlxG.keys.TWO || FlxG.keys.THREE || FlxG.keys.FOUR || FlxG.keys.FIVE ||
+				FlxG.keys.SIX || FlxG.keys.SEVEN || FlxG.keys.EIGHT || FlxG.keys.NINE || FlxG.keys.ZERO)
+				setCurrentImg(files[index]);
+			
+			if(FlxG.keys.LBRACKET) setPreview(true);
+			if(FlxG.keys.RBRACKET) setPreview(false);
+			
+			var mode:String = edit ? "EDIT" : "LOOK";
+			var prev:String = preview ? "PRVW" : "NOHUD";
+			var status:Array = [mode, prev, files[index]];
+			setOverlay(status.join(" | "), edit ? RED : WHITE);
+			
+			if(edit && FlxG.mouse.justPressed()){
+				loadPNG(files[index], FlxG.mouse.x, FlxG.mouse.y);
+				
+				trace("----------- CONFIG FILE ---------");
+				for(var i:uint = 0; i < config.length; i++){
+					trace(config[i]);
+				}
+			}
+			
 		}
 	}
 }

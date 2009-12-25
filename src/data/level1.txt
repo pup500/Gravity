@@ -1,5 +1,5 @@
-../src/data/floor.png,100,0,static
-../src/data/floor.png,100,300,static
-../src/data/tower-down.png,300,50,static
-../src/data/tower-down.png,0,100,static
-../src/data/tower-down.png,200,150,dynamic
+data/floor.png,100,0,static
+data/floor.png,100,200,static
+data/tower-down.png,300,50,static
+data/tower-down.png,0,100,static
+data/tower-down.png,200,150,static
