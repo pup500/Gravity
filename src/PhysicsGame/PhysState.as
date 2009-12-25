@@ -51,10 +51,11 @@ package PhysicsGame
 		public function PhysState() 
 		{
 			super();
+			bgColor = 0xffeeeeff;
 			
 			//debug = true;
 			
-			loadConfigFile("data/level1.txt");
+			loadConfigFile("../src/data/level1.txt");
 			
 			//loadSVG();
 			
@@ -105,21 +106,25 @@ package PhysicsGame
 		
 		
 		//Load the png at the specified coordinates
-		private function loadPNG(png:String, x:Number, y:Number):void{
+		private function loadPNG(png:String, x:Number, y:Number, s:String):void{
 			var loader:Loader = new Loader();
-    		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(e:Event):void{onComplete(e,x,y)});
+    		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(e:Event):void{onComplete(e,x,y,s)});
     		loader.load(new URLRequest(png));
 		}
 		
 		//Actual function that creates the sprite with the bitmap data
-		private function onComplete (event:Event, x:Number, y:Number):void
+		private function onComplete (event:Event, x:Number, y:Number, s:String):void
 		{
 		    var bitmapData:BitmapData = Bitmap(LoaderInfo(event.target).content).bitmapData;
 		    b2 = new ExSprite(x,y);
 		    b2.pixels = bitmapData;
 		    b2.initShape();
 			b2.createPhysBody(the_world);
-			b2.final_body.SetStatic();
+			if(s == "static")
+				b2.final_body.SetStatic();
+			else{
+				b2.final_body.SetAngularVelocity(.1);
+			}
 			add(b2);
 		}
 
@@ -140,7 +145,7 @@ package PhysicsGame
 			var rows:Array = text.split("\n");
 			for(var i:uint = 0; i < rows.length; i++){
 				cols = rows[i].split(",");
-				loadPNG(cols[0], cols[1], cols[2]);
+				loadPNG(cols[0], cols[1], cols[2], cols[3]);
 			}
 		}
 		

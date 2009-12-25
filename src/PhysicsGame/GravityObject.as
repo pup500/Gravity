@@ -66,9 +66,7 @@
 		
 		override public function hurt(Damage:Number):void
 		{
-			if (dead) return;
-			else
-				dead = true;
+			
 		}
 		
 		public function shoot(X:int, Y:int, VelocityX:int, VelocityY:int):void
