@@ -12,7 +12,7 @@ package {
 	{
 		public function Main():void
 		{
-			super(320, 240, LevelSelectMenu, 2);
+			super(320, 240, SpriteEditor, 2);
 			super.showLogo = false;
 			
 			FlxG.levels.push("PhysicsGame.MapClasses.MapOneGap");

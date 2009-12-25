@@ -8,8 +8,11 @@
 	
 	import flash.display.*;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.geom.Rectangle;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
+	import flash.system.System;
 	import flash.text.TextField;
 	import flash.utils.Timer;
 	
@@ -30,10 +33,12 @@
 		
 		private var files:Array;
 		private var index:uint;
+		private var last_index:uint;
 		private var config:Array;
 		
 		private var edit:Boolean;
 		private var text:FlxText;
+		private var copyButton:SimpleButton;
 		
 		private var overlay:TextField;
 		private var currentImg:Shape;
@@ -46,13 +51,11 @@
 		{
 			super();
 			the_world.SetGravity(new b2Vec2(0,0));
+			
 			//debug = true;
 			
 			loadConfigFile("data/level2.txt");
-			
-			//loadSVG();
-			
-			//createMap();
+
 			
 			var body:Player = new Player(100, 20, null);
 			
@@ -71,45 +74,65 @@
 			
 			//--Debug stuff--//
 			initBox2DDebugRendering();
-			//createDebugPlatform();
-			//Timer to rain physical objects every second.
-			//time_count.addEventListener(TimerEvent.TIMER, on_time);
-			//time_count.start();
-			
-			files = new Array();
-			index = 0;
+
+			last_index = index = 0;
 			
 			//Add new files 
 			var s:String = new configFile;
-			var t:Array = s.split("\n");
-			var c:Array;
-			for(var i:uint=0; i < t.length; i++){
-				c = t[i].split("=");
-				files.push(c[1]);
-			}
+			files = s.split("\n");
 			
 			edit = false;
 			
 			config = new Array();
 			
-			//text = new FlxText(0,100,files[index].length * 20,files[index]);
-			//text.color = WHITE;
-			//add(text);
-			
 			overlay = new TextField();
-			overlay.x = 0;
+			overlay.x = 10;
 			overlay.y = 0;
 			addChild(overlay);
 			
 			currentImg = new Shape();
-			//currentImg.x = 0;
-			//currentImg.y = 15;
 			addChild(currentImg);
 			setCurrentImg(files[index]);
 			
-			FlxG.log("0-9 - switches between the tiles");
-			FlxG.log("E - enters edit mode (mouse click to add new shape)");
-			FlxG.log("Q - turns off edit mode");
+			FlxG.log("[ and ] rotate among image files in the SpriteEditor.txt file");
+			FlxG.log("WASD move player object simulate scrolling");
+			FlxG.log("E toggles edit mode (mouse click to add new shape)");
+			FlxG.log("Mouse clicks will add the selected shape at mouse coordinates");
+			FlxG.log("Click on top-left corner box to copy the new config settings to clipboard");
+			
+			addCopyButton();
+		}
+		
+		private function addCopyButton():void {
+			var rect:Rectangle = new Rectangle(0,0,9,9);
+			var down:Sprite = new Sprite();
+			down.graphics.lineStyle(1, 0x000000);
+			down.graphics.beginFill(0xFFCC00);
+			down.graphics.drawRect(rect.x, rect.y, rect.width, rect.height);
+			
+			var up:Sprite = new Sprite();
+			up.graphics.lineStyle(1, 0x000000);
+			up.graphics.beginFill(0x0099FF);
+			up.graphics.drawRect(rect.x, rect.y, rect.width, rect.height);
+			
+			var over:Sprite = new Sprite();
+			over.graphics.lineStyle(1, 0x000000);
+			over.graphics.beginFill(0x9966FF);
+			over.graphics.drawRect(rect.x, rect.y, rect.width, rect.height);
+			
+			copyButton = new SimpleButton();
+			
+			copyButton.upState = up;
+			copyButton.overState = over;
+			copyButton.downState = down;
+			copyButton.useHandCursor = true;
+			copyButton.hitTestState = up;
+			copyButton.x = 1;
+			copyButton.y = 2;
+			
+			addChild(copyButton);
+			  
+			copyButton.addEventListener(MouseEvent.CLICK, onCopy);
 		}
 
 		private function setOverlay(text:String, color:Number=WHITE):void{
@@ -160,7 +183,6 @@
 			
     		var s:Array = [file, x, y, "static"];
     		config.push(s.join(","));
-    		
     						
 			trace("----------- CONFIG FILE ---------");
 			for(var i:uint = 0; i < config.length; i++){
@@ -197,10 +219,17 @@
 		
 		//Can't do this effectively well in flash 9...
 		public function saveFile():void{
-			//var fileRef:FileReference = new FileReference();
-			//fileRef.save( 'Here is some text', 'some.txt');
-
+			
 		}
+		
+		public function onCopy(e:Event):void{
+			copy(config.join("\n"));
+		}
+		
+		private function copy(text:String):void{
+            System.setClipboard(text);
+        }
+
 		
 		private function initBox2DDebugRendering():void
 		{
@@ -221,32 +250,30 @@
 		{
 			super.update();
 			
-			if(FlxG.keys.E) edit = true;
-			if(FlxG.keys.Q) edit = false;
+			if(FlxG.keys.justReleased("E")) 
+				edit = !edit;
+
+			last_index = index;
+			if(FlxG.keys.justReleased("LBRACKET")) {
+				index--;
+			}
+			if(FlxG.keys.justReleased("RBRACKET")){
+				index++;
+			}
 			
-			if(FlxG.keys.ONE) index = 0;
-			if(FlxG.keys.TWO) index = 1;
-			if(FlxG.keys.THREE) index = 2;
-			if(FlxG.keys.FOUR) index = 3;
-			if(FlxG.keys.FIVE) index = 4;
-			if(FlxG.keys.SIX) index = 5;
-			if(FlxG.keys.SEVEN) index = 6;
-			if(FlxG.keys.EIGHT) index = 7;
-			if(FlxG.keys.NINE) index = 8;
+			if(index >= files.length) index = files.length - 1;
+			if(index < 0) index = 0;
 			
-			if(index >= files.length) index = 0;
-			
-			if(FlxG.keys.ONE || FlxG.keys.TWO || FlxG.keys.THREE || FlxG.keys.FOUR || FlxG.keys.FIVE ||
-				FlxG.keys.SIX || FlxG.keys.SEVEN || FlxG.keys.EIGHT || FlxG.keys.NINE || FlxG.keys.ZERO)
+			if(last_index != index)
 				setCurrentImg(files[index]);
 			
 			currentImg.x = mouseX;
 			currentImg.y = mouseY;
 			
-			var mode:String = edit ? "EDIT" : "LOOK";
-			var status:Array = [mode, files[index]];
+			var mode:String = edit ? "EDITING MODE" : "VIEWING MODE";
+			var status:Array = [mode, "FILE: " + files[index]];
 			setOverlay(status.join(" | "), edit ? RED : WHITE);
-			currentImg.alpha = edit ? .3 : 0;
+			currentImg.alpha = edit ? .7 : .5;
 			
 			if(edit && FlxG.mouse.justPressed()){
 				loadPNG(files[index], FlxG.mouse.x, FlxG.mouse.y, true);
