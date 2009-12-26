@@ -52,9 +52,14 @@ package PhysicsGame
 		}
 		
 		private function loadLevelConfig():void{
-			var file:String = FlxG.levels[FlxG.level];
-			xmlMapLoader = new XMLMap(this);
-			xmlMapLoader.loadConfigFile(file);
+			try{
+				var file:String = FlxG.levels[FlxG.level];
+				xmlMapLoader = new XMLMap(this);
+				xmlMapLoader.loadConfigFile(file);
+			}
+			catch(e:Error){
+				FlxG.switchState(LevelSelectMenu);
+			}
 		}
 		
 		private function createBullets():void{
@@ -96,10 +101,14 @@ package PhysicsGame
 		public function addEndPoint():void{
 			var end:Point = xmlMapLoader.getEndPoint();
 			var body:ExSprite = new ExSprite(end.x, end.y, cursorSprite);
+			body.name = "end";
+			body.shape.isSensor = true;
 			body.initShape();
 			body.createPhysBody(the_world);
+			body.final_body.SetStatic();
 			body.final_body.AllowSleeping(false);
 			body.final_body.SetFixedRotation(true);
+
 			add(body);
 		}
 		

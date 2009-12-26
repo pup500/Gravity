@@ -1,7 +1,7 @@
 package PhysicsGame
 {
+	import Box2D.Collision.b2ContactPoint;
 	import Box2D.Common.Math.b2Vec2;
-	import Box2D.Dynamics.b2Body;
 	
 	import flash.events.TimerEvent;
 	import flash.geom.Point;
@@ -24,6 +24,8 @@ package PhysicsGame
 		private var _lastVel:Point;
 		private var _moving:Boolean;
 		
+		private var _nextLevel:Boolean;
+		
 		private var _jumpPower:int;
 		private var _up:Boolean;
 		private var _down:Boolean;
@@ -40,13 +42,16 @@ package PhysicsGame
 		{
 			super(x, y, ImgSpaceman);
 			loadGraphic(ImgSpaceman,true,true);
+			
 			initShape();
+			shape.friction = 0.02;
 			//Make this part of group -2, and do not collide with other in the same negative group...
 			shape.filter.groupIndex = -2;
 			
 			name = "Player";
 			
 			_restart = 0;
+			_nextLevel = false;
 			//_mass = 100; //default
 			
 			//basic player physics
@@ -82,6 +87,11 @@ package PhysicsGame
 				return;
 			}
 			
+			if(_nextLevel){
+				FlxG.level++;
+				FlxG.switchState(XMLPhysState);
+			}
+			
 			var _applyForce:b2Vec2 = new b2Vec2(0,0);
 			
 			//MOVEMENT
@@ -98,12 +108,11 @@ package PhysicsGame
 			}
 
 			//trace("vel" + final_body.m_linearVelocity.y);
-			trace("ipy: " + impactPoint.y + " y: " + y);
 			////TODO only when collision from bottom
-			if((FlxG.keys.SPACE || FlxG.keys.W) && impactPoint.y > y + height - 1)///&& Math.abs(final_body.m_linearVelocity.y) < 0.1)
+			if((FlxG.keys.SPACE || FlxG.keys.W) && impactPoint.position.y > y + height - 1)///&& Math.abs(final_body.m_linearVelocity.y) < 0.1)
 			{
 				//Hack... attempt at jumping...
-				impactPoint.y = -100;
+				impactPoint.position.y = -100;
 				
 				
 				//velocity.y = -_jumpPower;
@@ -218,6 +227,17 @@ package PhysicsGame
 		
 		private function stopTimer($e:TimerEvent):void{
 			_canShoot = true;
+		}
+		
+		override public function setImpactPoint(point:b2ContactPoint):void{
+			super.setImpactPoint(point);
+			
+			if(point.shape1.GetBody().GetUserData() && point.shape1.GetBody().GetUserData().name == "end"){
+				_nextLevel = true;
+			}
+			if(point.shape2.GetBody().GetUserData() && point.shape2.GetBody().GetUserData().name == "end"){
+				_nextLevel = true;
+			}
 		}
 		
 		override public function hurt(Damage:Number):void{

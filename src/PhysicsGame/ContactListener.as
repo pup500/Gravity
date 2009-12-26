@@ -19,12 +19,14 @@ package PhysicsGame
 			//trace("Body1: "+ body1.GetUserData().name + " Body2: " + body2.GetUserData().name);
 				
 			if(body1.GetUserData()){
-				body1.GetUserData().setImpactPoint(point.position);
+				trace("Body1: "+ body1.GetUserData().name + " Body2: " + body2.GetUserData().name);
+				body1.GetUserData().setImpactPoint(point);
 				body1.GetUserData().hurt(0);
 			}
 			
 			if(body2.GetUserData()){
-				body2.GetUserData().setImpactPoint(point.position);
+				trace("Body1: "+ body1.GetUserData().name + " Body2: " + body2.GetUserData().name);
+				body2.GetUserData().setImpactPoint(point);
 				body2.GetUserData().hurt(0);
 			}
 			

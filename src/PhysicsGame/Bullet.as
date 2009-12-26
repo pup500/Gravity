@@ -68,7 +68,7 @@
 				destroyPhysBody();
 				if(_spawn){
 					_spawn = false;
-					_gravityObject.shoot(impactPoint.x,impactPoint.y,0,0);
+					_gravityObject.shoot(impactPoint.position.x,impactPoint.position.y,0,0);
 				}
 			}
 			else { 

@@ -29,27 +29,25 @@
 		[Embed(source="../data/cursor.png")] private var cursorSprite:Class;
 		[Embed(source="LevelEditor.txt", mimeType="application/octet-stream")] public var configFile:Class;
 		
+		[Embed(source="../data/start_point.png")] private var startSprite:Class;
+		[Embed(source="../data/end_point.png")] private var endSprite:Class;
+		
 		private var xmlMapLoader:XMLMap;
 		
 		private var files:Array;
-		private var index:uint;
-		private var lastIndex:uint;
+		private var index:int;
+		private var lastIndex:int;
 		
 		private var edit:Boolean;
-		private var mode:uint;
-		
-		private const EDIT:uint = 0;
-		private const VIEW:uint = 1;
-		private const START:uint = 2;
-		private const END:uint = 3;
-		private var actions:Array = ["EDIT", "VIEW", "START", "END"];
-		private var doAction:Array = [onEdit, onView, onStart, onEnd];
-		
+		private var active:Boolean;
+
 		private var text:FlxText;
 		private var copyButton:SimpleButton;
 		
 		private var statusText:TextField;
 		private var previewImg:Shape;
+		private var startImg:FlxSprite;
+		private var endImg:FlxSprite;
 		
 		private const BLACK:Number = 0x0;
 		private const WHITE:Number = 0xFFFFFF;
@@ -66,7 +64,12 @@
 			FlxG.showCursor(cursorSprite);
 			
 			edit = false;
-			mode = VIEW;
+			active = false;
+			startImg = new FlxSprite(0,0,startSprite);
+			endImg = new FlxSprite(0,0,endSprite);
+			
+			add(startImg);
+			add(endImg);
 			
 			loadLevelConfig();
 			addPlayer();
@@ -76,8 +79,17 @@
 		}
 		
 		private function loadLevelConfig():void{
+			var file:String = FlxG.levels[FlxG.level];
 			xmlMapLoader = new XMLMap(this);
-			xmlMapLoader.loadConfigFile("data/Maps/level1.xml");
+			xmlMapLoader.loadConfigFile(file);
+		}
+		
+		override public function init():void{
+			startImg.x = xmlMapLoader.getStartPoint().x;
+			startImg.y = xmlMapLoader.getStartPoint().y;
+			
+			endImg.x = xmlMapLoader.getEndPoint().x;
+			endImg.y = xmlMapLoader.getEndPoint().y;
 		}
 		
 		private function addPlayer():void{
@@ -115,8 +127,11 @@
 		
 		private function setInstructions():void{
 			FlxG.log("[ and ] rotate among image files in the SpriteEditor.txt file");
+			FlxG.log(", and . set the start and end points on a map");
 			FlxG.log("WASD move player object simulate scrolling");
 			FlxG.log("E toggles edit mode (mouse click to add new shape)");
+			FlxG.log("I toggles active/inactive flag on body creation");
+			FlxG.log("Z undo last edit");
 			FlxG.log("Mouse clicks will add the selected shape at mouse coordinates");
 			FlxG.log("Click on top-left corner box to copy the new config settings to clipboard");
 		}
@@ -160,6 +175,7 @@
 		}
 		
 		private function setPreviewImg(imgFile:String):void{
+			trace(imgFile);
 			var loader:Loader = new Loader();
     		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onSetPreviewComplete);
     		loader.load(new URLRequest(imgFile));
@@ -185,6 +201,14 @@
 		{
 			super.update();
 			
+			if(FlxG.keys.justReleased("Z")) {
+				xmlMapLoader.undo();
+			}
+			
+			if(FlxG.keys.justReleased("I")){
+				active = !active;
+			}
+			
 			handlePreview();
 			handleMode();
 			handleMouse();
@@ -199,6 +223,15 @@
 				index++;
 			}
 			
+			if(FlxG.keys.justReleased("ONE")){
+				index = 0;
+			}
+				
+			if(FlxG.keys.justReleased("TWO")){
+				index = 1;
+			}
+			
+			
 			if(index >= files.length) 
 				index = files.length - 1;
 			if(index < 0) 
@@ -210,41 +243,43 @@
 			previewImg.x = mouseX;
 			previewImg.y = mouseY;
 			
-			previewImg.alpha = (mode == EDIT) ? .7 : .5;
+			previewImg.alpha = edit ? .7 : .5;
 		}
 		
 		private function handleMode():void{
 			if(FlxG.keys.justReleased("E")) 
-				mode = EDIT;
+				edit = !edit;
 				
-			if(FlxG.keys.justReleased("V")) 
-				mode = VIEW;
-			
-			if(FlxG.keys.justReleased("F")) 
-				mode = START;
-				
-			if(FlxG.keys.justReleased("T"))
-				mode = END;
-				
-			var status:Array = [actions[mode], "FILE: " + files[index]];
-			setStatusText(status.join(" | "), mode == EDIT ? RED : WHITE);
+			var action:String = edit ? "EDIT" : "VIEW";
+			var inact:String = active ? "ACTIVE" : "STATIC";
+			var status:Array = [action, inact, "FILE: " + files[index]];
+			setStatusText(status.join(" | "), edit ? RED : WHITE);
 		}
 		
 		private function handleMouse():void{
 			if(FlxG.mouse.justPressed()){
-				doAction[mode]();
+				if(edit){
+					if(index == 0){
+						onStart();
+					}
+					else if(index == 1){
+						onEnd();
+					}
+					else{
+						addObject();
+					}
+				}
 			}
 		}
 		
-		private function onEdit():void{
+		private function addObject():void{
 			var shape:XML = new XML(<shape/>);
 			shape.file = files[index];
-			shape.type = "static";
+			shape.type = active ? "active" : "static";
 			shape.angle = 0;
 			shape.x = FlxG.mouse.x;
 			shape.y = FlxG.mouse.y;
 			shape.contour = "";
-			
 			xmlMapLoader.addXMLObject(shape, true);
 		}
 		
@@ -253,10 +288,14 @@
 		}
 		
 		private function onStart():void{
+			startImg.x = FlxG.mouse.x;
+			startImg.y = FlxG.mouse.y;
 			xmlMapLoader.setStartPoint(new Point(FlxG.mouse.x, FlxG.mouse.y));
 		}
 		
 		private function onEnd():void{
+			endImg.x = FlxG.mouse.x;
+			endImg.y = FlxG.mouse.y;
 			xmlMapLoader.setEndPoint(new Point(FlxG.mouse.x, FlxG.mouse.y));
 		}
 		

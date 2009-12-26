@@ -17,8 +17,8 @@ package org.overrides
 		public var body:b2BodyDef;
 		public var shape:b2PolygonDef;
 		public var final_body:b2Body; //The physical representation in the Body2D b2World.
-		public var final_shape:b2Shape; //Needs to be defined in order to destroy the physical representation.
-		public var impactPoint:b2Vec2;
+		//public var final_shape:b2Shape; //Needs to be defined in order to destroy the physical representation.
+		public var impactPoint:b2ContactPoint;
 		
 		protected var _world:b2World;
 		
@@ -31,13 +31,13 @@ package org.overrides
 			body.position.Set(x, y);
 			shape = new b2PolygonDef();
 			
-			impactPoint = new b2Vec2();
+			impactPoint = new b2ContactPoint();
 		}
 		//We're calling this outside the constructor because we need Flixel to define its sprite dimensions first in loadGraphic().
 		//TODO: Refactor. Can this go into the constructor somehow? Having to call it everytime you construct the an ExSprite sucks
 		public function initShape():void {
 			shape.SetAsBox(_bw/2, _bh/2); 
-			shape.friction = 0.3;
+			shape.friction = 0.5;
 			shape.density = 1;
 		}
 		
@@ -49,7 +49,8 @@ package org.overrides
 			//final_shape = 
 			final_body.CreateShape(shape);
 			final_body.SetMassFromShapes();
-			
+			_world = world;
+						
 			//shape.userData = this;
 			//body.userData = this;
 			final_body.SetUserData(this);
@@ -62,7 +63,7 @@ package org.overrides
 				//We might not need to save shape as destroy body should work already...
 				//final_body.DestroyShape(final_shape);
 				_world.DestroyBody(final_body);
-				final_shape = null;
+				//final_shape = null;
 				final_body = null;
 			}
 		}
@@ -103,9 +104,11 @@ package org.overrides
 			
 		}
 		
-		public function setImpactPoint(point:b2Vec2):void{
-			impactPoint.x = point.x;
-			impactPoint.y = point.y;
+		public function setImpactPoint(point:b2ContactPoint):void{
+			impactPoint.friction = point.friction;
+			impactPoint.id = point.id;
+			impactPoint.normal = point.normal;
+			impactPoint.position = point.position.Copy();
 		}
 	}
 }

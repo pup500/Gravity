@@ -5,6 +5,7 @@ package common
 	import flash.display.Loader;
 	import flash.display.LoaderInfo;
 	import flash.events.Event;
+	import flash.events.IOErrorEvent;
 	import flash.geom.Point;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
@@ -20,10 +21,13 @@ package common
 		private var _start:Point;
 		private var _end:Point;
 		
+		private var _undo:Array;
+		
 		public function XMLMap(state:ExState)
 		{
 			_state = state;	
 			_config = new Array();
+			_undo = new Array();
 			_start = new Point();
 			_end = new Point();
 		}
@@ -32,6 +36,7 @@ package common
 		public function loadConfigFile(file:String):void{
 			var loader:URLLoader = new URLLoader();
 			loader.addEventListener(Event.COMPLETE, onLoadXMLConfigComplete);
+			//loader.addEventListener(IOErrorEvent.IO_ERROR, onLoadError);
 			loader.load(new URLRequest(file));
 		}
 		
@@ -74,6 +79,7 @@ package common
 		    }
 		    
 		    var b2:ExSprite = new ExSprite(shape.x, shape.y);
+		    b2.name = "loaded";
 		    b2.pixels = bitmapData;
 		    b2.initShape();
 			b2.createPhysBody(_state.the_world);
@@ -85,6 +91,8 @@ package common
 			}
 			
 			_state.add(b2);
+			
+			_undo.push(b2);
 			
     		_config.push(shape);
 		}
@@ -125,6 +133,15 @@ package common
 		
 		public function getEndPoint():Point{
 			return _end;
+		}
+		
+		public function undo():void{
+			var b2:ExSprite = _undo.pop();
+			if(b2){
+				b2.destroyPhysBody();
+				b2.kill();
+			}
+			_config.pop();
 		}
 	}
 }
