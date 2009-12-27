@@ -1,5 +1,7 @@
 ﻿package PhysicsGame 
 {
+	import PhysicsLab.LevelEditor;
+	
 	import org.flixel.*;
 	
 	/**
@@ -11,9 +13,17 @@
 		[Embed(source="../data/cursor.png")] private var ImgCursor:Class;
 		[Embed(source="../data/menu_hit.mp3")] private var SndHit:Class;
 		
+		private static var edit:Boolean = false;
+		private static var textField:FlxText;
+		
 		public function LevelSelectMenu() 
 		{
+			bgColor = 0xff000000;
 			FlxG.showCursor(ImgCursor);
+			
+			var text:String = "PLAY MODE";
+			textField = new FlxText(5,5,text.length*10,text);
+			add(textField);
 			
 			//Display in square tiles....
 			for (var i:int = 0; i < FlxG.levels.length; i++)
@@ -72,7 +82,17 @@
 		{
 			FlxG.level = int(levelNum);
 			FlxG.play(SndHit);
-			FlxG.switchState(XMLPhysState);
+			FlxG.switchState(edit ? LevelEditor : XMLPhysState);
+		}
+		
+		override public function update():void{
+			super.update();
+			
+			if(FlxG.keys.justReleased("E")){
+				edit = !edit;
+			}
+			
+			textField.text = edit ? "EDIT MODE" : "PLAY MODE";
 		}
 	}
 }

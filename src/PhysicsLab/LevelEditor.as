@@ -4,9 +4,8 @@
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
 	
-	import PhysicsGame.MapClasses.*;
-	
 	import common.XMLMap;
+	import PhysicsGame.LevelSelectMenu;
 	
 	import flash.display.*;
 	import flash.events.Event;
@@ -49,13 +48,14 @@
 		private var startImg:FlxSprite;
 		private var endImg:FlxSprite;
 		
-		private const BLACK:Number = 0x0;
-		private const WHITE:Number = 0xFFFFFF;
-		private const RED:Number = 0xFF0000;
+		private const BLACK:Number = 0xFF000000;
+		private const WHITE:Number = 0xFFFFFFFF;
+		private const RED:Number = 0xFFFF0000;
 		
 		public function LevelEditor() 
 		{
 			super();
+			bgColor = 0xff000000;
 			the_world.SetGravity(new b2Vec2(0,0));
 			
 			//debug = true;
@@ -200,6 +200,10 @@
 		override public function update():void
 		{
 			super.update();
+			
+			if(FlxG.keys.justReleased("ESC")) {
+				FlxG.switchState(LevelSelectMenu);
+			}
 			
 			if(FlxG.keys.justReleased("Z")) {
 				xmlMapLoader.undo();

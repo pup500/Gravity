@@ -120,6 +120,10 @@ package PhysicsGame
 		{
 			super.update();
 			
+			if(FlxG.keys.justReleased("ESC")) {
+				FlxG.switchState(LevelSelectMenu);
+			}
+			
 			//Testing
 			for (var bb:b2Body = the_world.GetBodyList(); bb; bb = bb.GetNext()) {
 				
