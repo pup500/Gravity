@@ -52,6 +52,21 @@ package PhysicsGame
 		override public function Remove(point:b2ContactPoint) : void{
 			//point.shape1.GetUserData().hurt(0);
 			//point.shape2.GetUserData().hurt(0);
+			var body1:b2Body = point.shape1.GetBody();
+			var body2:b2Body = point.shape2.GetBody();
+			//trace("Body1: "+ body1.GetUserData().name + " Body2: " + body2.GetUserData().name);
+				
+			if(body1.GetUserData()){
+				trace("Body1: "+ body1.GetUserData().name + " Body2: " + body2.GetUserData().name);
+				body1.GetUserData().removeImpactPoint(point);
+				body1.GetUserData().hurt(0);
+			}
+			
+			if(body2.GetUserData()){
+				trace("Body1: "+ body1.GetUserData().name + " Body2: " + body2.GetUserData().name);
+				body2.GetUserData().removeImpactPoint(point);
+				body2.GetUserData().hurt(0);
+			}
 		}
 		
 		/// Called after a contact point is solved.

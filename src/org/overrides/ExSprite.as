@@ -110,5 +110,12 @@ package org.overrides
 			impactPoint.normal = point.normal;
 			impactPoint.position = point.position.Copy();
 		}
+		
+		public function removeImpactPoint(point:b2ContactPoint):void{
+			impactPoint.friction = point.friction;
+			impactPoint.id = point.id;
+			impactPoint.normal = point.normal;
+			impactPoint.position = point.position.Copy();
+		}
 	}
 }

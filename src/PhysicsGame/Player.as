@@ -38,6 +38,8 @@ package PhysicsGame
 		private var _coolDown:Timer;
 		private var _canShoot:Boolean;
 		
+		private var _canJump:Boolean;
+		
 		public function Player(x:int=0, y:int=0, bullets:Array=null)
 		{
 			super(x, y, ImgSpaceman);
@@ -107,12 +109,14 @@ package PhysicsGame
 				final_body.GetLinearVelocity().x = 20;
 			}
 
+			trace("can jump: " + _canJump);
 			//trace("vel" + final_body.m_linearVelocity.y);
 			////TODO only when collision from bottom
-			if((FlxG.keys.SPACE || FlxG.keys.W) && impactPoint.position.y > y + height - 1)///&& Math.abs(final_body.m_linearVelocity.y) < 0.1)
+			if((FlxG.keys.SPACE || FlxG.keys.W) && _canJump)//impactPoint.position.y > y + height - 1)///&& Math.abs(final_body.m_linearVelocity.y) < 0.1)
 			{
 				//Hack... attempt at jumping...
-				impactPoint.position.y = -100;
+				//impactPoint.position.y = -100;
+				_canJump = false;
 				
 				
 				//velocity.y = -_jumpPower;
@@ -232,12 +236,26 @@ package PhysicsGame
 		override public function setImpactPoint(point:b2ContactPoint):void{
 			super.setImpactPoint(point);
 			
+			trace("imp: " + impactPoint.position.y + " playy:" + y + " hei: " + height + " both:" + (y + height));
+			if(impactPoint.position.y > y + height-1 && final_body.GetLinearVelocity().y >= 0){
+				_canJump = true;
+			}
+			trace(impactPoint.position.y > y + height-1);
+			
 			if(point.shape1.GetBody().GetUserData() && point.shape1.GetBody().GetUserData().name == "end"){
 				_nextLevel = true;
 			}
 			if(point.shape2.GetBody().GetUserData() && point.shape2.GetBody().GetUserData().name == "end"){
 				_nextLevel = true;
 			}
+		}
+		
+		override public function removeImpactPoint(point:b2ContactPoint):void{
+			super.removeImpactPoint(point);
+			
+			//if(impactPoint.position.y > y + height/2){
+			//	_canJump = false;
+			//}
 		}
 		
 		override public function hurt(Damage:Number):void{

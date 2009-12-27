@@ -17,8 +17,8 @@
 	public class Bullet extends ExSprite
 	{
 		[Embed(source="../data/bot_bullet.png")] private var ImgBullet:Class;
-		[Embed(source="../data/asplode.mp3")] private var SndHit:Class;
-		[Embed(source="../data/jet.mp3")] private var SndShoot:Class;
+		[Embed(source="../data/grav_pos2.mp3")] private var SndHit:Class;
+		[Embed(source="../data/grav_pos1.mp3")] private var SndShoot:Class;
 		
 		//protected var _world:b2World;
 		protected var _gravityObject:GravityObject;
