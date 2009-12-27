@@ -20,7 +20,7 @@
 		
 		//protected var _world:b2World;
 		public var mass:Number;
-		private var initialMass:Number = 5000;
+		private var initialMass:Number = 50000;
 		
 		//@desc Bullet constructor
 		//@param world	We'll need this to spawn the bullet's physical body when it's shot.
@@ -56,7 +56,7 @@
 			else { 
 				super.update();
 				trace("X: " + x + ", " + y);
-				mass -= 1000 * FlxG.elapsed;
+				mass -= 5000 * FlxG.elapsed;
 				if(mass < 0){
 					dead = true;
 				}

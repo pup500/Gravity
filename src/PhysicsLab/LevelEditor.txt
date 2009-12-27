@@ -9,3 +9,4 @@ data/tiles_all.png
 data/notch.png
 data/gibs.png
 data/dirt.png
+data/still1.png

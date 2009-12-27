@@ -16,7 +16,7 @@
 	 */
 	public class Bullet extends ExSprite
 	{
-		[Embed(source="../data/bot_bullet.png")] private var ImgBullet:Class;
+		[Embed(source="../data/new_shot.png")] private var ImgBullet:Class;
 		[Embed(source="../data/grav_pos2.mp3")] private var SndHit:Class;
 		[Embed(source="../data/grav_pos1.mp3")] private var SndShoot:Class;
 		
@@ -46,8 +46,8 @@
 			_spawn = false;
 			old = new Point();
 			
-			addAnimation("idle",[0, 1], 50);
-			addAnimation("poof",[2, 3, 4], 50, false);
+			addAnimation("idle",[0, 1, 2, 3, 4, 5], 50);
+			//addAnimation("poof",[2, 3, 4], 50, false);
 		}
 		
 		//TODO: prevent super.createPhysBody(world) form being called?
@@ -93,7 +93,7 @@
 			final_body.GetLinearVelocity().SetZero();
 			if(onScreen()) FlxG.play(SndHit);
 			dead = true;
-			play("poof");
+			//play("poof");
 		}
 		
 		public function killGravityObject():void 

@@ -141,7 +141,7 @@ package PhysicsGame
 						var distSq:Number = dist.x * dist.x + dist.y * dist.y;
 						
 						//For performance reasons....  assume force is 0 when distance is pretty far
-						if(distSq > 4000 ) continue;
+						//if(distSq > 4000 ) continue;
 						
 						//This is a physics hack to stop adding gravity to objects when they are too close
 						//they aren't pulling anymore because of normal force
@@ -155,15 +155,25 @@ package PhysicsGame
 						
 						var force:Number = G*(massProduct/distSq);
 						
-						//force = Math.log(force) * 20;
+						trace("force: " + force);
+						//force = Math.log(force+1);
 						
-						if(force > 200) force = 200;
-						if(force < -200) force = -200;
+						//if(force > 100) force = 100;
+						//if(force < -100) force = -100;
 						
 						//trace(distance);
+						trace("mass: " + bb.GetMass());
 						trace("dist:" + distance + " force:" + force + " forx:" + force * (dist.x/distance) + " fory:" + force * (dist.y/distance));
 						
-						bb.ApplyImpulse(new b2Vec2(force * (dist.x/distance), force * (dist.y/distance)),bb.GetWorldCenter());
+						var impulse:b2Vec2 = new b2Vec2(force * (dist.x/distance), force * (dist.y/distance));
+						//impulse.Multiply(bb.GetMass());
+						
+						trace("impulsex: " + impulse.x + ", " + impulse.y);
+						trace("impulsex: " + impulse.x /bb.GetMass() + ", " + impulse.y/bb.GetMass());
+						
+						//bb.ApplyImpulse(impulse,bb.GetWorldCenter());
+						
+						bb.ApplyForce(impulse,bb.GetWorldCenter());
 						
 						//massedObj.accel.x += ;//xDistance >= 0 ? xForce :-xForce;
 						//massedObj.accel.y += force * (yDistance/distance);//yDistance >= 0 ? yForce :-yForce;

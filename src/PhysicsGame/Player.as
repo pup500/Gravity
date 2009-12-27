@@ -12,7 +12,7 @@ package PhysicsGame
 	
 	public class Player extends ExSprite
 	{
-		[Embed(source="../data/spaceman.png")] private var ImgSpaceman:Class;
+		[Embed(source="../data/g_walk_old.png")] private var ImgSpaceman:Class;
 		[Embed(source="../data/gibs.png")] private var ImgGibs:Class;
 		[Embed(source="../data/jump.mp3")] private var SndJump:Class;
 		[Embed(source="../data/land.mp3")] private var SndLand:Class;
@@ -39,11 +39,12 @@ package PhysicsGame
 		private var _canShoot:Boolean;
 		
 		private var _canJump:Boolean;
+		private var _isJumping:Boolean;
 		
 		public function Player(x:int=0, y:int=0, bullets:Array=null)
 		{
 			super(x, y, ImgSpaceman);
-			loadGraphic(ImgSpaceman,true,true);
+			loadGraphic(ImgSpaceman,true,true,16,32);
 			
 			initShape();
 			shape.friction = 0.02;
@@ -64,12 +65,12 @@ package PhysicsGame
 			
 			//animations
 			addAnimation("idle", [0]);
-			addAnimation("run", [1, 2, 3, 0], 12);
-			addAnimation("jump", [4]);
-			addAnimation("idle_up", [5]);
-			addAnimation("run_up", [6, 7, 8, 5], 12);
-			addAnimation("jump_up", [9]);
-			addAnimation("jump_down", [10]);
+			addAnimation("run", [1, 2, 3, 4, 5], 12);
+			addAnimation("jump", [1]);
+			//addAnimation("idle_up", [0]);
+			//addAnimation("run_up", [6, 7, 8, 5], 12);
+			//addAnimation("jump_up", [0]);
+			//addAnimation("jump_down", [0]);
 			
 			//Bullet shooting stuff
 			_bullets = bullets;
@@ -78,6 +79,9 @@ package PhysicsGame
 			_canShoot = true;
 			_coolDown = new Timer(500,1);
 			_coolDown.addEventListener(TimerEvent.TIMER_COMPLETE, stopTimer);
+			
+			_canJump = false;
+			_isJumping = false;
 		}
 		
 		
@@ -109,7 +113,7 @@ package PhysicsGame
 				final_body.GetLinearVelocity().x = 20;
 			}
 
-			trace("can jump: " + _canJump);
+			//trace("can jump: " + _canJump);
 			//trace("vel" + final_body.m_linearVelocity.y);
 			////TODO only when collision from bottom
 			if((FlxG.keys.SPACE || FlxG.keys.W) && _canJump)//impactPoint.position.y > y + height - 1)///&& Math.abs(final_body.m_linearVelocity.y) < 0.1)
@@ -117,6 +121,7 @@ package PhysicsGame
 				//Hack... attempt at jumping...
 				//impactPoint.position.y = -100;
 				_canJump = false;
+				_isJumping = true;
 				
 				
 				//velocity.y = -_jumpPower;
@@ -141,24 +146,29 @@ package PhysicsGame
 			if(FlxG.keys.W) _up = true;
 			else if(FlxG.keys.S && velocity.y) _down = true;
 			
+			//trace("XXXYYY: " + final_body.GetLinearVelocity().x + ", " + final_body.GetLinearVelocity().y);
+			
 			//ANIMATION
 			if(Math.abs(final_body.GetLinearVelocity().y) > 0.1)
 			{
-				if(_up) play("jump_up");
-				else if(_down) play("jump_down");
-				else play("jump");
+				play("jump");
+				
+				//if(_up) play("jump_up");
+				//else if(_down) play("jump_down");
+				//else play("jump");
 				//trace("jumping");
 			}
 			else if(Math.abs(final_body.GetLinearVelocity().x) < 0.1)
 			{
-				if(_up) play("idle_up");
-				else play("idle");
+				play("idle");
+				//if(_up) play("idle_up");
+				//else play("idle");
 			}
 			else
 			{
-				if(_up) play("run_up");
+				//if(_up) play("run_up");
 				
-				if(FlxG.keys.RIGHT || FlxG.keys.LEFT)
+				if(FlxG.keys.A || FlxG.keys.D)
 					play("run");
 				else
 					play("idle");
@@ -200,6 +210,7 @@ package PhysicsGame
 				var bX:Number = x;
 				var bY:Number = y;
 				
+				/*
 				if(facing == RIGHT)
 				{
 					bX += width - 4;
@@ -207,14 +218,15 @@ package PhysicsGame
 				else
 				{
 					bX -= _bullets[_curBullet].width - 4;
-				}
+				}*/
 				
+				/*
 				if(angle.y > height){
 					bY += height - 4;
 				}
 				else if(angle.y < -height){
 					bY -= height - 4;
-				}
+				}*/
 				
 				//Shoot it!!
 				_bullets[_curBullet].shoot(bX,bY,_bulletVel * angle.x/dist, _bulletVel * angle.y/dist);
