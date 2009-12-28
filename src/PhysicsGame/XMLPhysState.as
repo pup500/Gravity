@@ -160,7 +160,8 @@ package PhysicsGame
 						//force = Math.log(force+1);
 						
 						if(force > 100) force = 100;
-						if(force < -100) force = -100;
+						if(force < 0) force = 100;
+						//if(force < -100) force = -100;
 						
 						//trace(distance);
 						trace("mass: " + bb.GetMass());

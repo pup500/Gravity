@@ -14,8 +14,8 @@
       <file>data/editor/images/e_ass_08.png</file>
       <type>static</type>
       <angle>0</angle>
-      <x>572.5</x>
-      <y>327.5</y>
+      <x>414.5</x>
+      <y>325.5</y>
       <contour/>
     </shape>
     <shape>
@@ -35,6 +35,14 @@
       <contour/>
     </shape>
     <shape>
+      <file>data/editor/images/e_ass_08.png</file>
+      <type>static</type>
+      <angle>0</angle>
+      <x>572.5</x>
+      <y>327.5</y>
+      <contour/>
+    </shape>
+    <shape>
       <file>data/editor/images/e_ass_03.png</file>
       <type>static</type>
       <angle>0</angle>
@@ -51,11 +59,27 @@
       <contour/>
     </shape>
     <shape>
-      <file>data/editor/images/e_ass_08.png</file>
-      <type>static</type>
+      <file>data/editor/images/e_ass_15.png</file>
+      <type>active</type>
       <angle>0</angle>
-      <x>414.5</x>
-      <y>325.5</y>
+      <x>288</x>
+      <y>162</y>
+      <contour/>
+    </shape>
+    <shape>
+      <file>data/editor/images/e_ass_15.png</file>
+      <type>active</type>
+      <angle>0</angle>
+      <x>238</x>
+      <y>185</y>
+      <contour/>
+    </shape>
+    <shape>
+      <file>data/editor/images/e_ass_15.png</file>
+      <type>active</type>
+      <angle>0</angle>
+      <x>339</x>
+      <y>191</y>
       <contour/>
     </shape>
   </objects>

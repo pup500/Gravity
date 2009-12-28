@@ -1,11 +1,12 @@
 package common
 {
+	import Box2D.Dynamics.b2Body;
+	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Loader;
 	import flash.display.LoaderInfo;
 	import flash.events.Event;
-	import flash.events.IOErrorEvent;
 	import flash.geom.Point;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
@@ -74,6 +75,8 @@ package common
 		    var bitmapData:BitmapData = Bitmap(loadinfo.content).bitmapData;
 		    
 		    if(mouse){
+		    	//The mouse coordinate should be the x and y... but it always put the object at center
+		    	//So we need this offset
 		    	shape.x = int(shape.x) + bitmapData.width/2;
 		    	shape.y = int(shape.y) + bitmapData.height/2;
 		    }
@@ -142,6 +145,24 @@ package common
 				b2.kill();
 			}
 			_config.pop();
+		}
+		
+		public function removeObjectAtPoint(point:Point, includeStatic:Boolean=false):void{
+			var b2:b2Body = Utilities.GetBodyAtMouse(_state.the_world, point, includeStatic);
+			
+			if(b2){
+				var bSprite:ExSprite = b2.GetUserData() as ExSprite;
+				if(bSprite){
+					var index:int = _undo.indexOf(bSprite);
+					var removed:Array = _undo.splice(index,1);
+					var rSprite:ExSprite = removed.pop();
+					if(rSprite){
+						rSprite.destroyPhysBody();
+						rSprite.kill();
+					}
+					_config.splice(index,1);
+				}
+			}
 		}
 	}
 }

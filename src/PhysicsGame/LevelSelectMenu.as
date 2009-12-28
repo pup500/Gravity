@@ -1,5 +1,6 @@
 ﻿package PhysicsGame 
 {
+	import PhysicsLab.PhysLevelEditor;
 	import PhysicsLab.LevelEditor;
 	
 	import org.flixel.*;
@@ -82,7 +83,7 @@
 		{
 			FlxG.level = int(levelNum);
 			FlxG.play(SndHit);
-			FlxG.switchState(edit ? LevelEditor : XMLPhysState);
+			FlxG.switchState(edit ? PhysLevelEditor : XMLPhysState);
 		}
 		
 		override public function update():void{

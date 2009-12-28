@@ -233,7 +233,7 @@ package PhysicsGame
 				facing = angle.x > 0 ? RIGHT : angle.x < 0 ? LEFT : facing;
 				
 				var bX:Number = x + width/2;
-				var bY:Number = y + height*.1;
+				var bY:Number = y + height*.2;
 				
 				/*
 				if(facing == RIGHT)

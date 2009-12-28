@@ -11,6 +11,11 @@
 	
 	import org.flixel.FlxG;
 	import org.overrides.ExSprite;
+	import flash.display.GradientType;
+	
+	import flash.geom.*
+  	import flash.display.*
+
 	
 	/**
 	 * ...
@@ -22,7 +27,7 @@
 		
 		//protected var _world:b2World;
 		public var mass:Number;
-		private var initialMass:Number = 50000;
+		private var initialMass:Number = 5000;//50000;
 		
 		private var _coolDown:Timer;
 		private var _startLosingMass:Boolean;
@@ -51,7 +56,7 @@
 			
 			_startLosingMass = false;
 			
-			addAnimation("idle",[0], 50);
+			addAnimation("idle",[0, 1, 2, 3], 12);
 			//addAnimation("poof",[2, 3, 4], 50, false);
 			
 			_coolDown = new Timer(1000,1);
@@ -104,19 +109,52 @@
 		
 		override public function render():void
 		{
-			//Somehow super render doesn't line up...
-			
-			super.render();
 			if(!visible)
 				return;
 			getScreenXY(_p);
 
 			var myShape:Shape = new Shape();
-			myShape.graphics.beginFill(_startLosingMass ? 0x00ff00 : 0x0000ff,alpha/3+.1);
-			myShape.graphics.lineStyle(1,0x00ff00,alpha/3+.1);
-			myShape.graphics.drawCircle(_p.x,_p.y, alpha*50);
+			myShape.graphics.beginFill(0x669933, alpha/2);//alpha/3+.1);
+			
+			//TODO:See if we can get radient to work.....
+			/*
+			var colors:Array = [0x00ff00, 0x000000];
+			
+			var alphas:Array = [1, .5]
+			
+			var ratios:Array = [127, 255];
+			
+			var matr:Matrix = new Matrix();
+  			matr.createGradientBox(20, 20, 0, 0, 0);
+  			var spreadMethod:String = SpreadMethod.PAD;
+  			
+			myShape.graphics.beginGradientFill(GradientType.RADIAL, colors, alphas, ratios, matr, spreadMethod,"rgb",.75);
+			//myShape.graphics.lineStyle(1,0x00ff00,alpha/3+.1);
+			myShape.graphics.drawCircle(_p.x + width/2,_p.y + height/2, alpha*50);
 			myShape.graphics.endFill();
 			FlxG.buffer.draw(myShape);
+			
+			*/
+			/*
+			var fillType:String = GradientType.RADIAL;
+			  var colors:Array = [0xFF0000, 0x0000FF];
+			  var alphas:Array = [1, 1];
+			  var ratios:Array = [0x00, 0xFF];
+			  var matr:Matrix = new Matrix();
+			  //matr.createGradientBox(20, 20, 0, 0, 0);
+			  matr.createGradientBox(50,50,0);
+			  var spreadMethod:String = SpreadMethod.PAD;
+			  myShape.graphics.beginGradientFill(fillType, colors, alphas, ratios, matr, spreadMethod);  
+			  
+			  //myShape.graphics.drawRect(_p.x + width/2,_p.y + height/2, 100, 100);
+			 */ 
+			 
+			  myShape.graphics.drawCircle(_p.x + width/2,_p.y + height/2, alpha*50);
+			myShape.graphics.endFill();
+			  FlxG.buffer.draw(myShape);
+			
+			super.render();
+			
 		}
 	}
 
