@@ -47,7 +47,8 @@ package PhysicsGame
 			loadGraphic(ImgSpaceman,true,true,16,32);
 			
 			initShape();
-			shape.friction = 1;
+			shape.friction = .5;
+			//shape.restitution = .5;
 			//Make this part of group -2, and do not collide with other in the same negative group...
 			shape.filter.groupIndex = -2;
 			
@@ -98,19 +99,43 @@ package PhysicsGame
 				FlxG.switchState(XMLPhysState);
 			}
 			
+			//final_body.SetLinearDamping(.5);
+			
+			
 			var _applyForce:b2Vec2 = new b2Vec2(0,0);
 			
+			trace("vel.x " + final_body.GetLinearVelocity().x);
 			//MOVEMENT
 			//acceleration.x = 0;
 			if(FlxG.keys.A)
 			{
 				facing = LEFT;
-				final_body.GetLinearVelocity().x = -30;
+				_applyForce.x = _canJump ? -100 : -20;
+				_applyForce.y = 0;
+				_applyForce.Multiply(final_body.GetMass());
+				//final_body.ApplyImpulse(_applyForce, final_body.GetWorldCenter());
+				
+				if(final_body.GetLinearVelocity().x < -50) {
+					
+				}
+				else
+				
+					final_body.ApplyForce(_applyForce, final_body.GetWorldCenter());
+				//final_body.GetLinearVelocity().x = -30;
 			}
 			else if(FlxG.keys.D)
 			{
 				facing = RIGHT;
-				final_body.GetLinearVelocity().x = 30;
+				//final_body.GetLinearVelocity().x = 30;
+				_applyForce.x = _canJump ? 100 : 20;
+				_applyForce.y = 0;
+				_applyForce.Multiply(final_body.GetMass());
+				if(final_body.GetLinearVelocity().x > 50) {
+					
+				}
+				else
+				//final_body.ApplyImpulse(_applyForce, final_body.GetWorldCenter());
+					final_body.ApplyForce(_applyForce, final_body.GetWorldCenter());
 			}
 
 			//trace("can jump: " + _canJump);
@@ -207,8 +232,8 @@ package PhysicsGame
 				
 				facing = angle.x > 0 ? RIGHT : angle.x < 0 ? LEFT : facing;
 				
-				var bX:Number = x;
-				var bY:Number = y;
+				var bX:Number = x + width/2;
+				var bY:Number = y + height*.1;
 				
 				/*
 				if(facing == RIGHT)

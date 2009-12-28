@@ -17,7 +17,6 @@
 		[Embed(source = '../../../data/GravSink.png')]
 		private var ImgGravSink:Class;
 		
-		private var _coolDown:Timer;
 		private var _dispatcher:EventDispatcher;
 		private var initialMass:Number = 5000;
 		

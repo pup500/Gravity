@@ -37,7 +37,7 @@ package org.overrides
 		//TODO: Refactor. Can this go into the constructor somehow? Having to call it everytime you construct the an ExSprite sucks
 		public function initShape():void {
 			shape.SetAsBox(_bw/2, _bh/2); 
-			shape.friction = 0.5;
+			shape.friction = .5;
 			shape.density = 1;
 		}
 		

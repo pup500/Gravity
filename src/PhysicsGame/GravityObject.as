@@ -5,10 +5,12 @@
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
 	
-	import org.overrides.ExSprite;
-	import org.flixel.FlxG;
-	
 	import flash.display.Shape;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
+	
+	import org.flixel.FlxG;
+	import org.overrides.ExSprite;
 	
 	/**
 	 * ...
@@ -21,6 +23,9 @@
 		//protected var _world:b2World;
 		public var mass:Number;
 		private var initialMass:Number = 50000;
+		
+		private var _coolDown:Timer;
+		private var _startLosingMass:Boolean;
 		
 		//@desc Bullet constructor
 		//@param world	We'll need this to spawn the bullet's physical body when it's shot.
@@ -44,8 +49,17 @@
 			offset.y = 1;
 			exists = false;
 			
+			_startLosingMass = false;
+			
 			addAnimation("idle",[0], 50);
 			//addAnimation("poof",[2, 3, 4], 50, false);
+			
+			_coolDown = new Timer(1000,1);
+			_coolDown.addEventListener(TimerEvent.TIMER_COMPLETE, onTimer);
+		}
+		
+		private function onTimer(event:TimerEvent):void{
+			_startLosingMass = true;
 		}
 		
 		override public function update():void
@@ -56,11 +70,14 @@
 			else { 
 				super.update();
 				trace("X: " + x + ", " + y);
-				mass -= 5000 * FlxG.elapsed;
-				if(mass < 0){
-					dead = true;
+				
+				if(_startLosingMass){
+					mass -= 5000 * FlxG.elapsed;
+					if(mass < 0){
+						dead = true;
+					}
+					alpha = mass/ initialMass;
 				}
-				alpha = mass/ initialMass;
 			}
 		}
 		
@@ -79,6 +96,8 @@
 			mass=initialMass;
 			
 			play("idle");
+			_coolDown.reset();
+			_coolDown.start();
 			
 			super.reset(X,Y);
 		}
@@ -93,7 +112,7 @@
 			getScreenXY(_p);
 
 			var myShape:Shape = new Shape();
-			myShape.graphics.beginFill(0x00ff00,alpha/3+.1);
+			myShape.graphics.beginFill(_startLosingMass ? 0x00ff00 : 0x0000ff,alpha/3+.1);
 			myShape.graphics.lineStyle(1,0x00ff00,alpha/3+.1);
 			myShape.graphics.drawCircle(_p.x,_p.y, alpha*50);
 			myShape.graphics.endFill();

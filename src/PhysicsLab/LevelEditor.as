@@ -58,7 +58,7 @@
 		public function LevelEditor() 
 		{
 			super();
-			bgColor = 0xff000000;
+			bgColor = 0xffeeeeff;;
 			the_world.SetGravity(new b2Vec2(0,0));
 			
 			//debug = true;
