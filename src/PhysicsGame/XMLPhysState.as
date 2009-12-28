@@ -159,15 +159,15 @@ package PhysicsGame
 						trace("force: " + force);
 						//force = Math.log(force+1);
 						
-						//if(force > 100) force = 100;
-						//if(force < -100) force = -100;
+						if(force > 100) force = 100;
+						if(force < -100) force = -100;
 						
 						//trace(distance);
 						trace("mass: " + bb.GetMass());
 						trace("dist:" + distance + " force:" + force + " forx:" + force * (dist.x/distance) + " fory:" + force * (dist.y/distance));
 						
 						var impulse:b2Vec2 = new b2Vec2(force * (dist.x/distance), force * (dist.y/distance));
-						//impulse.Multiply(bb.GetMass());
+						impulse.Multiply(bb.GetMass());
 						
 						trace("impulsex: " + impulse.x + ", " + impulse.y);
 						trace("impulsex: " + impulse.x /bb.GetMass() + ", " + impulse.y/bb.GetMass());
