@@ -12,12 +12,13 @@ package PhysicsLab
 	
 	public class Player extends ExSprite
 	{
-		[Embed(source="../data/spaceman.png")] private var ImgSpaceman:Class;
+		[Embed(source="../data/g_walk_old.png")] private var ImgSpaceman:Class;
 		
 		public function Player(x:int=0, y:int=0, bullets:Array=null)
 		{
 			super(x, y, ImgSpaceman);
-			loadGraphic(ImgSpaceman,true,true);
+			loadGraphic(ImgSpaceman,true,true,16,32);
+			
 			initShape();
 			//Make this part of group -2, and do not collide with other in the same negative group...
 			//shape.filter.groupIndex = -2;
@@ -28,12 +29,9 @@ package PhysicsLab
 			
 			//animations
 			addAnimation("idle", [0]);
-			addAnimation("run", [1, 2, 3, 0], 12);
-			addAnimation("jump", [4]);
-			addAnimation("idle_up", [5]);
-			addAnimation("run_up", [6, 7, 8, 5], 12);
-			addAnimation("jump_up", [9]);
-			addAnimation("jump_down", [10]);
+			addAnimation("run", [1, 2, 3, 4, 5], 10);
+			addAnimation("jump", [1]);
+			
 		}
 		
 		
@@ -52,18 +50,25 @@ package PhysicsLab
 			{
 				facing = LEFT;
 				final_body.GetLinearVelocity().x = -70;
+				play("run");
 			}
 			else if(FlxG.keys.D)
 			{
 				facing = RIGHT;
 				final_body.GetLinearVelocity().x = 70;
+				play("run");
 			}
-			
-			if(FlxG.keys.W){
+			else if(FlxG.keys.W){
 				final_body.GetLinearVelocity().y = -70;
+				play("run");
 			}
-			if(FlxG.keys.S){
+			else if(FlxG.keys.S){
 				final_body.GetLinearVelocity().y = 70;
+				play("run");
+			}
+			else{
+					
+				play("idle");
 			}
 
 			super.update();
