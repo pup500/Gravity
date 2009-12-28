@@ -4,14 +4,16 @@
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
 	
-	import common.XMLMap;
 	import PhysicsGame.LevelSelectMenu;
+	
+	import common.XMLMap;
 	
 	import flash.display.*;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.system.System;
 	import flash.text.TextField;
@@ -26,7 +28,7 @@
 	public class LevelEditor extends ExState
 	{
 		[Embed(source="../data/cursor.png")] private var cursorSprite:Class;
-		[Embed(source="LevelEditor.txt", mimeType="application/octet-stream")] public var configFile:Class;
+		//[Embed(source="LevelEditor.txt", mimeType="application/octet-stream")] public var configFile:Class;
 		
 		[Embed(source="../data/start_point.png")] private var startSprite:Class;
 		[Embed(source="../data/end_point.png")] private var endSprite:Class;
@@ -34,6 +36,7 @@
 		private var xmlMapLoader:XMLMap;
 		
 		private var files:Array;
+		private var _loaded:Boolean;
 		private var index:int;
 		private var lastIndex:int;
 		
@@ -63,6 +66,8 @@
 			
 			FlxG.showCursor(cursorSprite);
 			
+			_loaded = false;
+			files = new Array();
 			edit = false;
 			active = false;
 			startImg = new FlxSprite(0,0,startSprite);
@@ -73,7 +78,7 @@
 			
 			loadLevelConfig();
 			addPlayer();
-			readImageList();
+			loadAssetList("data/LevelEditor.txt");
 			setHUD();
 			setInstructions();
 		}
@@ -114,16 +119,32 @@
 			
 			statusText.x = 10;
 			statusText.y = 0;
-			setPreviewImg(files[index]);
+			
+			//setPreviewImg(files[index]);
 			
 			addCopyButton();
+		}
+		
+		//Load the config file to set up world...
+		public function loadAssetList(file:String):void{
+			var loader:URLLoader = new URLLoader();
+			loader.addEventListener(Event.COMPLETE, onLoadAssetList);
+			//loader.addEventListener(IOErrorEvent.IO_ERROR, onLoadError);
+			loader.load(new URLRequest(file));
+		}
+		
+		//Actual callback function for load finish
+		private function onLoadAssetList(event:Event):void{
+			var s:String = event.target.data;
+			files = s.split("\n");
+			_loaded = true;
 		}
 		
 		private function readImageList():void{
 			lastIndex = index = 0;
 			
-			var s:String = new configFile;
-			files = s.split("\n");
+			//var s:String = new configFile;
+			//files = s.split("\n");
 		}
 		
 		private function setInstructions():void{
@@ -201,6 +222,10 @@
 		override public function update():void
 		{
 			super.update();
+			
+			if(!_loaded){
+				return;
+			}
 			
 			if(FlxG.keys.justReleased("ESC")) {
 				FlxG.switchState(LevelSelectMenu);

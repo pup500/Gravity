@@ -20,7 +20,8 @@ package PhysicsGame
 	 */
 	public class XMLPhysState extends ExState
 	{
-		[Embed(source="../data/cursor.png")] private var cursorSprite:Class;
+		[Embed(source="../data/cursor.png")] private var cursor:Class;
+		[Embed(source="../data/end_point.png")] private var endPoint:Class;
 		
 		private var xmlMapLoader:XMLMap;
 		
@@ -39,7 +40,7 @@ package PhysicsGame
 			
 			loadLevelConfig();
 			
-			FlxG.showCursor(cursorSprite);
+			FlxG.showCursor(cursor);
 			
 			initContactListener();
 		}
@@ -101,7 +102,7 @@ package PhysicsGame
 		
 		public function addEndPoint():void{
 			var end:Point = xmlMapLoader.getEndPoint();
-			var body:ExSprite = new ExSprite(end.x, end.y, cursorSprite);
+			var body:ExSprite = new ExSprite(end.x, end.y, endPoint);
 			body.name = "end";
 			body.shape.isSensor = true;
 			body.initShape();

@@ -47,7 +47,7 @@ package PhysicsGame
 			loadGraphic(ImgSpaceman,true,true,16,32);
 			
 			initShape();
-			shape.friction = 0.02;
+			shape.friction = 1;
 			//Make this part of group -2, and do not collide with other in the same negative group...
 			shape.filter.groupIndex = -2;
 			
@@ -65,7 +65,7 @@ package PhysicsGame
 			
 			//animations
 			addAnimation("idle", [0]);
-			addAnimation("run", [1, 2, 3, 4, 5], 12);
+			addAnimation("run", [1, 2, 3, 4, 5], 10);
 			addAnimation("jump", [1]);
 			//addAnimation("idle_up", [0]);
 			//addAnimation("run_up", [6, 7, 8, 5], 12);
@@ -105,12 +105,12 @@ package PhysicsGame
 			if(FlxG.keys.A)
 			{
 				facing = LEFT;
-				final_body.GetLinearVelocity().x = -20;
+				final_body.GetLinearVelocity().x = -30;
 			}
 			else if(FlxG.keys.D)
 			{
 				facing = RIGHT;
-				final_body.GetLinearVelocity().x = 20;
+				final_body.GetLinearVelocity().x = 30;
 			}
 
 			//trace("can jump: " + _canJump);
@@ -127,7 +127,7 @@ package PhysicsGame
 				//velocity.y = -_jumpPower;
 				//final_body.SetLinearVelocity(new b2Vec2(0,-_jumpPower));
 				_applyForce.x = 0;
-				_applyForce.y = -80;
+				_applyForce.y = -100;
 				_applyForce.Multiply(final_body.GetMass());
 				
 				//trace("mass" + final_body.GetMass());
