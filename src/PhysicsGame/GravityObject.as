@@ -88,7 +88,8 @@
 		
 		override public function hurt(Damage:Number):void
 		{
-			
+			dead = true;
+			finished = true;
 		}
 		
 		public function shoot(X:int, Y:int, VelocityX:int, VelocityY:int):void
