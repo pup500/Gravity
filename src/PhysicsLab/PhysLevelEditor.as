@@ -14,7 +14,6 @@
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.system.System;
-	import flash.text.TextField;
 	
 	import org.flixel.*;
 	import org.overrides.*;
@@ -37,20 +36,19 @@
 		private var index:int;
 		private var lastIndex:int;
 		
-		private var handledMouse:Boolean;
 		private var active:Boolean;
 
-		private var statusText:TextField;
 		private var previewImg:Shape;
-		private var grid:Shape;
+		
 		private var snapToGrid:Boolean;
 		
 		private var startImg:FlxSprite;
 		private var endImg:FlxSprite;
 		
-		
-		private var hud:Sprite;
+		private var statusPanel:FlxLayer;
+		private var grid:FlxSprite;
 		private var toolPanel:FlxLayer;
+		private var textField:FlxText;
 		private var mode:uint;
 		
 		private const BLACK:Number = 0xFF000000;
@@ -60,6 +58,9 @@
 		private const KILL:uint = 0;
 		private const EDIT:uint = 1;
 		private const VIEW:uint = 2;
+
+		private const WIDTH:uint = 1280;
+		private const HEIGHT:uint = 960;
 		
 		public function PhysLevelEditor() 
 		{
@@ -74,23 +75,21 @@
 			
 			_loaded = false;
 			files = new Array();
-			handledMouse = false;
 			active = false;
+			snapToGrid = true;
+			
 			startImg = new FlxSprite(0,0,startSprite);
 			endImg = new FlxSprite(0,0,endSprite);
 			
 			add(startImg);
 			add(endImg);
 			
-			
-			
 			loadLevelConfig();
 			addPlayer();
 			loadAssetList("data/LevelEditor.txt");
 			setInstructions();
 			
-			
-			
+			setHUD();
 		}
 		
 		private function loadLevelConfig():void{
@@ -105,11 +104,6 @@
 			
 			endImg.x = xmlMapLoader.getEndPoint().x;
 			endImg.y = xmlMapLoader.getEndPoint().y;
-			
-			
-			//This puts the layer to be rendered last...
-			setHUD();
-			
 		}
 		
 		private function addPlayer():void{
@@ -125,47 +119,64 @@
 			FlxG.follow(body,2.5);
 			FlxG.followAdjust(0.5,0.0);
 			//FlxG.followBounds(0,0,640,640);
-			FlxG.followBounds(0,0,1280,960);
+			FlxG.followBounds(0,0,WIDTH,HEIGHT);
 		}
 		
 		private function setupGrid():void{
-			snapToGrid = true;
-			grid = new Shape();
-			grid.x = 0;
-			grid.y = 0;
+			var gridShape:Shape = new Shape();
+			gridShape.x = 0;
+			gridShape.y = 0;
 			
-			for(var x:Number = 0; x <= FlxG.width; x += 4){
-				grid.graphics.lineStyle(1,BLACK,x%16==0 ? .5 : .2);
-				grid.graphics.moveTo(x,0);
-				grid.graphics.lineTo(x,FlxG.height);
+			for(var x:Number = 0; x <= WIDTH; x += 4){
+				gridShape.graphics.lineStyle(1,BLACK,x%16==0 ? .5 : .2);
+				gridShape.graphics.moveTo(x,0);
+				gridShape.graphics.lineTo(x,HEIGHT);
 			}
 			
-			for(var y:Number = 0; y <= FlxG.height; y += 4){
-				grid.graphics.lineStyle(1,BLACK,y%16==0 ? .5 : .2);
-				grid.graphics.moveTo(0,y);
-				grid.graphics.lineTo(FlxG.width,y);
+			for(var y:Number = 0; y <= HEIGHT; y += 4){
+				gridShape.graphics.lineStyle(1,BLACK,y%16==0 ? .5 : .2);
+				gridShape.graphics.moveTo(0,y);
+				gridShape.graphics.lineTo(WIDTH,y);
 			}
+			
+			grid = new FlxSprite(0,0);
+			grid.createGraphic(WIDTH, HEIGHT,0xffffffff);
+			//grid.scrollFactor.x = 0;
+			//grid.scrollFactor.y = 0;
+			
+			//Cool, this is how you convert a sprite shape into a bitmap
+			var bmd:BitmapData = new BitmapData(WIDTH, HEIGHT, true, 0x00FFFFFF );
+            bmd.draw(gridShape);
+            grid.pixels = bmd;
 		}
 		
 		private function setHUD():void{
-			statusText = new TextField();
-			statusText.x = 10;
-			statusText.y = 0;
-			
 			addChild(previewImg = new Shape());
-			
+
 			setupGrid();
 				
-			hud = new Sprite();
+			textField = new FlxText(0,0,640, "");
+			textField.color = WHITE;
+			textField.scrollFactor.x = 0;
+			textField.scrollFactor.y = 0;
 			
-			hud.addChild(statusText);
-			hud.addChild(grid);
-			addChild(hud);
+			//Setup the status panel
+			statusPanel = new FlxLayer();
+			var statusBackground:FlxSprite = new FlxSprite(0,0);
+			statusBackground.createGraphic(640,12,BLACK);
+			statusBackground.scrollFactor.x = 0;
+			statusBackground.scrollFactor.y = 0;
+			statusBackground.x = 0;
+			statusBackground.y = 0;
+			statusPanel.add(statusBackground);
+			statusPanel.add(textField);
+			add(statusPanel);
 			
 			
 			var actions:Array = [onSetKill, onSetEdit, onSetCopy]
 			toolPanel = new FlxLayer();
-			
+			toolPanel.add(grid);
+				
 			var panelBackground:FlxSprite = new FlxSprite(0,0);
 			panelBackground.createGraphic(50,150,0xff000000);
 			panelBackground.scrollFactor.x = 0;
@@ -173,10 +184,11 @@
 			panelBackground.x = 2;
 			panelBackground.y = 25;
 			toolPanel.add(panelBackground);
-			
 			toolPanel.add(addButton(5,30,"KILL",actions[0]));
 			toolPanel.add(addButton(5,60,"EDIT",actions[1]));
 			toolPanel.add(addButton(5,90,"COPY",actions[2]));
+			
+			//toolPanel.add(textField);
 			add(toolPanel);
 			
 		}
@@ -248,12 +260,6 @@
 			FlxG.log("SHIFT CLICK will add/kill the selected shape at mouse coordinates");
 			FlxG.log("Click on copy button to copy the new config settings to clipboard");
 		}
-
-		private function setStatusText(text:String, color:Number=WHITE):void{
-			statusText.text = text;
-			statusText.width = text.length * 15;
-			statusText.textColor = color;
-		}
 		
 		private function setPreviewImg(imgFile:String):void{
 			trace(imgFile);
@@ -294,8 +300,12 @@
 				active = !active;
 			}
 			
-			if(FlxG.keys.justPressed("H")){
+			if(FlxG.keys.justPressed("T")){
 				toolPanel.visible = !toolPanel.visible;
+			}
+			
+			if(FlxG.keys.justPressed("H")){
+				statusPanel.visible = !statusPanel.visible;
 			}
 			
 			if(FlxG.keys.justPressed("G")){
@@ -315,6 +325,9 @@
         	super.render();
         	if(toolPanel && toolPanel.visible){
         		toolPanel.render();
+        	}
+        	if(statusPanel && statusPanel.visible){
+        		statusPanel.render();
         	}
         }
 		
@@ -359,8 +372,10 @@
 			var action:String = actions[mode];
 			var inact:String = active ? "ACTIVE" : "STATIC";
 			var snap:String = snapToGrid ? "SNAP" : "FREE";
-			var status:Array = [action, inact, snap, "FILE: " + files[index], FlxG.mouse.x, FlxG.mouse.y];
-			setStatusText(status.join(" | "), BLACK);
+			var status:Array = [action, inact, snap, "FILE: " + files[index], FlxG.mouse.x, FlxG.mouse.y
+				, mouseX, mouseY, FlxG.mouse.x - mouseX, FlxG.mouse.y - mouseY
+			];
+			textField.text = status.join(" | ");
 		}
 		
 		private function handleMouse():void{
@@ -368,16 +383,18 @@
 			point.x = FlxG.mouse.x;
 			point.y = FlxG.mouse.y;
 			
-			previewImg.x = mouseX;
-			previewImg.y = mouseY;
+			previewImg.x = FlxG.mouse.x+FlxG.scroll.x;//mouseX;
+			previewImg.y = FlxG.mouse.y+FlxG.scroll.y;//mouseY;
 				
 			if(snapToGrid){
 				point.x -= point.x % 16;
 				point.y -= point.y % 16;
 				
 				//Handles snapping to 16...
-				previewImg.x -= (mouseX % 16);
-				previewImg.y -= (mouseY % 16);
+				//FlxG.mouse.x+FlxG.scroll.x,
+				//FlxG.mouse.y+FlxG.scroll.y
+				previewImg.x -= (FlxG.mouse.x % 16);
+				previewImg.y -= (FlxG.mouse.y % 16);//(FlxG.mouse.y - mouseY) % 16;//(mouseY % 16);
 			}
 			
 			previewImg.visible = mode != KILL;
