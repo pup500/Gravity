@@ -138,6 +138,8 @@
 			var s:String = event.target.data;
 			files = s.split("\n");
 			_loaded = true;
+			
+			setPreviewImg(files[index]);
 		}
 		
 		private function readImageList():void{
