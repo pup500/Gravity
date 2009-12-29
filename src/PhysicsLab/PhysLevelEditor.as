@@ -154,7 +154,6 @@
 			//This works, in debug mode it looks weird but that's because of layer offset...
 			FlxG.follow(body,2.5);
 			FlxG.followAdjust(0.5,0.0);
-			//FlxG.followBounds(0,0,640,640);
 			FlxG.followBounds(0,0,WIDTH,HEIGHT);
 		}
 		
@@ -185,6 +184,8 @@
 			var bmd:BitmapData = new BitmapData(WIDTH, HEIGHT, true, 0x00FFFFFF );
             bmd.draw(gridShape);
             grid.pixels = bmd;
+            
+            add(grid);
 		}
 		
 		private function setHUD():void{
@@ -212,7 +213,7 @@
 			
 			var actions:Array = [onSetKill, onSetEdit, onSetCopy, onDrawBox, onAddJoint, onBreakJoint]
 			toolPanel = new FlxLayer();
-			toolPanel.add(grid);
+			//toolPanel.add(grid);
 				
 			var panelBackground:FlxSprite = new FlxSprite(0,0);
 			panelBackground.createGraphic(50,220,0xff000000);
