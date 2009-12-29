@@ -10,6 +10,7 @@
 	
 	import flash.display.*;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
@@ -25,9 +26,20 @@
 	public class PhysLevelEditor extends ExState
 	{
 		[Embed(source="../data/cursor.png")] private var cursorSprite:Class;
+		[Embed(source="../data/editor/interface/dino.mp3")] private var dinoSound:Class;
 		
 		[Embed(source="../data/start_point.png")] private var startSprite:Class;
 		[Embed(source="../data/end_point.png")] private var endSprite:Class;
+		
+		[Embed(source="../data/editor/interface/connect-icon.png")] private var joinImg:Class;
+		[Embed(source="../data/editor/interface/disconnect-icon.png")] private var breakImg:Class;
+		[Embed(source="../data/editor/interface/gas-soldier-icon.png")] private var killImg:Class;
+		[Embed(source="../data/editor/interface/mosu-icon.png")] private var editImg:Class;
+		[Embed(source="../data/editor/interface/dino-icon.png")] private var copyImg:Class;
+		[Embed(source="../data/editor/interface/pig-icon.png")] private var gridImg:Class;
+		[Embed(source="../data/editor/interface/elephant-icon.png")] private var activeImg:Class;
+		[Embed(source="../data/editor/interface/sheep-icon.png")] private var snapImg:Class;
+		
 		
 		private var xmlMapLoader:XMLMap;
 		
@@ -55,9 +67,19 @@
 		
 		private var statusPanel:FlxLayer;
 		private var grid:FlxSprite;
-		private var toolPanel:FlxLayer;
+		//private var toolPanel:FlxLayer;
 		private var textField:FlxText;
 		private var mode:uint;
+		
+		private var iconPanel:Sprite;
+		private var joinButton:Sprite;
+		private var breakButton:Sprite;
+		private var killButton:Sprite;
+		private var editButton:Sprite;
+		private var copyButton:Sprite;
+		private var gridButton:Sprite;
+		private var snapButton:Sprite;
+		private var activeButton:Sprite;
 		
 		private const BLACK:Number = 0xFF000000;
 		private const WHITE:Number = 0xFFFFFFFF;
@@ -142,6 +164,10 @@
 			endImg.y = xmlMapLoader.getEndPoint().y;
 		}
 		
+		
+		
+		
+		
 		private function addPlayer():void{
 			var body:Player = new Player(100, 20, null);
 			
@@ -188,7 +214,68 @@
             add(grid);
 		}
 		
+		private function createImageButton(Graphic:Class, x:uint=0, y:uint=0, onClick:Function=null):Sprite{
+			var bitmap:Bitmap = new Graphic;
+			
+			var sprite:Sprite = new Sprite();
+			sprite.graphics.beginBitmapFill(bitmap.bitmapData,null,false);
+			sprite.graphics.drawRect(0,0,bitmap.bitmapData.width,bitmap.bitmapData.height);
+			sprite.graphics.endFill();
+			sprite.x = x;
+			sprite.y = y;
+			
+			sprite.addEventListener(MouseEvent.MOUSE_DOWN, onClick);
+			//addChild(sprite);
+			
+			iconPanel.addChild(sprite);
+			
+			
+			return sprite;
+		}
+		
+		private function onActiveClick(event:MouseEvent):void{
+			active = !active;
+		}
+		private function onSnapClick(event:MouseEvent):void{
+			snapToGrid = !snapToGrid;
+		}
+		private function onGridClick(event:MouseEvent):void{
+			grid.visible = !grid.visible;
+		}
+		private function onJoinClick(event:MouseEvent):void{
+			mode = JOINT;
+		}
+		private function onBreakClick(event:MouseEvent):void{
+			mode = BREAK;
+		}
+		private function onKillClick(event:MouseEvent):void{
+			mode = KILL;
+		}
+		private function onEditClick(event:MouseEvent):void{
+			mode = EDIT;
+		}
+		private function onCopyClick(event:MouseEvent):void{
+			copy(xmlMapLoader.getConfiguration());
+			FlxG.play(dinoSound);
+		}
+		
 		private function setHUD():void{
+			iconPanel = new Sprite();
+			activeButton = createImageButton(activeImg, 5, 190, onActiveClick);
+			snapButton = createImageButton(snapImg, 5, 190, onSnapClick);
+			gridButton = createImageButton(gridImg, 5, 220, onGridClick);
+			joinButton = createImageButton(joinImg, 5, 250, onJoinClick);
+			
+			breakButton = createImageButton(breakImg, 5, 290, onBreakClick);
+			killButton = createImageButton(killImg, 5, 330, onKillClick);
+			editButton = createImageButton(editImg, 5, 370, onEditClick);
+			copyButton = createImageButton(copyImg, 5, 410, onCopyClick);
+			
+			
+			addChild(iconPanel);
+			
+			
+			
 			addChild(previewImg = new Shape());
 
 			setupGrid();
@@ -210,7 +297,7 @@
 			statusPanel.add(textField);
 			add(statusPanel);
 			
-			
+			/*
 			var actions:Array = [onSetKill, onSetEdit, onSetCopy, onDrawBox, onAddJoint, onBreakJoint]
 			toolPanel = new FlxLayer();
 			//toolPanel.add(grid);
@@ -225,12 +312,13 @@
 			toolPanel.add(addButton(5,30,"KILL",actions[0]));
 			toolPanel.add(addButton(5,60,"EDIT",actions[1]));
 			toolPanel.add(addButton(5,90,"COPY",actions[2]));
-			toolPanel.add(addButton(5,120,"PHYS",actions[3]));
-			toolPanel.add(addButton(5,150,"JOINT",actions[4]));
-			toolPanel.add(addButton(5,180,"BREAK",actions[5]));
+			//toolPanel.add(addButton(5,120,"PHYS",actions[3]));
+			//toolPanel.add(addButton(5,150,"JOINT",actions[4]));
+			//toolPanel.add(addButton(5,180,"BREAK",actions[5]));
 			
 			//toolPanel.add(textField);
 			add(toolPanel);
+			*/
 			
 		}
 		
@@ -359,7 +447,8 @@
 			}
 			
 			if(FlxG.keys.justPressed("T")){
-				toolPanel.visible = !toolPanel.visible;
+				iconPanel.visible = !iconPanel.visible;
+				//toolPanel.visible = !toolPanel.visible;
 			}
 			
 			if(FlxG.keys.justPressed("H")){
@@ -460,8 +549,30 @@
 					mode = KILL;
 				}
 			}
+			
+			/*
+			for(var i:uint = 0; i < iconPanel.numChildren; i++){
+				iconPanel.getChildAt(i).alpha = .5;
+			}
+			
+			if(mode == JOINT){
+				joinButton.alpha = 1;
+			}
+			if(mode == BREAK){
+				breakButton.alpha = 1;
+			}
+			if(mode == KILL){
+				killButton.alpha = 1;
+			}*/
+			activeButton.alpha = active ? 1 : .5;
+			gridButton.alpha = grid.visible ? 1 : .5;
+			joinButton.alpha = mode == JOINT ? 1 : .5;
+			breakButton.alpha = mode == BREAK ? 1 : .5;
+			killButton.alpha = mode == KILL ? 1 : .5;
+			editButton.alpha = mode == EDIT ? 1 : .5;
+			
 				
-			var actions:Array = ["KILL", "EDIT", "DRAW", "JOINT"];
+			var actions:Array = ["KILL", "EDIT", "DRAW", "JOIN", "BREAK"];
 			var action:String = actions[mode];
 			var inact:String = active ? "ACTIVE" : "STATIC";
 			var snap:String = snapToGrid ? "SNAP" : "FREE";
