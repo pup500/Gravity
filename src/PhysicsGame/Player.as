@@ -210,8 +210,10 @@ package PhysicsGame
 		
 		private function gravObjKillSwitch():void
 		{
-			if (FlxG.keys.Q)
+			if (FlxG.keys.justPressed("Q"))
 			{
+				FlxG.play(SndExplode);
+				
 				for each(var bullet:Bullet in _bullets)
 				{
 					bullet.killGravityObject();

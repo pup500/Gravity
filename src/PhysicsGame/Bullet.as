@@ -98,7 +98,7 @@
 		
 		public function killGravityObject():void 
 		{
-			_gravityObject.selfDestruct();
+			_gravityObject.kill();
 		}
 		
 		public function setGravityObject(gravityObject:GravityObject):void{

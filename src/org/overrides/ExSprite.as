@@ -272,6 +272,12 @@ package org.overrides
 			angle = final_body.GetAngle();
 		}
 		
+		override public function kill():void
+		{
+			destroyPhysBody();
+			super.kill();
+		}
+		
 		override public function render():void
 		{
 			if(!visible)
@@ -295,7 +301,7 @@ package org.overrides
 		}
 		
 		override public function hurt(Damage:Number):void{
-			
+		
 		}
 		
 		public function setImpactPoint(point:b2ContactPoint):void{
