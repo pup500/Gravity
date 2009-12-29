@@ -37,8 +37,12 @@
 		private var lastIndex:int;
 		
 		private var active:Boolean;
+		private var usePoly:Boolean;
 
 		private var previewImg:Shape;
+		private var box:FlxSprite;
+		private var drawingBox:Boolean;
+		private var startPoint:Point;
 		
 		private var snapToGrid:Boolean;
 		
@@ -57,7 +61,7 @@
 		
 		private const KILL:uint = 0;
 		private const EDIT:uint = 1;
-		private const VIEW:uint = 2;
+		private const DRAW:uint = 2;
 
 		private const WIDTH:uint = 1280;
 		private const HEIGHT:uint = 960;
@@ -68,7 +72,7 @@
 			bgColor = 0xffeeeeff;;
 			the_world.SetGravity(new b2Vec2(0,0));
 			
-			//debug = true;
+			debug = true;
 			initBox2DDebugRendering();
 			
 			FlxG.showCursor(cursorSprite);
@@ -77,9 +81,15 @@
 			files = new Array();
 			active = false;
 			snapToGrid = true;
+			drawingBox = false;
+			usePoly = false;
 			
 			startImg = new FlxSprite(0,0,startSprite);
 			endImg = new FlxSprite(0,0,endSprite);
+			
+			box = new FlxSprite(0,0);
+			add(box);
+			startPoint = new Point();
 			
 			add(startImg);
 			add(endImg);
@@ -173,7 +183,7 @@
 			add(statusPanel);
 			
 			
-			var actions:Array = [onSetKill, onSetEdit, onSetCopy]
+			var actions:Array = [onSetKill, onSetEdit, onSetCopy, onDrawBox]
 			toolPanel = new FlxLayer();
 			toolPanel.add(grid);
 				
@@ -187,6 +197,7 @@
 			toolPanel.add(addButton(5,30,"KILL",actions[0]));
 			toolPanel.add(addButton(5,60,"EDIT",actions[1]));
 			toolPanel.add(addButton(5,90,"COPY",actions[2]));
+			toolPanel.add(addButton(5,120,"PHYS",actions[3]));
 			
 			//toolPanel.add(textField);
 			add(toolPanel);
@@ -195,17 +206,18 @@
 		
 		private function onSetKill():void{
 			mode = KILL;
-			FlxG.mouse.reset();
 		}
 		
 		private function onSetEdit():void{
 			mode = EDIT;
-			FlxG.mouse.reset();
 		}
 		
 		private function onSetCopy():void{
 			copy(xmlMapLoader.getConfiguration());
-			FlxG.mouse.reset();
+		}
+		
+		private function onDrawBox():void{
+			mode = DRAW;
 		}
 		
 		private function addButton(x:int, y:int, text:String, onClick:Function):ExButton
@@ -320,6 +332,16 @@
 				snapToGrid = !snapToGrid;
 			}
 			
+			if(FlxG.keys.justPressed("B")){
+				usePoly = !usePoly;
+			}
+			
+			//For the physics....
+			debug_sprite.visible = usePoly;
+			debug_sprite.x = FlxG.scroll.x;
+			debug_sprite.y = FlxG.scroll.y;
+			
+			
 			handlePreview();
 			handleMode();
 			handleMouse();
@@ -376,9 +398,8 @@
 			var action:String = actions[mode];
 			var inact:String = active ? "ACTIVE" : "STATIC";
 			var snap:String = snapToGrid ? "SNAP" : "FREE";
-			var status:Array = [action, inact, snap, "FILE: " + files[index], FlxG.mouse.x, FlxG.mouse.y
-				, mouseX, mouseY, FlxG.mouse.x - mouseX, FlxG.mouse.y - mouseY
-			];
+			var poly:String = usePoly ? "POLY" : "BOX";
+			var status:Array = [action, inact, snap, poly, "FILE: " + files[index], FlxG.mouse.x, FlxG.mouse.y];
 			textField.text = status.join(" | ");
 		}
 		
@@ -387,21 +408,18 @@
 			point.x = FlxG.mouse.x;
 			point.y = FlxG.mouse.y;
 			
-			previewImg.x = FlxG.mouse.x+FlxG.scroll.x;//mouseX;
-			previewImg.y = FlxG.mouse.y+FlxG.scroll.y;//mouseY;
+			previewImg.x = FlxG.mouse.x+FlxG.scroll.x;
+			previewImg.y = FlxG.mouse.y+FlxG.scroll.y;
 				
 			if(snapToGrid){
 				point.x -= point.x % 16;
 				point.y -= point.y % 16;
 				
-				//Handles snapping to 16...
-				//FlxG.mouse.x+FlxG.scroll.x,
-				//FlxG.mouse.y+FlxG.scroll.y
 				previewImg.x -= (FlxG.mouse.x % 16);
-				previewImg.y -= (FlxG.mouse.y % 16);//(FlxG.mouse.y - mouseY) % 16;//(mouseY % 16);
+				previewImg.y -= (FlxG.mouse.y % 16);
 			}
 			
-			previewImg.visible = mode != KILL;
+			previewImg.visible = mode == EDIT;
 			previewImg.alpha = .5;
 			
 			if(FlxG.keys.SHIFT){
@@ -423,6 +441,39 @@
 				}
 				else if(mode == KILL){
 					xmlMapLoader.removeObjectAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true);
+				}
+				else if(mode == DRAW){
+					//Drawbox...
+					startPoint.x = point.x;
+					startPoint.y = point.y;
+					
+					drawingBox = true;
+				}
+			}
+			
+			if(mode == DRAW && drawingBox){
+				var width:int = point.x - startPoint.x;
+				var height:int = point.y - startPoint.y;
+				
+				box.x = startPoint.x;
+				box.y = startPoint.y;
+				if(width < 0){
+					box.x = point.x;
+					width = -width;
+				}
+				if(height < 0){
+					box.y = point.y;
+					height = -height;
+				}
+				
+				box.createGraphic(width, height, 0xff000000);	
+			}
+			
+			if(FlxG.mouse.justReleased()){
+				if(mode == DRAW && drawingBox){
+					drawingBox = false;
+					
+					//We can do things like, make a shape that fills... or try physics stuff...
 				}
 			}
 		}

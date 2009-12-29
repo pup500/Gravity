@@ -274,10 +274,10 @@ package PhysicsGame
 			super.setImpactPoint(point);
 			
 			trace("imp: " + impactPoint.position.y + " playy:" + y + " hei: " + height + " both:" + (y + height));
-			if(impactPoint.position.y > y + height-1 && final_body.GetLinearVelocity().y >= 0){
+			if(impactPoint.position.y > y + height-3 && final_body.GetLinearVelocity().y >= 0){
 				_canJump = true;
 			}
-			trace(impactPoint.position.y > y + height-1);
+			trace(impactPoint.position.y > y + height-3);
 			
 			if(point.shape1.GetBody().GetUserData() && point.shape1.GetBody().GetUserData().name == "end"){
 				_nextLevel = true;

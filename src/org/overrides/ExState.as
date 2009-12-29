@@ -12,6 +12,8 @@ package org.overrides
 	{
 		public var the_world:b2World;
 		protected var debug:Boolean;
+		public var debug_sprite:Sprite;
+				
 
 		public function ExState()
 		{
@@ -34,7 +36,7 @@ package org.overrides
 		{
 			if(debug){
 				var debug_draw:b2DebugDraw = new b2DebugDraw();
-				var debug_sprite:Sprite = new Sprite();
+				debug_sprite = new Sprite();
 				addChild(debug_sprite);
 				debug_draw.SetSprite(debug_sprite);
 				debug_draw.SetDrawScale(1);

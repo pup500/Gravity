@@ -6,3 +6,5 @@ data/editor/images/e_ass_08.png
 data/editor/images/e_ass_10.png
 data/editor/images/e_ass_15.png
 data/editor/images/e_ass_18.png
+data/test.png
+data/tritest.png

@@ -84,7 +84,8 @@ package common
 		    var b2:ExSprite = new ExSprite(shape.x, shape.y);
 		    b2.name = "loaded";
 		    b2.pixels = bitmapData;
-		    b2.initShape();
+		    //b2.initShape();
+		    b2.initShapeFromSprite();
 			b2.createPhysBody(_state.the_world);
 			if(shape.type == "static"){
 				b2.final_body.SetStatic();
