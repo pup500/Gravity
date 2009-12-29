@@ -59,10 +59,10 @@ package PhysicsGame
 			//_mass = 100; //default
 			
 			//basic player physics
-			var runSpeed:uint = 40;//80;
-			_jumpPower = 100;
-			maxVelocity.x = runSpeed;
-			maxVelocity.y = _jumpPower;
+			//var runSpeed:uint = 40;//80;
+			//_jumpPower = 100;
+			//maxVelocity.x = runSpeed;
+			//maxVelocity.y = _jumpPower;
 			
 			//animations
 			addAnimation("idle", [0]);

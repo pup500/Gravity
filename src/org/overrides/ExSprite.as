@@ -253,12 +253,17 @@ package org.overrides
 				exists = false;
 				//We might not need to save shape as destroy body should work already...
 				//final_body.DestroyShape(final_shape);
-				for(var joints:b2JointEdge = final_body.GetJointList(); joints; joints = joints.next){
-					_world.DestroyJoint(joints.joint);
-				}
+				destroyAllJoints();
 				_world.DestroyBody(final_body);
 				//final_shape = null;
 				final_body = null;
+			}
+		}
+		
+		public function destroyAllJoints():void{
+			var joints:b2JointEdge;
+			while(joints = final_body.GetJointList()){
+				_world.DestroyJoint(joints.joint);
 			}
 		}
 		

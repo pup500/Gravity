@@ -30,6 +30,7 @@ package common
 		private var _bodies:Array;
 		private var number:uint;
 		private var initialNumber:uint;
+		private var _loaded:Boolean;
 		
 		public function XMLMap(state:ExState)
 		{
@@ -43,6 +44,7 @@ package common
 			
 			number = 0;
 			initialNumber = 0;
+			_loaded = false;
 		}
 
 		//Load the config file to set up world...
@@ -63,12 +65,12 @@ package common
 				addXMLObject(shape);
 			}
 			
+			//Joints will be added after all objects have been created...
+			
 			_start.x = configXML.points.start.x;
 			_start.y = configXML.points.start.y;
 			_end.x = configXML.points.end.x;
 			_end.y = configXML.points.end.y;
-			
-			_state.init();
 		}
 
 		//Load the xml config object at the specified coordinates
@@ -118,8 +120,10 @@ package common
     		
     		//We need to add the joints....
     		//but can only do that after all bodies are loaded...
-    		if(number == initialNumber){
+    		if(!_loaded && (number == initialNumber)){
+    			_loaded = true;
     			addAllJoints();
+	    		_state.init();
     		}
 		}
 		
@@ -192,16 +196,48 @@ package common
 			}
 		}
 		
+		public function removeJointAtPoint(point:Point, includeStatic:Boolean=false):void{
+			var b2:b2Body = Utilities.GetBodyAtMouse(_state.the_world, point, includeStatic);
+			if(b2){
+				if(b2.GetUserData()){
+					var sprite:ExSprite = b2.GetUserData();
+					sprite.destroyAllJoints();
+					
+					//remove from config xml...
+					var xml:XML;
+					for(var i:uint = 0; i < _config.length; i++){
+						xml = _config[i];
+						
+						//Find all xml elements of type joint...
+						if(xml.name() == "joint"){
+							var b3:b2Body = Utilities.GetBodyAtMouse(_state.the_world, new Point(xml.body1.x, xml.body1.y), includeStatic);
+							var b4:b2Body = Utilities.GetBodyAtMouse(_state.the_world, new Point(xml.body2.x, xml.body2.y), includeStatic);
+							
+							//Remove the joint if it connects with the body
+							if(b2 === b3 || b2 === b4){
+								_config.splice(i,1);
+								i--;
+							}
+						}
+					}
+				}
+			}
+		}
+		
 		public function registerObjectAtPoint(point:Point, includeStatic:Boolean=false):void{
 			var b2:b2Body = Utilities.GetBodyAtMouse(_state.the_world, point, includeStatic);
 			
 			if(b2){
-				if(_bodies.indexOf(b2)<0){
-					var vec:b2Vec2 = new b2Vec2();
-					vec.x = point.x;
-					vec.y = point.y;
-					_bodies.push([b2,vec]);
+				for(var i:uint = 0; i < _bodies.length; i++){
+					var bb:b2Body = _bodies[i][0];
+					if(bb == b2){
+						return;
+					}
 				}
+				var vec:b2Vec2 = new b2Vec2();
+				vec.x = point.x;
+				vec.y = point.y;
+				_bodies.push([b2,vec]);
 			}
 		}
 		
@@ -215,6 +251,11 @@ package common
 		}
 		
 		public function addJoint():void{
+			if(_bodies.length != 2){
+				_bodies = new Array();
+				return;
+			}
+			
 			var joint:b2DistanceJointDef = new b2DistanceJointDef();
 			var b1:Array = _bodies[0] as Array;
 			var b2:Array = _bodies[1] as Array;

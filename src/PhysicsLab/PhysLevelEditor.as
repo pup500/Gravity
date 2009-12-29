@@ -67,6 +67,7 @@
 		private const EDIT:uint = 1;
 		private const DRAW:uint = 2;
 		private const JOINT:uint = 3;
+		private const BREAK:uint = 4;
 
 		private const WIDTH:uint = 1280;
 		private const HEIGHT:uint = 960;
@@ -74,7 +75,7 @@
 		public function PhysLevelEditor() 
 		{
 			super();
-			bgColor = 0xffeeeeff;;
+			bgColor = 0xffeeeeff;
 			the_world.SetGravity(new b2Vec2(0,0));
 			
 			debug = true;
@@ -110,6 +111,21 @@
 			setInstructions();
 			
 			setHUD();
+		}
+		
+		override protected function initBox2DDebugRendering():void
+		{
+			if(debug){
+				var debug_draw:b2DebugDraw = new b2DebugDraw();
+				debug_sprite = new Sprite();
+				addChild(debug_sprite);
+				debug_draw.SetSprite(debug_sprite);
+				debug_draw.SetDrawScale(1);
+				debug_draw.SetAlpha(1);
+				debug_draw.SetLineThickness(2);
+				debug_draw.SetFlags(b2DebugDraw.e_shapeBit |b2DebugDraw.e_centerOfMassBit | b2DebugDraw.e_jointBit);
+				the_world.SetDebugDraw(debug_draw);
+			}
 		}
 		
 		private function loadLevelConfig():void{
@@ -159,7 +175,7 @@
 				gridShape.graphics.lineTo(WIDTH,y);
 			}
 			
-			//You want this grid to scroll
+			//You want this grid to scroll so don't set scroll factor
 			grid = new FlxSprite(0,0);
 			grid.createGraphic(WIDTH, HEIGHT,0xffffffff);
 			//grid.scrollFactor.x = 0;
@@ -194,12 +210,12 @@
 			add(statusPanel);
 			
 			
-			var actions:Array = [onSetKill, onSetEdit, onSetCopy, onDrawBox, onAddJoint]
+			var actions:Array = [onSetKill, onSetEdit, onSetCopy, onDrawBox, onAddJoint, onBreakJoint]
 			toolPanel = new FlxLayer();
 			toolPanel.add(grid);
 				
 			var panelBackground:FlxSprite = new FlxSprite(0,0);
-			panelBackground.createGraphic(50,180,0xff000000);
+			panelBackground.createGraphic(50,220,0xff000000);
 			panelBackground.scrollFactor.x = 0;
 			panelBackground.scrollFactor.y = 0;
 			panelBackground.x = 2;
@@ -210,6 +226,7 @@
 			toolPanel.add(addButton(5,90,"COPY",actions[2]));
 			toolPanel.add(addButton(5,120,"PHYS",actions[3]));
 			toolPanel.add(addButton(5,150,"JOINT",actions[4]));
+			toolPanel.add(addButton(5,180,"BREAK",actions[5]));
 			
 			//toolPanel.add(textField);
 			add(toolPanel);
@@ -234,6 +251,10 @@
 		
 		private function onAddJoint():void{
 			mode = JOINT;
+		}
+		
+		private function onBreakJoint():void{
+			mode = BREAK;
 		}
 		
 		private function addButton(x:int, y:int, text:String, onClick:Function):ExButton
@@ -388,16 +409,18 @@
 			handlePreview();
 			handleMode();
 			handleMouse();
+			
 		}
 		
         override public function render():void{
         	super.render();
+        	/*
         	if(toolPanel && toolPanel.visible){
         		toolPanel.render();
         	}
         	if(statusPanel && statusPanel.visible){
         		statusPanel.render();
-        	}
+        	}*/
         }
 		
 		private function handlePreview():void{
@@ -506,6 +529,9 @@
 					startPoint.x = FlxG.mouse.x;
 					startPoint.y = FlxG.mouse.y;
 					drawingLine = true;
+				}
+				else if(mode == BREAK){
+					xmlMapLoader.removeJointAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true);
 				}
 			}
 			
