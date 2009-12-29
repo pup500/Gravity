@@ -1,5 +1,7 @@
 package common
 {
+	import Box2D.Common.Math.b2Vec2;
+	import Box2D.Dynamics.Joints.b2DistanceJointDef;
 	import Box2D.Dynamics.b2Body;
 	
 	import flash.display.Bitmap;
@@ -16,6 +18,7 @@ package common
 	
 	public class XMLMap
 	{
+		private var configXML:XML;
 		private var _config:Array;
 		private var _state:ExState;
 		
@@ -24,6 +27,10 @@ package common
 		
 		private var _undo:Array;
 		
+		private var _bodies:Array;
+		private var number:uint;
+		private var initialNumber:uint;
+		
 		public function XMLMap(state:ExState)
 		{
 			_state = state;	
@@ -31,6 +38,11 @@ package common
 			_undo = new Array();
 			_start = new Point();
 			_end = new Point();
+			
+			_bodies = new Array();
+			
+			number = 0;
+			initialNumber = 0;
 		}
 
 		//Load the config file to set up world...
@@ -43,16 +55,18 @@ package common
 		
 		//Actual callback function for load finish
 		private function onLoadXMLConfigComplete(event:Event):void{
-			var xml:XML = new XML(event.target.data);
+			configXML = new XML(event.target.data);
 			
-			for each(var shape:XML in xml.objects.shape){
+			initialNumber = configXML.objects.shape.length();
+			
+			for each(var shape:XML in configXML.objects.shape){
 				addXMLObject(shape);
 			}
 			
-			_start.x = xml.points.start.x;
-			_start.y = xml.points.start.y;
-			_end.x = xml.points.end.x;
-			_end.y = xml.points.end.y;
+			_start.x = configXML.points.start.x;
+			_start.y = configXML.points.start.y;
+			_end.x = configXML.points.end.x;
+			_end.y = configXML.points.end.y;
 			
 			_state.init();
 		}
@@ -99,6 +113,14 @@ package common
 			_undo.push(b2);
 			
     		_config.push(shape);
+    		
+    		number++;
+    		
+    		//We need to add the joints....
+    		//but can only do that after all bodies are loaded...
+    		if(number == initialNumber){
+    			addAllJoints();
+    		}
 		}
 		
 		public function getConfiguration():String{
@@ -143,9 +165,11 @@ package common
 			var b2:ExSprite = _undo.pop();
 			if(b2){
 				b2.destroyPhysBody();
-				b2.kill();
+				b2.kill();	
+				
+				_config.pop();
+				number--;
 			}
-			_config.pop();
 		}
 		
 		public function removeObjectAtPoint(point:Point, includeStatic:Boolean=false):void{
@@ -160,10 +184,66 @@ package common
 					if(rSprite){
 						rSprite.destroyPhysBody();
 						rSprite.kill();
+						
+						_config.splice(index,1);
+						number--;
 					}
-					_config.splice(index,1);
 				}
 			}
+		}
+		
+		public function registerObjectAtPoint(point:Point, includeStatic:Boolean=false):void{
+			var b2:b2Body = Utilities.GetBodyAtMouse(_state.the_world, point, includeStatic);
+			
+			if(b2){
+				if(_bodies.indexOf(b2)<0){
+					var vec:b2Vec2 = new b2Vec2();
+					vec.x = point.x;
+					vec.y = point.y;
+					_bodies.push([b2,vec]);
+				}
+			}
+		}
+		
+		private function addAllJoints():void{
+			for each (var joint:XML in configXML.objects.joint){
+				registerObjectAtPoint(new Point(joint.body1.x, joint.body1.y), true);
+				registerObjectAtPoint(new Point(joint.body2.x, joint.body2.y), true);
+				//Maybe depending on the config... we can use different functions
+				addJoint();
+			}
+		}
+		
+		public function addJoint():void{
+			var joint:b2DistanceJointDef = new b2DistanceJointDef();
+			var b1:Array = _bodies[0] as Array;
+			var b2:Array = _bodies[1] as Array;
+			
+			var body1:b2Body = b1[0] as b2Body;
+			var body2:b2Body = b2[0] as b2Body;
+			
+			var point1:b2Vec2 = b1[1];
+			var point2:b2Vec2 = b2[1];
+			
+			if(body1 && body2){
+				joint.Initialize(body1, body2, point1, point2);
+				joint.collideConnected = true;
+				_state.the_world.CreateJoint(joint);
+				
+				_bodies = new Array();
+				
+				var xml:XML = new XML(<joint/>);
+				xml.type = "distance";
+				xml.body1.x = point1.x;
+				xml.body1.y = point1.y;
+				xml.body2.x = point2.x;
+				xml.body2.y = point2.y;
+				_config.push(xml);
+			}
+		}
+		
+		public function getItemCount():uint{
+			return number;
 		}
 	}
 }

@@ -42,7 +42,7 @@ package org.overrides
 				debug_draw.SetDrawScale(1);
 				debug_draw.SetAlpha(0.5);
 				debug_draw.SetLineThickness(1);
-				debug_draw.SetFlags(b2DebugDraw.e_shapeBit |b2DebugDraw.e_centerOfMassBit);
+				debug_draw.SetFlags(b2DebugDraw.e_shapeBit |b2DebugDraw.e_centerOfMassBit | b2DebugDraw.e_jointBit);
 				the_world.SetDebugDraw(debug_draw);
 			}
 		}
@@ -51,7 +51,8 @@ package org.overrides
 		{
 			//the_world.Step(FlxG.elapsed, 10);
 			the_world.Step(1/30, 10, 10);
-			_layer.update();
+			
+			super.update();
 		}
 	}
 }

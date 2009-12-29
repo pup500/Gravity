@@ -38,10 +38,14 @@
 		
 		private var active:Boolean;
 		private var usePoly:Boolean;
+		private var run:Boolean;
+		private var addJoint:Boolean;
 
 		private var previewImg:Shape;
 		private var box:FlxSprite;
 		private var drawingBox:Boolean;
+		private var line:Shape;
+		private var drawingLine:Boolean;
 		private var startPoint:Point;
 		
 		private var snapToGrid:Boolean;
@@ -62,6 +66,7 @@
 		private const KILL:uint = 0;
 		private const EDIT:uint = 1;
 		private const DRAW:uint = 2;
+		private const JOINT:uint = 3;
 
 		private const WIDTH:uint = 1280;
 		private const HEIGHT:uint = 960;
@@ -82,7 +87,9 @@
 			active = false;
 			snapToGrid = true;
 			drawingBox = false;
+			drawingLine = false;
 			usePoly = false;
+			run = false;
 			
 			startImg = new FlxSprite(0,0,startSprite);
 			endImg = new FlxSprite(0,0,endSprite);
@@ -90,6 +97,9 @@
 			box = new FlxSprite(0,0);
 			add(box);
 			startPoint = new Point();
+			
+			line = new Shape();
+			addChild(line);
 			
 			add(startImg);
 			add(endImg);
@@ -149,6 +159,7 @@
 				gridShape.graphics.lineTo(WIDTH,y);
 			}
 			
+			//You want this grid to scroll
 			grid = new FlxSprite(0,0);
 			grid.createGraphic(WIDTH, HEIGHT,0xffffffff);
 			//grid.scrollFactor.x = 0;
@@ -183,12 +194,12 @@
 			add(statusPanel);
 			
 			
-			var actions:Array = [onSetKill, onSetEdit, onSetCopy, onDrawBox]
+			var actions:Array = [onSetKill, onSetEdit, onSetCopy, onDrawBox, onAddJoint]
 			toolPanel = new FlxLayer();
 			toolPanel.add(grid);
 				
 			var panelBackground:FlxSprite = new FlxSprite(0,0);
-			panelBackground.createGraphic(50,150,0xff000000);
+			panelBackground.createGraphic(50,180,0xff000000);
 			panelBackground.scrollFactor.x = 0;
 			panelBackground.scrollFactor.y = 0;
 			panelBackground.x = 2;
@@ -198,6 +209,7 @@
 			toolPanel.add(addButton(5,60,"EDIT",actions[1]));
 			toolPanel.add(addButton(5,90,"COPY",actions[2]));
 			toolPanel.add(addButton(5,120,"PHYS",actions[3]));
+			toolPanel.add(addButton(5,150,"JOINT",actions[4]));
 			
 			//toolPanel.add(textField);
 			add(toolPanel);
@@ -218,6 +230,10 @@
 		
 		private function onDrawBox():void{
 			mode = DRAW;
+		}
+		
+		private function onAddJoint():void{
+			mode = JOINT;
 		}
 		
 		private function addButton(x:int, y:int, text:String, onClick:Function):ExButton
@@ -270,7 +286,8 @@
 			FlxG.log("G toggles GRID");
 			FlxG.log("H toggles HUD/STATUS panel");
 			FlxG.log("T toggles TOOLBAR panel");
-			FlxG.log("N toggles FREE/SNAP to grid panel");
+			FlxG.log("R toggles RUN");
+			FlxG.log("N toggles FREE/SNAP to grid");
 			FlxG.log("U toggles DEBUG PHYSICS bodies.  Let's you see if your shape has edge transparency issues");
 			FlxG.log("B toggles POLY/BOX - NOTE: Everything renders based on poly now.  THERE IS NO BOX");
 			FlxG.log("SHIFT CLICK will add/kill the selected shape at mouse coordinates");
@@ -343,6 +360,26 @@
 				debug_sprite.visible = !debug_sprite.visible;
 			}
 			
+			if(FlxG.keys.justPressed("R")){
+				run = !run;
+				var bb:b2Body;
+				if(run){
+					the_world.SetGravity(new b2Vec2(0,80));
+					
+					for (bb = the_world.GetBodyList(); bb; bb = bb.GetNext()) {
+						bb.WakeUp();
+					}
+				}
+				else{
+					the_world.SetGravity(new b2Vec2(0,0));
+					for (bb = the_world.GetBodyList(); bb; bb = bb.GetNext()) {
+						if(bb.GetUserData() && bb.GetUserData().name == "Player")
+							continue;
+						 bb.PutToSleep();
+					}
+				}
+			}
+			
 			//For the physics....
 			debug_sprite.x = FlxG.scroll.x;
 			debug_sprite.y = FlxG.scroll.y;
@@ -400,12 +437,15 @@
 				}
 			}
 				
-			var actions:Array = ["KILL", "EDIT"];
+			var actions:Array = ["KILL", "EDIT", "DRAW", "JOINT"];
 			var action:String = actions[mode];
 			var inact:String = active ? "ACTIVE" : "STATIC";
 			var snap:String = snapToGrid ? "SNAP" : "FREE";
 			var poly:String = usePoly ? "POLY" : "BOX";
-			var status:Array = [action, inact, snap, poly, "FILE: " + files[index], FlxG.mouse.x, FlxG.mouse.y];
+			
+			var running:String = run ? "RUN" : "STOP";
+			var mouseCoord:String =  "(" + FlxG.mouse.x + "," + FlxG.mouse.y +")";
+			var status:Array = [action, inact, snap, poly, running, "FILE: " + files[index], mouseCoord, xmlMapLoader.getItemCount()];
 			textField.text = status.join(" | ");
 		}
 		
@@ -455,8 +495,33 @@
 					
 					drawingBox = true;
 				}
+				else if(mode == JOINT){
+					xmlMapLoader.registerObjectAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true);
+					
+					//Drawbox...
+					//startPoint.x = point.x;
+					//startPoint.y = point.y;
+					
+					//I don't like snap
+					startPoint.x = FlxG.mouse.x;
+					startPoint.y = FlxG.mouse.y;
+					drawingLine = true;
+				}
 			}
 			
+			if(mode == JOINT && drawingLine){
+				line.graphics.clear();
+				line.graphics.lineStyle(1,0xFF0000,1);
+				line.graphics.moveTo(startPoint.x,startPoint.y);
+				line.graphics.lineTo(FlxG.mouse.x, FlxG.mouse.y);//point.x, point.y);
+			}
+			
+			//Allows for the scrolling to work...
+			line.x = FlxG.scroll.x;
+			line.y = FlxG.scroll.y;
+				
+			
+			//I am starting to hate using FlixelSprites.....
 			if(mode == DRAW && drawingBox){
 				var width:int = point.x - startPoint.x;
 				var height:int = point.y - startPoint.y;
@@ -480,6 +545,12 @@
 					drawingBox = false;
 					
 					//We can do things like, make a shape that fills... or try physics stuff...
+				}
+				
+				if(mode == JOINT && drawingLine){
+					drawingLine = false;
+					xmlMapLoader.registerObjectAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true);
+					xmlMapLoader.addJoint();
 				}
 			}
 		}

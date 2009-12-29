@@ -24,6 +24,7 @@ package PhysicsLab
 			//shape.filter.groupIndex = -2;
 			
 			shape.isSensor = true;
+			//shape.density = 0;
 			
 			name = "Player";
 			

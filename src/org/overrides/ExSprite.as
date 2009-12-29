@@ -4,6 +4,8 @@ package org.overrides
 	import Box2D.Collision.Shapes.*;
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
+	import Box2D.Dynamics.Joints.b2Joint;
+	import Box2D.Dynamics.Joints.b2JointEdge;
 	
 	import flash.geom.Point;
 	
@@ -251,6 +253,9 @@ package org.overrides
 				exists = false;
 				//We might not need to save shape as destroy body should work already...
 				//final_body.DestroyShape(final_shape);
+				for(var joints:b2JointEdge = final_body.GetJointList(); joints; joints = joints.next){
+					_world.DestroyJoint(joints.joint);
+				}
 				_world.DestroyBody(final_body);
 				//final_shape = null;
 				final_body = null;
