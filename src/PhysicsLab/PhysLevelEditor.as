@@ -514,6 +514,7 @@
 				line.graphics.lineStyle(1,0xFF0000,1);
 				line.graphics.moveTo(startPoint.x,startPoint.y);
 				line.graphics.lineTo(FlxG.mouse.x, FlxG.mouse.y);//point.x, point.y);
+				line.visible = true;
 			}
 			
 			//Allows for the scrolling to work...
@@ -548,6 +549,7 @@
 				}
 				
 				if(mode == JOINT && drawingLine){
+					line.visible = false;
 					drawingLine = false;
 					xmlMapLoader.registerObjectAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true);
 					xmlMapLoader.addJoint();

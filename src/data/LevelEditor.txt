@@ -10,3 +10,4 @@ data/test.png
 data/tritest.png
 data/angled.png
 data/tower-down.png
+data/diag.png

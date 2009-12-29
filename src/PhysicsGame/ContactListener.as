@@ -45,6 +45,22 @@ package PhysicsGame
 			//trace("normal: " + point.normal.x + ", " + point.normal.y);
 			//point.separation;
 			
+			var body1:b2Body = point.shape1.GetBody();
+			var body2:b2Body = point.shape2.GetBody();
+			//trace("Body1: "+ body1.GetUserData().name + " Body2: " + body2.GetUserData().name);
+				
+			if(body1.GetUserData()){
+				trace("Body1: "+ body1.GetUserData().name + " Body2: " + body2.GetUserData().name);
+				body1.GetUserData().setImpactPoint(point);
+				body1.GetUserData().hurt(0);
+			}
+			
+			if(body2.GetUserData()){
+				trace("Body1: "+ body1.GetUserData().name + " Body2: " + body2.GetUserData().name);
+				body2.GetUserData().setImpactPoint(point);
+				body2.GetUserData().hurt(0);
+			}
+			
 		}
 	
 		/// Called when a contact point is removed. This includes the last

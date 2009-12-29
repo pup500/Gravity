@@ -40,8 +40,8 @@ package org.overrides
 				addChild(debug_sprite);
 				debug_draw.SetSprite(debug_sprite);
 				debug_draw.SetDrawScale(1);
-				debug_draw.SetAlpha(0.5);
-				debug_draw.SetLineThickness(1);
+				debug_draw.SetAlpha(1);
+				debug_draw.SetLineThickness(2);
 				debug_draw.SetFlags(b2DebugDraw.e_shapeBit |b2DebugDraw.e_centerOfMassBit | b2DebugDraw.e_jointBit);
 				the_world.SetDebugDraw(debug_draw);
 			}
