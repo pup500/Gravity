@@ -129,7 +129,8 @@ package PhysicsGame
 			//Testing
 			for (var bb:b2Body = the_world.GetBodyList(); bb; bb = bb.GetNext()) {
 				
-				if(bb.GetUserData() && bb.GetUserData().name == "Player"){
+				if(bb.IsDynamic()){
+				//if(bb.GetUserData() && bb.GetUserData().name == "Player"){
 					for(var i:uint = 0; i < _gravObjects.length; i++){
 						var gObj:GravityObject = _gravObjects[i] as GravityObject;
 						
@@ -142,7 +143,7 @@ package PhysicsGame
 						var distSq:Number = dist.x * dist.x + dist.y * dist.y;
 						
 						//For performance reasons....  assume force is 0 when distance is pretty far
-						//if(distSq > 4000 ) continue;
+						if(distSq > 40000 ) continue;
 						
 						//This is a physics hack to stop adding gravity to objects when they are too close
 						//they aren't pulling anymore because of normal force

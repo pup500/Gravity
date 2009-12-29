@@ -1,23 +1,15 @@
 <config>
   <points>
     <start>
-      <x>107</x>
-      <y>125</y>
+      <x>80</x>
+      <y>96</y>
     </start>
     <end>
-      <x>487</x>
-      <y>402</y>
+      <x>448</x>
+      <y>400</y>
     </end>
   </points>
   <objects>
-    <shape>
-      <file>data/floor.png</file>
-      <contour/>
-      <x>261</x>
-      <y>261</y>
-      <angle>0</angle>
-      <type>static</type>
-    </shape>
     <shape>
       <file>data/tower-down.png</file>
       <contour/>
@@ -28,59 +20,11 @@
     </shape>
     <shape>
       <file>data/tower-down.png</file>
-      <contour/>
-      <x>14</x>
-      <y>328</y>
+      <type>active</type>
       <angle>0</angle>
-      <type>static</type>
-    </shape>
-    <shape>
-      <file>data/tower-down.png</file>
+      <x>275</x>
+      <y>353.5</y>
       <contour/>
-      <x>313</x>
-      <y>383</y>
-      <angle>0</angle>
-      <type>static</type>
-    </shape>
-    <shape>
-      <file>data/tower-down.png</file>
-      <contour/>
-      <x>519</x>
-      <y>149</y>
-      <angle>0</angle>
-      <type>static</type>
-    </shape>
-    <shape>
-      <file>data/tower-down.png</file>
-      <contour/>
-      <x>66</x>
-      <y>147</y>
-      <angle>0</angle>
-      <type>static</type>
-    </shape>
-    <shape>
-      <file>data/floor.png</file>
-      <contour/>
-      <x>257</x>
-      <y>566</y>
-      <angle>0</angle>
-      <type>static</type>
-    </shape>
-    <shape>
-      <file>data/floor.png</file>
-      <contour/>
-      <x>555</x>
-      <y>383</y>
-      <angle>0</angle>
-      <type>static</type>
-    </shape>
-    <shape>
-      <file>data/tower-down.png</file>
-      <contour/>
-      <x>172</x>
-      <y>266</y>
-      <angle>0</angle>
-      <type>static</type>
     </shape>
     <shape>
       <file>data/tower-down.png</file>
@@ -93,40 +37,8 @@
     <shape>
       <file>data/tower-down.png</file>
       <contour/>
-      <x>432</x>
-      <y>217</y>
-      <angle>0</angle>
-      <type>static</type>
-    </shape>
-    <shape>
-      <file>data/tower-down.png</file>
-      <contour/>
       <x>16</x>
       <y>493</y>
-      <angle>0</angle>
-      <type>static</type>
-    </shape>
-    <shape>
-      <file>data/floor.png</file>
-      <contour/>
-      <x>259</x>
-      <y>79</y>
-      <angle>0</angle>
-      <type>static</type>
-    </shape>
-    <shape>
-      <file>data/tower-down.png</file>
-      <contour/>
-      <x>597</x>
-      <y>308</y>
-      <angle>0</angle>
-      <type>static</type>
-    </shape>
-    <shape>
-      <file>data/tower-down.png</file>
-      <contour/>
-      <x>44</x>
-      <y>190</y>
       <angle>0</angle>
       <type>static</type>
     </shape>
@@ -141,8 +53,32 @@
     <shape>
       <file>data/tower-down.png</file>
       <contour/>
+      <x>172</x>
+      <y>266</y>
+      <angle>0</angle>
+      <type>static</type>
+    </shape>
+    <shape>
+      <file>data/tower-down.png</file>
+      <contour/>
       <x>79</x>
       <y>524</y>
+      <angle>0</angle>
+      <type>static</type>
+    </shape>
+    <shape>
+      <file>data/floor.png</file>
+      <contour/>
+      <x>259</x>
+      <y>79</y>
+      <angle>0</angle>
+      <type>static</type>
+    </shape>
+    <shape>
+      <file>data/tower-down.png</file>
+      <contour/>
+      <x>14</x>
+      <y>328</y>
       <angle>0</angle>
       <type>static</type>
     </shape>
@@ -165,6 +101,22 @@
     <shape>
       <file>data/tower-down.png</file>
       <contour/>
+      <x>44</x>
+      <y>190</y>
+      <angle>0</angle>
+      <type>static</type>
+    </shape>
+    <shape>
+      <file>data/floor.png</file>
+      <contour/>
+      <x>555</x>
+      <y>383</y>
+      <angle>0</angle>
+      <type>static</type>
+    </shape>
+    <shape>
+      <file>data/tower-down.png</file>
+      <contour/>
       <x>618</x>
       <y>239</y>
       <angle>0</angle>
@@ -172,34 +124,106 @@
     </shape>
     <shape>
       <file>data/tower-down.png</file>
-      <contour/>
-      <x>319</x>
-      <y>146</y>
-      <angle>0</angle>
-      <type>static</type>
-    </shape>
-    <shape>
-      <file>data/tower-down.png</file>
-      <contour/>
-      <x>244</x>
-      <y>198</y>
-      <angle>0</angle>
-      <type>static</type>
-    </shape>
-    <shape>
-      <file>data/tower-down.png</file>
-      <type>active</type>
-      <angle>0</angle>
-      <x>275</x>
-      <y>353.5</y>
-      <contour/>
-    </shape>
-    <shape>
-      <file>data/tower-down.png</file>
       <type>active</type>
       <angle>0</angle>
       <x>214</x>
       <y>352.5</y>
+      <contour/>
+    </shape>
+    <shape>
+      <file>data/floor.png</file>
+      <contour/>
+      <x>261</x>
+      <y>261</y>
+      <angle>0</angle>
+      <type>static</type>
+    </shape>
+    <shape>
+      <file>data/floor.png</file>
+      <contour/>
+      <x>257</x>
+      <y>566</y>
+      <angle>0</angle>
+      <type>static</type>
+    </shape>
+    <shape>
+      <file>data/tower-down.png</file>
+      <contour/>
+      <x>66</x>
+      <y>147</y>
+      <angle>0</angle>
+      <type>static</type>
+    </shape>
+    <shape>
+      <file>data/tower-down.png</file>
+      <contour/>
+      <x>597</x>
+      <y>308</y>
+      <angle>0</angle>
+      <type>static</type>
+    </shape>
+    <shape>
+      <file>data/editor/images/e_ass_18.png</file>
+      <type>active</type>
+      <angle>0</angle>
+      <x>362</x>
+      <y>137.5</y>
+      <contour/>
+    </shape>
+    <shape>
+      <file>data/editor/images/e_ass_18.png</file>
+      <type>active</type>
+      <angle>0</angle>
+      <x>394</x>
+      <y>137.5</y>
+      <contour/>
+    </shape>
+    <shape>
+      <file>data/editor/images/e_ass_18.png</file>
+      <type>active</type>
+      <angle>0</angle>
+      <x>410</x>
+      <y>169.5</y>
+      <contour/>
+    </shape>
+    <shape>
+      <file>data/editor/images/e_ass_18.png</file>
+      <type>active</type>
+      <angle>0</angle>
+      <x>378</x>
+      <y>185.5</y>
+      <contour/>
+    </shape>
+    <shape>
+      <file>data/editor/images/e_ass_18.png</file>
+      <type>active</type>
+      <angle>0</angle>
+      <x>346</x>
+      <y>169.5</y>
+      <contour/>
+    </shape>
+    <shape>
+      <file>data/editor/images/e_ass_18.png</file>
+      <type>active</type>
+      <angle>0</angle>
+      <x>394</x>
+      <y>217.5</y>
+      <contour/>
+    </shape>
+    <shape>
+      <file>data/editor/images/e_ass_18.png</file>
+      <type>active</type>
+      <angle>0</angle>
+      <x>346</x>
+      <y>201.5</y>
+      <contour/>
+    </shape>
+    <shape>
+      <file>data/tower-down.png</file>
+      <type>active</type>
+      <angle>0</angle>
+      <x>596</x>
+      <y>148.5</y>
       <contour/>
     </shape>
   </objects>

@@ -264,17 +264,20 @@
 			FlxG.log("[ and ] rotate among image files in the SpriteEditor.txt file");
 			FlxG.log("1 and 2 sets the graphics for start/end point");
 			FlxG.log("WASD move player object simulate scrolling");
-			FlxG.log("E toggles edit mode (mouse click to add new shape)");
-			FlxG.log("I toggles active/inactive flag on body creation");
-			FlxG.log("Z undo last edit");
-			FlxG.log("G toggles grid");
+			FlxG.log("E toggles EDIT/KILL mode (mouse click to add new shape)");
+			FlxG.log("I toggles ACTIVE/STATIC flag on body creation");
+			FlxG.log("Z removes last ADD");
+			FlxG.log("G toggles GRID");
 			FlxG.log("H toggles HUD/STATUS panel");
 			FlxG.log("T toggles TOOLBAR panel");
 			FlxG.log("N toggles FREE/SNAP to grid panel");
+			FlxG.log("U toggles DEBUG PHYSICS bodies.  Let's you see if your shape has edge transparency issues");
+			FlxG.log("B toggles POLY/BOX - NOTE: Everything renders based on poly now.  THERE IS NO BOX");
 			FlxG.log("SHIFT CLICK will add/kill the selected shape at mouse coordinates");
 			FlxG.log("COPY BUTTON to copy the new config settings to clipboard");
 			FlxG.log("KILL BUTTON to remove objects from game");
 			FlxG.log("EDIT BUTTON to add objects from game");
+			FlxG.log("PHYS BUTTON to draw a pointless box...");
 		}
 		
 		private function setPreviewImg(imgFile:String):void{
@@ -336,8 +339,11 @@
 				usePoly = !usePoly;
 			}
 			
+			if(FlxG.keys.justPressed("U")){
+				debug_sprite.visible = !debug_sprite.visible;
+			}
+			
 			//For the physics....
-			debug_sprite.visible = usePoly;
 			debug_sprite.x = FlxG.scroll.x;
 			debug_sprite.y = FlxG.scroll.y;
 			

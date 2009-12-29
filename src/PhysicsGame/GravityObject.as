@@ -86,10 +86,16 @@
 			}
 		}
 		
-		override public function hurt(Damage:Number):void
-		{
+		public function selfDestruct():void{
 			dead = true;
 			finished = true;
+		}
+		
+		//Don't mess with hurt... this affects collision...
+		override public function hurt(Damage:Number):void
+		{
+			//dead = true;
+			//finished = true;
 		}
 		
 		public function shoot(X:int, Y:int, VelocityX:int, VelocityY:int):void

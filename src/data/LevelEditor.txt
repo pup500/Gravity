@@ -8,3 +8,5 @@ data/editor/images/e_ass_15.png
 data/editor/images/e_ass_18.png
 data/test.png
 data/tritest.png
+data/angled.png
+data/tower-down.png
