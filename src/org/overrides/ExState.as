@@ -13,6 +13,8 @@ package org.overrides
 		public var the_world:b2World;
 		protected var debug:Boolean;
 		public var debug_sprite:Sprite;
+		
+		public var _loaded:Boolean;
 				
 
 		public function ExState()
@@ -26,10 +28,12 @@ package org.overrides
 			
 			the_world = new b2World(environment, gravity, true);
 			debug = false;
+			
+			_loaded = false;
 		}
 		
 		public function init():void{
-			
+			_loaded = true;
 		}
 		
 		protected function initBox2DDebugRendering():void

@@ -43,24 +43,25 @@ package PhysicsGame
 			FlxG.showCursor(cursor);
 			
 			initContactListener();
+			
+			//Allow for loaded status even when we might not have loaded any level file...
+			//We might need to do a better io error handling in loadconfigfile for the xml loader
+			//For now, it will allow the player to play a not loaded map...
+			_loaded = true;
 		}
 		
 		//Level configuration will call init when done...
 		override public function init():void{
+			super.init();
 			createBullets();
 			addPlayer();
 			addEndPoint();
 		}
 		
 		private function loadLevelConfig():void{
-			try{
-				var file:String = FlxG.levels[FlxG.level];
-				xmlMapLoader = new XMLMap(this);
-				xmlMapLoader.loadConfigFile(file);
-			}
-			catch(e:Error){
-				FlxG.switchState(LevelSelectMenu);
-			}
+			var file:String = FlxG.levels[FlxG.level];
+			xmlMapLoader = new XMLMap(this);
+			xmlMapLoader.loadConfigFile(file);
 		}
 		
 		private function createBullets():void{
@@ -120,6 +121,10 @@ package PhysicsGame
 		
 		override public function update():void
 		{
+			if(!_loaded){
+				return;
+			}
+			
 			super.update();
 			
 			if(FlxG.keys.justReleased("ESC")) {
