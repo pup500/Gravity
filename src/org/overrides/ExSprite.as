@@ -237,13 +237,10 @@ package org.overrides
 		public function createPhysBody(world:b2World):void
 		{
 			final_body=world.CreateBody(body);
-			//final_shape = 
 			final_body.CreateShape(shape);
 			final_body.SetMassFromShapes();
 			_world = world;
-						
-			//shape.userData = this;
-			//body.userData = this;
+			
 			final_body.SetUserData(this);
 		}
 		
