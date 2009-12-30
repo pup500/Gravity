@@ -1,6 +1,7 @@
 ﻿package PhysicsLab
 {
 	import Box2D.Collision.*;
+	import Box2D.Dynamics.Joints.b2Joint;
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
 	
@@ -58,8 +59,9 @@
 		private var run:Boolean;
 		private var addJoint:Boolean;
 
-		private var previewImg:Shape;
-		private var box:FlxSprite;
+		private var jointsImage:Shape;
+		private var assetImage:Shape;
+		//private var box:FlxSprite;
 		private var drawingBox:Boolean;
 		private var line:Shape;
 		private var drawingLine:Boolean;
@@ -73,6 +75,8 @@
 		
 		private var helpText:TextField;
 		private var statusText:TextField;
+		private var modeText:TextField;
+		
 		private var textValue:String;
 		
 		private var iconPanel:Sprite;
@@ -94,7 +98,7 @@
 		
 		private const KILL:uint = 0;
 		private const EDIT:uint = 1;
-		private const JOINT:uint = 2;
+		private const JOIN:uint = 2;
 		private const BREAK:uint = 3;
 
 		private const WIDTH:uint = 1280;
@@ -123,8 +127,8 @@
 			startImg = new FlxSprite(0,0,startSprite);
 			endImg = new FlxSprite(0,0,endSprite);
 			
-			box = new FlxSprite(0,0);
-			add(box);
+			//box = new FlxSprite(0,0);
+			//add(box);
 			startPoint = new Point();
 			
 			line = new Shape();
@@ -132,6 +136,9 @@
 			
 			add(startImg);
 			add(endImg);
+			
+			jointsImage = new Shape();
+			addChild(jointsImage);
 			
 			loadLevelConfig();
 			addPlayer();
@@ -247,7 +254,7 @@
 		}
 		
 		private function onJoinClick(event:MouseEvent):void{
-			mode = JOINT;
+			mode = JOIN;
 		}
 		
 		private function onBreakClick(event:MouseEvent):void{
@@ -297,7 +304,7 @@
 			addChild(iconPanel);
 			
 			//Add preview shape
-			addChild(previewImg = new Shape());
+			addChild(assetImage = new Shape());
 
 			//Add help instructions
 			setInstructions();
@@ -311,6 +318,16 @@
 			statusText.height = 16;
 			statusText.width = 489;
 			iconPanel.addChild(statusText);
+			
+			modeText = new TextField;
+			modeText.background = true;
+			modeText.border = true;
+			modeText.selectable = false;
+			modeText.x = 100;
+			modeText.y = 5;
+			modeText.height = 16;
+			modeText.width = 489;
+			addChild(modeText);
 
 			//textField.type = TextFieldType.INPUT;
             //textField.addEventListener(TextEvent.TEXT_INPUT,textInputHandler);
@@ -388,10 +405,10 @@
 		
 		private function onSetPreviewComplete(event:Event):void{
 			 var bitmapData:BitmapData = Bitmap(LoaderInfo(event.target).content).bitmapData;
-			 previewImg.graphics.clear();
-			 previewImg.graphics.beginBitmapFill(bitmapData);
-			 previewImg.graphics.drawRect(0,0,bitmapData.width,bitmapData.height);
-			 previewImg.graphics.endFill();
+			 assetImage.graphics.clear();
+			 assetImage.graphics.beginBitmapFill(bitmapData);
+			 assetImage.graphics.drawRect(0,0,bitmapData.width,bitmapData.height);
+			 assetImage.graphics.endFill();
 		}
 		
 		private function copy(text:String):void{
@@ -420,13 +437,17 @@
 			handleMouse();
 			
 			//If we want to add joints drawing...
-			/*
-			for (var j:b2Joint=m_world.GetJointList(); j; j=j.GetNext()) {
-				my_canvas.graphics.moveTo(j.GetAnchor1().x*30,j.GetAnchor1().y*30);
-				my_canvas.graphics.lineTo(j.GetAnchor2().x*30,j.GetAnchor2().y*30);
-			}
-			*/
-			
+			if(jointsImage.visible){
+				jointsImage.graphics.clear();
+				jointsImage.x = FlxG.scroll.x;
+				jointsImage.y = FlxG.scroll.y;
+				jointsImage.graphics.lineStyle(2, 0x00FF00,1);
+				
+				for (var j:b2Joint=the_world.GetJointList(); j; j=j.GetNext()) {
+					jointsImage.graphics.moveTo(j.GetAnchor1().x,j.GetAnchor1().y);
+					jointsImage.graphics.lineTo(j.GetAnchor2().x,j.GetAnchor2().y);
+				}
+			}	
 		}
 		
 		private function handleKeyboard():void{
@@ -434,21 +455,28 @@
 				FlxG.switchState(LevelSelectMenu);
 			}
 			
+			if(FlxG.keys.justReleased("E")){ 
+				mode = mode != EDIT ? EDIT : KILL;
+			}
+			
+			if(FlxG.keys.justPressed("J")){
+				mode = mode != JOIN ? JOIN : BREAK;
+			}
+			
 			/*
 			if(FlxG.keys.justReleased("Z")) {
 				xmlMapLoader.undo();
 			}*/
 			
-			if(FlxG.keys.justReleased("I")){
+			if(FlxG.keys.justPressed("I")){
 				active = !active;
 			}
 			
 			iconPanel.visible = !FlxG.keys.SHIFT;
 			
-			/*
 			if(FlxG.keys.justPressed("H")){
-				statusPanel.visible = !statusPanel.visible;
-			}*/
+				modeText.visible = !modeText.visible;
+			}
 			
 			if(FlxG.keys.justPressed("G")){
 				grid.visible = !grid.visible;
@@ -458,33 +486,29 @@
 				snapToGrid = !snapToGrid;
 			}
 			
-			if(FlxG.keys.justPressed("B")){
-				usePoly = !usePoly;
-			}
-			
 			if(FlxG.keys.justPressed("U")){
 				debug_sprite.visible = !debug_sprite.visible;
 			}
 			
-			if(FlxG.keys.justPressed("R")){
+			if(FlxG.keys.justPressed("F1")){
 				toggleWorldObjects();
 			}
 		}
 		
 		private function handlePreview():void{
 			lastIndex = index;
-			if(FlxG.keys.justReleased("LBRACKET")) {
+			if(FlxG.keys.justPressed("LBRACKET")) {
 				index--;
 			}
-			if(FlxG.keys.justReleased("RBRACKET")){
+			if(FlxG.keys.justPressed("RBRACKET")){
 				index++;
 			}
 			
-			if(FlxG.keys.justReleased("ONE")){
+			if(FlxG.keys.justPressed("ONE")){
 				index = 0;
 			}
 				
-			if(FlxG.keys.justReleased("TWO")){
+			if(FlxG.keys.justPressed("TWO")){
 				index = 1;
 			}
 			
@@ -499,47 +523,32 @@
 		}
 		
 		private function handleMode():void{
-			if(FlxG.keys.justReleased("E")){ 
-				if(mode != EDIT){
-					mode = EDIT;
-				}
-				else{
-					mode = KILL;
-				}
-			}
-			
 			physicsButton.alpha = debug_sprite.visible ? 1 : .5;
 			activeButton.alpha = active ? 1 : .5;
 			snapButton.alpha = snapToGrid ? 1 : .5;
 			gridButton.alpha = grid.visible ? 1 : .5;
-			joinButton.alpha = mode == JOINT ? 1 : .5;
+			joinButton.alpha = mode == JOIN ? 1 : .5;
 			breakButton.alpha = mode == BREAK ? 1 : .5;
 			killButton.alpha = mode == KILL ? 1 : .5;
 			//playButton.alpha = run ? 1 : .5;
 			editButton.alpha = mode == EDIT ? 1 : .5;
 			helpButton.alpha = helpText.visible ? 1 : .5;
 			
+			jointsImage.visible = (mode == JOIN || mode == BREAK);
+			
 			var actions:Array = ["REMOVE", "ADD", "JOIN", "BREAK"];
 			var action:String = actions[mode];
-			var mouseCoord:String =  "(" + FlxG.mouse.x + "," + FlxG.mouse.y +")";
-			
-			/*
-			var inact:String = active ? "ACTIVE" : "STATIC";
-			var snap:String = snapToGrid ? "SNAP" : "FREE";
-			var poly:String = usePoly ? "POLY" : "BOX";
-			
-			var running:String = run ? "RUN" : "STOP";
-			var mouseCoord:String =  "(" + FlxG.mouse.x + "," + FlxG.mouse.y +")";
-			var status:Array = [action, inact, snap, poly, running, "FILE: " + files[index], mouseCoord, xmlMapLoader.getItemCount()];
-			textField.text = status.join(" | ");
-			*/
+			var mouseCoord:String =  "(" + FlxG.mouse.x + ", " + FlxG.mouse.y +")";
+			var itemCount:String = "# Items: " + xmlMapLoader.getItemCount();
 			
 			var status:Array = [
+				itemCount,
 				action,
 				active ? "ACTIVE" : "STATIC",
 				snapToGrid ? "SNAP" : "FREE",
 				mouseCoord];
 			
+			modeText.text = status.join(" | ");
 			statusText.text = "FILE: " + files[index];
 		}
 		
@@ -550,22 +559,22 @@
 			point.x = FlxG.mouse.x;
 			point.y = FlxG.mouse.y;
 			
-			previewImg.x = FlxG.mouse.x+FlxG.scroll.x;
-			previewImg.y = FlxG.mouse.y+FlxG.scroll.y;
+			assetImage.x = FlxG.mouse.x+FlxG.scroll.x;
+			assetImage.y = FlxG.mouse.y+FlxG.scroll.y;
 				
 			if(snapToGrid){
 				point.x -= point.x % 16;
 				point.y -= point.y % 16;
 				
-				previewImg.x -= (FlxG.mouse.x % 16);
-				previewImg.y -= (FlxG.mouse.y % 16);
+				assetImage.x -= (FlxG.mouse.x % 16);
+				assetImage.y -= (FlxG.mouse.y % 16);
 			}
 			
-			previewImg.visible = mode == EDIT;
-			previewImg.alpha = .5;
+			assetImage.visible = mode == EDIT;
+			assetImage.alpha = .5;
 			
 			if(FlxG.keys.SHIFT){
-				previewImg.alpha = 1;
+				assetImage.alpha = 1;
 			}
 
 			//Shift click to add and delete... This allows the user to press the tool buttons without messing up
@@ -593,10 +602,10 @@
 					drawingBox = true;
 				}
 				*/
-				else if(mode == JOINT){
+				else if(mode == JOIN){
 					xmlMapLoader.registerObjectAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true);
 					
-					//Drawbox...
+					//Draw with snapping.....
 					//startPoint.x = point.x;
 					//startPoint.y = point.y;
 					
@@ -610,7 +619,7 @@
 				}
 			}
 			
-			if(mode == JOINT && drawingLine){
+			if(mode == JOIN && drawingLine){
 				line.graphics.clear();
 				line.graphics.lineStyle(1,0xFF0000,1);
 				line.graphics.moveTo(startPoint.x,startPoint.y);
@@ -651,7 +660,7 @@
 					//We can do things like, make a shape that fills... or try physics stuff...
 				}*/
 				
-				if(mode == JOINT && drawingLine){
+				if(mode == JOIN && drawingLine){
 					line.visible = false;
 					drawingLine = false;
 					xmlMapLoader.registerObjectAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true);
