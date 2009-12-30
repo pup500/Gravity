@@ -39,6 +39,8 @@
 		[Embed(source="../data/editor/interface/pig-icon.png")] private var gridImg:Class;
 		[Embed(source="../data/editor/interface/elephant-icon.png")] private var activeImg:Class;
 		[Embed(source="../data/editor/interface/sheep-icon.png")] private var snapImg:Class;
+		[Embed(source="../data/editor/interface/frog-icon.png")] private var physicsImg:Class;
+		[Embed(source="../data/editor/interface/mammoth-icon.png")] private var playImg:Class;
 		
 		
 		private var xmlMapLoader:XMLMap;
@@ -77,9 +79,12 @@
 		private var killButton:Sprite;
 		private var editButton:Sprite;
 		private var copyButton:Sprite;
+		private var playButton:Sprite;
+		
 		private var gridButton:Sprite;
 		private var snapButton:Sprite;
 		private var activeButton:Sprite;
+		private var physicsButton:Sprite;
 		
 		private const BLACK:Number = 0xFF000000;
 		private const WHITE:Number = 0xFFFFFFFF;
@@ -233,6 +238,9 @@
 			return sprite;
 		}
 		
+		private function onPhysicsClick(event:MouseEvent):void{
+			debug_sprite.visible = !debug_sprite.visible;
+		}
 		private function onActiveClick(event:MouseEvent):void{
 			active = !active;
 		}
@@ -251,6 +259,25 @@
 		private function onKillClick(event:MouseEvent):void{
 			mode = KILL;
 		}
+		private function onPlayClick(event:MouseEvent):void{
+			run = !run;
+			var bb:b2Body;
+			if(run){
+				the_world.SetGravity(new b2Vec2(0,80));
+				
+				for (bb = the_world.GetBodyList(); bb; bb = bb.GetNext()) {
+					bb.WakeUp();
+				}
+			}
+			else{
+				the_world.SetGravity(new b2Vec2(0,0));
+				for (bb = the_world.GetBodyList(); bb; bb = bb.GetNext()) {
+					if(bb.GetUserData() && bb.GetUserData().name == "Player")
+						continue;
+					 bb.PutToSleep();
+				}
+			}
+		}
 		private function onEditClick(event:MouseEvent):void{
 			mode = EDIT;
 		}
@@ -261,16 +288,17 @@
 		
 		private function setHUD():void{
 			iconPanel = new Sprite();
-			activeButton = createImageButton(activeImg, 5, 190, onActiveClick);
-			snapButton = createImageButton(snapImg, 5, 190, onSnapClick);
-			gridButton = createImageButton(gridImg, 5, 220, onGridClick);
-			joinButton = createImageButton(joinImg, 5, 250, onJoinClick);
+			physicsButton = createImageButton(physicsImg, 5, 60, onPhysicsClick);
+			activeButton = createImageButton(activeImg, 5, 90, onActiveClick);
+			snapButton = createImageButton(snapImg, 5, 120, onSnapClick);
+			gridButton = createImageButton(gridImg, 5, 150, onGridClick);
 			
-			breakButton = createImageButton(breakImg, 5, 290, onBreakClick);
-			killButton = createImageButton(killImg, 5, 330, onKillClick);
-			editButton = createImageButton(editImg, 5, 370, onEditClick);
+			editButton = createImageButton(editImg, 5, 210, onEditClick);
+			killButton = createImageButton(killImg, 5, 250, onKillClick);
+			joinButton = createImageButton(joinImg, 5, 290, onJoinClick);
+			breakButton = createImageButton(breakImg, 5, 330, onBreakClick);
+			playButton = createImageButton(playImg, 5, 370, onPlayClick);
 			copyButton = createImageButton(copyImg, 5, 410, onCopyClick);
-			
 			
 			addChild(iconPanel);
 			
@@ -471,25 +499,12 @@
 				debug_sprite.visible = !debug_sprite.visible;
 			}
 			
+			/*
 			if(FlxG.keys.justPressed("R")){
 				run = !run;
-				var bb:b2Body;
-				if(run){
-					the_world.SetGravity(new b2Vec2(0,80));
-					
-					for (bb = the_world.GetBodyList(); bb; bb = bb.GetNext()) {
-						bb.WakeUp();
-					}
-				}
-				else{
-					the_world.SetGravity(new b2Vec2(0,0));
-					for (bb = the_world.GetBodyList(); bb; bb = bb.GetNext()) {
-						if(bb.GetUserData() && bb.GetUserData().name == "Player")
-							continue;
-						 bb.PutToSleep();
-					}
-				}
+				
 			}
+			*/
 			
 			//For the physics....
 			debug_sprite.x = FlxG.scroll.x;
@@ -564,11 +579,16 @@
 			if(mode == KILL){
 				killButton.alpha = 1;
 			}*/
+			
+			
+			physicsButton.alpha = debug_sprite.visible ? 1 : .5;
 			activeButton.alpha = active ? 1 : .5;
+			snapButton.alpha = snapToGrid ? 1 : .5;
 			gridButton.alpha = grid.visible ? 1 : .5;
 			joinButton.alpha = mode == JOINT ? 1 : .5;
 			breakButton.alpha = mode == BREAK ? 1 : .5;
 			killButton.alpha = mode == KILL ? 1 : .5;
+			playButton.alpha = run ? 1 : .5;
 			editButton.alpha = mode == EDIT ? 1 : .5;
 			
 				
