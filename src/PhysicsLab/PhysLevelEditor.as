@@ -437,6 +437,7 @@
 			handleMode();
 			handleMouse();
 			
+			/*
 			//If we want to add joints drawing...
 			if(jointsImage.visible){
 				jointsImage.graphics.clear();
@@ -449,6 +450,7 @@
 					jointsImage.graphics.lineTo(j.GetAnchor2().x,j.GetAnchor2().y);
 				}
 			}	
+			*/
 		}
 		
 		private function handleKeyboard():void{

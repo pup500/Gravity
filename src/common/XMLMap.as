@@ -180,6 +180,25 @@ package common
 			}
 		}
 		
+		public function toggleObjectAtPoint(point:Point, includeStatic:Boolean=false, type:String="static"):void{
+			var b2:b2Body = Utilities.GetBodyAtMouse(_state.the_world, point, includeStatic);
+			
+			if(b2){
+				var bSprite:ExSprite = b2.GetUserData() as ExSprite;
+				if(bSprite){
+					var index:int = _undo.indexOf(bSprite);
+					
+					//TODO:This is a really bad way
+					if(type == "static"){
+						bSprite.final_body.SetStatic();
+					}
+					else{
+						//bSprite.final_body.SetDynamic();
+					}
+				}
+			}
+		}
+		
 		public function removeObjectAtPoint(point:Point, includeStatic:Boolean=false):void{
 			var b2:b2Body = Utilities.GetBodyAtMouse(_state.the_world, point, includeStatic);
 			
@@ -333,8 +352,8 @@ package common
 				joint.enableLimit = true;
 				joint.maxMotorForce = 100 * body2.GetMass();
 				joint.motorSpeed = 10;
-				joint.upperTranslation = 20;
-				joint.lowerTranslation = -20;
+				joint.upperTranslation = 50;
+				joint.lowerTranslation = -50;
 				joint.collideConnected = true;
 				_state.the_world.CreateJoint(joint);	
 				return true;
@@ -347,19 +366,27 @@ package common
 			var joint:b2RevoluteJointDef = new b2RevoluteJointDef();
 			
 			if(body2){
-				var point3:b2Vec2 = new b2Vec2();
-				point3.x = 300;
-				point3.y = 100;
-				
 				if(body1 == null || body1 === body2){
 					body1 = _state.the_world.GetGroundBody();
 				}
+				
+				//Compute distance of the center point to the center of our main object
+				var dist:b2Vec2 = new b2Vec2();
+				dist.x = body2.GetWorldCenter().x;
+				dist.y = body2.GetWorldCenter().x;
+				dist.Subtract(point1);
+				
+				var distance:Number = dist.Length();
+				
 				joint.Initialize(body1, body2, point1);
 				//joint.lowerAngle = 3.14/2; // -90 degrees
 				//joint.upperAngle = 0.25 * 3.14; // 45 degrees
 				//joint.enableLimit = true;
-				joint.maxMotorTorque = 10.0;
-				joint.motorSpeed = 10;
+				trace(body2.GetMass());
+				
+				//The mass and distance has to be in so that longer distances will still work...
+				joint.maxMotorTorque = 100.0 * body2.GetMass() * distance;
+				joint.motorSpeed = 100;
 				joint.enableMotor = true;
 
 				_state.the_world.CreateJoint(joint);	
@@ -376,6 +403,10 @@ package common
 			xml.body1.y = point1.y;
 			xml.body2.x = point2.x;
 			xml.body2.y = point2.y;
+			
+			//We can add more customization here as to whatever fields we like...
+			//Also, we might just have the update loop handle all joints and not have to worry about
+			//having to do it in the body....
 			_config.push(xml);
 		}
 		
