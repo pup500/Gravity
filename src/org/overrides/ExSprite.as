@@ -306,6 +306,10 @@ package org.overrides
 		
 		}
 		
+		//See Minh:
+		//Box2D reuses the reference to point, so we can't simply copy the reference.
+		// Since there are no copy constructors, we'll have to manually copy a few
+		//	properties here. Shape 1 and 2, and other such object references will be missing.
 		public function setImpactPoint(point:b2ContactPoint):void{
 			impactPoint.friction = point.friction;
 			impactPoint.id = point.id;

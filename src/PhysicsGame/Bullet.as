@@ -35,7 +35,6 @@
 			shape.friction = 1;
 			//Make this part of group -2, and do not collide with other in the same negative group...
 			shape.filter.groupIndex = -2;
-			
 			name = "Bullet";
 			
 			_world = world; //For use when we shoot.

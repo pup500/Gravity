@@ -32,7 +32,7 @@ package PhysicsGame
 		[Embed(source="../data/cursor.png")] private var cursorSprite:Class;
 		[Embed(source ="../data/bot.png")] private var botSprite:Class;
 		//[Embed(source="../data/Maps/box.svg", mimeType="application/octet-stream")] public var lineSVG:Class;
-		
+		[Embed(source = "../data/spawner.png")] private var ImgSpawner:Class;
 		
 		private var _map:MapBase;
 		private var _bullets:Array;
@@ -94,9 +94,7 @@ package PhysicsGame
 			
 			FlxG.showCursor(cursorSprite);
 			
-			var sense:Sensor = new Sensor(150, 200, 10, 10);
-			sense.createPhysBody(the_world);
-			add(sense);
+			addSensor();
 			
 			//--Debug stuff--//
 			initBox2DDebugRendering();
@@ -108,6 +106,18 @@ package PhysicsGame
 			initContactListener();
 		}
 		
+		
+		private function addSensor():void
+		{
+			var sense:Sensor = new Sensor(150,290, 10, 10);
+			sense.createPhysBody(the_world);
+			add(sense);
+			
+			var anim:PlayAnimationEvent = new PlayAnimationEvent(100, 100, ImgSpawner, "open");
+			anim.addAnimation("open", [1, 2, 3, 4, 5], 40, false);
+			add(anim);
+			sense.AddEvent(anim);
+		}
 		
 		//Load the png at the specified coordinates
 		private function loadPNG(png:String, x:Number, y:Number, s:String):void{

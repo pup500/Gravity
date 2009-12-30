@@ -13,15 +13,32 @@
 	 */
 	public class Sensor extends ExSprite
 	{
-		public function Sensor(X:int, Y:int, Width:int, Height:int) 
+		[Embed(source = "../data/button.mp3")] private var SndTick:Class;
+		
+		protected var _events:Array;
+		protected var _triggered:Boolean;
+		//@desc Name of object that will trigger this sensor on collision.
+		public var Trigger:String;
+		
+		public function Sensor(X:int=0, Y:int=0, Width:int=10, Height:int=10, triggerName:String="Player") 
 		{
-			super(X, Y, null)
-			name = "sensor";
+			super(X, Y);
+			name = "Sensor";
 			super.width = Width;
 			super.height = Height;
+			Trigger = triggerName;
+			_triggered = false;
 			
 			shape.isSensor = true;
+			
 			initShape();
+			
+			_events = new Array();
+		}
+		
+		public function AddEvent(event:IEvent):void
+		{
+			_events.push(event);
 		}
 		
 		override public function createPhysBody(world:b2World):void
@@ -30,14 +47,29 @@
 			final_body.SetStatic();
 		}
 		
+		override public function update():void
+		{
+			super.update();
+			
+			if (_triggered)
+			{
+				trace("Sensed by sensor.as");
+				for each(var event:IEvent in _events)
+				{
+					event.startEvent();
+				}
+				_triggered = false;
+			}
+		}
+		
 		override public function setImpactPoint(point:b2ContactPoint):void{
 			super.setImpactPoint(point);
 			
-			if(point.shape1.GetBody().GetUserData() && point.shape1.GetBody().GetUserData().name == "Player"){
-				FlxG.switchState(LevelSelectMenu);
+			if(point.shape1.GetBody().GetUserData() && point.shape1.GetBody().GetUserData().name == Trigger){
+				_triggered = true;
 			}
-			if(point.shape2.GetBody().GetUserData() && point.shape2.GetBody().GetUserData().name == "Player"){
-				FlxG.switchState(LevelSelectMenu);
+			else if(point.shape2.GetBody().GetUserData() && point.shape2.GetBody().GetUserData().name == Trigger){
+				_triggered = true;
 			}
 		}
 	}
