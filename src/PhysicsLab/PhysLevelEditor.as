@@ -1,9 +1,9 @@
 ﻿package PhysicsLab
 {
 	import Box2D.Collision.*;
-	import Box2D.Dynamics.Joints.b2Joint;
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
+	import Box2D.Dynamics.Joints.b2Joint;
 	
 	import PhysicsGame.LevelSelectMenu;
 	
@@ -59,9 +59,9 @@
 		private var run:Boolean;
 		private var addJoint:Boolean;
 
+		private var jointType:uint;
 		private var jointsImage:Shape;
 		private var assetImage:Shape;
-		//private var box:FlxSprite;
 		private var drawingBox:Boolean;
 		private var line:Shape;
 		private var drawingLine:Boolean;
@@ -123,6 +123,7 @@
 			drawingLine = false;
 			usePoly = false;
 			run = false;
+			jointType = XMLMap.DISTANCE;
 			
 			startImg = new FlxSprite(0,0,startSprite);
 			endImg = new FlxSprite(0,0,endSprite);
@@ -157,7 +158,7 @@
 				debug_draw.SetDrawScale(1);
 				debug_draw.SetAlpha(1);
 				debug_draw.SetLineThickness(2);
-				debug_draw.SetFlags(b2DebugDraw.e_shapeBit |b2DebugDraw.e_centerOfMassBit | b2DebugDraw.e_jointBit);
+				debug_draw.SetFlags(uint(-1));//b2DebugDraw.e_shapeBit |b2DebugDraw.e_centerOfMassBit | b2DebugDraw.e_jointBit | b2DebugDraw.e_obbBit);
 				the_world.SetDebugDraw(debug_draw);
 			}
 		}
@@ -490,6 +491,17 @@
 				debug_sprite.visible = !debug_sprite.visible;
 			}
 			
+			if(FlxG.keys.justPressed("R")){
+				jointType = XMLMap.REVOLUTE;
+			}
+			if(FlxG.keys.justPressed("T")){
+				jointType = XMLMap.DISTANCE;
+			}
+			if(FlxG.keys.justPressed("Y")){
+				jointType = XMLMap.PRISMATIC;
+			}
+			
+			
 			if(FlxG.keys.justPressed("F1")){
 				toggleWorldObjects();
 			}
@@ -540,19 +552,19 @@
 			var action:String = actions[mode];
 			var mouseCoord:String =  "(" + FlxG.mouse.x + ", " + FlxG.mouse.y +")";
 			var itemCount:String = "# Items: " + xmlMapLoader.getItemCount();
+			var jointTypes:Array = ["DISTANCE", "PRISMATIC", "REVOLUTE"];
 			
 			var status:Array = [
 				itemCount,
 				action,
 				active ? "ACTIVE" : "STATIC",
 				snapToGrid ? "SNAP" : "FREE",
+				"JOINT: " + jointTypes[jointType],
 				mouseCoord];
 			
 			modeText.text = status.join(" | ");
 			statusText.text = "FILE: " + files[index];
 		}
-		
-		
 		
 		private function handleMouse():void{
 			var point:Point = new Point();
@@ -663,8 +675,9 @@
 				if(mode == JOIN && drawingLine){
 					line.visible = false;
 					drawingLine = false;
-					xmlMapLoader.registerObjectAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true);
-					xmlMapLoader.addJoint();
+					xmlMapLoader.registerObjectAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true, jointType == XMLMap.REVOLUTE);
+					
+					xmlMapLoader.addJoint(jointType);
 				}
 			}
 		}
