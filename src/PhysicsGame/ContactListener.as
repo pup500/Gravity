@@ -45,6 +45,8 @@ package PhysicsGame
 			//trace("normal: " + point.normal.x + ", " + point.normal.y);
 			//point.separation;
 			
+			//This isn't right yet as it will allow the player to continually jump because the contact keeps refreshing
+			/*
 			var body1:b2Body = point.shape1.GetBody();
 			var body2:b2Body = point.shape2.GetBody();
 			//trace("Body1: "+ body1.GetUserData().name + " Body2: " + body2.GetUserData().name);
@@ -60,6 +62,7 @@ package PhysicsGame
 				body2.GetUserData().setImpactPoint(point);
 				body2.GetUserData().hurt(0);
 			}
+			*/
 			
 		}
 	
