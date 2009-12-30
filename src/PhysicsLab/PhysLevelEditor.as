@@ -15,6 +15,7 @@
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.system.System;
+	import flash.text.TextField;
 	
 	import org.flixel.*;
 	import org.overrides.*;
@@ -219,7 +220,7 @@
             add(grid);
 		}
 		
-		private function createImageButton(Graphic:Class, x:uint=0, y:uint=0, onClick:Function=null):Sprite{
+		private function createImageButton(Graphic:Class, x:uint=0, y:uint=0, label:String="", onClick:Function=null):Sprite{
 			var bitmap:Bitmap = new Graphic;
 			
 			var sprite:Sprite = new Sprite();
@@ -228,6 +229,13 @@
 			sprite.graphics.endFill();
 			sprite.x = x;
 			sprite.y = y;
+			
+			var tf:TextField = new TextField();
+			tf.text = label;
+			tf.x = bitmap.bitmapData.width;
+			tf.y = 10;
+			
+			sprite.addChild(tf);
 			
 			sprite.addEventListener(MouseEvent.MOUSE_DOWN, onClick);
 			//addChild(sprite);
@@ -288,17 +296,17 @@
 		
 		private function setHUD():void{
 			iconPanel = new Sprite();
-			physicsButton = createImageButton(physicsImg, 5, 60, onPhysicsClick);
-			activeButton = createImageButton(activeImg, 5, 90, onActiveClick);
-			snapButton = createImageButton(snapImg, 5, 120, onSnapClick);
-			gridButton = createImageButton(gridImg, 5, 150, onGridClick);
+			physicsButton = createImageButton(physicsImg, 5, 60, "Debug", onPhysicsClick);
+			activeButton = createImageButton(activeImg, 5, 90, "Active", onActiveClick);
+			snapButton = createImageButton(snapImg, 5, 120, "Snap", onSnapClick);
+			gridButton = createImageButton(gridImg, 5, 150, "Grid", onGridClick);
 			
-			editButton = createImageButton(editImg, 5, 210, onEditClick);
-			killButton = createImageButton(killImg, 5, 250, onKillClick);
-			joinButton = createImageButton(joinImg, 5, 290, onJoinClick);
-			breakButton = createImageButton(breakImg, 5, 330, onBreakClick);
-			playButton = createImageButton(playImg, 5, 370, onPlayClick);
-			copyButton = createImageButton(copyImg, 5, 410, onCopyClick);
+			editButton = createImageButton(editImg, 5, 210, "Add", onEditClick);
+			killButton = createImageButton(killImg, 5, 250, "Remove", onKillClick);
+			joinButton = createImageButton(joinImg, 5, 290, "Join", onJoinClick);
+			breakButton = createImageButton(breakImg, 5, 330, "Break", onBreakClick);
+			playButton = createImageButton(playImg, 5, 370, "Run", onPlayClick);
+			copyButton = createImageButton(copyImg, 5, 410, "Copy", onCopyClick);
 			
 			addChild(iconPanel);
 			
@@ -324,30 +332,6 @@
 			statusPanel.add(statusBackground);
 			statusPanel.add(textField);
 			add(statusPanel);
-			
-			/*
-			var actions:Array = [onSetKill, onSetEdit, onSetCopy, onDrawBox, onAddJoint, onBreakJoint]
-			toolPanel = new FlxLayer();
-			//toolPanel.add(grid);
-				
-			var panelBackground:FlxSprite = new FlxSprite(0,0);
-			panelBackground.createGraphic(50,220,0xff000000);
-			panelBackground.scrollFactor.x = 0;
-			panelBackground.scrollFactor.y = 0;
-			panelBackground.x = 2;
-			panelBackground.y = 25;
-			toolPanel.add(panelBackground);
-			toolPanel.add(addButton(5,30,"KILL",actions[0]));
-			toolPanel.add(addButton(5,60,"EDIT",actions[1]));
-			toolPanel.add(addButton(5,90,"COPY",actions[2]));
-			//toolPanel.add(addButton(5,120,"PHYS",actions[3]));
-			//toolPanel.add(addButton(5,150,"JOINT",actions[4]));
-			//toolPanel.add(addButton(5,180,"BREAK",actions[5]));
-			
-			//toolPanel.add(textField);
-			add(toolPanel);
-			*/
-			
 		}
 		
 		private function onSetKill():void{
