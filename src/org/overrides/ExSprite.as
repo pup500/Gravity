@@ -6,6 +6,7 @@ package org.overrides
 	import Box2D.Dynamics.*;
 	import Box2D.Dynamics.Joints.b2Joint;
 	import Box2D.Dynamics.Joints.b2JointEdge;
+	import Box2D.Dynamics.Joints.b2PrismaticJoint;
 	
 	import flash.geom.Point;
 	
@@ -264,6 +265,30 @@ package org.overrides
 			}
 		}
 		
+		public function updateJoints():void{
+			var joint:b2Joint;
+			var joints:b2JointEdge = final_body.GetJointList();
+			while(joints){
+				switch(joints.joint.GetType()){
+					//TODO:SEE IF THIS MAKES SENSE, can we put this anywhere else....
+					case 2://b2Joint.e_prismaticJoint:
+						var jointRev:b2PrismaticJoint = joints.joint as b2PrismaticJoint;
+						trace("limit:" + jointRev.GetLowerLimit() + ", " + jointRev.GetUpperLimit() + " : " + jointRev.GetJointTranslation());
+						if(Math.abs(jointRev.GetJointTranslation() - jointRev.GetLowerLimit()) < .1){
+							jointRev.SetMotorSpeed(Math.abs(jointRev.GetMotorSpeed()));
+							trace("speed:" + jointRev.GetMotorSpeed());
+						}
+						else if(Math.abs(jointRev.GetJointTranslation() - jointRev.GetUpperLimit()) < .1){
+							trace("speed:" + jointRev.GetMotorSpeed());
+							jointRev.SetMotorSpeed(-Math.abs(jointRev.GetMotorSpeed()));
+						}
+						break;
+				};
+				
+				joints = joints.next;
+			}
+		}
+		
 		override public function update():void
 		{
 			super.update();
@@ -272,6 +297,8 @@ package org.overrides
 			y = posVec.y - height/2;//_bh/2;
 			
 			angle = final_body.GetAngle();
+			
+			updateJoints();
 		}
 		
 		override public function kill():void
