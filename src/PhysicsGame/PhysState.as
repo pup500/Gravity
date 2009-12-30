@@ -31,8 +31,8 @@ package PhysicsGame
 	{
 		[Embed(source="../data/cursor.png")] private var cursorSprite:Class;
 		[Embed(source ="../data/bot.png")] private var botSprite:Class;
-		[Embed(source="../data/Maps/box.svg", mimeType="application/octet-stream")] public var lineSVG:Class;
-		
+		//[Embed(source="../data/Maps/box.svg", mimeType="application/octet-stream")] public var lineSVG:Class;
+		[Embed(source = "../data/spawner.png")] private var ImgSpawner:Class;
 		
 		private var _map:MapBase;
 		private var _bullets:Array;
@@ -43,19 +43,19 @@ package PhysicsGame
 		
 		//Our map loading code requires every map object derived classes to be referenced in this class
 		//TODO: Refactor so we don't have to reference each map like this?
-		private var maponegap:MapOneGap;
-		private var mapsmalloneplatform:MapSmallOnePlatform;
-		private var mapvalley:MapValley;
-		private var maptestlevel:MapTestLevel;
+		//private var maponegap:MapOneGap;
+		//private var mapsmalloneplatform:MapSmallOnePlatform;
+		//private var mapvalley:MapValley;
+		//private var maptestlevel:MapTestLevel;
 		
 		public function PhysState() 
 		{
 			super();
 			bgColor = 0xffeeeeff;
 			
-			//debug = true;
+			debug = true;
 			
-			loadConfigFile("data/level2.txt");
+			//loadConfigFile("data/level2.txt");
 			
 			//loadSVG();
 			
@@ -64,7 +64,7 @@ package PhysicsGame
 			_bullets = new Array();
 			_gravObjects = new Array();
 			//var body:Player = new Player(_map.playerSpawn_x, _map.playerSpawn_y, _bullets);
-			var body:Player = new Player(100, 100, _bullets);
+			var body:Player = new Player(400, 100, _bullets);
 			
 			body.createPhysBody(the_world);
 			body.final_body.AllowSleeping(false);
@@ -94,9 +94,11 @@ package PhysicsGame
 			
 			FlxG.showCursor(cursorSprite);
 			
+			addSensor();
+			
 			//--Debug stuff--//
 			initBox2DDebugRendering();
-			//createDebugPlatform();
+			createDebugPlatform();
 			//Timer to rain physical objects every second.
 			//time_count.addEventListener(TimerEvent.TIMER, on_time);
 			//time_count.start();
@@ -104,6 +106,18 @@ package PhysicsGame
 			initContactListener();
 		}
 		
+		
+		private function addSensor():void
+		{
+			var sense:Sensor = new Sensor(150,290, 10, 10);
+			sense.createPhysBody(the_world);
+			add(sense);
+			
+			var anim:PlayAnimationEvent = new PlayAnimationEvent(100, 100, ImgSpawner, "open");
+			anim.addAnimation("open", [1, 2, 3, 4, 5], 40, false);
+			add(anim);
+			sense.AddEvent(anim);
+		}
 		
 		//Load the png at the specified coordinates
 		private function loadPNG(png:String, x:Number, y:Number, s:String):void{
@@ -149,10 +163,10 @@ package PhysicsGame
 			}
 		}
 		
-		private function loadSVG():void{
-			var myxml:XML = new XML(new lineSVG);
-			b2SVG.parseSVG(myxml, the_world, 3,0);
-		}
+		//private function loadSVG():void{
+			//var myxml:XML = new XML(new lineSVG);
+			//b2SVG.parseSVG(myxml, the_world, 3,0);
+		//}
 		
 		private function getMapByLevel():MapBase{
 			//trace(FlxG.level);
@@ -195,7 +209,7 @@ package PhysicsGame
 		private function createDebugPlatform():void
 		{
 			//Platform for raining objects to interact with.
-			b2 = new ExSprite(150, 150, botSprite);
+			b2 = new ExSprite(300, 300, botSprite);
 			b2.initShape();
 			b2.shape.density = 0; //0 density makes object stationary.
 			b2.shape.SetAsBox(175, 10);

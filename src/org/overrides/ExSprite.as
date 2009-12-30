@@ -238,13 +238,10 @@ package org.overrides
 		public function createPhysBody(world:b2World):void
 		{
 			final_body=world.CreateBody(body);
-			//final_shape = 
 			final_body.CreateShape(shape);
 			final_body.SetMassFromShapes();
 			_world = world;
-						
-			//shape.userData = this;
-			//body.userData = this;
+			
 			final_body.SetUserData(this);
 		}
 		
@@ -336,6 +333,10 @@ package org.overrides
 		
 		}
 		
+		//See Minh:
+		//Box2D reuses the reference to point, so we can't simply copy the reference.
+		// Since there are no copy constructors, we'll have to manually copy a few
+		//	properties here. Shape 1 and 2, and other such object references will be missing.
 		public function setImpactPoint(point:b2ContactPoint):void{
 			impactPoint.friction = point.friction;
 			impactPoint.id = point.id;

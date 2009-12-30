@@ -23,7 +23,7 @@
 		private var b2:ExSprite;
 		private var time_count:Timer=new Timer(1000);
 		
-		public function PhysState() 
+		public function ObjectRain() 
 		{
 			super();
 			

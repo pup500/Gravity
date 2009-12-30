@@ -104,7 +104,7 @@ package PhysicsGame
 			
 			var _applyForce:b2Vec2 = new b2Vec2(0,0);
 			
-			trace("vel.x " + final_body.GetLinearVelocity().x);
+			//trace("vel.x " + final_body.GetLinearVelocity().x);
 			//MOVEMENT
 			//acceleration.x = 0;
 			if(FlxG.keys.A)
