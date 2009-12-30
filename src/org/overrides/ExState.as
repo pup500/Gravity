@@ -3,6 +3,7 @@ package org.overrides
 	import Box2D.Collision.*;
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
+	import org.flixel.FlxG;
 	
 	import flash.display.Sprite;
 	
@@ -57,6 +58,10 @@ package org.overrides
 			the_world.Step(1/30, 10, 10);
 			
 			super.update();
+			
+			//For the physics....
+			debug_sprite.x = FlxG.scroll.x;
+			debug_sprite.y = FlxG.scroll.y;
 		}
 	}
 }

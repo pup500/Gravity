@@ -428,9 +428,10 @@
 			grid.x = FlxG.scroll.x;
 			grid.y = FlxG.scroll.y;
 			
+			//Moved to super
 			//For the physics....
-			debug_sprite.x = FlxG.scroll.x;
-			debug_sprite.y = FlxG.scroll.y;
+			//debug_sprite.x = FlxG.scroll.x;
+			//debug_sprite.y = FlxG.scroll.y;
 			
 			handleKeyboard();
 			handlePreview();
