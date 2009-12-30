@@ -37,7 +37,7 @@
 		{
 			trace("sensed in animEvent sprite!");
 			visible = true;
-			play(_animName, true);
+			play(_animName, true); //Animation won't play again unless we force loop. Weird...
 			
 			//_animationSprite.visible = true;
 			//_animationSprite.play(_animName);
