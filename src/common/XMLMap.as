@@ -19,13 +19,13 @@ package common
 	public class XMLMap
 	{
 		private var configXML:XML;
-		private var _config:Array;
+		//private var _config:Array;
 		private var _state:ExState;
 		
 		private var _start:Point;
 		private var _end:Point;
 		
-		private var _undo:Array;
+		//private var _undo:Array;
 		
 		private var _bodies:Array;
 		private var number:uint;
@@ -35,8 +35,6 @@ package common
 		public function XMLMap(state:ExState)
 		{
 			_state = state;	
-			_config = new Array();
-			_undo = new Array();
 			_start = new Point();
 			_end = new Point();
 			
@@ -119,10 +117,6 @@ package common
 			}
 			
 			_state.add(b2);
-			
-			_undo.push(b2);
-			
-    		_config.push(shape);
     		
     		number++;
     		
@@ -134,30 +128,6 @@ package common
 	    		_state.init();
     		}
 		}
-		
-		public function getConfiguration():String{
-			var config:XML = new XML(<config/>);
-			var shape:XML;
-			var objects:XML = new XML(<objects/>);
-			for(var i:uint = 0; i < _config.length; i++){
-				shape = _config[i] as XML;
-				objects.appendChild(shape);
-			}
-			
-			var points:XML = new XML(<points/>);
-			points.start.x = _start.x
-			points.start.y = _start.y;
-			points.end.x = _end.x;
-			points.end.y = _end.y;
-			
-			//Create the config file as below
-			config.appendChild(points);
-			config.appendChild(objects);
-			
-			return config.toXMLString();
-		}
-		
-		
 		
 		//Create new configuration file
 		public function createNewConfiguration():String{
@@ -192,25 +162,12 @@ package common
 			return _end;
 		}
 		
-		public function undo():void{
-			var b2:ExSprite = _undo.pop();
-			if(b2){
-				b2.destroyPhysBody();
-				b2.kill();	
-				
-				_config.pop();
-				number--;
-			}
-		}
-		
 		public function setObjectTypeAtPoint(point:Point, includeStatic:Boolean=false, type:String="static"):void{
 			var b2:b2Body = Utilities.GetBodyAtMouse(_state.the_world, point, includeStatic);
 			
 			if(b2){
 				var bSprite:ExSprite = b2.GetUserData() as ExSprite;
 				if(bSprite){
-					var index:int = _undo.indexOf(bSprite);
-					
 					//TODO:This is a really bad way
 					if(type == "static"){
 						bSprite.final_body.SetStatic();
@@ -218,10 +175,6 @@ package common
 					else{
 						bSprite.final_body.SetMassFromShapes();
 					}
-					
-					//Update the config settings
-					var shape:XML = _config[index] as XML;
-					shape.type = type;
 				}
 			}
 		}
@@ -232,16 +185,10 @@ package common
 			if(b2){
 				var bSprite:ExSprite = b2.GetUserData() as ExSprite;
 				if(bSprite){
-					var index:int = _undo.indexOf(bSprite);
-					var removed:Array = _undo.splice(index,1);
-					var rSprite:ExSprite = removed.pop();
-					if(rSprite){
-						rSprite.destroyPhysBody();
-						rSprite.kill();
+					bSprite.destroyPhysBody();
+					bSprite.kill();
 						
-						_config.splice(index,1);
-						number--;
-					}
+					number--;
 				}
 			}
 		}
@@ -249,32 +196,14 @@ package common
 		public function removeJointAtPoint(point:Point, includeStatic:Boolean=false):void{
 			var b2:b2Body = Utilities.GetBodyAtMouse(_state.the_world, point, includeStatic);
 			if(b2){
-				if(b2.GetUserData()){
-					var sprite:ExSprite = b2.GetUserData();
-					sprite.destroyAllJoints();
-					
-					//remove from config xml...
-					var xml:XML;
-					for(var i:uint = 0; i < _config.length; i++){
-						xml = _config[i];
-						
-						//Find all xml elements of type joint...
-						if(xml.name() == "joint"){
-							var b3:b2Body = Utilities.GetBodyAtMouse(_state.the_world, new Point(xml.body1.x, xml.body1.y), includeStatic);
-							var b4:b2Body = Utilities.GetBodyAtMouse(_state.the_world, new Point(xml.body2.x, xml.body2.y), includeStatic);
-							
-							//Remove the joint if it connects with the body
-							if(b2 === b3 || b2 === b4){
-								_config.splice(i,1);
-								i--;
-							}
-						}
-					}
+				var bSprite:ExSprite = b2.GetUserData() as ExSprite;
+				if(bSprite){
+					bSprite.destroyAllJoints();
 				}
 			}
 		}
 		
-		//Make the AddJoint functions figure out the logic...
+		//Registers a point and see if we get a body from it.  Null bodies will be checked during add joint
 		public function registerObjectAtPoint(point:Point, includeStatic:Boolean=false, allowSameBody:Boolean=false):void{
 			var b2:b2Body = Utilities.GetBodyAtMouse(_state.the_world, point, includeStatic);
 			
@@ -284,15 +213,16 @@ package common
 			_bodies.push([b2,vec]);
 		}
 		
+		//Add all joints from configuration file, also pass configuration jointXML along
 		private function addAllJoints():void{
-			for each (var joint:XML in configXML.objects.joint){
-				registerObjectAtPoint(new Point(joint.body1.x, joint.body1.y), true);
-				registerObjectAtPoint(new Point(joint.body2.x, joint.body2.y), true);
-				//Maybe depending on the config... we can use different functions
-				addJoint(joint.type, joint);
+			for each (var jointXML:XML in configXML.objects.joint){
+				registerObjectAtPoint(new Point(jointXML.body1.x, jointXML.body1.y), true);
+				registerObjectAtPoint(new Point(jointXML.body2.x, jointXML.body2.y), true);
+				addJoint(jointXML.type, jointXML);
 			}
 		}
 		
+		//Always make sure we have registered two points
 		public function addJoint(jointType:uint, jointXML:XML=null):void{
 			if(_bodies.length != 2){
 				_bodies = new Array();
@@ -323,10 +253,7 @@ package common
 				break;
 			}
 			
-			if(result){
-				addJointToConfig(jointType, point1, point2);
-			}
-			
+			//Clear out bodies regardless of outcomes
 			_bodies = new Array();
 		}
 		
@@ -347,8 +274,8 @@ package common
 			var joint:b2PrismaticJointDef = new b2PrismaticJointDef();
 			
 			//Always draw from static to nonstatic...
-			//We might allow for body1 to be null, in which case, use world static body
 			if(body2){
+				//Axis is currently set as the normalized vector from our two points
 				var axis:b2Vec2 = new b2Vec2(point2.x, point2.y);
 				axis.Subtract(point1);
 				axis.Normalize();
@@ -368,6 +295,8 @@ package common
 					anchor.y = (point2.y - point1.y)/2 + point1.y;
 				}
 				
+				//If we have xml data loaded from the config file, then use that
+				//NO way to ensure correct values if the level was simulated....
 				if(jointXML){
 					axis.x = jointXML.axis.x;
 					axis.y = jointXML.axis.y;
@@ -376,6 +305,7 @@ package common
 					anchor.y = jointXML.anchor.y;
 				}
 				
+				//Initialize some sample values for now...
 				joint.Initialize(body1, body2, anchor, axis);
 				joint.enableMotor = true;
 				joint.enableLimit = true;
@@ -404,6 +334,13 @@ package common
 				anchor.x = point1.x;
 				anchor.y = point1.y;
 				
+				//Should we use body2 center?  This happens when we press and release inside one object
+				if(body1 === body2){
+					anchor.x = body2.GetWorldCenter().x;
+					anchor.y = body2.GetWorldCenter().y;
+				}
+				
+				//If we have xml data, use that
 				if(jointXML){
 					anchor.x = jointXML.anchor.x;
 					anchor.y = jointXML.anchor.y;
@@ -421,7 +358,6 @@ package common
 				//joint.lowerAngle = 3.14/2; // -90 degrees
 				//joint.upperAngle = 0.25 * 3.14; // 45 degrees
 				//joint.enableLimit = true;
-				trace(body2.GetMass());
 				
 				//The mass and distance has to be in so that longer distances will still work...
 				joint.maxMotorTorque = 100.0 * body2.GetMass() * distance;
@@ -433,20 +369,6 @@ package common
 			}
 			
 			return false;
-		}
-		
-		private function addJointToConfig(jointType:uint, point1:b2Vec2, point2:b2Vec2):void{
-			var xml:XML = new XML(<joint/>);
-			xml.type = jointType;
-			xml.body1.x = point1.x;
-			xml.body1.y = point1.y;
-			xml.body2.x = point2.x;
-			xml.body2.y = point2.y;
-			
-			//We can add more customization here as to whatever fields we like...
-			//Also, we might just have the update loop handle all joints and not have to worry about
-			//having to do it in the body....
-			_config.push(xml);
 		}
 		
 		public function getItemCount():uint{

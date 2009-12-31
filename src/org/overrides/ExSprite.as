@@ -10,6 +10,8 @@ package org.overrides
 	
 	import flash.geom.Point;
 	
+	import common.Utilities;
+	
 	import org.flixel.*;
 	
 	/**
@@ -273,7 +275,7 @@ package org.overrides
 			while(joints){
 				switch(joints.joint.GetType()){
 					//TODO:SEE IF THIS MAKES SENSE, can we put this anywhere else....
-					case 2://b2Joint.e_prismaticJoint:
+					case Utilities.e_prismaticJoint:
 						var jointRev:b2PrismaticJoint = joints.joint as b2PrismaticJoint;
 						trace("limit:" + jointRev.GetLowerLimit() + ", " + jointRev.GetUpperLimit() + " : " + jointRev.GetJointTranslation());
 						if(Math.abs(jointRev.GetJointTranslation() - jointRev.GetLowerLimit()) < .1){
