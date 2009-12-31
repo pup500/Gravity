@@ -728,9 +728,7 @@
 				if(mode == JOIN && drawingLine){
 					line.visible = false;
 					drawingLine = false;
-					//Revolute joints can be added to onself, the effect is that it connects to the world...
-					//Technically, prismatic ones can too, but we want the distance...
-					xmlMapLoader.registerObjectAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true, jointType == Utilities.e_revoluteJoint);
+					xmlMapLoader.registerObjectAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true);
 					
 					xmlMapLoader.addJoint(jointType);
 				}

@@ -130,8 +130,9 @@ package common
 		    	joint.body2.x = int(joint.body2.x) + offset.x;
 		    	joint.body2.y = int(joint.body2.y) + offset.y;
 		    	
-		    	joint.axis.x = int(joint.axis.x) + offset.x;
-		    	joint.axis.y = int(joint.axis.y) + offset.y;
+		    	//Don't offset axis, that's a normalized vector...
+		    	//joint.axis.x = int(joint.axis.x) + offset.x;
+		    	//joint.axis.y = int(joint.axis.y) + offset.y;
 		    	joint.anchor.x = int(joint.anchor.x) + offset.x;
 		    	joint.anchor.y = int(joint.anchor.y) + offset.y;
 			}
@@ -274,7 +275,7 @@ package common
 		}
 		
 		//Registers a point and see if we get a body from it.  Null bodies will be checked during add joint
-		public function registerObjectAtPoint(point:Point, includeStatic:Boolean=false, allowSameBody:Boolean=false):void{
+		public function registerObjectAtPoint(point:Point, includeStatic:Boolean=false):void{
 			var b2:b2Body = Utilities.GetBodyAtMouse(_state.the_world, point, includeStatic);
 			
 			var vec:b2Vec2 = new b2Vec2();
@@ -330,7 +331,12 @@ package common
 		private function addDistanceJoint(body1:b2Body, body2:b2Body, point1:b2Vec2, point2:b2Vec2, jointXML:XML=null):Boolean{
 			var joint:b2DistanceJointDef = new b2DistanceJointDef();
 			
-			if(body1 && body2 && body1 != body2){
+			if(body2){
+				if(body1 == null || body1 == body2){
+					//If body1 isn't found, use world ground body
+					body1 = _state.the_world.GetGroundBody();
+				}
+				
 				joint.Initialize(body1, body2, point1, point2);
 				joint.collideConnected = true;
 				_state.the_world.CreateJoint(joint);	
@@ -348,7 +354,6 @@ package common
 				//Axis is currently set as the normalized vector from our two points
 				var axis:b2Vec2 = new b2Vec2(point2.x, point2.y);
 				axis.Subtract(point1);
-				axis.Normalize();
 				
 				var anchor:b2Vec2 = new b2Vec2();
 				
@@ -374,6 +379,9 @@ package common
 					anchor.x = jointXML.anchor.x;
 					anchor.y = jointXML.anchor.y;
 				}
+				
+				//Axis should be normalized
+				axis.Normalize();
 				
 				//Initialize some sample values for now...
 				joint.Initialize(body1, body2, anchor, axis);
