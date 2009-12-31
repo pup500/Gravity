@@ -360,8 +360,8 @@
 		private function setInstructions():void{
 			helpText = new TextField();
 			helpText.selectable = false;
-			helpText.width = 440;
-            helpText.height = 390;
+			helpText.width = 448;
+            helpText.height = 400;
             helpText.x = (640-helpText.width)/2;
 			helpText.y = (480-helpText.height)/2;
             helpText.background = true;
@@ -386,16 +386,17 @@
 			helpText.appendText("\n");
 			helpText.appendText(" SHIFT - hides TOOLBAR panel\n");
 			helpText.appendText(" U - toggles DEBUG PHYSICS bodies for joints and bounding box issues\n");
-			helpText.appendText(" F1 - toggles simulation.  Can lose some joint data if bodies moved\n");
+			helpText.appendText(" F1 - toggles simulation.\n");
 			helpText.appendText(" SHIFT CLICK - ADD/REMOVE the selected image asset at MOUSE coordinates\n");
 			helpText.appendText("\n");
 			helpText.appendText("Buttons:\n");
+			helpText.appendText(" CHANGE BUTTON - sets the ACTIVE/STATIC flag of created objects with SHIFT CLICK\n");
 			helpText.appendText(" ADD BUTTON - sets the ADD mode.  SHIFT CLICK to add objects\n");
 			helpText.appendText(" REMOVE BUTTON - sets the REMOVE mode.  SHIFT CLICK to remove objects\n");
 			helpText.appendText(" JOIN BUTTON - sets the JOIN mode.  SHIFT CLICK on one body and drag to another\n");
 			helpText.appendText(" BREAK BUTTON - sets the BREAK mode.  SHIFT CLICK on a body to remove all joints\n");
 			helpText.appendText(" COPY BUTTON - copies level settings.  You paste from clipboard to new file\n");
-			helpText.appendText(" RUN BUTTON - toggles simulation.  Can lose some joint data if bodies moved\n");
+			helpText.appendText(" RUN BUTTON - toggles simulation.\n");
 			helpText.appendText("\n");
 			helpText.appendText("QUIT:\n");
 			helpText.appendText(" SHIFT ESC - QUIT to the level select menu\n");

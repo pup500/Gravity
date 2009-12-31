@@ -101,6 +101,12 @@ package common
 		    b2.pixels = bitmapData;
 		    //b2.initShape();
 		    b2.initShapeFromSprite();
+		    
+		    //You have to put rotation first before you can create it...
+		    if(shape.angle != 0){
+				b2.body.angle = shape.angle;
+			}
+			
 			b2.createPhysBody(_state.the_world);
 			
 			if(shape.isStatic == "true"){
@@ -112,9 +118,6 @@ package common
 				b2.final_body.SetStatic();
 			}*/
 			
-			if(shape.angle != 0){
-				b2.body.angle = shape.angle;
-			}
 			
 			_state.add(b2);
     		
