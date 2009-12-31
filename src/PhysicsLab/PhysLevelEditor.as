@@ -3,7 +3,6 @@
 	import Box2D.Collision.*;
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
-	import Box2D.Dynamics.Joints.b2Joint;
 	
 	import PhysicsGame.LevelSelectMenu;
 	
@@ -45,6 +44,7 @@
 		[Embed(source="../data/editor/interface/frog-icon.png")] private var physicsImg:Class;
 		[Embed(source="../data/editor/interface/mammoth-icon.png")] private var playImg:Class;
 		[Embed(source="../data/editor/interface/help.png")] private var helpImg:Class;
+		[Embed(source="../data/editor/interface/fish-icon.png")] private var changeImg:Class;
 		
 		private var xmlMapLoader:XMLMap;
 		
@@ -85,11 +85,13 @@
 		private var killButton:Sprite;
 		private var editButton:Sprite;
 		private var copyButton:Sprite;
-		private var playButton:Sprite;	
+		private var playButton:Sprite;
+		private var changeButton:Sprite;
+			
 		private var gridButton:Sprite;
 		private var snapButton:Sprite;
 		private var activeButton:Sprite;
-		private var physicsButton:Sprite;
+		private var debugButton:Sprite;
 		private var helpButton:Sprite;
 		
 		private const BLACK:Number = 0xFF000000;
@@ -100,6 +102,7 @@
 		private const EDIT:uint = 1;
 		private const JOIN:uint = 2;
 		private const BREAK:uint = 3;
+		private const CHANGE:uint = 4;
 
 		private const WIDTH:uint = 1280;
 		private const HEIGHT:uint = 960;
@@ -177,6 +180,9 @@
 			
 			endImg.x = xmlMapLoader.getEndPoint().x;
 			endImg.y = xmlMapLoader.getEndPoint().y;
+			
+			//Set all objects initially to sleep
+			updateWorldObjects();
 		}
 		
 		private function addPlayer():void{
@@ -274,6 +280,10 @@
 			mode = EDIT;
 		}
 		
+		private function onChangeClick(event:MouseEvent):void{
+			mode = CHANGE;
+		}
+		
 		private function onCopyClick(event:MouseEvent):void{
 			copy(xmlMapLoader.getConfiguration());
 			FlxG.play(dinoSound);
@@ -288,11 +298,12 @@
 			createGrid();
 			
 			iconPanel = new Sprite();
-			physicsButton = createImageButton(physicsImg, 5, 60, "Debug", onPhysicsClick);
+			debugButton = createImageButton(physicsImg, 5, 60, "Debug", onPhysicsClick);
 			activeButton = createImageButton(activeImg, 5, 90, "Active", onActiveClick);
 			snapButton = createImageButton(snapImg, 5, 120, "Snap", onSnapClick);
 			gridButton = createImageButton(gridImg, 5, 150, "Grid", onGridClick);
 			
+			changeButton = createImageButton(changeImg, 5, 190, "Change", onChangeClick);
 			editButton = createImageButton(editImg, 5, 230, "Add", onEditClick);
 			killButton = createImageButton(killImg, 5, 270, "Remove", onKillClick);
 			joinButton = createImageButton(joinImg, 5, 310, "Join", onJoinClick);
@@ -428,11 +439,6 @@
 			grid.x = FlxG.scroll.x;
 			grid.y = FlxG.scroll.y;
 			
-			//Moved to super
-			//For the physics....
-			//debug_sprite.x = FlxG.scroll.x;
-			//debug_sprite.y = FlxG.scroll.y;
-			
 			handleKeyboard();
 			handlePreview();
 			handleMode();
@@ -504,9 +510,9 @@
 				jointType = XMLMap.PRISMATIC;
 			}
 			
-			
 			if(FlxG.keys.justPressed("F1")){
-				toggleWorldObjects();
+				run = !run;
+				updateWorldObjects();
 			}
 		}
 		
@@ -538,7 +544,7 @@
 		}
 		
 		private function handleMode():void{
-			physicsButton.alpha = debug_sprite.visible ? 1 : .5;
+			debugButton.alpha = debug_sprite.visible ? 1 : .5;
 			activeButton.alpha = active ? 1 : .5;
 			snapButton.alpha = snapToGrid ? 1 : .5;
 			gridButton.alpha = grid.visible ? 1 : .5;
@@ -548,10 +554,11 @@
 			//playButton.alpha = run ? 1 : .5;
 			editButton.alpha = mode == EDIT ? 1 : .5;
 			helpButton.alpha = helpText.visible ? 1 : .5;
+			changeButton.alpha = mode == CHANGE ? 1 : .5;
 			
 			jointsImage.visible = (mode == JOIN || mode == BREAK);
 			
-			var actions:Array = ["REMOVE", "ADD", "JOIN", "BREAK"];
+			var actions:Array = ["REMOVE", "ADD", "JOIN", "BREAK", "CHANGE"];
 			var action:String = actions[mode];
 			var mouseCoord:String =  "(" + FlxG.mouse.x + ", " + FlxG.mouse.y +")";
 			var itemCount:String = "# Items: " + xmlMapLoader.getItemCount();
@@ -607,6 +614,10 @@
 				}
 				else if(mode == KILL){
 					xmlMapLoader.removeObjectAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true);
+				}
+				else if(mode == CHANGE){
+					var type:String = active ? "active" : "static";
+					xmlMapLoader.setObjectTypeAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true, type);
 				}
 				/*
 				else if(mode == DRAW){
@@ -685,10 +696,7 @@
 			}
 		}
 		
-		
-		private function toggleWorldObjects():void{
-			run = !run;
-			
+		private function updateWorldObjects():void{
 			var bb:b2Body;
 			if(run){
 				the_world.SetGravity(new b2Vec2(0,80));

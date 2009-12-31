@@ -180,7 +180,7 @@ package common
 			}
 		}
 		
-		public function toggleObjectAtPoint(point:Point, includeStatic:Boolean=false, type:String="static"):void{
+		public function setObjectTypeAtPoint(point:Point, includeStatic:Boolean=false, type:String="static"):void{
 			var b2:b2Body = Utilities.GetBodyAtMouse(_state.the_world, point, includeStatic);
 			
 			if(b2){
@@ -193,8 +193,12 @@ package common
 						bSprite.final_body.SetStatic();
 					}
 					else{
-						//bSprite.final_body.SetDynamic();
+						bSprite.final_body.SetMassFromShapes();
 					}
+					
+					//Update the config settings
+					var shape:XML = _config[index] as XML;
+					shape.type = type;
 				}
 			}
 		}
