@@ -94,6 +94,9 @@ package common
 		private function onAddObjectsInXMLComplete(event:Event, point:Point):void{
 			configXML = new XML(event.target.data);
 			
+			//Save the body count so that we can check when we are done
+			expBodyCount = getItemCount() + configXML.objects.shape.length();
+			
 			//Should we figure out a better way for offset...
 			var shape:XML = configXML.objects.shape[0];
 			var offset:Point = new Point();
@@ -111,8 +114,10 @@ package common
 			offset.x = point.x - (min.x + max.x)/2;
 			offset.y = point.y - (min.y + max.y)/2;
 			
+			//Or we can make offset at the top-left corner...
+			//offset.x = point.x - min.x;
+			//offset.y = point.y - min.y;
 			
-			expBodyCount = getItemCount() + configXML.objects.shape.length();
 			
 			for each(shape in configXML.objects.shape){
 				shape.x = int(shape.x) + offset.x;

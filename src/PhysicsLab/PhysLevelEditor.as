@@ -48,6 +48,7 @@
 		[Embed(source="../data/editor/interface/fish-icon.png")] private var changeImg:Class;
 		
 		[Embed(source="../data/editor/interface/wood.png")] private var panelImg:Class;
+		//[Embed(source="../data/editor/interface/box.png")] private var boxImg:Class;
 		
 		private var xmlMapLoader:XMLMap;
 		
@@ -440,7 +441,11 @@
 			trace(imgFile);
 			trace(imgFile.lastIndexOf(".xml"));
 			if(imgFile.lastIndexOf(".xml") >= 0){
-				assetImage.graphics.clear();
+				//var bitmapData:BitmapData = (new boxImg).bitmapData;
+			 	assetImage.graphics.clear();
+			 	//assetImage.graphics.beginBitmapFill(bitmapData);
+			 	//assetImage.graphics.drawRect(0,0,bitmapData.width,bitmapData.height);
+			 	//assetImage.graphics.endFill();
 				return;
 			}
 			
