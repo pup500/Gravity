@@ -6,8 +6,8 @@
 	
 	import PhysicsGame.LevelSelectMenu;
 	
-	import common.XMLMap;
 	import common.Utilities;
+	import common.XMLMap;
 	
 	import flash.display.*;
 	import flash.events.Event;
@@ -438,6 +438,12 @@
 		
 		private function setPreviewImg(imgFile:String):void{
 			trace(imgFile);
+			trace(imgFile.lastIndexOf(".xml"));
+			if(imgFile.lastIndexOf(".xml") >= 0){
+				assetImage.graphics.clear();
+				return;
+			}
+			
 			var loader:Loader = new Loader();
     		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onSetPreviewComplete);
     		loader.load(new URLRequest(imgFile));
@@ -746,14 +752,22 @@
 		}
 		
 		private function addObject(point:Point):void{
-			var shape:XML = new XML(<shape/>);
-			shape.file = files[index];
-			shape.isStatic = !active;
-			shape.angle = 0;
-			shape.x = point.x;
-			shape.y = point.y;
-			shape.contour = "";
-			xmlMapLoader.addXMLObject(shape, true);
+			
+			var file:String = files[index] as String;
+			
+			if(file.lastIndexOf(".xml") >= 0){
+				xmlMapLoader.addObjectsInXMLFile(file, point);
+			}
+			else{
+				var shape:XML = new XML(<shape/>);
+				shape.file = files[index];
+				shape.isStatic = !active;
+				shape.angle = 0;
+				shape.x = point.x;
+				shape.y = point.y;
+				shape.contour = "";
+				xmlMapLoader.addXMLObject(shape, true);
+			}
 		}
 		
 		private function onStart(point:Point):void{

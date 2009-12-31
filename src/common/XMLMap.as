@@ -28,9 +28,12 @@ package common
 		//private var _undo:Array;
 		
 		private var _bodies:Array;
-		private var number:uint;
-		private var initialNumber:uint;
+		//private var number:uint;
+		private var expBodyCount:uint;
 		private var _loaded:Boolean;
+		
+		//private var numXMLObjs:uint;
+		//private var totXMLObjs:uint;
 		
 		public function XMLMap(state:ExState)
 		{
@@ -40,8 +43,11 @@ package common
 			
 			_bodies = new Array();
 			
-			number = 0;
-			initialNumber = 0;
+			//number = 0;
+			//Get the initial world count..
+			//expBodyCount = getItemCount();
+			
+			trace("initial count first" + expBodyCount);
 			_loaded = false;
 		}
 
@@ -57,7 +63,10 @@ package common
 		private function onLoadXMLConfigComplete(event:Event):void{
 			configXML = new XML(event.target.data);
 			
-			initialNumber = configXML.objects.shape.length();
+			expBodyCount = getItemCount() + configXML.objects.shape.length();
+			
+			trace("initialnum: " + expBodyCount);
+			trace("count:" + getItemCount());
 			
 			for each(var shape:XML in configXML.objects.shape){
 				addXMLObject(shape);
@@ -69,6 +78,50 @@ package common
 			_start.y = configXML.points.start.y;
 			_end.x = configXML.points.end.x;
 			_end.y = configXML.points.end.y;
+		}
+		
+		//Adds a XML file that contains the resource we want...
+		public function addObjectsInXMLFile(file:String, offset:Point):void{
+			var loader:URLLoader = new URLLoader();
+			loader.addEventListener(Event.COMPLETE, 
+				function(e:Event):void{
+					onAddObjectsInXMLComplete(e,offset)
+				});
+			//loader.addEventListener(IOErrorEvent.IO_ERROR, onLoadError);
+			loader.load(new URLRequest(file));
+		}
+		
+		private function onAddObjectsInXMLComplete(event:Event, point:Point):void{
+			configXML = new XML(event.target.data);
+			
+			//Should we figure out a better way for offset...
+			var shape:XML = configXML.objects.shape[0];
+			var offset:Point = new Point();
+			offset.x = point.x - shape.x;
+			offset.y = point.y - shape.y;
+			
+			expBodyCount = getItemCount() + configXML.objects.shape.length();
+			
+			for each(shape in configXML.objects.shape){
+				shape.x = int(shape.x) + offset.x;
+		    	shape.y = int(shape.y) + offset.y;
+			}
+			
+			for each(var joint:XML in configXML.objects.joint){
+				joint.body1.x = int(joint.body1.x) + offset.x;
+		    	joint.body1.y = int(joint.body1.y) + offset.y;
+		    	joint.body2.x = int(joint.body2.x) + offset.x;
+		    	joint.body2.y = int(joint.body2.y) + offset.y;
+		    	
+		    	joint.axis.x = int(joint.axis.x) + offset.x;
+		    	joint.axis.y = int(joint.axis.y) + offset.y;
+		    	joint.anchor.x = int(joint.anchor.x) + offset.x;
+		    	joint.anchor.y = int(joint.anchor.y) + offset.y;
+			}
+			
+			for each(shape in configXML.objects.shape){
+				addXMLObject(shape);
+			}
 		}
 
 		//Load the xml config object at the specified coordinates
@@ -113,22 +166,21 @@ package common
 				b2.final_body.SetStatic();
 			}
 			
-			/*
-			if(shape.type == "static"){
-				b2.final_body.SetStatic();
-			}*/
-			
-			
 			_state.add(b2);
     		
-    		number++;
+    		//number++;
     		
+    		trace("itemcount" + getItemCount());
+    		trace("expbody" + expBodyCount);
     		//We need to add the joints....
     		//but can only do that after all bodies are loaded...
-    		if(!_loaded && (number == initialNumber)){
-    			_loaded = true;
+    		
+    		if(getItemCount() == expBodyCount){
     			addAllJoints();
-	    		_state.init();
+    			if(!_loaded){
+    				_loaded = true;
+    				_state.init();
+    			}
     		}
 		}
 		
@@ -190,8 +242,6 @@ package common
 				if(bSprite){
 					bSprite.destroyPhysBody();
 					bSprite.kill();
-						
-					number--;
 				}
 			}
 		}
@@ -375,7 +425,8 @@ package common
 		}
 		
 		public function getItemCount():uint{
-			return number;
+			return _state.the_world.GetBodyCount();
+			//return number;
 		}
 	}
 }
