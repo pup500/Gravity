@@ -19,6 +19,7 @@ package org.overrides
 	public class ExSprite extends FlxSprite
 	{
 		public var name:String;
+		public var imageResource:String;
 		public var body:b2BodyDef;
 		public var shape:b2PolygonDef;
 		public var final_body:b2Body; //The physical representation in the Body2D b2World.
@@ -27,10 +28,11 @@ package org.overrides
 		
 		protected var _world:b2World;
 		
-		public function ExSprite(x:int=0, y:int=0, sprite:Class=null)
+		public function ExSprite(x:int=0, y:int=0, sprite:Class=null, resource:String="")
 		{
 			super(x, y, sprite);
 			name = "ExSprite";
+			imageResource = resource;
 			
 			body = new b2BodyDef();
 			body.position.Set(x, y);

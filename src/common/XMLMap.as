@@ -32,10 +32,6 @@ package common
 		private var initialNumber:uint;
 		private var _loaded:Boolean;
 		
-		public static const DISTANCE:uint = 0;
-		public static const PRISMATIC:uint = 1;
-		public static const REVOLUTE:uint = 2;
-		
 		public function XMLMap(state:ExState)
 		{
 			_state = state;	
@@ -103,13 +99,21 @@ package common
 		    
 		    var b2:ExSprite = new ExSprite(shape.x, shape.y);
 		    b2.name = "loaded";
+		    b2.imageResource = shape.file;
 		    b2.pixels = bitmapData;
 		    //b2.initShape();
 		    b2.initShapeFromSprite();
 			b2.createPhysBody(_state.the_world);
-			if(shape.type == "static"){
+			
+			if(shape.isStatic == "true"){
 				b2.final_body.SetStatic();
 			}
+			
+			/*
+			if(shape.type == "static"){
+				b2.final_body.SetStatic();
+			}*/
+			
 			if(shape.angle != 0){
 				b2.body.angle = shape.angle;
 			}
@@ -152,6 +156,25 @@ package common
 			
 			return config.toXMLString();
 		}
+		
+		
+		
+		//Create new configuration file
+		public function createNewConfiguration():String{
+			var config:XML = Utilities.CreateXMLRepresentation(_state.the_world);
+			
+			var points:XML = new XML(<points/>);
+			points.start.x = _start.x
+			points.start.y = _start.y;
+			points.end.x = _end.x;
+			points.end.y = _end.y;
+			
+			//Create the config file as below
+			config.appendChild(points);
+			
+			return config.toXMLString();
+		}
+		
 		
 		public function setStartPoint(point:Point):void{
 			_start = point;
@@ -259,23 +282,6 @@ package common
 			vec.x = point.x;
 			vec.y = point.y;
 			_bodies.push([b2,vec]);
-				
-			/*
-			if(b2){
-				if(!allowSameBody){
-					for(var i:uint = 0; i < _bodies.length; i++){
-						var bb:b2Body = _bodies[i][0];
-						if(bb == b2){
-							return;
-						}
-					}
-				}
-				var vec:b2Vec2 = new b2Vec2();
-				vec.x = point.x;
-				vec.y = point.y;
-				_bodies.push([b2,vec]);
-			}
-			*/
 		}
 		
 		private function addAllJoints():void{
@@ -283,11 +289,11 @@ package common
 				registerObjectAtPoint(new Point(joint.body1.x, joint.body1.y), true);
 				registerObjectAtPoint(new Point(joint.body2.x, joint.body2.y), true);
 				//Maybe depending on the config... we can use different functions
-				addJoint(joint.type);
+				addJoint(joint.type, joint);
 			}
 		}
 		
-		public function addJoint(jointType:uint):void{
+		public function addJoint(jointType:uint, jointXML:XML=null):void{
 			if(_bodies.length != 2){
 				_bodies = new Array();
 				return;
@@ -306,14 +312,14 @@ package common
 			//Switch to create different joint types
 			var result:Boolean = false;
 			switch(jointType){
-			case DISTANCE:
-				result = addDistanceJoint(body1, body2, point1, point2);
+			case Utilities.e_distanceJoint:
+				result = addDistanceJoint(body1, body2, point1, point2, jointXML);
 				break;
-			case PRISMATIC:
-				result = addPrismaticJoint(body1, body2, point1, point2);
+			case Utilities.e_prismaticJoint:
+				result = addPrismaticJoint(body1, body2, point1, point2, jointXML);
 				break;
-			case REVOLUTE:
-				result = addRevoluteJoint(body1, body2, point1, point2);
+			case Utilities.e_revoluteJoint:
+				result = addRevoluteJoint(body1, body2, point1, point2, jointXML);
 				break;
 			}
 			
@@ -324,7 +330,7 @@ package common
 			_bodies = new Array();
 		}
 		
-		private function addDistanceJoint(body1:b2Body, body2:b2Body, point1:b2Vec2, point2:b2Vec2):Boolean{
+		private function addDistanceJoint(body1:b2Body, body2:b2Body, point1:b2Vec2, point2:b2Vec2, jointXML:XML=null):Boolean{
 			var joint:b2DistanceJointDef = new b2DistanceJointDef();
 			
 			if(body1 && body2 && body1 != body2){
@@ -337,7 +343,7 @@ package common
 			return false;
 		}
 		
-		private function addPrismaticJoint(body1:b2Body, body2:b2Body, point1:b2Vec2, point2:b2Vec2):Boolean{
+		private function addPrismaticJoint(body1:b2Body, body2:b2Body, point1:b2Vec2, point2:b2Vec2, jointXML:XML=null):Boolean{
 			var joint:b2PrismaticJointDef = new b2PrismaticJointDef();
 			
 			//Always draw from static to nonstatic...
@@ -347,11 +353,30 @@ package common
 				axis.Subtract(point1);
 				axis.Normalize();
 				
-				if(body1 == null || body1 === body2){
+				var anchor:b2Vec2 = new b2Vec2();
+				
+				if(body1 == null){
+					//If body1 isn't found, use world ground body
 					body1 = _state.the_world.GetGroundBody();
+					
+					//Also the anchor point should be where we placed the joint
+					anchor.x = point1.x;
+					anchor.y = point1.y;
+				}else{
+					//There's two bodies, we want the anchor point to be at the midpoint of the line we drew
+					anchor.x = (point2.x - point1.x)/2 + point1.x;
+					anchor.y = (point2.y - point1.y)/2 + point1.y;
 				}
 				
-				joint.Initialize(body1, body2, point1 , axis);
+				if(jointXML){
+					axis.x = jointXML.axis.x;
+					axis.y = jointXML.axis.y;
+					
+					anchor.x = jointXML.anchor.x;
+					anchor.y = jointXML.anchor.y;
+				}
+				
+				joint.Initialize(body1, body2, anchor, axis);
 				joint.enableMotor = true;
 				joint.enableLimit = true;
 				joint.maxMotorForce = 100 * body2.GetMass();
@@ -359,6 +384,7 @@ package common
 				joint.upperTranslation = 50;
 				joint.lowerTranslation = -50;
 				joint.collideConnected = true;
+				joint.userData = axis;
 				_state.the_world.CreateJoint(joint);	
 				return true;
 			}
@@ -366,7 +392,7 @@ package common
 			return false;
 		}
 		
-		private function addRevoluteJoint(body1:b2Body, body2:b2Body, point1:b2Vec2, point2:b2Vec2):Boolean{
+		private function addRevoluteJoint(body1:b2Body, body2:b2Body, point1:b2Vec2, point2:b2Vec2, jointXML:XML=null):Boolean{
 			var joint:b2RevoluteJointDef = new b2RevoluteJointDef();
 			
 			if(body2){
@@ -374,15 +400,24 @@ package common
 					body1 = _state.the_world.GetGroundBody();
 				}
 				
+				var anchor:b2Vec2 = new b2Vec2();
+				anchor.x = point1.x;
+				anchor.y = point1.y;
+				
+				if(jointXML){
+					anchor.x = jointXML.anchor.x;
+					anchor.y = jointXML.anchor.y;
+				}
+				
 				//Compute distance of the center point to the center of our main object
 				var dist:b2Vec2 = new b2Vec2();
 				dist.x = body2.GetWorldCenter().x;
 				dist.y = body2.GetWorldCenter().x;
-				dist.Subtract(point1);
+				dist.Subtract(anchor);
 				
 				var distance:Number = dist.Length();
 				
-				joint.Initialize(body1, body2, point1);
+				joint.Initialize(body1, body2, anchor);
 				//joint.lowerAngle = 3.14/2; // -90 degrees
 				//joint.upperAngle = 0.25 * 3.14; // 45 degrees
 				//joint.enableLimit = true;

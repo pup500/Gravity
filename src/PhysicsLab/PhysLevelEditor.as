@@ -7,6 +7,7 @@
 	import PhysicsGame.LevelSelectMenu;
 	
 	import common.XMLMap;
+	import common.Utilities;
 	
 	import flash.display.*;
 	import flash.events.Event;
@@ -126,7 +127,7 @@
 			drawingLine = false;
 			usePoly = false;
 			run = false;
-			jointType = XMLMap.DISTANCE;
+			jointType = Utilities.e_distanceJoint;
 			
 			startImg = new FlxSprite(0,0,startSprite);
 			endImg = new FlxSprite(0,0,endSprite);
@@ -285,7 +286,12 @@
 		}
 		
 		private function onCopyClick(event:MouseEvent):void{
-			copy(xmlMapLoader.getConfiguration());
+			//var xml:XML = Utilities.CreateXMLRepresentation(the_world);
+			//copy(xml.toXMLString());
+			
+			copy(xmlMapLoader.createNewConfiguration());
+			
+			//copy(xmlMapLoader.getConfiguration());
 			FlxG.play(dinoSound);
 		}
 		
@@ -501,13 +507,13 @@
 			}
 			
 			if(FlxG.keys.justPressed("R")){
-				jointType = XMLMap.REVOLUTE;
+				jointType = Utilities.e_revoluteJoint;
 			}
 			if(FlxG.keys.justPressed("T")){
-				jointType = XMLMap.DISTANCE;
+				jointType = Utilities.e_distanceJoint;
 			}
 			if(FlxG.keys.justPressed("Y")){
-				jointType = XMLMap.PRISMATIC;
+				jointType = Utilities.e_prismaticJoint;
 			}
 			
 			if(FlxG.keys.justPressed("F1")){
@@ -562,7 +568,9 @@
 			var action:String = actions[mode];
 			var mouseCoord:String =  "(" + FlxG.mouse.x + ", " + FlxG.mouse.y +")";
 			var itemCount:String = "# Items: " + xmlMapLoader.getItemCount();
-			var jointTypes:Array = ["DISTANCE", "PRISMATIC", "REVOLUTE"];
+			
+			//From Utilities
+			var jointTypes:Array = ["UNKNOWN", "REVOLUTE", "PRISMATIC", "DISTANCE", "PULLEY", "MOUSE", "GEAR", "LINE"];
 			
 			var status:Array = [
 				itemCount,
@@ -689,7 +697,9 @@
 				if(mode == JOIN && drawingLine){
 					line.visible = false;
 					drawingLine = false;
-					xmlMapLoader.registerObjectAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true, jointType == XMLMap.REVOLUTE);
+					//Revolute joints can be added to onself, the effect is that it connects to the world...
+					//Technically, prismatic ones can too, but we want the distance...
+					xmlMapLoader.registerObjectAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true, jointType == Utilities.e_revoluteJoint);
 					
 					xmlMapLoader.addJoint(jointType);
 				}
@@ -718,7 +728,7 @@
 		private function addObject(point:Point):void{
 			var shape:XML = new XML(<shape/>);
 			shape.file = files[index];
-			shape.type = active ? "active" : "static";
+			shape.isStatic = !active;
 			shape.angle = 0;
 			shape.x = point.x;
 			shape.y = point.y;
