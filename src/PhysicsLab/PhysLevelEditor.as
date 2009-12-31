@@ -477,11 +477,11 @@
 		}
 		
 		private function handleKeyboard():void{
-			if(FlxG.keys.SHIFT && FlxG.keys.justReleased("ESC")) {
+			if(FlxG.keys.pressed("SHIFT") && FlxG.keys.justPressed("ESC")) {
 				FlxG.switchState(LevelSelectMenu);
 			}
 			
-			if(FlxG.keys.justReleased("E")){ 
+			if(FlxG.keys.justPressed("E")){ 
 				mode = mode != EDIT ? EDIT : KILL;
 			}
 			
@@ -605,7 +605,7 @@
 			}
 			
 			assetImage.visible = mode == EDIT;
-			assetImage.alpha = .5;
+			assetImage.alpha = active ? .8 : .3;
 			
 			if(FlxG.keys.SHIFT){
 				assetImage.alpha = 1;
