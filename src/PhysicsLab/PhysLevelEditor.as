@@ -3,11 +3,11 @@
 	import Box2D.Collision.*;
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
-	import Box2D.Dynamics.Joints.b2Joint;
 	
 	import PhysicsGame.LevelSelectMenu;
 	
 	import common.XMLMap;
+	import common.Utilities;
 	
 	import flash.display.*;
 	import flash.events.Event;
@@ -45,6 +45,9 @@
 		[Embed(source="../data/editor/interface/frog-icon.png")] private var physicsImg:Class;
 		[Embed(source="../data/editor/interface/mammoth-icon.png")] private var playImg:Class;
 		[Embed(source="../data/editor/interface/help.png")] private var helpImg:Class;
+		[Embed(source="../data/editor/interface/fish-icon.png")] private var changeImg:Class;
+		
+		[Embed(source="../data/editor/interface/wood.png")] private var panelImg:Class;
 		
 		private var xmlMapLoader:XMLMap;
 		
@@ -85,11 +88,13 @@
 		private var killButton:Sprite;
 		private var editButton:Sprite;
 		private var copyButton:Sprite;
-		private var playButton:Sprite;	
+		private var playButton:Sprite;
+		private var changeButton:Sprite;
+			
 		private var gridButton:Sprite;
 		private var snapButton:Sprite;
 		private var activeButton:Sprite;
-		private var physicsButton:Sprite;
+		private var debugButton:Sprite;
 		private var helpButton:Sprite;
 		
 		private const BLACK:Number = 0xFF000000;
@@ -100,6 +105,7 @@
 		private const EDIT:uint = 1;
 		private const JOIN:uint = 2;
 		private const BREAK:uint = 3;
+		private const CHANGE:uint = 4;
 
 		private const WIDTH:uint = 1280;
 		private const HEIGHT:uint = 960;
@@ -123,7 +129,7 @@
 			drawingLine = false;
 			usePoly = false;
 			run = false;
-			jointType = XMLMap.DISTANCE;
+			jointType = Utilities.e_distanceJoint;
 			
 			startImg = new FlxSprite(0,0,startSprite);
 			endImg = new FlxSprite(0,0,endSprite);
@@ -177,6 +183,9 @@
 			
 			endImg.x = xmlMapLoader.getEndPoint().x;
 			endImg.y = xmlMapLoader.getEndPoint().y;
+			
+			//Set all objects initially to sleep
+			updateWorldObjects();
 		}
 		
 		private function addPlayer():void{
@@ -267,15 +276,19 @@
 		}
 		
 		private function onPlayClick(event:MouseEvent):void{
-			//toggleWorldObjects();
+			run = !run;
 		}
 		
 		private function onEditClick(event:MouseEvent):void{
 			mode = EDIT;
 		}
 		
+		private function onChangeClick(event:MouseEvent):void{
+			mode = CHANGE;
+		}
+		
 		private function onCopyClick(event:MouseEvent):void{
-			copy(xmlMapLoader.getConfiguration());
+			copy(xmlMapLoader.createNewConfiguration());
 			FlxG.play(dinoSound);
 		}
 		
@@ -288,16 +301,26 @@
 			createGrid();
 			
 			iconPanel = new Sprite();
-			physicsButton = createImageButton(physicsImg, 5, 60, "Debug", onPhysicsClick);
+			iconPanel.x = 0;
+			iconPanel.y = 0;
+			//iconPanel.width = 50;
+			//iconPanel.height = 430;
+			iconPanel.graphics.beginBitmapFill((new panelImg).bitmapData,null,false);
+			//iconPanel.graphics.beginFill(0xFFFFFF,1);
+			iconPanel.graphics.drawRect(3,55,80,370);
+			iconPanel.graphics.endFill();
+			
+			debugButton = createImageButton(physicsImg, 5, 60, "Debug", onPhysicsClick);
 			activeButton = createImageButton(activeImg, 5, 90, "Active", onActiveClick);
 			snapButton = createImageButton(snapImg, 5, 120, "Snap", onSnapClick);
 			gridButton = createImageButton(gridImg, 5, 150, "Grid", onGridClick);
 			
+			changeButton = createImageButton(changeImg, 5, 190, "Change", onChangeClick);
 			editButton = createImageButton(editImg, 5, 230, "Add", onEditClick);
 			killButton = createImageButton(killImg, 5, 270, "Remove", onKillClick);
 			joinButton = createImageButton(joinImg, 5, 310, "Join", onJoinClick);
 			breakButton = createImageButton(breakImg, 5, 350, "Break", onBreakClick);
-			//playButton = createImageButton(playImg, 5, 390, "Run", onPlayClick);
+			playButton = createImageButton(playImg, 5, 390, "Run", onPlayClick);
 			
 			copyButton = createImageButton(copyImg, 5, 430, "", onCopyClick);
 			helpButton = createImageButton(helpImg, 590, 430, "", onHelpClick);
@@ -337,32 +360,47 @@
 		private function setInstructions():void{
 			helpText = new TextField();
 			helpText.selectable = false;
-			helpText.width = 430;
-            helpText.height = 210;
+			helpText.width = 440;
+            helpText.height = 390;
             helpText.x = (640-helpText.width)/2;
 			helpText.y = (480-helpText.height)/2;
             helpText.background = true;
             helpText.border = true;
-            helpText.text = "[ and ] - shifts through image assets\n";
-            helpText.appendText("E - toggles ADD and REMOVE mode\n");
-            helpText.appendText("1 and 2 - sets the START/END point for ADD mode\n");
-			helpText.appendText("WASD - moves player object to simulate scrolling\n");
-			helpText.appendText("I - toggles ACTIVE/STATIC flag when ADDING objects\n");
-			helpText.appendText("G - toggles GRID\n");
-			helpText.appendText("N - toggles FREE/SNAP to grid\n");
-			helpText.appendText("H - toggles HUD/STATUS panel\n");
-			helpText.appendText("SHIFT - hides TOOLBAR panel\n");
-			helpText.appendText("U - toggles DEBUG PHYSICS bodies for joints and bounding box issues\n");
-			helpText.appendText("ADD BUTTON - sets the ADD mode.  SHIFT CLICK to add objects\n");
-			helpText.appendText("REMOVE BUTTON - sets the REMOVE mode.  SHIFT CLICK to remove objects\n");
-			helpText.appendText("JOIN BUTTON - sets the JOIN mode.  SHIFT CLICK on one body and drag to another\n");
-			helpText.appendText("BREAK BUTTON - sets the BREAK mode.  SHIFT CLICK on a body to remove all joints\n");
-			helpText.appendText("SHIFT CLICK - ADD/REMOVE the selected image asset at MOUSE coordinates\n");
-			helpText.appendText("COPY BUTTON - copies level settings.  Copy this to a new level xml file\n");
-			helpText.appendText("SHIFT ESC - returns to the level select menu\n");
+            helpText.text = "";
+            helpText.appendText("Movement:\n");
+            helpText.appendText(" WASD - moves player object to simulate scrolling\n");
+            helpText.appendText("\n");
+            helpText.appendText("Keyboard Shortcuts:\n");
+            helpText.appendText(" [ and ] - shifts through image assets\n");
+            helpText.appendText(" E - toggles ADD/REMOVE mode\n");
+            helpText.appendText(" 1 and 2 - sets the START/END point for ADD mode\n");
+			helpText.appendText(" I - toggles ACTIVE/STATIC flag when ADDING objects\n");
+			helpText.appendText(" G - toggles GRID\n");
+			helpText.appendText(" N - toggles FREE/SNAP to grid\n");
+			helpText.appendText(" H - toggles HUD/STATUS panel\n");
+			helpText.appendText("\n");
+			helpText.appendText(" J - sets the JOIN mode.  SHIFT DRAG on static to active, active to active object\n");
+			helpText.appendText(" T - Distance joints require two bodies.\n");
+			helpText.appendText(" R - Revolute joints can be SHIFT DRAG in one body, so it connects to world.\n");
+			helpText.appendText(" Y - Prismatic joints axis is the midpoint of the mouse distance.\n");
+			helpText.appendText("\n");
+			helpText.appendText(" SHIFT - hides TOOLBAR panel\n");
+			helpText.appendText(" U - toggles DEBUG PHYSICS bodies for joints and bounding box issues\n");
+			helpText.appendText(" F1 - toggles simulation.  Can lose some joint data if bodies moved\n");
+			helpText.appendText(" SHIFT CLICK - ADD/REMOVE the selected image asset at MOUSE coordinates\n");
+			helpText.appendText("\n");
+			helpText.appendText("Buttons:\n");
+			helpText.appendText(" ADD BUTTON - sets the ADD mode.  SHIFT CLICK to add objects\n");
+			helpText.appendText(" REMOVE BUTTON - sets the REMOVE mode.  SHIFT CLICK to remove objects\n");
+			helpText.appendText(" JOIN BUTTON - sets the JOIN mode.  SHIFT CLICK on one body and drag to another\n");
+			helpText.appendText(" BREAK BUTTON - sets the BREAK mode.  SHIFT CLICK on a body to remove all joints\n");
+			helpText.appendText(" COPY BUTTON - copies level settings.  You paste from clipboard to new file\n");
+			helpText.appendText(" RUN BUTTON - toggles simulation.  Can lose some joint data if bodies moved\n");
+			helpText.appendText("\n");
+			helpText.appendText("QUIT:\n");
+			helpText.appendText(" SHIFT ESC - QUIT to the level select menu\n");
 			helpText.visible = false;
-            
-            helpText.addEventListener(MouseEvent.MOUSE_DOWN, onTextClick);
+            //helpText.addEventListener(MouseEvent.MOUSE_DOWN, onTextClick);
             
             addChild(helpText);
 		}
@@ -422,21 +460,22 @@
 				return;
 			}
 			
+			//Put objects to sleep before it can do it's update if we aren't in run mode...
+			updateWorldObjects();
+			
 			super.update();
 			
 			//Grid
 			grid.x = FlxG.scroll.x;
 			grid.y = FlxG.scroll.y;
 			
-			//For the physics....
-			debug_sprite.x = FlxG.scroll.x;
-			debug_sprite.y = FlxG.scroll.y;
-			
 			handleKeyboard();
 			handlePreview();
 			handleMode();
 			handleMouse();
 			
+			/*
+			//Commented out because some joints do not use the anchors the way regular distance joints do...
 			//If we want to add joints drawing...
 			if(jointsImage.visible){
 				jointsImage.graphics.clear();
@@ -449,25 +488,21 @@
 					jointsImage.graphics.lineTo(j.GetAnchor2().x,j.GetAnchor2().y);
 				}
 			}	
+			*/
 		}
 		
 		private function handleKeyboard():void{
-			if(FlxG.keys.SHIFT && FlxG.keys.justReleased("ESC")) {
+			if(FlxG.keys.pressed("SHIFT") && FlxG.keys.justPressed("ESC")) {
 				FlxG.switchState(LevelSelectMenu);
 			}
 			
-			if(FlxG.keys.justReleased("E")){ 
+			if(FlxG.keys.justPressed("E")){ 
 				mode = mode != EDIT ? EDIT : KILL;
 			}
 			
 			if(FlxG.keys.justPressed("J")){
 				mode = mode != JOIN ? JOIN : BREAK;
 			}
-			
-			/*
-			if(FlxG.keys.justReleased("Z")) {
-				xmlMapLoader.undo();
-			}*/
 			
 			if(FlxG.keys.justPressed("I")){
 				active = !active;
@@ -492,18 +527,17 @@
 			}
 			
 			if(FlxG.keys.justPressed("R")){
-				jointType = XMLMap.REVOLUTE;
+				jointType = Utilities.e_revoluteJoint;
 			}
 			if(FlxG.keys.justPressed("T")){
-				jointType = XMLMap.DISTANCE;
+				jointType = Utilities.e_distanceJoint;
 			}
 			if(FlxG.keys.justPressed("Y")){
-				jointType = XMLMap.PRISMATIC;
+				jointType = Utilities.e_prismaticJoint;
 			}
 			
-			
 			if(FlxG.keys.justPressed("F1")){
-				toggleWorldObjects();
+				run = !run;
 			}
 		}
 		
@@ -535,24 +569,27 @@
 		}
 		
 		private function handleMode():void{
-			physicsButton.alpha = debug_sprite.visible ? 1 : .5;
+			debugButton.alpha = debug_sprite.visible ? 1 : .5;
 			activeButton.alpha = active ? 1 : .5;
 			snapButton.alpha = snapToGrid ? 1 : .5;
 			gridButton.alpha = grid.visible ? 1 : .5;
 			joinButton.alpha = mode == JOIN ? 1 : .5;
 			breakButton.alpha = mode == BREAK ? 1 : .5;
 			killButton.alpha = mode == KILL ? 1 : .5;
-			//playButton.alpha = run ? 1 : .5;
+			playButton.alpha = run ? 1 : .5;
 			editButton.alpha = mode == EDIT ? 1 : .5;
 			helpButton.alpha = helpText.visible ? 1 : .5;
+			changeButton.alpha = mode == CHANGE ? 1 : .5;
 			
 			jointsImage.visible = (mode == JOIN || mode == BREAK);
 			
-			var actions:Array = ["REMOVE", "ADD", "JOIN", "BREAK"];
+			var actions:Array = ["REMOVE", "ADD", "JOIN", "BREAK", "CHANGE"];
 			var action:String = actions[mode];
 			var mouseCoord:String =  "(" + FlxG.mouse.x + ", " + FlxG.mouse.y +")";
 			var itemCount:String = "# Items: " + xmlMapLoader.getItemCount();
-			var jointTypes:Array = ["DISTANCE", "PRISMATIC", "REVOLUTE"];
+			
+			//From Utilities
+			var jointTypes:Array = ["UNKNOWN", "REVOLUTE", "PRISMATIC", "DISTANCE", "PULLEY", "MOUSE", "GEAR", "LINE"];
 			
 			var status:Array = [
 				itemCount,
@@ -583,7 +620,7 @@
 			}
 			
 			assetImage.visible = mode == EDIT;
-			assetImage.alpha = .5;
+			assetImage.alpha = active ? .8 : .3;
 			
 			if(FlxG.keys.SHIFT){
 				assetImage.alpha = 1;
@@ -604,6 +641,10 @@
 				}
 				else if(mode == KILL){
 					xmlMapLoader.removeObjectAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true);
+				}
+				else if(mode == CHANGE){
+					var type:String = active ? "active" : "static";
+					xmlMapLoader.setObjectTypeAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true, type);
 				}
 				/*
 				else if(mode == DRAW){
@@ -675,17 +716,16 @@
 				if(mode == JOIN && drawingLine){
 					line.visible = false;
 					drawingLine = false;
-					xmlMapLoader.registerObjectAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true, jointType == XMLMap.REVOLUTE);
+					//Revolute joints can be added to onself, the effect is that it connects to the world...
+					//Technically, prismatic ones can too, but we want the distance...
+					xmlMapLoader.registerObjectAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true, jointType == Utilities.e_revoluteJoint);
 					
 					xmlMapLoader.addJoint(jointType);
 				}
 			}
 		}
 		
-		
-		private function toggleWorldObjects():void{
-			run = !run;
-			
+		private function updateWorldObjects():void{
 			var bb:b2Body;
 			if(run){
 				the_world.SetGravity(new b2Vec2(0,80));
@@ -707,7 +747,7 @@
 		private function addObject(point:Point):void{
 			var shape:XML = new XML(<shape/>);
 			shape.file = files[index];
-			shape.type = active ? "active" : "static";
+			shape.isStatic = !active;
 			shape.angle = 0;
 			shape.x = point.x;
 			shape.y = point.y;

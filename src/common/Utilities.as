@@ -3,13 +3,25 @@ package common
 	import Box2D.Collision.Shapes.b2Shape;
 	import Box2D.Collision.b2AABB;
 	import Box2D.Common.Math.b2Vec2;
+	import Box2D.Dynamics.Joints.*;
 	import Box2D.Dynamics.b2Body;
 	import Box2D.Dynamics.b2World;
 	
 	import flash.geom.Point;
 	
+	import org.overrides.ExSprite;
+	
 	public class Utilities
 	{
+		public static const e_unknownJoint:int = 0;
+		public static const e_revoluteJoint:int = 1;
+		public static const e_prismaticJoint:int = 2;
+		public static const e_distanceJoint:int = 3;
+		public static const e_pulleyJoint:int = 4;
+		public static const e_mouseJoint:int = 5;
+		public static const e_gearJoint:int = 6;
+		public static const e_lineJoint:int = 7;
+		
 		public function Utilities()
 		{
 		}
@@ -35,6 +47,154 @@ package common
 				}
 			}
 			return body;
+		}
+		
+		public static function CreateXMLRepresentation(the_world:b2World):XML {
+			var config:XML = new XML(<config/>);
+			var objects:XML = new XML(<objects/>);
+			
+			var isStatic:Boolean;
+			var position:b2Vec2 = new b2Vec2();
+			var file:String = new String();
+			var angle:Number = 0;
+			var shape:XML;
+			var bSprite:ExSprite;
+			for (var bb:b2Body = the_world.GetBodyList(); bb; bb = bb.GetNext()) {
+				
+				bSprite = bb.GetUserData();
+				
+				if(!bSprite) continue;
+				
+				if(bSprite.name == "Player") continue;
+				
+				bb.PutToSleep();
+				isStatic = bb.IsStatic();
+				position.x = bb.GetPosition().x;
+				position.y = bb.GetPosition().y;
+				
+				//Need to figure out how to get file...
+				file = bSprite.imageResource;
+				angle = bb.GetAngle();
+				
+				shape = new XML(<shape/>);
+				shape.file = file;
+				shape.isStatic = isStatic;
+				shape.angle = angle;
+				shape.x = position.x;
+				shape.y = position.y;
+				
+				objects.appendChild(shape);
+			}
+			
+			var joint:XML;
+			for (var j:b2Joint=the_world.GetJointList(); j; j=j.GetNext()) {
+				var type:uint;
+				
+				type = j.GetType();
+				switch(type){
+				case e_distanceJoint:
+					joint = createDistanceJointXML(j as b2DistanceJoint);
+					break;
+				case e_prismaticJoint:
+					joint = createPrismaticJointXML(j as b2PrismaticJoint);
+					break;
+				case e_revoluteJoint:
+					joint = createRevoluteJointXML(j as b2RevoluteJoint);
+					break;
+				}
+				
+				objects.appendChild(joint);
+			}
+			
+			config.appendChild(objects);
+			
+			return config;
+		}
+		
+		private static function createDistanceJointXML(j:b2DistanceJoint):XML{
+			var point1:b2Vec2 = new b2Vec2();
+			var point2:b2Vec2 = new b2Vec2();
+			
+			//We might need to get the bodies and pull the coordinates
+			//That will ensure that we get the right bodies
+			//But our anchors are going to be messed up...
+			//No way to know if the positions changed and what we can do about it...
+			point1.x = j.GetAnchor1().x;
+			point1.y = j.GetAnchor1().y;
+			point2.x = j.GetAnchor2().x;
+			point2.y = j.GetAnchor2().y;
+			
+			var joint:XML = new XML(<joint/>);
+			joint.type = e_distanceJoint;
+			joint.body1.x = point1.x;
+			joint.body1.y = point1.y;
+			joint.body2.x = point2.x;
+			joint.body2.y = point2.y;
+			
+			return joint;
+		}
+		
+		private static function createPrismaticJointXML(j:b2PrismaticJoint):XML{
+			var point1:b2Vec2 = new b2Vec2();
+			var point2:b2Vec2 = new b2Vec2();
+			var anchor:b2Vec2 = new b2Vec2();
+			var axis:b2Vec2 = new b2Vec2();
+			
+			var b1:b2Body = j.GetBody1();
+			var b2:b2Body = j.GetBody2();
+			
+			point1.x = b1.GetPosition().x;
+			point1.y = b1.GetPosition().y;
+			point2.x = b2.GetPosition().x;
+			point2.y = b2.GetPosition().y;
+			
+			anchor.x = j.GetAnchor1().x;
+			anchor.y = j.GetAnchor1().y;
+			
+			//TODO:JointXML should really find a way to get at the axis...
+			axis.x = j.GetUserData().x;
+			axis.y = j.GetUserData().y;
+			
+			var joint:XML = new XML(<joint/>);
+			joint.type = e_prismaticJoint;
+			joint.body1.x = point1.x;
+			joint.body1.y = point1.y;
+			joint.body2.x = point2.x;
+			joint.body2.y = point2.y;
+			joint.anchor.x = anchor.x;
+			joint.anchor.y = anchor.y;
+			joint.axis.x = axis.x;
+			joint.axis.y = axis.y;
+			
+			return joint;
+		}
+		
+		private static function createRevoluteJointXML(j:b2RevoluteJoint):XML{
+			var point1:b2Vec2 = new b2Vec2();
+			var point2:b2Vec2 = new b2Vec2();
+			var anchor:b2Vec2 = new b2Vec2();
+			
+			var b1:b2Body = j.GetBody1();
+			var b2:b2Body = j.GetBody2();
+			
+			point1.x = b1.GetPosition().x;
+			point1.y = b1.GetPosition().y;
+			point2.x = b2.GetPosition().x;
+			point2.y = b2.GetPosition().y;
+			
+			anchor.x = j.GetAnchor1().x;
+			anchor.y = j.GetAnchor1().y;
+			
+			var joint:XML = new XML(<joint/>);
+			joint.type = e_revoluteJoint;
+			joint.body1.x = point1.x;
+			joint.body1.y = point1.y;
+			joint.body2.x = point2.x;
+			joint.body2.y = point2.y;
+			joint.anchor.x = anchor.x;
+			joint.anchor.y = anchor.y;
+			
+			return joint;
 		}
 		
 		/*

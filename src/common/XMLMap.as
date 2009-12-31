@@ -19,28 +19,22 @@ package common
 	public class XMLMap
 	{
 		private var configXML:XML;
-		private var _config:Array;
+		//private var _config:Array;
 		private var _state:ExState;
 		
 		private var _start:Point;
 		private var _end:Point;
 		
-		private var _undo:Array;
+		//private var _undo:Array;
 		
 		private var _bodies:Array;
 		private var number:uint;
 		private var initialNumber:uint;
 		private var _loaded:Boolean;
 		
-		public static const DISTANCE:uint = 0;
-		public static const PRISMATIC:uint = 1;
-		public static const REVOLUTE:uint = 2;
-		
 		public function XMLMap(state:ExState)
 		{
 			_state = state;	
-			_config = new Array();
-			_undo = new Array();
 			_start = new Point();
 			_end = new Point();
 			
@@ -103,22 +97,26 @@ package common
 		    
 		    var b2:ExSprite = new ExSprite(shape.x, shape.y);
 		    b2.name = "loaded";
+		    b2.imageResource = shape.file;
 		    b2.pixels = bitmapData;
 		    //b2.initShape();
 		    b2.initShapeFromSprite();
 			b2.createPhysBody(_state.the_world);
-			if(shape.type == "static"){
+			
+			if(shape.isStatic == "true"){
 				b2.final_body.SetStatic();
 			}
+			
+			/*
+			if(shape.type == "static"){
+				b2.final_body.SetStatic();
+			}*/
+			
 			if(shape.angle != 0){
 				b2.body.angle = shape.angle;
 			}
 			
 			_state.add(b2);
-			
-			_undo.push(b2);
-			
-    		_config.push(shape);
     		
     		number++;
     		
@@ -131,14 +129,9 @@ package common
     		}
 		}
 		
-		public function getConfiguration():String{
-			var config:XML = new XML(<config/>);
-			var shape:XML;
-			var objects:XML = new XML(<objects/>);
-			for(var i:uint = 0; i < _config.length; i++){
-				shape = _config[i] as XML;
-				objects.appendChild(shape);
-			}
+		//Create new configuration file
+		public function createNewConfiguration():String{
+			var config:XML = Utilities.CreateXMLRepresentation(_state.the_world);
 			
 			var points:XML = new XML(<points/>);
 			points.start.x = _start.x
@@ -148,10 +141,10 @@ package common
 			
 			//Create the config file as below
 			config.appendChild(points);
-			config.appendChild(objects);
 			
 			return config.toXMLString();
 		}
+		
 		
 		public function setStartPoint(point:Point):void{
 			_start = point;
@@ -169,14 +162,20 @@ package common
 			return _end;
 		}
 		
-		public function undo():void{
-			var b2:ExSprite = _undo.pop();
+		public function setObjectTypeAtPoint(point:Point, includeStatic:Boolean=false, type:String="static"):void{
+			var b2:b2Body = Utilities.GetBodyAtMouse(_state.the_world, point, includeStatic);
+			
 			if(b2){
-				b2.destroyPhysBody();
-				b2.kill();	
-				
-				_config.pop();
-				number--;
+				var bSprite:ExSprite = b2.GetUserData() as ExSprite;
+				if(bSprite){
+					//TODO:This is a really bad way
+					if(type == "static"){
+						bSprite.final_body.SetStatic();
+					}
+					else{
+						bSprite.final_body.SetMassFromShapes();
+					}
+				}
 			}
 		}
 		
@@ -186,16 +185,10 @@ package common
 			if(b2){
 				var bSprite:ExSprite = b2.GetUserData() as ExSprite;
 				if(bSprite){
-					var index:int = _undo.indexOf(bSprite);
-					var removed:Array = _undo.splice(index,1);
-					var rSprite:ExSprite = removed.pop();
-					if(rSprite){
-						rSprite.destroyPhysBody();
-						rSprite.kill();
+					bSprite.destroyPhysBody();
+					bSprite.kill();
 						
-						_config.splice(index,1);
-						number--;
-					}
+					number--;
 				}
 			}
 		}
@@ -203,32 +196,14 @@ package common
 		public function removeJointAtPoint(point:Point, includeStatic:Boolean=false):void{
 			var b2:b2Body = Utilities.GetBodyAtMouse(_state.the_world, point, includeStatic);
 			if(b2){
-				if(b2.GetUserData()){
-					var sprite:ExSprite = b2.GetUserData();
-					sprite.destroyAllJoints();
-					
-					//remove from config xml...
-					var xml:XML;
-					for(var i:uint = 0; i < _config.length; i++){
-						xml = _config[i];
-						
-						//Find all xml elements of type joint...
-						if(xml.name() == "joint"){
-							var b3:b2Body = Utilities.GetBodyAtMouse(_state.the_world, new Point(xml.body1.x, xml.body1.y), includeStatic);
-							var b4:b2Body = Utilities.GetBodyAtMouse(_state.the_world, new Point(xml.body2.x, xml.body2.y), includeStatic);
-							
-							//Remove the joint if it connects with the body
-							if(b2 === b3 || b2 === b4){
-								_config.splice(i,1);
-								i--;
-							}
-						}
-					}
+				var bSprite:ExSprite = b2.GetUserData() as ExSprite;
+				if(bSprite){
+					bSprite.destroyAllJoints();
 				}
 			}
 		}
 		
-		//Make the AddJoint functions figure out the logic...
+		//Registers a point and see if we get a body from it.  Null bodies will be checked during add joint
 		public function registerObjectAtPoint(point:Point, includeStatic:Boolean=false, allowSameBody:Boolean=false):void{
 			var b2:b2Body = Utilities.GetBodyAtMouse(_state.the_world, point, includeStatic);
 			
@@ -236,35 +211,19 @@ package common
 			vec.x = point.x;
 			vec.y = point.y;
 			_bodies.push([b2,vec]);
-				
-			/*
-			if(b2){
-				if(!allowSameBody){
-					for(var i:uint = 0; i < _bodies.length; i++){
-						var bb:b2Body = _bodies[i][0];
-						if(bb == b2){
-							return;
-						}
-					}
-				}
-				var vec:b2Vec2 = new b2Vec2();
-				vec.x = point.x;
-				vec.y = point.y;
-				_bodies.push([b2,vec]);
-			}
-			*/
 		}
 		
+		//Add all joints from configuration file, also pass configuration jointXML along
 		private function addAllJoints():void{
-			for each (var joint:XML in configXML.objects.joint){
-				registerObjectAtPoint(new Point(joint.body1.x, joint.body1.y), true);
-				registerObjectAtPoint(new Point(joint.body2.x, joint.body2.y), true);
-				//Maybe depending on the config... we can use different functions
-				addJoint(joint.type);
+			for each (var jointXML:XML in configXML.objects.joint){
+				registerObjectAtPoint(new Point(jointXML.body1.x, jointXML.body1.y), true);
+				registerObjectAtPoint(new Point(jointXML.body2.x, jointXML.body2.y), true);
+				addJoint(jointXML.type, jointXML);
 			}
 		}
 		
-		public function addJoint(jointType:uint):void{
+		//Always make sure we have registered two points
+		public function addJoint(jointType:uint, jointXML:XML=null):void{
 			if(_bodies.length != 2){
 				_bodies = new Array();
 				return;
@@ -283,25 +242,22 @@ package common
 			//Switch to create different joint types
 			var result:Boolean = false;
 			switch(jointType){
-			case DISTANCE:
-				result = addDistanceJoint(body1, body2, point1, point2);
+			case Utilities.e_distanceJoint:
+				result = addDistanceJoint(body1, body2, point1, point2, jointXML);
 				break;
-			case PRISMATIC:
-				result = addPrismaticJoint(body1, body2, point1, point2);
+			case Utilities.e_prismaticJoint:
+				result = addPrismaticJoint(body1, body2, point1, point2, jointXML);
 				break;
-			case REVOLUTE:
-				result = addRevoluteJoint(body1, body2, point1, point2);
+			case Utilities.e_revoluteJoint:
+				result = addRevoluteJoint(body1, body2, point1, point2, jointXML);
 				break;
 			}
 			
-			if(result){
-				addJointToConfig(jointType, point1, point2);
-			}
-			
+			//Clear out bodies regardless of outcomes
 			_bodies = new Array();
 		}
 		
-		private function addDistanceJoint(body1:b2Body, body2:b2Body, point1:b2Vec2, point2:b2Vec2):Boolean{
+		private function addDistanceJoint(body1:b2Body, body2:b2Body, point1:b2Vec2, point2:b2Vec2, jointXML:XML=null):Boolean{
 			var joint:b2DistanceJointDef = new b2DistanceJointDef();
 			
 			if(body1 && body2 && body1 != body2){
@@ -314,28 +270,51 @@ package common
 			return false;
 		}
 		
-		private function addPrismaticJoint(body1:b2Body, body2:b2Body, point1:b2Vec2, point2:b2Vec2):Boolean{
+		private function addPrismaticJoint(body1:b2Body, body2:b2Body, point1:b2Vec2, point2:b2Vec2, jointXML:XML=null):Boolean{
 			var joint:b2PrismaticJointDef = new b2PrismaticJointDef();
 			
 			//Always draw from static to nonstatic...
-			//We might allow for body1 to be null, in which case, use world static body
 			if(body2){
+				//Axis is currently set as the normalized vector from our two points
 				var axis:b2Vec2 = new b2Vec2(point2.x, point2.y);
 				axis.Subtract(point1);
 				axis.Normalize();
 				
-				if(body1 == null || body1 === body2){
+				var anchor:b2Vec2 = new b2Vec2();
+				
+				if(body1 == null){
+					//If body1 isn't found, use world ground body
 					body1 = _state.the_world.GetGroundBody();
+					
+					//Also the anchor point should be where we placed the joint
+					anchor.x = point1.x;
+					anchor.y = point1.y;
+				}else{
+					//There's two bodies, we want the anchor point to be at the midpoint of the line we drew
+					anchor.x = (point2.x - point1.x)/2 + point1.x;
+					anchor.y = (point2.y - point1.y)/2 + point1.y;
 				}
 				
-				joint.Initialize(body1, body2, point1 , axis);
+				//If we have xml data loaded from the config file, then use that
+				//NO way to ensure correct values if the level was simulated....
+				if(jointXML){
+					axis.x = jointXML.axis.x;
+					axis.y = jointXML.axis.y;
+					
+					anchor.x = jointXML.anchor.x;
+					anchor.y = jointXML.anchor.y;
+				}
+				
+				//Initialize some sample values for now...
+				joint.Initialize(body1, body2, anchor, axis);
 				joint.enableMotor = true;
 				joint.enableLimit = true;
 				joint.maxMotorForce = 100 * body2.GetMass();
 				joint.motorSpeed = 10;
-				joint.upperTranslation = 20;
-				joint.lowerTranslation = -20;
+				joint.upperTranslation = 50;
+				joint.lowerTranslation = -50;
 				joint.collideConnected = true;
+				joint.userData = axis;
 				_state.the_world.CreateJoint(joint);	
 				return true;
 			}
@@ -343,23 +322,46 @@ package common
 			return false;
 		}
 		
-		private function addRevoluteJoint(body1:b2Body, body2:b2Body, point1:b2Vec2, point2:b2Vec2):Boolean{
+		private function addRevoluteJoint(body1:b2Body, body2:b2Body, point1:b2Vec2, point2:b2Vec2, jointXML:XML=null):Boolean{
 			var joint:b2RevoluteJointDef = new b2RevoluteJointDef();
 			
 			if(body2){
-				var point3:b2Vec2 = new b2Vec2();
-				point3.x = 300;
-				point3.y = 100;
-				
 				if(body1 == null || body1 === body2){
 					body1 = _state.the_world.GetGroundBody();
 				}
-				joint.Initialize(body1, body2, point1);
+				
+				var anchor:b2Vec2 = new b2Vec2();
+				anchor.x = point1.x;
+				anchor.y = point1.y;
+				
+				//Should we use body2 center?  This happens when we press and release inside one object
+				if(body1 === body2){
+					anchor.x = body2.GetWorldCenter().x;
+					anchor.y = body2.GetWorldCenter().y;
+				}
+				
+				//If we have xml data, use that
+				if(jointXML){
+					anchor.x = jointXML.anchor.x;
+					anchor.y = jointXML.anchor.y;
+				}
+				
+				//Compute distance of the center point to the center of our main object
+				var dist:b2Vec2 = new b2Vec2();
+				dist.x = body2.GetWorldCenter().x;
+				dist.y = body2.GetWorldCenter().x;
+				dist.Subtract(anchor);
+				
+				var distance:Number = dist.Length();
+				
+				joint.Initialize(body1, body2, anchor);
 				//joint.lowerAngle = 3.14/2; // -90 degrees
 				//joint.upperAngle = 0.25 * 3.14; // 45 degrees
 				//joint.enableLimit = true;
-				joint.maxMotorTorque = 10.0;
-				joint.motorSpeed = 10;
+				
+				//The mass and distance has to be in so that longer distances will still work...
+				joint.maxMotorTorque = 100.0 * body2.GetMass() * distance;
+				joint.motorSpeed = 100;
 				joint.enableMotor = true;
 
 				_state.the_world.CreateJoint(joint);	
@@ -367,16 +369,6 @@ package common
 			}
 			
 			return false;
-		}
-		
-		private function addJointToConfig(jointType:uint, point1:b2Vec2, point2:b2Vec2):void{
-			var xml:XML = new XML(<joint/>);
-			xml.type = jointType;
-			xml.body1.x = point1.x;
-			xml.body1.y = point1.y;
-			xml.body2.x = point2.x;
-			xml.body2.y = point2.y;
-			_config.push(xml);
 		}
 		
 		public function getItemCount():uint{

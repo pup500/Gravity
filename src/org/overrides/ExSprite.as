@@ -10,6 +10,8 @@ package org.overrides
 	
 	import flash.geom.Point;
 	
+	import common.Utilities;
+	
 	import org.flixel.*;
 	
 	/**
@@ -19,6 +21,7 @@ package org.overrides
 	public class ExSprite extends FlxSprite
 	{
 		public var name:String;
+		public var imageResource:String;
 		public var body:b2BodyDef;
 		public var shape:b2PolygonDef;
 		//public var shape:b2ShapeDef;
@@ -29,10 +32,11 @@ package org.overrides
 		
 		protected var _world:b2World;
 		
-		public function ExSprite(x:int=0, y:int=0, sprite:Class=null)
+		public function ExSprite(x:int=0, y:int=0, sprite:Class=null, resource:String="")
 		{
 			super(x, y, sprite);
 			name = "ExSprite";
+			imageResource = resource;
 			
 			body = new b2BodyDef();
 			body.position.Set(x, y);
@@ -284,7 +288,7 @@ package org.overrides
 			while(joints){
 				switch(joints.joint.GetType()){
 					//TODO:SEE IF THIS MAKES SENSE, can we put this anywhere else....
-					case 2://b2Joint.e_prismaticJoint:
+					case Utilities.e_prismaticJoint:
 						var jointRev:b2PrismaticJoint = joints.joint as b2PrismaticJoint;
 						trace("limit:" + jointRev.GetLowerLimit() + ", " + jointRev.GetUpperLimit() + " : " + jointRev.GetJointTranslation());
 						if(Math.abs(jointRev.GetJointTranslation() - jointRev.GetLowerLimit()) < .1){

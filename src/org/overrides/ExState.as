@@ -3,6 +3,7 @@ package org.overrides
 	import Box2D.Collision.*;
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
+	import org.flixel.FlxG;
 	
 	import flash.display.Sprite;
 	
@@ -30,6 +31,7 @@ package org.overrides
 			debug = false;
 			
 			_loaded = false;
+			debug_sprite = new Sprite();
 		}
 		
 		public function init():void{
@@ -40,7 +42,6 @@ package org.overrides
 		{
 			if(debug){
 				var debug_draw:b2DebugDraw = new b2DebugDraw();
-				debug_sprite = new Sprite();
 				addChild(debug_sprite);
 				debug_draw.SetSprite(debug_sprite);
 				debug_draw.SetDrawScale(1);
@@ -57,6 +58,10 @@ package org.overrides
 			the_world.Step(1/30, 10, 10);
 			
 			super.update();
+			
+			//For the physics....
+			debug_sprite.x = FlxG.scroll.x;
+			debug_sprite.y = FlxG.scroll.y;
 		}
 	}
 }
