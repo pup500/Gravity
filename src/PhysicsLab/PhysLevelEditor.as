@@ -47,6 +47,8 @@
 		[Embed(source="../data/editor/interface/help.png")] private var helpImg:Class;
 		[Embed(source="../data/editor/interface/fish-icon.png")] private var changeImg:Class;
 		
+		[Embed(source="../data/editor/interface/wood.png")] private var panelImg:Class;
+		
 		private var xmlMapLoader:XMLMap;
 		
 		private var files:Array;
@@ -274,7 +276,7 @@
 		}
 		
 		private function onPlayClick(event:MouseEvent):void{
-			//toggleWorldObjects();
+			run = !run;
 		}
 		
 		private function onEditClick(event:MouseEvent):void{
@@ -286,12 +288,7 @@
 		}
 		
 		private function onCopyClick(event:MouseEvent):void{
-			//var xml:XML = Utilities.CreateXMLRepresentation(the_world);
-			//copy(xml.toXMLString());
-			
 			copy(xmlMapLoader.createNewConfiguration());
-			
-			//copy(xmlMapLoader.getConfiguration());
 			FlxG.play(dinoSound);
 		}
 		
@@ -304,6 +301,15 @@
 			createGrid();
 			
 			iconPanel = new Sprite();
+			iconPanel.x = 0;
+			iconPanel.y = 0;
+			//iconPanel.width = 50;
+			//iconPanel.height = 430;
+			iconPanel.graphics.beginBitmapFill((new panelImg).bitmapData,null,false);
+			//iconPanel.graphics.beginFill(0xFFFFFF,1);
+			iconPanel.graphics.drawRect(3,55,80,370);
+			iconPanel.graphics.endFill();
+			
 			debugButton = createImageButton(physicsImg, 5, 60, "Debug", onPhysicsClick);
 			activeButton = createImageButton(activeImg, 5, 90, "Active", onActiveClick);
 			snapButton = createImageButton(snapImg, 5, 120, "Snap", onSnapClick);
@@ -314,7 +320,7 @@
 			killButton = createImageButton(killImg, 5, 270, "Remove", onKillClick);
 			joinButton = createImageButton(joinImg, 5, 310, "Join", onJoinClick);
 			breakButton = createImageButton(breakImg, 5, 350, "Break", onBreakClick);
-			//playButton = createImageButton(playImg, 5, 390, "Run", onPlayClick);
+			playButton = createImageButton(playImg, 5, 390, "Run", onPlayClick);
 			
 			copyButton = createImageButton(copyImg, 5, 430, "", onCopyClick);
 			helpButton = createImageButton(helpImg, 590, 430, "", onHelpClick);
@@ -439,6 +445,9 @@
 				return;
 			}
 			
+			//Put objects to sleep before it can do it's update if we aren't in run mode...
+			updateWorldObjects();
+			
 			super.update();
 			
 			//Grid
@@ -451,6 +460,7 @@
 			handleMouse();
 			
 			/*
+			//Commented out because some joints do not use the anchors the way regular distance joints do...
 			//If we want to add joints drawing...
 			if(jointsImage.visible){
 				jointsImage.graphics.clear();
@@ -478,11 +488,6 @@
 			if(FlxG.keys.justPressed("J")){
 				mode = mode != JOIN ? JOIN : BREAK;
 			}
-			
-			/*
-			if(FlxG.keys.justReleased("Z")) {
-				xmlMapLoader.undo();
-			}*/
 			
 			if(FlxG.keys.justPressed("I")){
 				active = !active;
@@ -518,7 +523,6 @@
 			
 			if(FlxG.keys.justPressed("F1")){
 				run = !run;
-				updateWorldObjects();
 			}
 		}
 		
@@ -557,7 +561,7 @@
 			joinButton.alpha = mode == JOIN ? 1 : .5;
 			breakButton.alpha = mode == BREAK ? 1 : .5;
 			killButton.alpha = mode == KILL ? 1 : .5;
-			//playButton.alpha = run ? 1 : .5;
+			playButton.alpha = run ? 1 : .5;
 			editButton.alpha = mode == EDIT ? 1 : .5;
 			helpButton.alpha = helpText.visible ? 1 : .5;
 			changeButton.alpha = mode == CHANGE ? 1 : .5;
