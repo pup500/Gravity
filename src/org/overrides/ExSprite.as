@@ -21,6 +21,8 @@ package org.overrides
 		public var name:String;
 		public var body:b2BodyDef;
 		public var shape:b2PolygonDef;
+		//public var shape:b2ShapeDef;
+		public var shapeDef:IPhysicsBody;
 		public var final_body:b2Body; //The physical representation in the Body2D b2World.
 		//public var final_shape:b2Shape; //Needs to be defined in order to destroy the physical representation.
 		public var impactPoint:b2ContactPoint;
@@ -227,10 +229,21 @@ package org.overrides
 		
 		//We're calling this outside the constructor because we need Flixel to define its sprite dimensions first in loadGraphic().
 		//TODO: Refactor. Can this go into the constructor somehow? Having to call it everytime you construct the an ExSprite sucks
-		public function initShape():void {
-			shape.SetAsBox(_bw/2, _bh/2); 
-			shape.friction = .5;
-			shape.density = 1;
+		public function initShape(shapeDefinition:IPhysicsBody=null):void {
+			//if (shapeDef)
+			//{
+				//shapeDef.DefineShape(width, height);
+				//shape = shapeDef.GetShapeDef();
+			//}
+			//else
+			//{
+				//shapeDef = new PolygonBody();
+				//shapeDef.DefineShape(width, height);
+				//shape = shapeDef.GetShapeDef();
+				shape.SetAsBox(_bw / 2, _bh / 2);
+				shape.friction = .5;
+				shape.density = 1;
+			//}
 		}
 		
 		//@desc Create the physical representation in the Box2D World.
