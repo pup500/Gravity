@@ -97,8 +97,20 @@ package common
 			//Should we figure out a better way for offset...
 			var shape:XML = configXML.objects.shape[0];
 			var offset:Point = new Point();
-			offset.x = point.x - shape.x;
-			offset.y = point.y - shape.y;
+			var min:Point = new Point(shape.x, shape.y);
+			var max:Point = new Point(shape.x, shape.y);
+			
+			for each(shape in configXML.objects.shape){
+				if(int(shape.x) < min.x) min.x = int(shape.x);
+				if(int(shape.y) < min.y) min.y = int(shape.y);
+				if(int(shape.x) > max.x) max.x = int(shape.x);
+				if(int(shape.y) > max.y) max.y = int(shape.y);
+			}
+			
+			//Offset is to make the midpoint of the whole object at the mouse coordinate
+			offset.x = point.x - (min.x + max.x)/2;
+			offset.y = point.y - (min.y + max.y)/2;
+			
 			
 			expBodyCount = getItemCount() + configXML.objects.shape.length();
 			
@@ -344,8 +356,8 @@ package common
 					anchor.y = point1.y;
 				}else{
 					//There's two bodies, we want the anchor point to be at the midpoint of the line we drew
-					anchor.x = (point2.x - point1.x)/2 + point1.x;
-					anchor.y = (point2.y - point1.y)/2 + point1.y;
+					anchor.x = (point2.x + point1.x)/2;
+					anchor.y = (point2.y + point1.y)/2;
 				}
 				
 				//If we have xml data loaded from the config file, then use that
