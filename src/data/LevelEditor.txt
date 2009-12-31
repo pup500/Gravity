@@ -13,4 +13,3 @@ data/tower-down.png
 data/diag.png
 data/objects/windmill.xml
 data/objects/piston.xml
-data/objects/level6.xml
