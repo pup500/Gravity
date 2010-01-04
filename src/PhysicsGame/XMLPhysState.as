@@ -70,7 +70,7 @@ package PhysicsGame
 			
 			//Create GravityObjects
 			for(var i:uint= 0; i < 8; i++){
-				_gravObjects.push(this.add(new GravityObject(the_world)));
+				_gravObjects.push(this.add(new AntiGravityObject(the_world)));
 				//don't create physical body, wait till bullet is shot.
 			}
 			
@@ -137,54 +137,14 @@ package PhysicsGame
 				if(bb.IsDynamic()){
 				//if(bb.GetUserData() && bb.GetUserData().name == "Player"){
 					for(var i:uint = 0; i < _gravObjects.length; i++){
-						var gObj:GravityObject = _gravObjects[i] as GravityObject;
 						
+						var gObj:GravityObject = _gravObjects[i] as GravityObject;
 						if(!gObj.exists) continue;
 						
-						var gMass:Number = gObj.mass;// Hack - use object's mass not physics mass because density = 0//gObj.final_body.m_mass;
-						var gPoint:Point = new Point(gObj.final_body.GetPosition().x, gObj.final_body.GetPosition().y);
-						var bbPoint:Point = new Point(bb.GetPosition().x, bb.GetPosition().y);
-						var dist:Point = gPoint.subtract(bbPoint);
-						var distSq:Number = dist.x * dist.x + dist.y * dist.y;
+						var impulse:b2Vec2 = gObj.GetGravityForce(bb);
 						
-						//For performance reasons....  assume force is 0 when distance is pretty far
-						if(distSq > 40000 ) continue;
-						
-						//This is a physics hack to stop adding gravity to objects when they are too close
-						//they aren't pulling anymore because of normal force
-						//if(distanceSq < 100) continue;
-						
-						var distance:Number = Math.sqrt(distSq);
-						var massProduct:Number = bb.GetMass() * gMass;
-						//var massProduct:Number = massedObj.getMass() * gravObj.getMass();	//_player.mass * gravObj.mass;
-						
-						var G:Number = 1; //gravitation constant
-						
-						var force:Number = G*(massProduct/distSq);
-						
-						trace("force: " + force);
-						//force = Math.log(force+1);
-						
-						if(force > 100) force = 100;
-						if(force < 0) force = 100;
-						//if(force < -100) force = -100;
-						
-						//trace(distance);
-						trace("mass: " + bb.GetMass());
-						trace("dist:" + distance + " force:" + force + " forx:" + force * (dist.x/distance) + " fory:" + force * (dist.y/distance));
-						
-						var impulse:b2Vec2 = new b2Vec2(force * (dist.x/distance), force * (dist.y/distance));
-						impulse.Multiply(bb.GetMass());
-						
-						trace("impulsex: " + impulse.x + ", " + impulse.y);
-						trace("impulsex: " + impulse.x /bb.GetMass() + ", " + impulse.y/bb.GetMass());
-						
-						//bb.ApplyImpulse(impulse,bb.GetWorldCenter());
-						
-						bb.ApplyForce(impulse,bb.GetWorldCenter());
-						
-						//massedObj.accel.x += ;//xDistance >= 0 ? xForce :-xForce;
-						//massedObj.accel.y += force * (yDistance/distance);//yDistance >= 0 ? yForce :-yForce;
+						if(impulse != null)
+							bb.ApplyForce(impulse,bb.GetWorldCenter());
 					}
 				}
 			}
