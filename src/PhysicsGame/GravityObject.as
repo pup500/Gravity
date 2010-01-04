@@ -151,6 +151,46 @@
 			super.render();
 			
 		}
+		
+		public function GetGravityForce(physBody:b2Body):b2Vec2
+		{
+			var gMass:Number = this.mass;// Hack - use object's mass not physics mass because density = 0//this.final_body.m_mass;
+			var gPoint:Point = new Point(this.final_body.GetPosition().x, this.final_body.GetPosition().y);
+			var physBodyPoint:Point = new Point(physBody.GetPosition().x, physBody.GetPosition().y);
+			var dist:Point = gPoint.subtract(physBodyPoint);
+			var distSq:Number = dist.x * dist.x + dist.y * dist.y;
+			
+			//For performance reasons....  assume force is 0 when distance is pretty far
+			if(distSq > 40000 ) return new b2Vec2();
+			
+			//This is a physics hack to stop adding gravity to objects when they are too close
+			//they aren't pulling anymore because of normal force
+			//if(distanceSq < 100) continue;
+			
+			var distance:Number = Math.sqrt(distSq);
+			var massProduct:Number = physBody.GetMass() * gMass;
+			
+			var G:Number = 1; //gravitation constant
+			
+			var force:Number = G*(massProduct/distSq);
+			
+			trace("force: " + force);
+			
+			if(force > 100) force = 100;
+			if(force < 0) force = 100;
+			
+			//trace(distance);
+			trace("mass: " + physBody.GetMass());
+			trace("dist:" + distance + " force:" + force + " forx:" + force * (dist.x/distance) + " fory:" + force * (dist.y/distance));
+			
+			var impulse:b2Vec2 = new b2Vec2(force * (dist.x/distance), force * (dist.y/distance));
+			impulse.Multiply(physBody.GetMass());
+			
+			trace("impulsex: " + impulse.x + ", " + impulse.y);
+			trace("impulsex: " + impulse.x /physBody.GetMass() + ", " + impulse.y/physBody.GetMass());
+			
+			return impulse;
+		}
 	}
 
 }
