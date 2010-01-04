@@ -28,9 +28,12 @@ package common
 		//private var _undo:Array;
 		
 		private var _bodies:Array;
-		private var number:uint;
-		private var initialNumber:uint;
+		//private var number:uint;
+		private var expBodyCount:uint;
 		private var _loaded:Boolean;
+		
+		//private var numXMLObjs:uint;
+		//private var totXMLObjs:uint;
 		
 		public function XMLMap(state:ExState)
 		{
@@ -40,8 +43,11 @@ package common
 			
 			_bodies = new Array();
 			
-			number = 0;
-			initialNumber = 0;
+			//number = 0;
+			//Get the initial world count..
+			//expBodyCount = getItemCount();
+			
+			trace("initial count first" + expBodyCount);
 			_loaded = false;
 		}
 
@@ -57,7 +63,10 @@ package common
 		private function onLoadXMLConfigComplete(event:Event):void{
 			configXML = new XML(event.target.data);
 			
-			initialNumber = configXML.objects.shape.length();
+			expBodyCount = getItemCount() + configXML.objects.shape.length();
+			
+			trace("initialnum: " + expBodyCount);
+			trace("count:" + getItemCount());
 			
 			for each(var shape:XML in configXML.objects.shape){
 				addXMLObject(shape);
@@ -69,6 +78,68 @@ package common
 			_start.y = configXML.points.start.y;
 			_end.x = configXML.points.end.x;
 			_end.y = configXML.points.end.y;
+		}
+		
+		//Adds a XML file that contains the resource we want...
+		public function addObjectsInXMLFile(file:String, offset:Point):void{
+			var loader:URLLoader = new URLLoader();
+			loader.addEventListener(Event.COMPLETE, 
+				function(e:Event):void{
+					onAddObjectsInXMLComplete(e,offset)
+				});
+			//loader.addEventListener(IOErrorEvent.IO_ERROR, onLoadError);
+			loader.load(new URLRequest(file));
+		}
+		
+		private function onAddObjectsInXMLComplete(event:Event, point:Point):void{
+			configXML = new XML(event.target.data);
+			
+			//Save the body count so that we can check when we are done
+			expBodyCount = getItemCount() + configXML.objects.shape.length();
+			
+			//Should we figure out a better way for offset...
+			var shape:XML = configXML.objects.shape[0];
+			var offset:Point = new Point();
+			var min:Point = new Point(shape.x, shape.y);
+			var max:Point = new Point(shape.x, shape.y);
+			
+			for each(shape in configXML.objects.shape){
+				if(int(shape.x) < min.x) min.x = int(shape.x);
+				if(int(shape.y) < min.y) min.y = int(shape.y);
+				if(int(shape.x) > max.x) max.x = int(shape.x);
+				if(int(shape.y) > max.y) max.y = int(shape.y);
+			}
+			
+			//Offset is to make the midpoint of the whole object at the mouse coordinate
+			offset.x = point.x - (min.x + max.x)/2;
+			offset.y = point.y - (min.y + max.y)/2;
+			
+			//Or we can make offset at the top-left corner...
+			//offset.x = point.x - min.x;
+			//offset.y = point.y - min.y;
+			
+			
+			for each(shape in configXML.objects.shape){
+				shape.x = int(shape.x) + offset.x;
+		    	shape.y = int(shape.y) + offset.y;
+			}
+			
+			for each(var joint:XML in configXML.objects.joint){
+				joint.body1.x = int(joint.body1.x) + offset.x;
+		    	joint.body1.y = int(joint.body1.y) + offset.y;
+		    	joint.body2.x = int(joint.body2.x) + offset.x;
+		    	joint.body2.y = int(joint.body2.y) + offset.y;
+		    	
+		    	//Don't offset axis, that's a normalized vector...
+		    	//joint.axis.x = int(joint.axis.x) + offset.x;
+		    	//joint.axis.y = int(joint.axis.y) + offset.y;
+		    	joint.anchor.x = int(joint.anchor.x) + offset.x;
+		    	joint.anchor.y = int(joint.anchor.y) + offset.y;
+			}
+			
+			for each(shape in configXML.objects.shape){
+				addXMLObject(shape);
+			}
 		}
 
 		//Load the xml config object at the specified coordinates
@@ -101,31 +172,33 @@ package common
 		    b2.pixels = bitmapData;
 		    //b2.initShape();
 		    b2.initShapeFromSprite();
+		    
+		    //You have to put rotation first before you can create it...
+		    if(shape.angle != 0){
+				b2.body.angle = shape.angle;
+			}
+			
 			b2.createPhysBody(_state.the_world);
 			
 			if(shape.isStatic == "true"){
 				b2.final_body.SetStatic();
 			}
 			
-			/*
-			if(shape.type == "static"){
-				b2.final_body.SetStatic();
-			}*/
-			
-			if(shape.angle != 0){
-				b2.body.angle = shape.angle;
-			}
-			
 			_state.add(b2);
     		
-    		number++;
+    		//number++;
     		
+    		trace("itemcount" + getItemCount());
+    		trace("expbody" + expBodyCount);
     		//We need to add the joints....
     		//but can only do that after all bodies are loaded...
-    		if(!_loaded && (number == initialNumber)){
-    			_loaded = true;
+    		
+    		if(getItemCount() == expBodyCount){
     			addAllJoints();
-	    		_state.init();
+    			if(!_loaded){
+    				_loaded = true;
+    				_state.init();
+    			}
     		}
 		}
 		
@@ -187,8 +260,6 @@ package common
 				if(bSprite){
 					bSprite.destroyPhysBody();
 					bSprite.kill();
-						
-					number--;
 				}
 			}
 		}
@@ -204,7 +275,7 @@ package common
 		}
 		
 		//Registers a point and see if we get a body from it.  Null bodies will be checked during add joint
-		public function registerObjectAtPoint(point:Point, includeStatic:Boolean=false, allowSameBody:Boolean=false):void{
+		public function registerObjectAtPoint(point:Point, includeStatic:Boolean=false):void{
 			var b2:b2Body = Utilities.GetBodyAtMouse(_state.the_world, point, includeStatic);
 			
 			var vec:b2Vec2 = new b2Vec2();
@@ -260,7 +331,12 @@ package common
 		private function addDistanceJoint(body1:b2Body, body2:b2Body, point1:b2Vec2, point2:b2Vec2, jointXML:XML=null):Boolean{
 			var joint:b2DistanceJointDef = new b2DistanceJointDef();
 			
-			if(body1 && body2 && body1 != body2){
+			if(body2){
+				if(body1 == null || body1 == body2){
+					//If body1 isn't found, use world ground body
+					body1 = _state.the_world.GetGroundBody();
+				}
+				
 				joint.Initialize(body1, body2, point1, point2);
 				joint.collideConnected = true;
 				_state.the_world.CreateJoint(joint);	
@@ -278,7 +354,6 @@ package common
 				//Axis is currently set as the normalized vector from our two points
 				var axis:b2Vec2 = new b2Vec2(point2.x, point2.y);
 				axis.Subtract(point1);
-				axis.Normalize();
 				
 				var anchor:b2Vec2 = new b2Vec2();
 				
@@ -291,8 +366,8 @@ package common
 					anchor.y = point1.y;
 				}else{
 					//There's two bodies, we want the anchor point to be at the midpoint of the line we drew
-					anchor.x = (point2.x - point1.x)/2 + point1.x;
-					anchor.y = (point2.y - point1.y)/2 + point1.y;
+					anchor.x = (point2.x + point1.x)/2;
+					anchor.y = (point2.y + point1.y)/2;
 				}
 				
 				//If we have xml data loaded from the config file, then use that
@@ -304,6 +379,9 @@ package common
 					anchor.x = jointXML.anchor.x;
 					anchor.y = jointXML.anchor.y;
 				}
+				
+				//Axis should be normalized
+				axis.Normalize();
 				
 				//Initialize some sample values for now...
 				joint.Initialize(body1, body2, anchor, axis);
@@ -372,7 +450,8 @@ package common
 		}
 		
 		public function getItemCount():uint{
-			return number;
+			return _state.the_world.GetBodyCount();
+			//return number;
 		}
 	}
 }

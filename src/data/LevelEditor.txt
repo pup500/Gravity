@@ -11,3 +11,5 @@ data/tritest.png
 data/angled.png
 data/tower-down.png
 data/diag.png
+data/objects/windmill.xml
+data/objects/piston.xml

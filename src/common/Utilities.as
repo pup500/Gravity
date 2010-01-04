@@ -115,10 +115,6 @@ package common
 			var point1:b2Vec2 = new b2Vec2();
 			var point2:b2Vec2 = new b2Vec2();
 			
-			//We might need to get the bodies and pull the coordinates
-			//That will ensure that we get the right bodies
-			//But our anchors are going to be messed up...
-			//No way to know if the positions changed and what we can do about it...
 			point1.x = j.GetAnchor1().x;
 			point1.y = j.GetAnchor1().y;
 			point2.x = j.GetAnchor2().x;

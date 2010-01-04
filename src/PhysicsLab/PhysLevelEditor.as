@@ -6,8 +6,8 @@
 	
 	import PhysicsGame.LevelSelectMenu;
 	
-	import common.XMLMap;
 	import common.Utilities;
+	import common.XMLMap;
 	
 	import flash.display.*;
 	import flash.events.Event;
@@ -48,6 +48,7 @@
 		[Embed(source="../data/editor/interface/fish-icon.png")] private var changeImg:Class;
 		
 		[Embed(source="../data/editor/interface/wood.png")] private var panelImg:Class;
+		//[Embed(source="../data/editor/interface/box.png")] private var boxImg:Class;
 		
 		private var xmlMapLoader:XMLMap;
 		
@@ -360,8 +361,8 @@
 		private function setInstructions():void{
 			helpText = new TextField();
 			helpText.selectable = false;
-			helpText.width = 440;
-            helpText.height = 390;
+			helpText.width = 448;
+            helpText.height = 400;
             helpText.x = (640-helpText.width)/2;
 			helpText.y = (480-helpText.height)/2;
             helpText.background = true;
@@ -386,16 +387,17 @@
 			helpText.appendText("\n");
 			helpText.appendText(" SHIFT - hides TOOLBAR panel\n");
 			helpText.appendText(" U - toggles DEBUG PHYSICS bodies for joints and bounding box issues\n");
-			helpText.appendText(" F1 - toggles simulation.  Can lose some joint data if bodies moved\n");
+			helpText.appendText(" F1 - toggles simulation.\n");
 			helpText.appendText(" SHIFT CLICK - ADD/REMOVE the selected image asset at MOUSE coordinates\n");
 			helpText.appendText("\n");
 			helpText.appendText("Buttons:\n");
+			helpText.appendText(" CHANGE BUTTON - sets the ACTIVE/STATIC flag of created objects with SHIFT CLICK\n");
 			helpText.appendText(" ADD BUTTON - sets the ADD mode.  SHIFT CLICK to add objects\n");
 			helpText.appendText(" REMOVE BUTTON - sets the REMOVE mode.  SHIFT CLICK to remove objects\n");
 			helpText.appendText(" JOIN BUTTON - sets the JOIN mode.  SHIFT CLICK on one body and drag to another\n");
 			helpText.appendText(" BREAK BUTTON - sets the BREAK mode.  SHIFT CLICK on a body to remove all joints\n");
 			helpText.appendText(" COPY BUTTON - copies level settings.  You paste from clipboard to new file\n");
-			helpText.appendText(" RUN BUTTON - toggles simulation.  Can lose some joint data if bodies moved\n");
+			helpText.appendText(" RUN BUTTON - toggles simulation.\n");
 			helpText.appendText("\n");
 			helpText.appendText("QUIT:\n");
 			helpText.appendText(" SHIFT ESC - QUIT to the level select menu\n");
@@ -437,6 +439,16 @@
 		
 		private function setPreviewImg(imgFile:String):void{
 			trace(imgFile);
+			trace(imgFile.lastIndexOf(".xml"));
+			if(imgFile.lastIndexOf(".xml") >= 0){
+				//var bitmapData:BitmapData = (new boxImg).bitmapData;
+			 	assetImage.graphics.clear();
+			 	//assetImage.graphics.beginBitmapFill(bitmapData);
+			 	//assetImage.graphics.drawRect(0,0,bitmapData.width,bitmapData.height);
+			 	//assetImage.graphics.endFill();
+				return;
+			}
+			
 			var loader:Loader = new Loader();
     		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onSetPreviewComplete);
     		loader.load(new URLRequest(imgFile));
@@ -716,9 +728,7 @@
 				if(mode == JOIN && drawingLine){
 					line.visible = false;
 					drawingLine = false;
-					//Revolute joints can be added to onself, the effect is that it connects to the world...
-					//Technically, prismatic ones can too, but we want the distance...
-					xmlMapLoader.registerObjectAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true, jointType == Utilities.e_revoluteJoint);
+					xmlMapLoader.registerObjectAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true);
 					
 					xmlMapLoader.addJoint(jointType);
 				}
@@ -745,14 +755,22 @@
 		}
 		
 		private function addObject(point:Point):void{
-			var shape:XML = new XML(<shape/>);
-			shape.file = files[index];
-			shape.isStatic = !active;
-			shape.angle = 0;
-			shape.x = point.x;
-			shape.y = point.y;
-			shape.contour = "";
-			xmlMapLoader.addXMLObject(shape, true);
+			
+			var file:String = files[index] as String;
+			
+			if(file.lastIndexOf(".xml") >= 0){
+				xmlMapLoader.addObjectsInXMLFile(file, point);
+			}
+			else{
+				var shape:XML = new XML(<shape/>);
+				shape.file = files[index];
+				shape.isStatic = !active;
+				shape.angle = 0;
+				shape.x = point.x;
+				shape.y = point.y;
+				shape.contour = "";
+				xmlMapLoader.addXMLObject(shape, true);
+			}
 		}
 		
 		private function onStart(point:Point):void{
