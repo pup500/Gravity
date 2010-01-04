@@ -14,6 +14,8 @@ package org.overrides
 	
 	import org.flixel.*;
 	
+	import PhysicsGame.IPhysicsBody;
+	
 	/**
 	 * ...
 	 * @author Norman
