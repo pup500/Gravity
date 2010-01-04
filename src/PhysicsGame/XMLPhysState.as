@@ -141,10 +141,9 @@ package PhysicsGame
 						var gObj:GravityObject = _gravObjects[i] as GravityObject;
 						if(!gObj.exists) continue;
 						
-						var impulse:b2Vec2 = gObj.GetGravityForce(bb);
+						var force:b2Vec2 = gObj.GetGravityForce(bb);
 						
-						if(impulse != null)
-							bb.ApplyForce(impulse,bb.GetWorldCenter());
+						bb.ApplyForce(force,bb.GetWorldCenter());
 					}
 				}
 			}
