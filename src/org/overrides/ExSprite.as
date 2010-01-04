@@ -262,6 +262,7 @@ package org.overrides
 			final_body.SetUserData(this);
 		}
 		
+		//TODO override FlxCore.destroy() instead of using this as the public function.
 		public function destroyPhysBody():void
 		{
 			if(exists){

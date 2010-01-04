@@ -57,7 +57,6 @@
 			_startLosingMass = false;
 			
 			addAnimation("idle",[0, 1, 2, 3], 12);
-			//addAnimation("poof",[2, 3, 4], 50, false);
 			
 			_coolDown = new Timer(1000,1);
 			_coolDown.addEventListener(TimerEvent.TIMER_COMPLETE, onTimer);
