@@ -36,16 +36,16 @@
 		
 		[Embed(source="../data/editor/interface/connect-icon.png")] private var joinImg:Class;
 		[Embed(source="../data/editor/interface/disconnect-icon.png")] private var breakImg:Class;
-		[Embed(source="../data/editor/interface/gas-soldier-icon.png")] private var killImg:Class;
-		[Embed(source="../data/editor/interface/mosu-icon.png")] private var editImg:Class;
+		[Embed(source="../data/editor/interface/delete.png")] private var killImg:Class;
+		[Embed(source="../data/editor/interface/add.png")] private var editImg:Class;
 		[Embed(source="../data/editor/interface/save.png")] private var copyImg:Class;
-		[Embed(source="../data/editor/interface/pig-icon.png")] private var gridImg:Class;
+		[Embed(source="../data/editor/interface/grid.jpg")] private var gridImg:Class;
 		[Embed(source="../data/editor/interface/elephant-icon.png")] private var activeImg:Class;
-		[Embed(source="../data/editor/interface/sheep-icon.png")] private var snapImg:Class;
+		[Embed(source="../data/editor/interface/snap.jpg")] private var snapImg:Class;
 		[Embed(source="../data/editor/interface/frog-icon.png")] private var physicsImg:Class;
 		[Embed(source="../data/editor/interface/mammoth-icon.png")] private var playImg:Class;
 		[Embed(source="../data/editor/interface/help.png")] private var helpImg:Class;
-		[Embed(source="../data/editor/interface/fish-icon.png")] private var changeImg:Class;
+		[Embed(source="../data/editor/interface/change.png")] private var changeImg:Class;
 		
 		[Embed(source="../data/editor/interface/wood.png")] private var panelImg:Class;
 		//[Embed(source="../data/editor/interface/box.png")] private var boxImg:Class;
@@ -153,6 +153,11 @@
 			loadAssetList("data/LevelEditor.txt");
 			
 			createHUD();
+			
+			//IDEA:
+			//Layers are going to be the specification in exsprite, add that when we add an object
+			//Sprites are sensors with no interactions
+			//Sensor objects are sensors with script xml file...
 		}
 		
 		override protected function initBox2DDebugRendering():void
