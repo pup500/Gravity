@@ -36,25 +36,23 @@
 		
 		[Embed(source="../data/editor/interface/connect-icon.png")] private var joinImg:Class;
 		[Embed(source="../data/editor/interface/disconnect-icon.png")] private var breakImg:Class;
-		[Embed(source="../data/editor/interface/gas-soldier-icon.png")] private var killImg:Class;
-		[Embed(source="../data/editor/interface/mosu-icon.png")] private var editImg:Class;
+		[Embed(source="../data/editor/interface/delete.png")] private var killImg:Class;
+		[Embed(source="../data/editor/interface/add.png")] private var editImg:Class;
 		[Embed(source="../data/editor/interface/save.png")] private var copyImg:Class;
-		[Embed(source="../data/editor/interface/pig-icon.png")] private var gridImg:Class;
+		[Embed(source="../data/editor/interface/grid.jpg")] private var gridImg:Class;
 		[Embed(source="../data/editor/interface/elephant-icon.png")] private var activeImg:Class;
-		[Embed(source="../data/editor/interface/sheep-icon.png")] private var snapImg:Class;
+		[Embed(source="../data/editor/interface/snap.jpg")] private var snapImg:Class;
 		[Embed(source="../data/editor/interface/frog-icon.png")] private var physicsImg:Class;
 		[Embed(source="../data/editor/interface/mammoth-icon.png")] private var playImg:Class;
 		[Embed(source="../data/editor/interface/help.png")] private var helpImg:Class;
-		[Embed(source="../data/editor/interface/fish-icon.png")] private var changeImg:Class;
-		
-		[Embed(source="../data/editor/interface/wood.png")] private var panelImg:Class;
-		//[Embed(source="../data/editor/interface/box.png")] private var boxImg:Class;
+		[Embed(source="../data/editor/interface/change.png")] private var changeImg:Class;
 		
 		private var xmlMapLoader:XMLMap;
 		
 		private var files:Array;
 		private var index:int;
 		private var lastIndex:int;
+		private var layer:uint;
 		
 		
 		private var mode:uint;
@@ -83,7 +81,7 @@
 		
 		private var textValue:String;
 		
-		private var iconPanel:Sprite;
+		private var actionsPanel:Sprite;
 		private var joinButton:Sprite;
 		private var breakButton:Sprite;
 		private var killButton:Sprite;
@@ -92,6 +90,7 @@
 		private var playButton:Sprite;
 		private var changeButton:Sprite;
 			
+		private var optionsPanel:Sprite;
 		private var gridButton:Sprite;
 		private var snapButton:Sprite;
 		private var activeButton:Sprite;
@@ -138,6 +137,7 @@
 			//box = new FlxSprite(0,0);
 			//add(box);
 			startPoint = new Point();
+			layer = 0;
 			
 			line = new Shape();
 			addChild(line);
@@ -153,6 +153,11 @@
 			loadAssetList("data/LevelEditor.txt");
 			
 			createHUD();
+			
+			//IDEA:
+			//Layers are going to be the specification in exsprite, add that when we add an object
+			//Sprites are sensors with no interactions
+			//Sensor objects are sensors with script xml file...
 		}
 		
 		override protected function initBox2DDebugRendering():void
@@ -224,7 +229,7 @@
 			addChild(grid);
 		}
 		
-		private function createImageButton(Graphic:Class, x:uint=0, y:uint=0, label:String="", onClick:Function=null):Sprite{
+		private function createImageButton(Graphic:Class, x:uint=0, y:uint=0, panel:Sprite=null, label:String=null, onClick:Function=null):Sprite{
 			var bitmap:Bitmap = new Graphic;
 			
 			var sprite:Sprite = new Sprite();
@@ -234,16 +239,20 @@
 			sprite.x = x;
 			sprite.y = y;
 			
-			var tf:TextField = new TextField();
-			tf.text = label;
-			tf.x = bitmap.bitmapData.width;
-			tf.y = 10;
-			
-			sprite.addChild(tf);
+			if(label){
+				var tf:TextField = new TextField();
+				tf.selectable = false;
+				tf.text = label;
+				tf.x = bitmap.bitmapData.width;
+				tf.y = 10;
+				
+				sprite.addChild(tf);
+			}
 			
 			sprite.addEventListener(MouseEvent.MOUSE_DOWN, onClick);
 			
-			iconPanel.addChild(sprite);
+			if(panel)
+				panel.addChild(sprite);
 			
 			return sprite;
 		}
@@ -297,36 +306,61 @@
 			helpText.visible = !helpText.visible;
 		}
 		
+		private function createActionsPanel():void{
+			actionsPanel = new Sprite();
+			actionsPanel.x = 5;
+			actionsPanel.y = 30;
+			actionsPanel.graphics.beginFill(0x888888,1);
+			actionsPanel.graphics.lineStyle(2,0x000000,1);
+			actionsPanel.graphics.drawRoundRect(0,0,85,250,10,10);//drawRect(5,185,80,240);
+			actionsPanel.graphics.endFill();
+			
+			changeButton = createImageButton(changeImg, 5, 10, actionsPanel, "Change", onChangeClick);
+			editButton = createImageButton(editImg, 5, 50, actionsPanel, "Add", onEditClick);
+			killButton = createImageButton(killImg, 5, 90, actionsPanel, "Remove", onKillClick);
+			joinButton = createImageButton(joinImg, 5, 130, actionsPanel, "Join", onJoinClick);
+			breakButton = createImageButton(breakImg, 5, 170, actionsPanel, "Break", onBreakClick);
+			playButton = createImageButton(playImg, 5, 210, actionsPanel, "Run", onPlayClick);
+			
+			copyButton = createImageButton(copyImg, 5, 400, actionsPanel, null, onCopyClick);
+			helpButton = createImageButton(helpImg, 590, 400, actionsPanel, null, onHelpClick);
+			
+			addChild(actionsPanel);
+			
+			statusText = new TextField;
+			statusText.background = true;
+			statusText.border = true;
+			statusText.selectable = false;
+			statusText.x = 100;
+			statusText.y = 418;
+			statusText.height = 16;
+			statusText.width = 489;
+			actionsPanel.addChild(statusText);
+		}
+		
+		private function createOptionsPanel():void{
+			optionsPanel = new Sprite();
+			optionsPanel.x = 550;
+			optionsPanel.y = 30;
+			optionsPanel.graphics.beginFill(0x888888,1);
+			optionsPanel.graphics.lineStyle(2,0x000000,1);
+			optionsPanel.graphics.drawRoundRect(0,0,85,180,10,10);//drawRect(5,25,80,140);
+			optionsPanel.graphics.endFill();
+			
+			debugButton = createImageButton(physicsImg, 5, 10, optionsPanel, "Debug", onPhysicsClick);
+			activeButton = createImageButton(activeImg, 5, 50, optionsPanel, "Active", onActiveClick);
+			snapButton = createImageButton(snapImg, 5, 90, optionsPanel, "Snap", onSnapClick);
+			gridButton = createImageButton(gridImg, 5, 130, optionsPanel, "Grid", onGridClick);
+			
+			addChild(optionsPanel);
+		}
+		
 		private function createHUD():void{
 			
 			createGrid();
 			
-			iconPanel = new Sprite();
-			iconPanel.x = 0;
-			iconPanel.y = 0;
-			//iconPanel.width = 50;
-			//iconPanel.height = 430;
-			iconPanel.graphics.beginBitmapFill((new panelImg).bitmapData,null,false);
-			//iconPanel.graphics.beginFill(0xFFFFFF,1);
-			iconPanel.graphics.drawRect(3,55,80,370);
-			iconPanel.graphics.endFill();
-			
-			debugButton = createImageButton(physicsImg, 5, 60, "Debug", onPhysicsClick);
-			activeButton = createImageButton(activeImg, 5, 90, "Active", onActiveClick);
-			snapButton = createImageButton(snapImg, 5, 120, "Snap", onSnapClick);
-			gridButton = createImageButton(gridImg, 5, 150, "Grid", onGridClick);
-			
-			changeButton = createImageButton(changeImg, 5, 190, "Change", onChangeClick);
-			editButton = createImageButton(editImg, 5, 230, "Add", onEditClick);
-			killButton = createImageButton(killImg, 5, 270, "Remove", onKillClick);
-			joinButton = createImageButton(joinImg, 5, 310, "Join", onJoinClick);
-			breakButton = createImageButton(breakImg, 5, 350, "Break", onBreakClick);
-			playButton = createImageButton(playImg, 5, 390, "Run", onPlayClick);
-			
-			copyButton = createImageButton(copyImg, 5, 430, "", onCopyClick);
-			helpButton = createImageButton(helpImg, 590, 430, "", onHelpClick);
-			
-			addChild(iconPanel);
+			createOptionsPanel();
+			createActionsPanel();
 			
 			//Add preview shape
 			addChild(assetImage = new Shape());
@@ -334,24 +368,14 @@
 			//Add help instructions
 			setInstructions();
 			
-			statusText = new TextField;
-			statusText.background = true;
-			statusText.border = true;
-			statusText.selectable = false;
-			statusText.x = 100;
-			statusText.y = 448;
-			statusText.height = 16;
-			statusText.width = 489;
-			iconPanel.addChild(statusText);
-			
 			modeText = new TextField;
 			modeText.background = true;
 			modeText.border = true;
 			modeText.selectable = false;
-			modeText.x = 100;
+			modeText.x = 5;
 			modeText.y = 5;
 			modeText.height = 16;
-			modeText.width = 489;
+			modeText.width = 630;
 			addChild(modeText);
 
 			//textField.type = TextFieldType.INPUT;
@@ -520,7 +544,8 @@
 				active = !active;
 			}
 			
-			iconPanel.visible = !FlxG.keys.SHIFT;
+			actionsPanel.visible = !FlxG.keys.SHIFT;
+			optionsPanel.visible = !FlxG.keys.SHIFT;
 			
 			if(FlxG.keys.justPressed("H")){
 				modeText.visible = !modeText.visible;
@@ -578,6 +603,15 @@
 			
 			if(lastIndex != index)
 				setPreviewImg(files[index]);
+				
+			
+			if(FlxG.keys.justPressed("Z")){
+				layer = 0;
+			}
+			
+			if(FlxG.keys.justPressed("X")){
+				layer = 1;
+			}
 		}
 		
 		private function handleMode():void{
@@ -603,12 +637,15 @@
 			//From Utilities
 			var jointTypes:Array = ["UNKNOWN", "REVOLUTE", "PRISMATIC", "DISTANCE", "PULLEY", "MOUSE", "GEAR", "LINE"];
 			
+			var layerTypes:Array = ["BACKGROUND", "FOREGROUND"];
+			
 			var status:Array = [
 				itemCount,
 				action,
 				active ? "ACTIVE" : "STATIC",
 				snapToGrid ? "SNAP" : "FREE",
 				"JOINT: " + jointTypes[jointType],
+				"LAYER: " + layerTypes[layer],
 				mouseCoord];
 			
 			modeText.text = status.join(" | ");

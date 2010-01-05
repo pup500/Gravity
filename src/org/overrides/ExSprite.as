@@ -8,11 +8,13 @@ package org.overrides
 	import Box2D.Dynamics.Joints.b2JointEdge;
 	import Box2D.Dynamics.Joints.b2PrismaticJoint;
 	
-	import flash.geom.Point;
-	
 	import common.Utilities;
 	
+	import flash.geom.Point;
+	
 	import org.flixel.*;
+	
+	import PhysicsGame.IPhysicsBody;
 	
 	/**
 	 * ...
@@ -22,6 +24,8 @@ package org.overrides
 	{
 		public var name:String;
 		public var imageResource:String;
+		public var layer:uint;
+		
 		public var body:b2BodyDef;
 		public var shape:b2PolygonDef;
 		//public var shape:b2ShapeDef;
