@@ -28,7 +28,7 @@
 			super.height = Height;
 			Trigger = triggerName;
 			_triggered = false;
-			//So only player collides with sensors.
+			//So only player collides with sensors. Without the if statements in SetImpactPoint() it'll still collide with world object that aren't assigned a category..
 			shape.filter.maskBits = 0x0001;
 			shape.isSensor = true;
 			
