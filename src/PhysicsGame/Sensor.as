@@ -28,7 +28,7 @@
 			super.height = Height;
 			Trigger = triggerName;
 			_triggered = false;
-			//So only playe collides with sensors.
+			//So only player collides with sensors.
 			shape.filter.maskBits = 0x0001;
 			shape.isSensor = true;
 			
@@ -54,15 +54,21 @@
 			
 			if (_triggered)
 			{
-				trace("Sensed by sensor.as");
-				for each(var event:IEvent in _events)
-				{
-					event.startEvent();
-				}
-				_triggered = false;
+				playEvents();
 			}
 		}
 		
+		protected function playEvents():void
+		{
+			//trace("Sensed by sensor.as");
+			for each(var event:IEvent in _events)
+			{
+				event.startEvent();
+			}
+			_triggered = false;
+		}
+		
+		//TODO: Can we use shape.filter to make collisions happen exclusively with the Player? If I eliminate these if statements, world objects will collide with the end level sensor.
 		override public function setImpactPoint(point:b2ContactPoint):void{
 			super.setImpactPoint(point);
 			
