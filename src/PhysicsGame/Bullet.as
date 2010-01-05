@@ -34,8 +34,9 @@
 			initShape();
 			shape.friction = 1;
 			//Make this part of group -2, and do not collide with other in the same negative group...
+			//So player does not collide with bullets
 			shape.filter.groupIndex = -2;
-			shape.filter.categoryBits = 0x0001;
+			shape.filter.categoryBits = 0x0002;
 			name = "Bullet";
 			
 			_world = world; //For use when we shoot.

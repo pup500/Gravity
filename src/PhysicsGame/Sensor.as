@@ -28,7 +28,8 @@
 			super.height = Height;
 			Trigger = triggerName;
 			_triggered = false;
-			
+			//So only playe collides with sensors.
+			shape.filter.maskBits = 0x0001;
 			shape.isSensor = true;
 			
 			initShape();

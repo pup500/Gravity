@@ -49,9 +49,12 @@ package PhysicsGame
 			initShape();
 			shape.friction = .5;
 			//shape.restitution = .5;
-			//Make this part of group -2, and do not collide with other in the same negative group...
-			shape.filter.groupIndex = -2;
 			
+			//Make this part of group -2, and do not collide with other in the same negative group...
+			//So player does not collide with bullets
+			shape.filter.groupIndex = -2;
+			//So only playe collides with sensors.
+			shape.filter.categoryBits = 0x0001;
 			name = "Player";
 			
 			_restart = 0;
