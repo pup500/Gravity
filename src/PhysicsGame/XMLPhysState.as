@@ -103,16 +103,25 @@ package PhysicsGame
 		
 		public function addEndPoint():void{
 			var end:Point = xmlMapLoader.getEndPoint();
-			var body:ExSprite = new ExSprite(end.x, end.y, endPoint);
-			body.name = "end";
-			body.shape.isSensor = true;
-			body.initShape();
+			
+			var body:Sensor = new Sensor(end.x, end.y);
+			body.loadGraphic(endPoint);
 			body.createPhysBody(the_world);
-			body.final_body.SetStatic();
-			body.final_body.AllowSleeping(false);
-			body.final_body.SetFixedRotation(true);
-
+			body.AddEvent(new ChangeLevelEvent(FlxG.level + 1));
+			
 			add(body);
+			
+			//var body:ExSprite = new ExSprite(end.x, end.y, endPoint);
+			//body.name = "end";
+			//body.shape.isSensor = true;
+			//body.initShape();
+			//body.createPhysBody(the_world);
+			//body.final_body.SetStatic();
+			//body.final_body.AllowSleeping(false);
+			//body.final_body.SetFixedRotation(true);
+//
+			//add(body);
+			
 		}
 		
 		private function initContactListener():void{
