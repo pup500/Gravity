@@ -168,10 +168,16 @@ package common
 		    
 		    var b2:ExSprite = new ExSprite(shape.x, shape.y);
 		    b2.name = "loaded";
+		    b2.layer = shape.layer;
 		    b2.imageResource = shape.file;
 		    b2.pixels = bitmapData;
 		    //b2.initShape();
 		    b2.initShapeFromSprite();
+		    
+		    //TODO:Make this better
+		    //Objects in foreground or background should not interact with player
+		    b2.shape.filter.categoryBits = shape.layer == ExState.MG ? 1 : 0;
+		    
 		    
 		    //You have to put rotation first before you can create it...
 		    if(shape.angle != 0){
@@ -184,7 +190,7 @@ package common
 				b2.final_body.SetStatic();
 			}
 			
-			_state.add(b2);
+			_state.addToLayer(b2, shape.layer);
     		
     		//number++;
     		

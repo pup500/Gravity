@@ -137,7 +137,7 @@
 			//box = new FlxSprite(0,0);
 			//add(box);
 			startPoint = new Point();
-			layer = 0;
+			layer = ExState.MG;
 			
 			line = new Shape();
 			addChild(line);
@@ -386,7 +386,7 @@
 			helpText = new TextField();
 			helpText.selectable = false;
 			helpText.width = 448;
-            helpText.height = 400;
+            helpText.height = 420;
             helpText.x = (640-helpText.width)/2;
 			helpText.y = (480-helpText.height)/2;
             helpText.background = true;
@@ -398,6 +398,7 @@
             helpText.appendText("Keyboard Shortcuts:\n");
             helpText.appendText(" [ and ] - shifts through image assets\n");
             helpText.appendText(" E - toggles ADD/REMOVE mode\n");
+            helpText.appendText(" Z - toggles FG, MG, and BG layer.  Only MG interacts with player\n");
             helpText.appendText(" 1 and 2 - sets the START/END point for ADD mode\n");
 			helpText.appendText(" I - toggles ACTIVE/STATIC flag when ADDING objects\n");
 			helpText.appendText(" G - toggles GRID\n");
@@ -606,12 +607,10 @@
 				
 			
 			if(FlxG.keys.justPressed("Z")){
-				layer = 0;
+				layer++;
 			}
 			
-			if(FlxG.keys.justPressed("X")){
-				layer = 1;
-			}
+			if(layer > 2) layer = 0;
 		}
 		
 		private function handleMode():void{
@@ -637,7 +636,7 @@
 			//From Utilities
 			var jointTypes:Array = ["UNKNOWN", "REVOLUTE", "PRISMATIC", "DISTANCE", "PULLEY", "MOUSE", "GEAR", "LINE"];
 			
-			var layerTypes:Array = ["BACKGROUND", "FOREGROUND"];
+			var layerTypes:Array = ["BACKGROUND", "MIDDLEGROUND", "FOREGROUND"];
 			
 			var status:Array = [
 				itemCount,
@@ -806,6 +805,7 @@
 				shape.x = point.x;
 				shape.y = point.y;
 				shape.contour = "";
+				shape.layer = layer;
 				xmlMapLoader.addXMLObject(shape, true);
 			}
 		}

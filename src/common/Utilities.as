@@ -78,6 +78,7 @@ package common
 				
 				shape = new XML(<shape/>);
 				shape.file = file;
+				shape.layer = bSprite.layer;
 				shape.isStatic = isStatic;
 				shape.angle = angle;
 				shape.x = position.x;
