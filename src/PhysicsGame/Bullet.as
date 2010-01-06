@@ -25,6 +25,7 @@
 		private var _spawn:Boolean;
 		private var old:Point;
 		
+		private static var count:uint = 0;
 		//@desc Bullet constructor
 		//@param world	We'll need this to spawn the bullet's physical body when it's shot.
 		public function Bullet(world:b2World)
@@ -37,7 +38,8 @@
 			//So player does not collide with bullets
 			shape.filter.groupIndex = -2;
 			shape.filter.categoryBits = 0x0002;
-			name = "Bullet";
+			name = "Bullet" + count;
+			count++;
 			
 			_world = world; //For use when we shoot.
 			
@@ -73,6 +75,8 @@
 				}
 			}
 			else { 
+				trace("bullet:" + name +  " x,y:" + x + "," + y);
+				trace("dead:" + dead + " finished: " + finished);
 				super.update();
 			}
 		}
@@ -90,6 +94,8 @@
 			_spawn = true;
 			old.x = x;
 			old.y = y;
+			
+			trace("bullet hit");
 			
 			final_body.GetLinearVelocity().SetZero();
 			if(onScreen()) FlxG.play(SndHit);
@@ -118,7 +124,15 @@
 			play("idle");
 			FlxG.play(SndShoot);
 			
+			trace("bullet shoot");
+			
 			super.reset(X,Y);
+		}
+		
+		override public function setImpactPoint(point:b2ContactPoint):void{
+			super.setImpactPoint(point);
+			
+			hurt(0);
 		}
 	}
 
