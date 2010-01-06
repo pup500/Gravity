@@ -78,13 +78,13 @@ package PhysicsGame
 			if(body1.GetUserData()){
 				trace("Body1: "+ body1.GetUserData().name + " Body2: " + body2.GetUserData().name);
 				body1.GetUserData().removeImpactPoint(point);
-				body1.GetUserData().hurt(0);
+				//body1.GetUserData().hurt(0);
 			}
 			
 			if(body2.GetUserData()){
 				trace("Body1: "+ body1.GetUserData().name + " Body2: " + body2.GetUserData().name);
 				body2.GetUserData().removeImpactPoint(point);
-				body2.GetUserData().hurt(0);
+				//body2.GetUserData().hurt(0);
 			}
 		}
 		

@@ -97,10 +97,12 @@ package PhysicsGame
 				return;
 			}
 			
+			/*
 			if(_nextLevel){
 				FlxG.level++;
 				FlxG.switchState(XMLPhysState);
 			}
+			*/
 			
 			//final_body.SetLinearDamping(.5);
 			
@@ -278,11 +280,11 @@ package PhysicsGame
 		override public function setImpactPoint(point:b2ContactPoint):void{
 			super.setImpactPoint(point);
 			
-			trace("imp: " + impactPoint.position.y + " playy:" + y + " hei: " + height + " both:" + (y + height));
+			//trace("imp: " + impactPoint.position.y + " playy:" + y + " hei: " + height + " both:" + (y + height));
 			if(impactPoint.position.y > y + height-3 && final_body.GetLinearVelocity().y >= 0){
 				_canJump = true;
 			}
-			trace(impactPoint.position.y > y + height-3);
+			//trace(impactPoint.position.y > y + height-3);
 			
 			if(point.shape1.GetBody().GetUserData() && point.shape1.GetBody().GetUserData().name == "end"){
 				_nextLevel = true;

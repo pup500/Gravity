@@ -73,7 +73,7 @@
 			}
 			else { 
 				super.update();
-				trace("X: " + x + ", " + y);
+				//trace("X: " + x + ", " + y);
 				
 				if(_startLosingMass){
 					mass -= 5000 * FlxG.elapsed;
@@ -173,20 +173,20 @@
 			
 			var force:Number = G*(massProduct/distSq);
 			
-			trace("force: " + force);
+			//trace("force: " + force);
 			
 			if(force > 100) force = 100;
 			if(force < 0) force = 100;
 			
 			//trace(distance);
-			trace("mass: " + physBody.GetMass());
-			trace("dist:" + distance + " force:" + force + " forx:" + force * (dist.x/distance) + " fory:" + force * (dist.y/distance));
+			//trace("mass: " + physBody.GetMass());
+			//trace("dist:" + distance + " force:" + force + " forx:" + force * (dist.x/distance) + " fory:" + force * (dist.y/distance));
 			
 			var impulse:b2Vec2 = new b2Vec2(force * (dist.x/distance), force * (dist.y/distance));
 			impulse.Multiply(physBody.GetMass());
 			
-			trace("impulsex: " + impulse.x + ", " + impulse.y);
-			trace("impulsex: " + impulse.x /physBody.GetMass() + ", " + impulse.y/physBody.GetMass());
+			//trace("impulsex: " + impulse.x + ", " + impulse.y);
+			//trace("impulsex: " + impulse.x /physBody.GetMass() + ", " + impulse.y/physBody.GetMass());
 			
 			return impulse;
 		}

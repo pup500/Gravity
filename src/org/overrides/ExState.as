@@ -3,10 +3,12 @@ package org.overrides
 	import Box2D.Collision.*;
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
-	import org.flixel.FlxG;
 	
 	import flash.display.Sprite;
 	
+	import org.flixel.FlxCore;
+	import org.flixel.FlxG;
+	import org.flixel.FlxLayer;
 	import org.flixel.FlxState;
 
 	public class ExState extends FlxState
@@ -15,12 +17,21 @@ package org.overrides
 		protected var debug:Boolean;
 		public var debug_sprite:Sprite;
 		
+		protected var _bgLayer:FlxLayer;
+		protected var _fgLayer:FlxLayer;
+		
 		public var _loaded:Boolean;
-				
+		
+		public static const BG:uint = 0;
+		public static const MG:uint = 1;
+		public static const FG:uint = 2;
+		
 
 		public function ExState()
 		{
 			super();
+			_bgLayer = new FlxLayer();
+			_fgLayer = new FlxLayer();
 			
 			var environment:b2AABB = new b2AABB();
 			environment.lowerBound.Set(0.0, 0.0);
@@ -57,11 +68,30 @@ package org.overrides
 			//the_world.Step(FlxG.elapsed, 10);
 			the_world.Step(1/30, 10, 10);
 			
+			_bgLayer.update();
 			super.update();
+			_fgLayer.update();
 			
 			//For the physics....
 			debug_sprite.x = FlxG.scroll.x;
 			debug_sprite.y = FlxG.scroll.y;
+		}
+		
+		public function addToLayer(Core:FlxCore, layer:uint=0):FlxCore
+		{
+			switch(layer){
+				case BG: return _bgLayer.add(Core);
+				case MG: return _layer.add(Core);
+				case FG: return _fgLayer.add(Core);
+			}
+			
+			return null;
+		}
+		
+		override public function render():void{
+			_bgLayer.render();
+			super.render();
+			_fgLayer.render();
 		}
 	}
 }

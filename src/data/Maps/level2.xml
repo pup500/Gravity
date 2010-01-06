@@ -1,49 +1,32 @@
 <config>
   <objects>
     <shape>
-      <file>data/tower-down.png</file>
-      <isStatic>true</isStatic>
-      <angle>0</angle>
-      <x>330</x>
-      <y>319</y>
-    </shape>
-    <shape>
       <file>data/editor/images/e_ass_06.png</file>
+      <layer>1</layer>
       <isStatic>true</isStatic>
       <angle>0</angle>
       <x>136</x>
       <y>224</y>
     </shape>
     <shape>
+      <file>data/editor/images/e_ass_15.png</file>
+      <layer>1</layer>
+      <isStatic>false</isStatic>
+      <angle>1590.5989447103782</angle>
+      <x>327</x>
+      <y>167</y>
+    </shape>
+    <shape>
       <file>data/editor/images/e_ass_03.png</file>
+      <layer>1</layer>
       <isStatic>true</isStatic>
       <angle>0</angle>
       <x>336</x>
       <y>408</y>
     </shape>
     <shape>
-      <file>data/editor/images/e_ass_15.png</file>
-      <isStatic>false</isStatic>
-      <angle>1590.5989447103782</angle>
-      <x>327.7639968942429</x>
-      <y>167.39438249202755</y>
-    </shape>
-    <shape>
-      <file>data/editor/images/e_ass_06.png</file>
-      <isStatic>true</isStatic>
-      <angle>0</angle>
-      <x>536</x>
-      <y>224</y>
-    </shape>
-    <shape>
-      <file>data/editor/images/e_ass_08.png</file>
-      <isStatic>false</isStatic>
-      <angle>-2.311115933264683e-33</angle>
-      <x>264</x>
-      <y>288.995</y>
-    </shape>
-    <shape>
       <file>data/editor/images/e_ass_03.png</file>
+      <layer>1</layer>
       <isStatic>true</isStatic>
       <angle>0</angle>
       <x>336</x>
@@ -51,29 +34,50 @@
     </shape>
     <shape>
       <file>data/editor/images/e_ass_08.png</file>
+      <layer>1</layer>
+      <isStatic>false</isStatic>
+      <angle>-2.311115933264683e-33</angle>
+      <x>264</x>
+      <y>288</y>
+    </shape>
+    <shape>
+      <file>data/editor/images/e_ass_08.png</file>
+      <layer>1</layer>
       <isStatic>false</isStatic>
       <angle>0</angle>
       <x>392</x>
-      <y>288.995</y>
+      <y>288</y>
+    </shape>
+    <shape>
+      <file>data/tower-down.png</file>
+      <layer>1</layer>
+      <isStatic>true</isStatic>
+      <angle>0</angle>
+      <x>330</x>
+      <y>319</y>
+    </shape>
+    <shape>
+      <file>data/editor/images/e_ass_06.png</file>
+      <layer>1</layer>
+      <isStatic>true</isStatic>
+      <angle>0</angle>
+      <x>536</x>
+      <y>224</y>
     </shape>
     <joint>
-      <type>2</type>
+      <type>1</type>
       <body1>
         <x>0</x>
         <y>0</y>
       </body1>
       <body2>
-        <x>264</x>
-        <y>288.995</y>
+        <x>327</x>
+        <y>167</y>
       </body2>
       <anchor>
-        <x>264</x>
-        <y>162</y>
+        <x>328</x>
+        <y>166</y>
       </anchor>
-      <axis>
-        <x>0</x>
-        <y>1</y>
-      </axis>
     </joint>
     <joint>
       <type>2</type>
@@ -83,7 +87,7 @@
       </body1>
       <body2>
         <x>392</x>
-        <y>288.995</y>
+        <y>288</y>
       </body2>
       <anchor>
         <x>392</x>
@@ -95,19 +99,23 @@
       </axis>
     </joint>
     <joint>
-      <type>1</type>
+      <type>2</type>
       <body1>
         <x>0</x>
         <y>0</y>
       </body1>
       <body2>
-        <x>327.7639968942429</x>
-        <y>167.39438249202755</y>
+        <x>264</x>
+        <y>288</y>
       </body2>
       <anchor>
-        <x>328</x>
-        <y>166</y>
+        <x>264</x>
+        <y>162</y>
       </anchor>
+      <axis>
+        <x>0</x>
+        <y>1</y>
+      </axis>
     </joint>
   </objects>
   <points>

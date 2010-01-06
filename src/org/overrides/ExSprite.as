@@ -295,13 +295,13 @@ package org.overrides
 					//TODO:SEE IF THIS MAKES SENSE, can we put this anywhere else....
 					case Utilities.e_prismaticJoint:
 						var jointRev:b2PrismaticJoint = joints.joint as b2PrismaticJoint;
-						trace("limit:" + jointRev.GetLowerLimit() + ", " + jointRev.GetUpperLimit() + " : " + jointRev.GetJointTranslation());
+						//trace("limit:" + jointRev.GetLowerLimit() + ", " + jointRev.GetUpperLimit() + " : " + jointRev.GetJointTranslation());
 						if(Math.abs(jointRev.GetJointTranslation() - jointRev.GetLowerLimit()) < .1){
 							jointRev.SetMotorSpeed(Math.abs(jointRev.GetMotorSpeed()));
-							trace("speed:" + jointRev.GetMotorSpeed());
+							//trace("speed:" + jointRev.GetMotorSpeed());
 						}
 						else if(Math.abs(jointRev.GetJointTranslation() - jointRev.GetUpperLimit()) < .1){
-							trace("speed:" + jointRev.GetMotorSpeed());
+							//trace("speed:" + jointRev.GetMotorSpeed());
 							jointRev.SetMotorSpeed(-Math.abs(jointRev.GetMotorSpeed()));
 						}
 						break;
