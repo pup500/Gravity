@@ -4,8 +4,6 @@ package PhysicsGame
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
 	
-	import PhysicsGame.MapClasses.*;
-	
 	import common.XMLMap;
 	
 	import flash.geom.Point;
@@ -110,18 +108,6 @@ package PhysicsGame
 			body.AddEvent(new ChangeLevelEvent(FlxG.level + 1));
 			
 			add(body);
-			
-			//var body:ExSprite = new ExSprite(end.x, end.y, endPoint);
-			//body.name = "end";
-			//body.shape.isSensor = true;
-			//body.initShape();
-			//body.createPhysBody(the_world);
-			//body.final_body.SetStatic();
-			//body.final_body.AllowSleeping(false);
-			//body.final_body.SetFixedRotation(true);
-//
-			//add(body);
-			
 		}
 		
 		private function initContactListener():void{

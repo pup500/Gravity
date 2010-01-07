@@ -89,7 +89,8 @@
 		private var copyButton:Sprite;
 		private var playButton:Sprite;
 		private var changeButton:Sprite;
-			
+		private var sensorButton:Sprite;
+		
 		private var optionsPanel:Sprite;
 		private var gridButton:Sprite;
 		private var snapButton:Sprite;
@@ -109,6 +110,8 @@
 
 		private const WIDTH:uint = 1280;
 		private const HEIGHT:uint = 960;
+		
+		private var sensorDrag:MouseDragSelect;
 		
 		public function PhysLevelEditor() 
 		{
@@ -154,10 +157,17 @@
 			
 			createHUD();
 			
+			sensorDrag = new MouseDragSelect(onSensorDragRelease);
 			//IDEA:
 			//Layers are going to be the specification in exsprite, add that when we add an object
 			//Sprites are sensors with no interactions
 			//Sensor objects are sensors with script xml file...
+		}
+		
+		private function onSensorDragRelease(args:MouseDragSelectEventArgs):void
+		{
+			FlxG.log(args.Start);
+			FlxG.log(args.End);
 		}
 		
 		override protected function initBox2DDebugRendering():void
@@ -306,6 +316,11 @@
 			helpText.visible = !helpText.visible;
 		}
 		
+		private function onSensorClick(event:MouseEvent):void {
+			sensorDrag.Activate();
+			FlxG.log("sensor clicked");
+		}
+		
 		private function createActionsPanel():void{
 			actionsPanel = new Sprite();
 			actionsPanel.x = 5;
@@ -321,6 +336,7 @@
 			joinButton = createImageButton(joinImg, 5, 130, actionsPanel, "Join", onJoinClick);
 			breakButton = createImageButton(breakImg, 5, 170, actionsPanel, "Break", onBreakClick);
 			playButton = createImageButton(playImg, 5, 210, actionsPanel, "Run", onPlayClick);
+			sensorButton = createImageButton(editImg, 5, 250, actionsPanel, "Sensor", onSensorClick);
 			
 			copyButton = createImageButton(copyImg, 5, 400, actionsPanel, null, onCopyClick);
 			helpButton = createImageButton(helpImg, 590, 400, actionsPanel, null, onHelpClick);
@@ -510,7 +526,7 @@
 			handlePreview();
 			handleMode();
 			handleMouse();
-			
+			sensorDrag.update();
 			/*
 			//Commented out because some joints do not use the anchors the way regular distance joints do...
 			//If we want to add joints drawing...
@@ -526,6 +542,7 @@
 				}
 			}	
 			*/
+			
 		}
 		
 		private function handleKeyboard():void{
@@ -673,6 +690,7 @@
 			if(FlxG.keys.SHIFT){
 				assetImage.alpha = 1;
 			}
+
 
 			//Shift click to add and delete... This allows the user to press the tool buttons without messing up
 			if(FlxG.mouse.justPressed() && FlxG.keys.pressed("SHIFT")){
