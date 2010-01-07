@@ -197,7 +197,7 @@
 				}
 			}
 			
-			//We failed getting any good physics shape for it, resort to box...
+			//We failed getting any good physics shape for it
 			return null;
 		}
 		
