@@ -8,7 +8,6 @@ package common
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
-	import flash.display.Graphics;
 	import flash.display.Loader;
 	import flash.display.LoaderInfo;
 	import flash.events.Event;
@@ -283,7 +282,6 @@ package common
 			if(b2){
 				var bSprite:ExSprite = b2.GetUserData() as ExSprite;
 				if(bSprite){
-					bSprite.destroyPhysBody();
 					bSprite.kill();
 				}
 			}
@@ -503,7 +501,46 @@ package common
 			//Call this to fix position of object before render phase
 			b2.update();
 			
+			trace("eventargetX:" + event.target.x + "," + event.target.y);
+			if(event.target.x.length() > 0 && event.target.y.length() > 0){
+				var tbody:b2Body = Utilities.GetBodyAtMouse(_state.the_world, new Point(event.target.x, event.target.y), true);
+				b2.setTarget(tbody.GetUserData());
+			}
+			
 			_state.addToLayer(b2, ExState.EV);
+		}
+		
+		public function addEventTarget():void{
+			if(_bodies.length != 2){
+				_bodies = new Array();
+				return;
+			}
+			
+			//Figure out all the bodies and points info
+			var b1:Array = _bodies[0] as Array;
+			var b2:Array = _bodies[1] as Array;
+			
+			var body1:b2Body = b1[0] as b2Body;
+			var body2:b2Body = b2[0] as b2Body;
+			
+			var point1:b2Vec2 = b1[1];
+			var point2:b2Vec2 = b2[1];
+			
+			_bodies = new Array();
+				
+			if(!(body1.GetUserData() is EventObject)) {
+				return;
+			}
+			
+			if(!(body2.GetUserData() is ExSprite)) {
+				return;
+			}
+			
+			//This only happens if we select an event and link it to the target
+			var event:EventObject = body1.GetUserData();
+			var target:ExSprite = body2.GetUserData();
+			
+			event.setTarget(target);
 		}
 		
 		public function getItemCount():uint{

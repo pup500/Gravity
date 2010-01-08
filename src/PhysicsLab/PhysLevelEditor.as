@@ -4,8 +4,8 @@
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
 	
-	import PhysicsGame.LevelSelectMenu;
 	import PhysicsGame.EventObject;
+	import PhysicsGame.LevelSelectMenu;
 	
 	import common.Utilities;
 	import common.XMLMap;
@@ -52,6 +52,8 @@
 		[Embed(source="../data/editor/interface/help.png")] private var helpImg:Class;
 		[Embed(source="../data/editor/interface/change.png")] private var changeImg:Class;
 		
+		[Embed(source="../data/editor/interface/connect-icon.png")] private var linkImg:Class;
+		
 		private var xmlMapLoader:XMLMap;
 		
 		private var files:Array;
@@ -95,6 +97,7 @@
 		private var changeButton:Sprite;
 		private var sensorButton:Sprite;
 		private var eventButton:Sprite;
+		private var linkButton:Sprite;
 		
 		private var optionsPanel:Sprite;
 		private var gridButton:Sprite;
@@ -114,6 +117,7 @@
 		private const BREAK:uint = 3;
 		private const CHANGE:uint = 4;
 		private const EVENT:uint = 5;
+		private const LINK:uint = 6;
 
 		private const WIDTH:uint = 1280;
 		private const HEIGHT:uint = 960;
@@ -341,13 +345,17 @@
 			mode = EVENT;
 		}
 		
+		private function onLinkClick(event:MouseEvent):void{
+			mode = LINK;
+		}
+		
 		private function createActionsPanel():void{
 			actionsPanel = new Sprite();
 			actionsPanel.x = 5;
 			actionsPanel.y = 30;
 			actionsPanel.graphics.beginFill(0x888888,1);
 			actionsPanel.graphics.lineStyle(2,0x000000,1);
-			actionsPanel.graphics.drawRoundRect(0,0,85,330,10,10);//drawRect(5,185,80,240);
+			actionsPanel.graphics.drawRoundRect(0,0,85,370,10,10);//drawRect(5,185,80,240);
 			actionsPanel.graphics.endFill();
 			
 			changeButton = createImageButton(changeImg, 5, 10, actionsPanel, "Change", onChangeClick);
@@ -358,6 +366,7 @@
 			playButton = createImageButton(playImg, 5, 210, actionsPanel, "Run", onPlayClick);
 			sensorButton = createImageButton(editImg, 5, 250, actionsPanel, "Sensor", onSensorClick);
 			eventButton = createImageButton(eventImg, 5, 290, actionsPanel, "Event", onEventClick);
+			linkButton = createImageButton(linkImg, 5, 330, actionsPanel, "Link", onLinkClick);
 			
 			copyButton = createImageButton(copyImg, 5, 400, actionsPanel, null, onCopyClick);
 			helpButton = createImageButton(helpImg, 590, 400, actionsPanel, null, onHelpClick);
@@ -656,10 +665,11 @@
 			helpButton.alpha = helpText.visible ? 1 : .5;
 			changeButton.alpha = mode == CHANGE ? 1 : .5;
 			eventButton.alpha = mode == EVENT ? 1 : .5;
+			linkButton.alpha = mode == LINK ? 1 : .5;
 			
 			jointsImage.visible = (mode == JOIN || mode == BREAK);
 			
-			var actions:Array = ["REMOVE", "ADD", "JOIN", "BREAK", "CHANGE", "EVENT"];
+			var actions:Array = ["REMOVE", "ADD", "JOIN", "BREAK", "CHANGE", "EVENT", "LINK"];
 			var action:String = actions[mode];
 			var mouseCoord:String =  "(" + FlxG.mouse.x + ", " + FlxG.mouse.y +")";
 			var itemCount:String = "# Items: " + xmlMapLoader.getItemCount();
@@ -745,7 +755,9 @@
 					drawingBox = true;
 				}
 				*/
+				//Join and link essentially need to register the points
 				case JOIN:
+				case LINK:
 					xmlMapLoader.registerObjectAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true);
 					
 					//Draw with snapping.....
@@ -765,7 +777,7 @@
 				}
 			}
 			
-			if(mode == JOIN && drawingLine){
+			if((mode == JOIN || mode == LINK) && drawingLine){
 				line.graphics.clear();
 				line.graphics.lineStyle(1,0xFF0000,1);
 				line.graphics.moveTo(startPoint.x,startPoint.y);
@@ -812,6 +824,14 @@
 					xmlMapLoader.registerObjectAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true);
 					
 					xmlMapLoader.addJoint(jointType);
+				}
+				
+				if(mode == LINK && drawingLine){
+					line.visible = false;
+					drawingLine = false;
+					xmlMapLoader.registerObjectAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true);
+					
+					xmlMapLoader.addEventTarget();
 				}
 			}
 		}

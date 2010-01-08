@@ -3,6 +3,8 @@ package PhysicsGame
 	import PhysicsGame.Events.*;
 	
 	import flash.utils.Dictionary;
+	import flash.display.Shape;
+	import org.flixel.FlxG;
 	
 	import org.overrides.ExSprite;
 
@@ -35,6 +37,10 @@ package PhysicsGame
 			_impl.setTarget(target);
 		}
 		
+		public function getTarget():ExSprite{
+			return _impl.target;
+		}
+		
 		public function setArgs(args:Dictionary):void{
 			_impl.setArgs(args);
 		}
@@ -43,7 +49,6 @@ package PhysicsGame
 			_impl.activate();
 		}
 		
-		/*
 		override public function update():void{
 			trace("before: " + x + "," + y);
 			super.update();
@@ -53,7 +58,15 @@ package PhysicsGame
 			trace("render: " + x + "," + y);
 			super.render();
 			trace("renderafter: " + x + "," + y);
+			
+			if(_impl.target && _impl.target.exists){
+				var myShape:Shape = new Shape();
+				myShape.graphics.lineStyle(2,0x0,1);
+				myShape.graphics.moveTo(x + width/2,y + height/2);
+				myShape.graphics.lineTo(_impl.target.x + _impl.target.width/2, _impl.target.y + _impl.target.height/2);
+				FlxG.buffer.draw(myShape);
+			}
+			
 		}
-		*/
 	}
 }

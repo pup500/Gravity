@@ -83,6 +83,12 @@ package common
 					item.type = bEvent._type;
 					item.x = position.x;
 					item.y = position.y;
+					
+					if(bEvent.getTarget()){
+						var t:ExSprite = bEvent.getTarget();
+						item.target.x = t.final_body.GetWorldCenter().x;
+						item.target.y = t.final_body.GetWorldCenter().y;
+					}
 				}
 				else{
 					isStatic = bb.IsStatic();

@@ -22,6 +22,10 @@ package PhysicsGame.Events
 		}
 		
 		public virtual function activate():void{}
+		
+		public virtual function get target():ExSprite{
+			return _target;
+		}
 
 	}
 }
