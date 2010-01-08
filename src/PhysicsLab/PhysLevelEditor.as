@@ -28,6 +28,8 @@
 	 */
 	public class PhysLevelEditor extends ExState
 	{
+		[Embed(source="../data/editor/help.txt", mimeType="application/octet-stream")] public var helpFile:Class;
+		
 		[Embed(source="../data/cursor.png")] private var cursorSprite:Class;
 		[Embed(source="../data/editor/interface/dino.mp3")] private var dinoSound:Class;
 		
@@ -42,6 +44,7 @@
 		[Embed(source="../data/editor/interface/grid.jpg")] private var gridImg:Class;
 		[Embed(source="../data/editor/interface/elephant-icon.png")] private var activeImg:Class;
 		[Embed(source="../data/editor/interface/snap.jpg")] private var snapImg:Class;
+		[Embed(source="../data/editor/interface/pig-icon.png")] private var polyImg:Class;
 		[Embed(source="../data/editor/interface/frog-icon.png")] private var physicsImg:Class;
 		[Embed(source="../data/editor/interface/mammoth-icon.png")] private var playImg:Class;
 		[Embed(source="../data/editor/interface/help.png")] private var helpImg:Class;
@@ -54,10 +57,9 @@
 		private var lastIndex:int;
 		private var layer:uint;
 		
-		
 		private var mode:uint;
 		private var active:Boolean;
-		private var usePoly:Boolean;
+		private var polyShape:Boolean;
 		private var run:Boolean;
 		private var addJoint:Boolean;
 
@@ -94,6 +96,7 @@
 		private var optionsPanel:Sprite;
 		private var gridButton:Sprite;
 		private var snapButton:Sprite;
+		private var polyButton:Sprite;
 		private var activeButton:Sprite;
 		private var debugButton:Sprite;
 		private var helpButton:Sprite;
@@ -130,7 +133,7 @@
 			snapToGrid = true;
 			drawingBox = false;
 			drawingLine = false;
-			usePoly = false;
+			polyShape = true;
 			run = false;
 			jointType = Utilities.e_distanceJoint;
 			
@@ -153,7 +156,7 @@
 			
 			loadLevelConfig();
 			addPlayer();
-			loadAssetList("data/LevelEditor.txt");
+			loadAssetList("data/editor/LevelEditor.txt");
 			
 			createHUD();
 			
@@ -316,6 +319,10 @@
 			helpText.visible = !helpText.visible;
 		}
 		
+		private function onPolyClick(event:MouseEvent):void {
+			polyShape = !polyShape;
+		}
+		
 		private function onSensorClick(event:MouseEvent):void {
 			sensorDrag.Activate();
 			FlxG.log("sensor clicked");
@@ -360,13 +367,14 @@
 			optionsPanel.y = 30;
 			optionsPanel.graphics.beginFill(0x888888,1);
 			optionsPanel.graphics.lineStyle(2,0x000000,1);
-			optionsPanel.graphics.drawRoundRect(0,0,85,180,10,10);//drawRect(5,25,80,140);
+			optionsPanel.graphics.drawRoundRect(0,0,85,220,10,10);//drawRect(5,25,80,140);
 			optionsPanel.graphics.endFill();
 			
 			debugButton = createImageButton(physicsImg, 5, 10, optionsPanel, "Debug", onPhysicsClick);
 			activeButton = createImageButton(activeImg, 5, 50, optionsPanel, "Active", onActiveClick);
 			snapButton = createImageButton(snapImg, 5, 90, optionsPanel, "Snap", onSnapClick);
 			gridButton = createImageButton(gridImg, 5, 130, optionsPanel, "Grid", onGridClick);
+			polyButton = createImageButton(polyImg, 5, 170, optionsPanel, "Poly", onPolyClick);
 			
 			addChild(optionsPanel);
 		}
@@ -381,9 +389,6 @@
 			//Add preview shape
 			addChild(assetImage = new Shape());
 
-			//Add help instructions
-			setInstructions();
-			
 			modeText = new TextField;
 			modeText.background = true;
 			modeText.border = true;
@@ -393,7 +398,9 @@
 			modeText.height = 16;
 			modeText.width = 630;
 			addChild(modeText);
-
+			
+			//Add help instructions
+			setInstructions();
 			//textField.type = TextFieldType.INPUT;
             //textField.addEventListener(TextEvent.TEXT_INPUT,textInputHandler);
 		}
@@ -402,49 +409,13 @@
 			helpText = new TextField();
 			helpText.selectable = false;
 			helpText.width = 448;
-            helpText.height = 420;
+            helpText.height = 460;
             helpText.x = (640-helpText.width)/2;
 			helpText.y = (480-helpText.height)/2;
             helpText.background = true;
             helpText.border = true;
-            helpText.text = "";
-            helpText.appendText("Movement:\n");
-            helpText.appendText(" WASD - moves player object to simulate scrolling\n");
-            helpText.appendText("\n");
-            helpText.appendText("Keyboard Shortcuts:\n");
-            helpText.appendText(" [ and ] - shifts through image assets\n");
-            helpText.appendText(" E - toggles ADD/REMOVE mode\n");
-            helpText.appendText(" Z - toggles FG, MG, and BG layer.  Only MG interacts with player\n");
-            helpText.appendText(" 1 and 2 - sets the START/END point for ADD mode\n");
-			helpText.appendText(" I - toggles ACTIVE/STATIC flag when ADDING objects\n");
-			helpText.appendText(" G - toggles GRID\n");
-			helpText.appendText(" N - toggles FREE/SNAP to grid\n");
-			helpText.appendText(" H - toggles HUD/STATUS panel\n");
-			helpText.appendText("\n");
-			helpText.appendText(" J - sets the JOIN mode.  SHIFT DRAG on static to active, active to active object\n");
-			helpText.appendText(" T - Distance joints require two bodies.\n");
-			helpText.appendText(" R - Revolute joints can be SHIFT DRAG in one body, so it connects to world.\n");
-			helpText.appendText(" Y - Prismatic joints axis is the midpoint of the mouse distance.\n");
-			helpText.appendText("\n");
-			helpText.appendText(" SHIFT - hides TOOLBAR panel\n");
-			helpText.appendText(" U - toggles DEBUG PHYSICS bodies for joints and bounding box issues\n");
-			helpText.appendText(" F1 - toggles simulation.\n");
-			helpText.appendText(" SHIFT CLICK - ADD/REMOVE the selected image asset at MOUSE coordinates\n");
-			helpText.appendText("\n");
-			helpText.appendText("Buttons:\n");
-			helpText.appendText(" CHANGE BUTTON - sets the ACTIVE/STATIC flag of created objects with SHIFT CLICK\n");
-			helpText.appendText(" ADD BUTTON - sets the ADD mode.  SHIFT CLICK to add objects\n");
-			helpText.appendText(" REMOVE BUTTON - sets the REMOVE mode.  SHIFT CLICK to remove objects\n");
-			helpText.appendText(" JOIN BUTTON - sets the JOIN mode.  SHIFT CLICK on one body and drag to another\n");
-			helpText.appendText(" BREAK BUTTON - sets the BREAK mode.  SHIFT CLICK on a body to remove all joints\n");
-			helpText.appendText(" COPY BUTTON - copies level settings.  You paste from clipboard to new file\n");
-			helpText.appendText(" RUN BUTTON - toggles simulation.\n");
-			helpText.appendText("\n");
-			helpText.appendText("QUIT:\n");
-			helpText.appendText(" SHIFT ESC - QUIT to the level select menu\n");
-			helpText.visible = false;
-            //helpText.addEventListener(MouseEvent.MOUSE_DOWN, onTextClick);
-            
+            helpText.text = (new helpFile);
+            helpText.visible = false;
             addChild(helpText);
 		}
 		
@@ -581,6 +552,10 @@
 				debug_sprite.visible = !debug_sprite.visible;
 			}
 			
+			if(FlxG.keys.justPressed("B")){
+				polyShape = !polyShape;
+			}
+			
 			if(FlxG.keys.justPressed("R")){
 				jointType = Utilities.e_revoluteJoint;
 			}
@@ -589,6 +564,18 @@
 			}
 			if(FlxG.keys.justPressed("Y")){
 				jointType = Utilities.e_prismaticJoint;
+			}
+			
+			if(FlxG.keys.justPressed("ONE")){
+				bg.visible = !bg.visible;
+			}
+				
+			if(FlxG.keys.justPressed("TWO")){
+				mg.visible = !mg.visible;
+			}
+			
+			if(FlxG.keys.justPressed("THREE")){
+				fg.visible = !fg.visible;
 			}
 			
 			if(FlxG.keys.justPressed("F1")){
@@ -605,11 +592,11 @@
 				index++;
 			}
 			
-			if(FlxG.keys.justPressed("ONE")){
+			if(FlxG.keys.justPressed("EIGHT")){
 				index = 0;
 			}
 				
-			if(FlxG.keys.justPressed("TWO")){
+			if(FlxG.keys.justPressed("NINE")){
 				index = 1;
 			}
 			
@@ -635,6 +622,7 @@
 			activeButton.alpha = active ? 1 : .5;
 			snapButton.alpha = snapToGrid ? 1 : .5;
 			gridButton.alpha = grid.visible ? 1 : .5;
+			polyButton.alpha = polyShape ? 1 : .5;
 			joinButton.alpha = mode == JOIN ? 1 : .5;
 			breakButton.alpha = mode == BREAK ? 1 : .5;
 			killButton.alpha = mode == KILL ? 1 : .5;
@@ -653,15 +641,21 @@
 			//From Utilities
 			var jointTypes:Array = ["UNKNOWN", "REVOLUTE", "PRISMATIC", "DISTANCE", "PULLEY", "MOUSE", "GEAR", "LINE"];
 			
-			var layerTypes:Array = ["BACKGROUND", "MIDDLEGROUND", "FOREGROUND"];
+			var layerTypes:Array = ["BG", "MG", "FG"];
+			var layers:String;
+			layers = bg.visible ? "B" : "";
+			layers += mg.visible ? "M" : "";
+			layers += fg.visible ? "F" : "";
 			
 			var status:Array = [
 				itemCount,
 				action,
 				active ? "ACTIVE" : "STATIC",
+				polyShape ? "POLY" : "CIRCLE",
 				snapToGrid ? "SNAP" : "FREE",
 				"JOINT: " + jointTypes[jointType],
 				"LAYER: " + layerTypes[layer],
+				"VISIBLE: " + layers,
 				mouseCoord];
 			
 			modeText.text = status.join(" | ");
@@ -823,6 +817,7 @@
 				shape.x = point.x;
 				shape.y = point.y;
 				shape.contour = "";
+				shape.polyshape = polyShape;
 				shape.layer = layer;
 				xmlMapLoader.addXMLObject(shape, true);
 			}

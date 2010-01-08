@@ -8,13 +8,11 @@ package org.overrides
 	import Box2D.Dynamics.Joints.b2JointEdge;
 	import Box2D.Dynamics.Joints.b2PrismaticJoint;
 	
+	import PhysicsGame.ShapeDefiner;
+	
 	import common.Utilities;
 	
-	import flash.geom.Point;
-	
 	import org.flixel.*;
-	
-	import PhysicsGame.ShapeDefiner;
 	
 	/**
 	 * ...

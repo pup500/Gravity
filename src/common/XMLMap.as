@@ -172,7 +172,12 @@ package common
 		    b2.imageResource = shape.file;
 		    b2.pixels = bitmapData;
 		    //b2.initShape();
-		    b2.initShapeFromSprite();
+		    
+		    trace(shape.polyshape);
+		    if(shape.polyshape == "true")
+		    	b2.initShapeFromSprite();
+		    else
+		    	b2.initCircleShape();
 		    
 		    //TODO:Make this better
 		    //Objects in foreground or background should not interact with player

@@ -6,6 +6,7 @@ package common
 	import Box2D.Dynamics.Joints.*;
 	import Box2D.Dynamics.b2Body;
 	import Box2D.Dynamics.b2World;
+	import Box2D.Collision.Shapes.b2PolygonDef;
 	
 	import flash.geom.Point;
 	
@@ -80,6 +81,7 @@ package common
 				shape.file = file;
 				shape.layer = bSprite.layer;
 				shape.isStatic = isStatic;
+				shape.polyshape = bSprite.shape is b2PolygonDef;
 				shape.angle = angle;
 				shape.x = position.x;
 				shape.y = position.y;

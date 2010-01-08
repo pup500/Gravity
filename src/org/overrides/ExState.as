@@ -26,7 +26,6 @@ package org.overrides
 		public static const MG:uint = 1;
 		public static const FG:uint = 2;
 		
-
 		public function ExState()
 		{
 			super();
@@ -89,9 +88,13 @@ package org.overrides
 		}
 		
 		override public function render():void{
-			_bgLayer.render();
-			super.render();
-			_fgLayer.render();
+			if(_bgLayer.visible) _bgLayer.render();	
+			if(_layer.visible) super.render();
+			if(_fgLayer.visible) _fgLayer.render();
 		}
+		
+		protected function get bg():FlxLayer{ return _bgLayer;}
+		protected function get mg():FlxLayer{ return _layer;}
+		protected function get fg():FlxLayer{ return _fgLayer;}	
 	}
 }
