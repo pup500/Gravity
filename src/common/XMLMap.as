@@ -4,8 +4,11 @@ package common
 	import Box2D.Dynamics.Joints.*;
 	import Box2D.Dynamics.b2Body;
 	
+	import PhysicsGame.EventObject;
+	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
+	import flash.display.Graphics;
 	import flash.display.Loader;
 	import flash.display.LoaderInfo;
 	import flash.events.Event;
@@ -17,7 +20,7 @@ package common
 	import org.overrides.ExState;
 	
 	public class XMLMap
-	{
+	{	
 		private var configXML:XML;
 		//private var _config:Array;
 		private var _state:ExState;
@@ -63,21 +66,32 @@ package common
 		private function onLoadXMLConfigComplete(event:Event):void{
 			configXML = new XML(event.target.data);
 			
+			//Save the start and end positions right away
+			_start.x = configXML.points.start.x;
+			_start.y = configXML.points.start.y;
+			_end.x = configXML.points.end.x;
+			_end.y = configXML.points.end.y;
+			
 			expBodyCount = getItemCount() + configXML.objects.shape.length();
 			
 			trace("initialnum: " + expBodyCount);
 			trace("count:" + getItemCount());
+			
+			//If we have no bodies to load...
+			if(expBodyCount == getItemCount()){
+				addAllEvents();
+				if(!_loaded){
+    				_loaded = true;
+    				_state.init();
+    				return;
+    			}
+			}
 			
 			for each(var shape:XML in configXML.objects.shape){
 				addXMLObject(shape);
 			}
 			
 			//Joints will be added after all objects have been created...
-			
-			_start.x = configXML.points.start.x;
-			_start.y = configXML.points.start.y;
-			_end.x = configXML.points.end.x;
-			_end.y = configXML.points.end.y;
 		}
 		
 		//Adds a XML file that contains the resource we want...
@@ -170,7 +184,7 @@ package common
 		    b2.name = "loaded";
 		    b2.layer = shape.layer;
 		    b2.imageResource = shape.file;
-		    b2.pixels = bitmapData;
+		    //b2.pixels = bitmapData;
 		    //b2.initShape();
 		    
 		    trace(shape.polyshape);
@@ -206,6 +220,7 @@ package common
     		
     		if(getItemCount() == expBodyCount){
     			addAllJoints();
+    			addAllEvents();
     			if(!_loaded){
     				_loaded = true;
     				_state.init();
@@ -460,9 +475,40 @@ package common
 			return false;
 		}
 		
+		//Add all joints from configuration file, also pass configuration jointXML along
+		private function addAllEvents():void{
+			for each (var eventXML:XML in configXML.objects.event){
+				addXMLEvent(eventXML);
+			}
+		}
+		
+		public function addXMLEvent(event:XML, sprite:Class=null):void{
+			//The synchronous time when adding objects that requires loading a bitmap will allow the object
+			//to get updated before it renders
+			//This doesn't work when there's no synchronous events... So this add takes place before the render...
+			//Which means we have to worry about the updated sprite position... 
+			
+			var b2:EventObject = new EventObject(event.x, event.y, sprite, "", event.type);
+		    b2.name = "event";
+		    b2.layer = event.layer;
+		    b2.imageResource = "";
+		    b2._type = event.type;
+		    
+		    b2.initShape();
+		    b2.shape.filter.categoryBits = 0;
+		    
+		    b2.createPhysBody(_state.the_world);
+			
+			b2.final_body.SetStatic();
+			
+			//Call this to fix position of object before render phase
+			b2.update();
+			
+			_state.addToLayer(b2, event.layer);
+		}
+		
 		public function getItemCount():uint{
 			return _state.the_world.GetBodyCount();
-			//return number;
 		}
 	}
 }

@@ -1,0 +1,26 @@
+<config>
+  <objects>
+    <event>
+      <layer>1</layer>
+      <type>0</type>
+      <x>288</x>
+      <y>176</y>
+    </event>
+    <event>
+      <layer>1</layer>
+      <type>0</type>
+      <x>240</x>
+      <y>240</y>
+    </event>
+  </objects>
+  <points>
+    <start>
+      <x>0</x>
+      <y>0</y>
+    </start>
+    <end>
+      <x>0</x>
+      <y>0</y>
+    </end>
+  </points>
+</config>

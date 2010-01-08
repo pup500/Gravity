@@ -19,18 +19,21 @@ package org.overrides
 		
 		protected var _bgLayer:FlxLayer;
 		protected var _fgLayer:FlxLayer;
+		protected var _evLayer:FlxLayer;
 		
 		public var _loaded:Boolean;
 		
 		public static const BG:uint = 0;
 		public static const MG:uint = 1;
 		public static const FG:uint = 2;
+		public static const EV:uint = 3;
 		
 		public function ExState()
 		{
 			super();
 			_bgLayer = new FlxLayer();
 			_fgLayer = new FlxLayer();
+			_evLayer = new FlxLayer();
 			
 			var environment:b2AABB = new b2AABB();
 			environment.lowerBound.Set(0.0, 0.0);
@@ -65,11 +68,16 @@ package org.overrides
 		override public function update():void
 		{
 			//the_world.Step(FlxG.elapsed, 10);
-			the_world.Step(1/30, 10, 10);
+			//the_world.Step(1/30, 10, 10);
+			
+			//This probably ensures constant physics regardless of framerate...
+			the_world.Step(FlxG.elapsed, 10, 10);
 			
 			_bgLayer.update();
 			super.update();
 			_fgLayer.update();
+			
+			_evLayer.update();
 			
 			//For the physics....
 			debug_sprite.x = FlxG.scroll.x;
@@ -82,6 +90,7 @@ package org.overrides
 				case BG: return _bgLayer.add(Core);
 				case MG: return _layer.add(Core);
 				case FG: return _fgLayer.add(Core);
+				case EV: return _evLayer.add(Core);
 			}
 			
 			return null;
@@ -91,10 +100,12 @@ package org.overrides
 			if(_bgLayer.visible) _bgLayer.render();	
 			if(_layer.visible) super.render();
 			if(_fgLayer.visible) _fgLayer.render();
+			if(_evLayer.visible) _evLayer.render();
 		}
 		
 		protected function get bg():FlxLayer{ return _bgLayer;}
 		protected function get mg():FlxLayer{ return _layer;}
 		protected function get fg():FlxLayer{ return _fgLayer;}	
+		protected function get ev():FlxLayer{ return _evLayer;}	
 	}
 }

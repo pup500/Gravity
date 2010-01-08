@@ -5,6 +5,7 @@
 	import Box2D.Dynamics.*;
 	
 	import PhysicsGame.LevelSelectMenu;
+	import PhysicsGame.EventObject;
 	
 	import common.Utilities;
 	import common.XMLMap;
@@ -32,6 +33,7 @@
 		
 		[Embed(source="../data/cursor.png")] private var cursorSprite:Class;
 		[Embed(source="../data/editor/interface/dino.mp3")] private var dinoSound:Class;
+		[Embed(source="../data/editor/interface/pig-icon.png")] private var eventImg:Class;
 		
 		[Embed(source="../data/start_point.png")] private var startSprite:Class;
 		[Embed(source="../data/end_point.png")] private var endSprite:Class;
@@ -56,12 +58,12 @@
 		private var index:int;
 		private var lastIndex:int;
 		private var layer:uint;
+		private var eventType:uint;
 		
 		private var mode:uint;
 		private var active:Boolean;
 		private var polyShape:Boolean;
 		private var run:Boolean;
-		private var addJoint:Boolean;
 
 		private var jointType:uint;
 		private var jointsImage:Shape;
@@ -92,6 +94,7 @@
 		private var playButton:Sprite;
 		private var changeButton:Sprite;
 		private var sensorButton:Sprite;
+		private var eventButton:Sprite;
 		
 		private var optionsPanel:Sprite;
 		private var gridButton:Sprite;
@@ -110,6 +113,7 @@
 		private const JOIN:uint = 2;
 		private const BREAK:uint = 3;
 		private const CHANGE:uint = 4;
+		private const EVENT:uint = 5;
 
 		private const WIDTH:uint = 1280;
 		private const HEIGHT:uint = 960;
@@ -135,6 +139,9 @@
 			drawingLine = false;
 			polyShape = true;
 			run = false;
+			
+			eventType = 0;
+			
 			jointType = Utilities.e_distanceJoint;
 			
 			startImg = new FlxSprite(0,0,startSprite);
@@ -328,13 +335,17 @@
 			FlxG.log("sensor clicked");
 		}
 		
+		private function onEventClick(event:MouseEvent):void {
+			mode = EVENT;
+		}
+		
 		private function createActionsPanel():void{
 			actionsPanel = new Sprite();
 			actionsPanel.x = 5;
 			actionsPanel.y = 30;
 			actionsPanel.graphics.beginFill(0x888888,1);
 			actionsPanel.graphics.lineStyle(2,0x000000,1);
-			actionsPanel.graphics.drawRoundRect(0,0,85,250,10,10);//drawRect(5,185,80,240);
+			actionsPanel.graphics.drawRoundRect(0,0,85,330,10,10);//drawRect(5,185,80,240);
 			actionsPanel.graphics.endFill();
 			
 			changeButton = createImageButton(changeImg, 5, 10, actionsPanel, "Change", onChangeClick);
@@ -344,6 +355,7 @@
 			breakButton = createImageButton(breakImg, 5, 170, actionsPanel, "Break", onBreakClick);
 			playButton = createImageButton(playImg, 5, 210, actionsPanel, "Run", onPlayClick);
 			sensorButton = createImageButton(editImg, 5, 250, actionsPanel, "Sensor", onSensorClick);
+			eventButton = createImageButton(eventImg, 5, 290, actionsPanel, "Event", onEventClick);
 			
 			copyButton = createImageButton(copyImg, 5, 400, actionsPanel, null, onCopyClick);
 			helpButton = createImageButton(helpImg, 590, 400, actionsPanel, null, onHelpClick);
@@ -578,6 +590,10 @@
 				fg.visible = !fg.visible;
 			}
 			
+			if(FlxG.keys.justPressed("FOUR")){
+				ev.visible = !ev.visible;
+			}
+			
 			if(FlxG.keys.justPressed("F1")){
 				run = !run;
 			}
@@ -614,7 +630,14 @@
 				layer++;
 			}
 			
-			if(layer > 2) layer = 0;
+			if(layer > 3) layer = 0;
+			
+			if(FlxG.keys.justPressed("X")){
+				eventType++;
+			}
+			
+			if(eventType >= EventObject.EVENTS.length)
+				eventType = 0;
 		}
 		
 		private function handleMode():void{
@@ -630,10 +653,11 @@
 			editButton.alpha = mode == EDIT ? 1 : .5;
 			helpButton.alpha = helpText.visible ? 1 : .5;
 			changeButton.alpha = mode == CHANGE ? 1 : .5;
+			eventButton.alpha = mode == EVENT ? 1 : .5;
 			
 			jointsImage.visible = (mode == JOIN || mode == BREAK);
 			
-			var actions:Array = ["REMOVE", "ADD", "JOIN", "BREAK", "CHANGE"];
+			var actions:Array = ["REMOVE", "ADD", "JOIN", "BREAK", "CHANGE", "EVENT"];
 			var action:String = actions[mode];
 			var mouseCoord:String =  "(" + FlxG.mouse.x + ", " + FlxG.mouse.y +")";
 			var itemCount:String = "# Items: " + xmlMapLoader.getItemCount();
@@ -641,11 +665,12 @@
 			//From Utilities
 			var jointTypes:Array = ["UNKNOWN", "REVOLUTE", "PRISMATIC", "DISTANCE", "PULLEY", "MOUSE", "GEAR", "LINE"];
 			
-			var layerTypes:Array = ["BG", "MG", "FG"];
+			var layerTypes:Array = ["BG", "MG", "FG", "EV"];
 			var layers:String;
 			layers = bg.visible ? "B" : "";
 			layers += mg.visible ? "M" : "";
 			layers += fg.visible ? "F" : "";
+			layers += ev.visible ? "E" : "";
 			
 			var status:Array = [
 				itemCount,
@@ -656,6 +681,7 @@
 				"JOINT: " + jointTypes[jointType],
 				"LAYER: " + layerTypes[layer],
 				"VISIBLE: " + layers,
+				"EVT: " + eventType,
 				mouseCoord];
 			
 			modeText.text = status.join(" | ");
@@ -688,7 +714,9 @@
 
 			//Shift click to add and delete... This allows the user to press the tool buttons without messing up
 			if(FlxG.mouse.justPressed() && FlxG.keys.pressed("SHIFT")){
-				if(mode == EDIT){
+				switch(mode){
+				
+				case EDIT:
 					if(index == 0){
 						onStart(point);
 					}
@@ -698,14 +726,14 @@
 					else{
 						addObject(point);
 					}
-				}
-				else if(mode == KILL){
+					break;
+				case KILL:
 					xmlMapLoader.removeObjectAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true);
-				}
-				else if(mode == CHANGE){
+					break;
+				case CHANGE:
 					var type:String = active ? "active" : "static";
 					xmlMapLoader.setObjectTypeAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true, type);
-				}
+					break;
 				/*
 				else if(mode == DRAW){
 					//Drawbox...
@@ -715,7 +743,7 @@
 					drawingBox = true;
 				}
 				*/
-				else if(mode == JOIN){
+				case JOIN:
 					xmlMapLoader.registerObjectAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true);
 					
 					//Draw with snapping.....
@@ -726,9 +754,12 @@
 					startPoint.x = FlxG.mouse.x;
 					startPoint.y = FlxG.mouse.y;
 					drawingLine = true;
-				}
-				else if(mode == BREAK){
+					break;
+				case BREAK:
 					xmlMapLoader.removeJointAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true);
+					break;
+				case EVENT:
+					addEventObject(point);
 				}
 			}
 			
@@ -821,6 +852,15 @@
 				shape.layer = layer;
 				xmlMapLoader.addXMLObject(shape, true);
 			}
+		}
+		
+		private function addEventObject(point:Point):void{
+			var event:XML = new XML(<event/>);
+			event.x = point.x;
+			event.y = point.y;
+			event.type = eventType;
+			event.layer = layer;
+			xmlMapLoader.addXMLEvent(event);
 		}
 		
 		private function onStart(point:Point):void{

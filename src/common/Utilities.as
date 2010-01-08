@@ -1,12 +1,14 @@
 package common
 {
+	import Box2D.Collision.Shapes.b2PolygonDef;
 	import Box2D.Collision.Shapes.b2Shape;
 	import Box2D.Collision.b2AABB;
 	import Box2D.Common.Math.b2Vec2;
 	import Box2D.Dynamics.Joints.*;
 	import Box2D.Dynamics.b2Body;
 	import Box2D.Dynamics.b2World;
-	import Box2D.Collision.Shapes.b2PolygonDef;
+	
+	import PhysicsGame.EventObject;
 	
 	import flash.geom.Point;
 	
@@ -58,8 +60,9 @@ package common
 			var position:b2Vec2 = new b2Vec2();
 			var file:String = new String();
 			var angle:Number = 0;
-			var shape:XML;
+			var item:XML;
 			var bSprite:ExSprite;
+			var bEvent:EventObject;
 			for (var bb:b2Body = the_world.GetBodyList(); bb; bb = bb.GetNext()) {
 				
 				bSprite = bb.GetUserData();
@@ -69,24 +72,39 @@ package common
 				if(bSprite.name == "Player") continue;
 				
 				bb.PutToSleep();
-				isStatic = bb.IsStatic();
-				position.x = bb.GetPosition().x;
-				position.y = bb.GetPosition().y;
 				
-				//Need to figure out how to get file...
-				file = bSprite.imageResource;
-				angle = bb.GetAngle();
+				if(bSprite is EventObject){
+					bEvent = bSprite as EventObject;
+					
+					position.x = bb.GetPosition().x;
+					position.y = bb.GetPosition().y;
+					
+					item = new XML(<event/>);
+					item.layer = bEvent.layer;
+					item.type = bEvent._type;
+					item.x = position.x;
+					item.y = position.y;
+				}
+				else{
+					isStatic = bb.IsStatic();
+					position.x = bb.GetPosition().x;
+					position.y = bb.GetPosition().y;
+					
+					//Need to figure out how to get file...
+					file = bSprite.imageResource;
+					angle = bb.GetAngle();
+					
+					item = new XML(<shape/>);
+					item.file = file;
+					item.layer = bSprite.layer;
+					item.isStatic = isStatic;
+					item.polyshape = bSprite.shape is b2PolygonDef;
+					item.angle = angle;
+					item.x = position.x;
+					item.y = position.y;
+				}
 				
-				shape = new XML(<shape/>);
-				shape.file = file;
-				shape.layer = bSprite.layer;
-				shape.isStatic = isStatic;
-				shape.polyshape = bSprite.shape is b2PolygonDef;
-				shape.angle = angle;
-				shape.x = position.x;
-				shape.y = position.y;
-				
-				objects.appendChild(shape);
+				objects.appendChild(item);
 			}
 			
 			var joint:XML;

@@ -21,6 +21,9 @@
 			FlxG.level = _levelToChangeTo
 			FlxG.switchState(XMLPhysState);
 		}
+		
+		public function setTarget():void{};
+		public function setArgs():void{};
 	}
 
 }
