@@ -1,21 +1,12 @@
 <config>
   <objects>
-    <shape>
-      <file>data/editor/images/e_ass_08.png</file>
-      <layer>1</layer>
-      <isStatic>false</isStatic>
-      <polyshape>true</polyshape>
-      <angle>0</angle>
-      <x>376</x>
-      <y>303</y>
-    </shape>
     <event>
       <type>0</type>
       <x>272</x>
       <y>272</y>
       <target>
-        <x>375.5</x>
-        <y>302.5</y>
+        <x>369.4616838082908</x>
+        <y>315.4876982635886</y>
       </target>
     </event>
     <shape>
@@ -27,6 +18,30 @@
       <x>320</x>
       <y>376</y>
     </shape>
+    <shape>
+      <file>data/editor/images/e_ass_08.png</file>
+      <layer>1</layer>
+      <isStatic>false</isStatic>
+      <polyshape>true</polyshape>
+      <angle>76.08878346072949</angle>
+      <x>369.5286441935262</x>
+      <y>316.1916274552046</y>
+    </shape>
+    <joint>
+      <type>1</type>
+      <body1>
+        <x>0</x>
+        <y>0</y>
+      </body1>
+      <body2>
+        <x>369.5286441935262</x>
+        <y>316.1916274552046</y>
+      </body2>
+      <anchor>
+        <x>375</x>
+        <y>308</y>
+      </anchor>
+    </joint>
   </objects>
   <points>
     <start>

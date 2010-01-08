@@ -527,6 +527,8 @@ package common
 			var point2:b2Vec2 = b2[1];
 			
 			_bodies = new Array();
+			
+			if(!body1 || !body2) return;
 				
 			if(!(body1.GetUserData() is EventObject)) {
 				return;

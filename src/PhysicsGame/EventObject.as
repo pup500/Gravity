@@ -60,10 +60,12 @@ package PhysicsGame
 			trace("renderafter: " + x + "," + y);
 			
 			if(_impl.target && _impl.target.exists){
+				getScreenXY(_p);
+				
 				var myShape:Shape = new Shape();
 				myShape.graphics.lineStyle(2,0x0,1);
-				myShape.graphics.moveTo(x + width/2,y + height/2);
-				myShape.graphics.lineTo(_impl.target.x + _impl.target.width/2, _impl.target.y + _impl.target.height/2);
+				myShape.graphics.moveTo(_p.x + width/2, _p.y + height/2);
+				myShape.graphics.lineTo(_p.x  - x + _impl.target.x + _impl.target.width/2, _p.y - y + _impl.target.y + _impl.target.height/2);
 				FlxG.buffer.draw(myShape);
 			}
 			
