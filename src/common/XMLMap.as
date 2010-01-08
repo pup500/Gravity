@@ -184,8 +184,7 @@ package common
 		    b2.name = "loaded";
 		    b2.layer = shape.layer;
 		    b2.imageResource = shape.file;
-		    //b2.pixels = bitmapData;
-		    //b2.initShape();
+		    b2.pixels = bitmapData;
 		    
 		    trace(shape.polyshape);
 		    if(shape.polyshape == "true")
@@ -504,7 +503,7 @@ package common
 			//Call this to fix position of object before render phase
 			b2.update();
 			
-			_state.addToLayer(b2, event.layer);
+			_state.addToLayer(b2, ExState.EV);
 		}
 		
 		public function getItemCount():uint{

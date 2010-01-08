@@ -80,7 +80,6 @@ package common
 					position.y = bb.GetPosition().y;
 					
 					item = new XML(<event/>);
-					item.layer = bEvent.layer;
 					item.type = bEvent._type;
 					item.x = position.x;
 					item.y = position.y;

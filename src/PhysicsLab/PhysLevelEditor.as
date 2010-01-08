@@ -132,6 +132,8 @@
 			
 			FlxG.showCursor(cursorSprite);
 			
+			ev.visible = true;
+			
 			files = new Array();
 			active = false;
 			snapToGrid = true;
@@ -859,7 +861,6 @@
 			event.x = point.x;
 			event.y = point.y;
 			event.type = eventType;
-			event.layer = layer;
 			xmlMapLoader.addXMLEvent(event);
 		}
 		

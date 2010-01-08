@@ -45,6 +45,8 @@ package org.overrides
 			
 			_loaded = false;
 			debug_sprite = new Sprite();
+			
+			ev.visible = false;
 		}
 		
 		public function init():void{

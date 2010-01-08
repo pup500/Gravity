@@ -33,11 +33,9 @@ package org.overrides
 		
 		protected var _world:b2World;
 		
-		[Embed(source="../../data/editor/interface/pig-icon.png")] private  var eventImg:Class;
-		
 		public function ExSprite(x:int=0, y:int=0, sprite:Class=null, resource:String="")
 		{
-			super(x, y, eventImg);//sprite);
+			super(x, y, sprite);
 			name = "ExSprite";
 			imageResource = resource;
 			
@@ -309,7 +307,6 @@ package org.overrides
 		
 		override public function update():void
 		{
-			trace("update exsprite");
 			super.update();
 			var posVec:b2Vec2 = final_body.GetPosition();
 			x = posVec.x - width/2;//_bw/2;
@@ -331,8 +328,6 @@ package org.overrides
 			if(!visible)
 				return;
 			getScreenXY(_p);
-			
-			trace("render exsprite");
 			
 			//Simple render
 			if((angle == 0) && (scale.x == 1) && (scale.y == 1) && (blend == null))
