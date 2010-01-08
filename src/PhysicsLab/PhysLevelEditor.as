@@ -54,6 +54,8 @@
 		
 		[Embed(source="../data/editor/interface/connect-icon.png")] private var linkImg:Class;
 		
+		[Embed(source = "../data/editor/interface/add.png")] private var sensorImg:Class;
+		
 		private var xmlMapLoader:XMLMap;
 		
 		private var files:Array;
@@ -118,7 +120,8 @@
 		private const CHANGE:uint = 4;
 		private const EVENT:uint = 5;
 		private const LINK:uint = 6;
-
+		private const SENSOR:uint = 7;
+		
 		private const WIDTH:uint = 1280;
 		private const HEIGHT:uint = 960;
 		
@@ -178,12 +181,6 @@
 			//Layers are going to be the specification in exsprite, add that when we add an object
 			//Sprites are sensors with no interactions
 			//Sensor objects are sensors with script xml file...
-		}
-		
-		private function onSensorDragRelease(args:MouseDragSelectEventArgs):void
-		{
-			FlxG.log(args.Start);
-			FlxG.log(args.End);
 		}
 		
 		override protected function initBox2DDebugRendering():void
@@ -337,8 +334,8 @@
 		}
 		
 		private function onSensorClick(event:MouseEvent):void {
+			mode = SENSOR;
 			sensorDrag.Activate();
-			FlxG.log("sensor clicked");
 		}
 		
 		private function onEventClick(event:MouseEvent):void {
@@ -367,6 +364,7 @@
 			sensorButton = createImageButton(editImg, 5, 250, actionsPanel, "Sensor", onSensorClick);
 			eventButton = createImageButton(eventImg, 5, 290, actionsPanel, "Event", onEventClick);
 			linkButton = createImageButton(linkImg, 5, 330, actionsPanel, "Link", onLinkClick);
+			
 			
 			copyButton = createImageButton(copyImg, 5, 400, actionsPanel, null, onCopyClick);
 			helpButton = createImageButton(helpImg, 590, 400, actionsPanel, null, onHelpClick);
@@ -520,7 +518,7 @@
 			handlePreview();
 			handleMode();
 			handleMouse();
-			sensorDrag.update();
+			sensorDrag.HandleInput();
 			/*
 			//Commented out because some joints do not use the anchors the way regular distance joints do...
 			//If we want to add joints drawing...
@@ -666,10 +664,10 @@
 			changeButton.alpha = mode == CHANGE ? 1 : .5;
 			eventButton.alpha = mode == EVENT ? 1 : .5;
 			linkButton.alpha = mode == LINK ? 1 : .5;
-			
+			sensorButton.alpha = mode == SENSOR ? 1 : .5; 
 			jointsImage.visible = (mode == JOIN || mode == BREAK);
 			
-			var actions:Array = ["REMOVE", "ADD", "JOIN", "BREAK", "CHANGE", "EVENT", "LINK"];
+			var actions:Array = ["REMOVE", "ADD", "JOIN", "BREAK", "CHANGE", "EVENT", "LINK", "SENSOR"];
 			var action:String = actions[mode];
 			var mouseCoord:String =  "(" + FlxG.mouse.x + ", " + FlxG.mouse.y +")";
 			var itemCount:String = "# Items: " + xmlMapLoader.getItemCount();
@@ -884,6 +882,25 @@
 			xmlMapLoader.addXMLEvent(event);
 		}
 		
+		private function onSensorDragRelease(args:MouseDragSelectEventArgs):void
+		{
+			//FlxG.log(args.Start);
+			//FlxG.log(args.End);
+			var width:int = args.End.x - args.Start.x;
+			var height:int = args.End.y - args.Start.y;
+			//We use the center of the box because Sensor is a sprite and sprites' x,y coordinates are for their center.
+			var boxCenterX:int = args.Start.x + width / 2;
+			var boxCenterY:int = args.Start.y + height / 2;
+			
+			//TODO: what if the end point is less than the start point?
+			var sensor:XML = new XML(<sensor/>);
+			sensor.x = boxCenterX
+			sensor.y = boxCenterY
+			sensor.width = width;
+			sensor.height = height;
+			xmlMapLoader.addXMLSensor(sensor, sensorImg);
+		}
+		
 		private function onStart(point:Point):void{
 			startImg.x = point.x;
 			startImg.y = point.y;
@@ -895,5 +912,7 @@
 			endImg.y = point.y;
 			xmlMapLoader.setEndPoint(new Point(point.x, point.y));
 		}
+		
+		
 	}
 }

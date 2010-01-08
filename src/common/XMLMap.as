@@ -4,7 +4,7 @@ package common
 	import Box2D.Dynamics.Joints.*;
 	import Box2D.Dynamics.b2Body;
 	
-	import PhysicsGame.EventObject;
+	import PhysicsGame.*;
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -508,6 +508,13 @@ package common
 			}
 			
 			_state.addToLayer(b2, ExState.EV);
+		}
+		
+		public function addXMLSensor(sensorXML:XML, sprite:Class = null):void {
+			var sensor:Sensor = new Sensor(sensorXML.x, sensorXML.y, sensorXML.width, sensorXML.height);
+			sensor.loadGraphic(sprite);
+			sensor.createPhysBody(_state.the_world);
+			_state.addToLayer(sensor, ExState.EV);
 		}
 		
 		public function addEventTarget():void{

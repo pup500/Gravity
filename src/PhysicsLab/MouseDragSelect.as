@@ -35,8 +35,8 @@
 			active = true;
 		}
 		
-		//@desc Handles mouse input and renders the drag box.
-		public function update():void
+		//@desc Handles mouse input and renders the drag box. Call in update function.
+		public function HandleInput():void
 		{
 			if (!active) return;
 			

@@ -37,6 +37,13 @@
 			_events = new Array();
 		}
 		
+		override public function initShape():void
+		{
+			var polyDef:b2PolygonDef = new b2PolygonDef();
+			polyDef.SetAsBox(width / 2, height / 2);
+			super.shape = polyDef;
+		}
+		
 		public function AddEvent(event:IEvent):void
 		{
 			_events.push(event);
