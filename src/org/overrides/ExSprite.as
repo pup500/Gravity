@@ -45,8 +45,7 @@ package org.overrides
 			impactPoint = new b2ContactPoint();
 		}
 		
-		//Something to attempt, if we can create a polygon based on bitmap...
-		
+		//@desc Create a polygon shape definition based on bitmap. If this doesn't work, it will call initShape()
 		public function initShapeFromSprite():void{
 			var shapeDef:b2PolygonDef = new b2PolygonDef();
 			var points:Array = new Array();
@@ -232,8 +231,8 @@ package org.overrides
 			initShape();
 		}
 		
+		//@desc Create a rectangle shape definition from the sprite dimensions.
 		//We're calling this outside the constructor because we need Flixel to define its sprite dimensions first in loadGraphic().
-		//TODO: Refactor. Can this go into the constructor somehow? Having to call it everytime you construct the an ExSprite sucks
 		public function initShape():void {
 			var shapeDef:b2PolygonDef = new b2PolygonDef();
 			shapeDef.SetAsBox(_bw/2, _bh/2);
@@ -242,6 +241,7 @@ package org.overrides
 			shape = shapeDef;
 		}
 		
+		//@desc Create a circle shape definition from the sprite's width.
 		public function initCircleShape():void
 		{
 			var shapeDef:b2CircleDef = new b2CircleDef();
@@ -251,7 +251,7 @@ package org.overrides
 			shape = shapeDef;
 		}
 		
-		//@desc Create the physical representation in the Box2D World.
+		//@desc Create the physical representation in the Box2D World using the shape definition from initShape methods.
 		//@param	world The Box2D b2World for this object to exist in.
 		public function createPhysBody(world:b2World):void
 		{
