@@ -78,7 +78,6 @@ package common
 			
 			//If we have no bodies to load...
 			if (expBodyCount == getItemCount()) {
-				addAllSensors();
 				addAllEvents();
 				if(!_loaded){
     				_loaded = true;
