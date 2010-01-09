@@ -888,7 +888,7 @@
 			//FlxG.log(args.End);
 			var width:int = args.End.x - args.Start.x;
 			var height:int = args.End.y - args.Start.y;
-			//We use the center of the box because Sensor is a sprite and sprites' x,y coordinates are for their center.
+			//We use the center of the box because Sensor is a sprite and a sprite's x,y coordinates are for its center.
 			var boxCenterX:int = args.Start.x + width / 2;
 			var boxCenterY:int = args.Start.y + height / 2;
 			

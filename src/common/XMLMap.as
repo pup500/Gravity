@@ -77,7 +77,8 @@ package common
 			trace("count:" + getItemCount());
 			
 			//If we have no bodies to load...
-			if(expBodyCount == getItemCount()){
+			if (expBodyCount == getItemCount()) {
+				addAllSensors();
 				addAllEvents();
 				if(!_loaded){
     				_loaded = true;
