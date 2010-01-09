@@ -151,6 +151,16 @@ package common
 		    	joint.anchor.y = int(joint.anchor.y) + offset.y;
 			}
 			
+			for each(var eventXML:XML in configXML.objects.event){
+				eventXML.x = int(eventXML.x) + offset.x;
+		    	eventXML.y = int(eventXML.y) + offset.y;
+		    	
+		    	if(eventXML.target.x.length() > 0 && eventXML.target.y.length() > 0){
+		    		eventXML.target.x = int(eventXML.target.x) + offset.x;
+		    		eventXML.target.y = int(eventXML.target.y) + offset.y;
+		    	}
+			}
+			
 			for each(shape in configXML.objects.shape){
 				addXMLObject(shape);
 			}
@@ -535,6 +545,8 @@ package common
 			var point2:b2Vec2 = b2[1];
 			
 			_bodies = new Array();
+			
+			if(!body1 || !body2) return;
 				
 			if(!(body1.GetUserData() is EventObject)) {
 				return;

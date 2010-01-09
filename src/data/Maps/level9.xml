@@ -1,41 +1,77 @@
 <config>
   <objects>
     <shape>
-      <file>data/editor/images/e_ass_08.png</file>
-      <layer>1</layer>
-      <isStatic>false</isStatic>
-      <polyshape>true</polyshape>
-      <angle>0</angle>
-      <x>376</x>
-      <y>303</y>
-    </shape>
-    <event>
-      <type>0</type>
-      <x>272</x>
-      <y>272</y>
-      <target>
-        <x>375.5</x>
-        <y>302.5</y>
-      </target>
-    </event>
-    <shape>
       <file>data/editor/images/e_ass_03.png</file>
       <layer>1</layer>
       <isStatic>true</isStatic>
       <polyshape>true</polyshape>
       <angle>0</angle>
-      <x>320</x>
-      <y>376</y>
+      <x>336</x>
+      <y>360</y>
+    </shape>
+    <event>
+      <type>0</type>
+      <x>193</x>
+      <y>248</y>
+      <target>
+        <x>255.5</x>
+        <y>255.5</y>
+      </target>
+    </event>
+    <event>
+      <type>0</type>
+      <x>321</x>
+      <y>312</y>
+      <target>
+        <x>383.5</x>
+        <y>319.5</y>
+      </target>
+    </event>
+    <event>
+      <type>0</type>
+      <x>321</x>
+      <y>168</y>
+      <target>
+        <x>383.5</x>
+        <y>175.5</y>
+      </target>
+    </event>
+    <shape>
+      <file>data/editor/images/e_ass_10.png</file>
+      <layer>1</layer>
+      <isStatic>true</isStatic>
+      <polyshape>true</polyshape>
+      <angle>0</angle>
+      <x>384</x>
+      <y>320</y>
+    </shape>
+    <shape>
+      <file>data/editor/images/e_ass_10.png</file>
+      <layer>1</layer>
+      <isStatic>true</isStatic>
+      <polyshape>true</polyshape>
+      <angle>0</angle>
+      <x>384</x>
+      <y>176</y>
+    </shape>
+    <shape>
+      <file>data/editor/images/e_ass_10.png</file>
+      <layer>1</layer>
+      <isStatic>true</isStatic>
+      <polyshape>true</polyshape>
+      <angle>0</angle>
+      <x>256</x>
+      <y>256</y>
     </shape>
   </objects>
   <points>
     <start>
-      <x>144</x>
-      <y>320</y>
+      <x>160</x>
+      <y>304</y>
     </start>
     <end>
-      <x>464</x>
-      <y>320</y>
+      <x>480</x>
+      <y>304</y>
     </end>
   </points>
 </config>

@@ -1,0 +1,32 @@
+<config>
+  <objects>
+    <shape>
+      <file>data/editor/images/e_ass_10.png</file>
+      <layer>1</layer>
+      <isStatic>true</isStatic>
+      <polyshape>true</polyshape>
+      <angle>0</angle>
+      <x>287</x>
+      <y>264</y>
+    </shape>
+    <event>
+      <type>0</type>
+      <x>224</x>
+      <y>256</y>
+      <target>
+        <x>286.5</x>
+        <y>263.5</y>
+      </target>
+    </event>
+  </objects>
+  <points>
+    <start>
+      <x>0</x>
+      <y>0</y>
+    </start>
+    <end>
+      <x>0</x>
+      <y>0</y>
+    </end>
+  </points>
+</config>
