@@ -32,7 +32,7 @@ package PhysicsGame
 		private var _restart:Number;
 		private var _gibs:FlxEmitter;
 		
-		private var _bullets:Array;
+		private var _bullets:BulletArray;
 		private var _curBullet:uint;
 		private var _bulletVel:int;
 		private var _coolDown:Timer;
@@ -40,8 +40,9 @@ package PhysicsGame
 		
 		private var _canJump:Boolean;
 		private var _isJumping:Boolean;
+		private var _antiGravity:Boolean;
 		
-		public function Player(x:int=0, y:int=0, bullets:Array=null)
+		public function Player(x:int=0, y:int=0, bullets:BulletArray=null)
 		{
 			super(x, y, ImgSpaceman);
 			loadGraphic(ImgSpaceman,true,true,16,32);
@@ -86,6 +87,8 @@ package PhysicsGame
 			
 			_canJump = false;
 			_isJumping = false;
+			
+			_antiGravity = false;
 		}
 		
 		
@@ -204,13 +207,32 @@ package PhysicsGame
 					play("idle");
 			}
 			
-			//UPDATE POSITION AND ANIMATION
-			
+			//UPDATE POSITION AND ANIMATION			
 			super.update();
+			
+			changeGravityObjectInput();
 			
 			mouseShoot();
 			
 			gravObjKillSwitch();
+			changeGravObjButton();
+		}
+		
+		private function changeGravObjButton():void
+		{
+			if (FlxG.keys.justPressed("F"))
+			{
+				FlxG.play(SndExplode);
+				
+				if(_antiGravity){
+					_bullets.setNewGravityObjects(GravityObject);
+					_antiGravity = false;
+				}
+				else{
+					_bullets.setNewGravityObjects(AntiGravityObject);
+					_antiGravity = true;
+				}
+			}
 		}
 		
 		private function gravObjKillSwitch():void
@@ -223,6 +245,13 @@ package PhysicsGame
 				{
 					bullet.killGravityObject();
 				}
+			}
+		}
+		
+		private function changeGravityObjectInput():void
+		{
+			if (FlxG.keys.justPressed("F"))
+			{
 			}
 		}
 		

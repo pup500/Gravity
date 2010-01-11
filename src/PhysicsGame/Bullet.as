@@ -111,6 +111,7 @@
 		public function setGravityObject(gravityObject:GravityObject):void{
 			_gravityObject = gravityObject;
 		}
+
 		
 		public function shoot(X:int, Y:int, VelocityX:int, VelocityY:int):void
 		{
