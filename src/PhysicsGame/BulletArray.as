@@ -43,6 +43,7 @@
 			}
 		}
 		
+		//TODO: This will change every bullet, even the ones that are in midair. Flag bullets for change and then change them when they're dead?
 		public function setNewGravityObjects(gravObjType:Class):void
 		{
 			//Create GravityObjects
