@@ -369,5 +369,19 @@ package org.overrides
 			impactPoint.normal = point.normal;
 			impactPoint.position = point.position.Copy();
 		}
+		
+		public function getXML():XML
+		{			
+			var item:XML = new XML(<shape/>);
+			item.file =  imageResource;
+			item.layer = layer;
+			item.isStatic = final_body.IsStatic();
+			item.polyshape = shape is b2PolygonDef;
+			item.angle = angle;
+			item.x = final_body.GetPosition().x;
+			item.y = final_body.GetPosition().y;
+					
+			return item;
+		}
 	}
 }

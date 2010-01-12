@@ -29,6 +29,8 @@
 		public var mass:Number;
 		private var initialMass:Number = 5000;//50000;
 		
+		public var antiGravity:Boolean;
+		
 		private var _coolDown:Timer;
 		private var _startLosingMass:Boolean;
 		
@@ -49,6 +51,8 @@
 			name = "GravityObject";
 			
 			_world = world; //For use when we shoot.
+			
+			antiGravity = false;
 			
 			offset.x = 1;
 			offset.y = 1;
@@ -187,8 +191,10 @@
 			
 			//trace("impulsex: " + impulse.x + ", " + impulse.y);
 			//trace("impulsex: " + impulse.x /physBody.GetMass() + ", " + impulse.y/physBody.GetMass());
-			
-			return impulse;
+			if(!antiGravity)
+				return impulse;
+			else
+				return impulse.Negative(); 
 		}
 	}
 
