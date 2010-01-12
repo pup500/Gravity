@@ -17,7 +17,8 @@ package PhysicsGame
 		
 		public static const EVENTS:Array =
 			[ LevelEvent, 
-			  AnimateEvent 
+			  AnimateEvent,
+			  SpawnEvent 
 			];
 		
 		public function EventObject(x:int=0, y:int=0, sprite:Class=null, resource:String="", type:uint = 0):void{
@@ -52,6 +53,8 @@ package PhysicsGame
 		override public function update():void{
 			trace("before: " + x + "," + y);
 			super.update();
+			
+			_impl.update();
 			trace("myeventobjecxy: " + x + "," + y);
 		}
 		override public function render():void{
