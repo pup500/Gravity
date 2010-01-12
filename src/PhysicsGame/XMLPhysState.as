@@ -23,7 +23,8 @@ package PhysicsGame
 		
 		private var xmlMapLoader:XMLMap;
 		
-		private var _bullets:BulletArray;
+		private var _bullets:Array;
+		private var _gravObjects:Array;
 		//private var BulletArray.gravObjects:Array;
 		//private var _bulletCollection:BulletCollection;
 		private var b2:ExSprite; //For creating environment physical objects.
@@ -64,25 +65,26 @@ package PhysicsGame
 		}
 		
 		private function createBullets():void {
-			//_bulletCollection = new BulletCollection(the_world);
-			//_bulletCollection.createBullets(GravityObject);
-			_bullets = new BulletArray(this);
-			_bullets.createBullets(GravityObject);
+			//_bullets = new BulletArray(this);
+			//_bullets.createBullets(GravityObject);
 			//BulletArray.gravObjects = new Array();
 			
-			//Create GravityObjects
-			//for(var i:uint= 0; i < 8; i++){
-				//BulletArray.gravObjects.push(this.add(new AntiGravityObject(the_world)));
-				////don't create physical body, wait till bullet is shot.
-			//}
+			_bullets = new Array();
+			_gravObjects = new Array();
 			
-			////Create bullets
-			//for(i = 0; i < 8; i++){
-				//var bullet:Bullet = new Bullet(the_world);
-				//bullet.setGravityObject(BulletArray.gravObjects[i]);
-				//_bullets.push(this.add(bullet));
-				////don't create physical body, wait till bullet is shot.
-			//}
+			//Create GravityObjects
+			for(var i:uint= 0; i < 8; i++){
+				_gravObjects.push(this.add(new GravityObject(the_world)));
+				//don't create physical body, wait till bullet is shot.
+			}
+			
+			//Create bullets
+			for(i = 0; i < 8; i++){
+				var bullet:Bullet = new Bullet(the_world);
+				bullet.setGravityObject(_gravObjects[i]);
+				_bullets.push(this.add(bullet));
+				//don't create physical body, wait till bullet is shot.
+			}
 		}
 		
 		//Player will be called from the xmlMapLoader when the xml file is read...
@@ -135,9 +137,9 @@ package PhysicsGame
 				
 				if(bb.IsDynamic()){
 				//if(bb.GetUserData() && bb.GetUserData().name == "Player"){
-					for(var i:uint = 0; i < _bullets.gravObjects.length; i++){
+					for(var i:uint = 0; i < _gravObjects.length; i++){
 						
-						var gObj:GravityObject = _bullets.gravObjects[i] as GravityObject;
+						var gObj:GravityObject = _gravObjects[i] as GravityObject;
 						if(!gObj.exists) continue;
 						
 						var force:b2Vec2 = gObj.GetGravityForce(bb);

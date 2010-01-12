@@ -113,7 +113,7 @@
 		}
 
 		
-		public function shoot(X:int, Y:int, VelocityX:int, VelocityY:int):void
+		public function shoot(X:int, Y:int, VelocityX:int, VelocityY:int, antiGravity:Boolean=false):void
 		{
 			destroyPhysBody();
 			
@@ -126,6 +126,8 @@
 			FlxG.play(SndShoot);
 			
 			trace("bullet shoot");
+			
+			_gravityObject.antiGravity = antiGravity;
 			
 			super.reset(X,Y);
 		}

@@ -32,7 +32,7 @@ package PhysicsGame
 		private var _restart:Number;
 		private var _gibs:FlxEmitter;
 		
-		private var _bullets:BulletArray;
+		private var _bullets:Array;
 		private var _curBullet:uint;
 		private var _bulletVel:int;
 		private var _coolDown:Timer;
@@ -42,7 +42,7 @@ package PhysicsGame
 		private var _isJumping:Boolean;
 		private var _antiGravity:Boolean;
 		
-		public function Player(x:int=0, y:int=0, bullets:BulletArray=null)
+		public function Player(x:int=0, y:int=0, bullets:Array=null)
 		{
 			super(x, y, ImgSpaceman);
 			loadGraphic(ImgSpaceman,true,true,16,32);
@@ -224,14 +224,7 @@ package PhysicsGame
 			{
 				FlxG.play(SndExplode);
 				
-				if(_antiGravity){
-					_bullets.setNewGravityObjects(GravityObject);
-					_antiGravity = false;
-				}
-				else{
-					_bullets.setNewGravityObjects(AntiGravityObject);
-					_antiGravity = true;
-				}
+				_antiGravity = !_antiGravity;
 			}
 		}
 		
@@ -290,7 +283,7 @@ package PhysicsGame
 				}*/
 				
 				//Shoot it!!
-				_bullets[_curBullet].shoot(bX,bY,_bulletVel * angle.x/dist, _bulletVel * angle.y/dist);
+				_bullets[_curBullet].shoot(bX,bY,_bulletVel * angle.x/dist, _bulletVel * angle.y/dist, _antiGravity);
 				//Set the next bullet to be shot to the first in the array for recycling.
 				if(++_curBullet >= _bullets.length)
 					_curBullet = 0;
