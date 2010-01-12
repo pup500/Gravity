@@ -73,41 +73,44 @@ package common
 				
 				bb.PutToSleep();
 				
-				if(bSprite is EventObject){
-					bEvent = bSprite as EventObject;
+				item = bSprite.getXML();
+				
+				//if(bSprite is EventObject){
+					//bEvent = bSprite as EventObject;
+					//
+					//position.x = bb.GetPosition().x;
+					//position.y = bb.GetPosition().y;
+					//
+					//item = new XML(<event/>);
+					//item.type = bEvent._type;
+					//item.x = position.x;
+					//item.y = position.y;
+					//
+					//if(bEvent.getTarget()){
+						//var t:ExSprite = bEvent.getTarget();
+						//item.target.x = t.final_body.GetWorldCenter().x;
+						//item.target.y = t.final_body.GetWorldCenter().y;
+					//}
+				//}
+				//else{
+					//isStatic = bb.IsStatic();
+					//position.x = bb.GetPosition().x;
+					//position.y = bb.GetPosition().y;
+					//
+					////Need to figure out how to get file. - Minh
+					//file = bSprite.imageResource;
+					//angle = bb.GetAngle();
+					//
+					//item = new XML(<shape/>);
+					//item.file = file;
+					//item.layer = bSprite.layer;
+					//item.isStatic = isStatic;
+					//item.polyshape = bSprite.shape is b2PolygonDef;
+					//item.angle = angle;
+					//item.x = position.x;
+					//item.y = position.y;
 					
-					position.x = bb.GetPosition().x;
-					position.y = bb.GetPosition().y;
-					
-					item = new XML(<event/>);
-					item.type = bEvent._type;
-					item.x = position.x;
-					item.y = position.y;
-					
-					if(bEvent.getTarget()){
-						var t:ExSprite = bEvent.getTarget();
-						item.target.x = t.final_body.GetWorldCenter().x;
-						item.target.y = t.final_body.GetWorldCenter().y;
-					}
-				}
-				else{
-					isStatic = bb.IsStatic();
-					position.x = bb.GetPosition().x;
-					position.y = bb.GetPosition().y;
-					
-					//Need to figure out how to get file...
-					file = bSprite.imageResource;
-					angle = bb.GetAngle();
-					
-					item = new XML(<shape/>);
-					item.file = file;
-					item.layer = bSprite.layer;
-					item.isStatic = isStatic;
-					item.polyshape = bSprite.shape is b2PolygonDef;
-					item.angle = angle;
-					item.x = position.x;
-					item.y = position.y;
-				}
+				//}
 				
 				objects.appendChild(item);
 			}

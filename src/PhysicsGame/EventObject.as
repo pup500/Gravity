@@ -70,5 +70,21 @@ package PhysicsGame
 			}
 			
 		}
+		
+		override public function getXML():XML
+		{
+			var item:XML = new XML(<event/>);
+			item.type = _type;
+			item.x = final_body.GetPosition().x;
+			item.y = final_body.GetPosition().y;
+			
+			if(this.getTarget()){
+				var t:ExSprite = this.getTarget();
+				item.target.x = t.final_body.GetWorldCenter().x;
+				item.target.y = t.final_body.GetWorldCenter().y;
+			}
+			
+			return item;
+		}
 	}
 }
