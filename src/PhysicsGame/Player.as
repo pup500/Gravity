@@ -44,8 +44,6 @@ package PhysicsGame
 		private var _isJumping:Boolean;
 		private var _antiGravity:Boolean;
 		
-		private var _canJumpSensor:b2PolygonDef;
-		
 		public function Player(x:int=0, y:int=0, bullets:Array=null)
 		{
 			super(x, y, ImgSpaceman);
@@ -94,14 +92,11 @@ package PhysicsGame
 			
 			_antiGravity = false;
 			
-			_canJumpSensor = new b2PolygonDef();//new Sensor(this.x - (width / 2 - 1), this.y + height / 2 + 1, width - 2, 2, "loaded");
-			_canJumpSensor.SetAsBox((width -1) / 2, 1);
 		}
 		
 		override public function createPhysBody(world:b2World):void
 		{
 			super.createPhysBody(world);
-			//final_body.CreateShape(_canJumpSensor);
 		}
 		
 		override public function update():void
@@ -319,7 +314,7 @@ package PhysicsGame
 			super.setImpactPoint(point);
 			
 			//trace("imp: " + impactPoint.position.y + " playy:" + y + " hei: " + height + " both:" + (y + height));
-			if(impactPoint.position.y > y + height-3 && final_body.GetLinearVelocity().y >= 0){
+			if(impactPoint.position.y > y + height-3 && notLeftOrRight(impactPoint.position.x) && final_body.GetLinearVelocity().y >= 0){
 				_canJump = true;
 			}
 			//trace(impactPoint.position.y > y + height-3);
@@ -330,6 +325,11 @@ package PhysicsGame
 			if(point.shape2.GetBody().GetUserData() && point.shape2.GetBody().GetUserData().name == "end"){
 				_nextLevel = true;
 			}
+		}
+		//Checks if the x coordinate is neither the far left or right bound of this sprite.
+		private function notLeftOrRight(xCoord:Number):Boolean
+		{
+			return xCoord < x + width/2 && xCoord > x - width/2
 		}
 		
 		override public function removeImpactPoint(point:b2ContactPoint):void{
