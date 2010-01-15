@@ -203,7 +203,7 @@ package common
 			b2.createPhysBody(_state.the_world);
 			
 			if(shape.isStatic == "true"){
-				b2.final_body.SetStatic();
+				//b2.final_body.SetStatic();
 			}
 			
 			_state.addToLayer(b2, shape.layer);

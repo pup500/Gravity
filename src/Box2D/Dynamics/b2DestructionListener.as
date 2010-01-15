@@ -45,10 +45,10 @@ public class b2DestructionListener
 	public virtual function SayGoodbyeJoint(joint:b2Joint) : void{};
 
 	/**
-	* Called when any shape is about to be destroyed due
+	* Called when any fixture is about to be destroyed due
 	* to the destruction of its parent body.
 	*/
-	public virtual function SayGoodbyeShape(shape:b2Shape) : void{};
+	public virtual function SayGoodbyeFixture(fixture:b2Fixture) : void{};
 	
 };
 

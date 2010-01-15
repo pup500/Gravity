@@ -51,16 +51,14 @@ public class b2DebugDraw
 	static public var e_shapeBit:uint 			= 0x0001;
 	/** Draw joint connections */
 	static public var e_jointBit:uint			= 0x0002;
-	/** Draw core (toi) shapes */
-	static public var e_coreShapeBit:uint		= 0x0004;
 	/** Draw axis aligned bounding boxes */
-	static public var e_aabbBit:uint			= 0x0008;
-	/** Draw oriented bounding boxes */
-	static public var e_obbBit:uint				= 0x0010;
+	static public var e_aabbBit:uint			= 0x0004;
 	/** Draw broad-phase pairs */
-	static public var e_pairBit:uint			= 0x0020;
+	static public var e_pairBit:uint			= 0x0008;
 	/** Draw center of mass frame */
-	static public var e_centerOfMassBit:uint	= 0x0040;
+	static public var e_centerOfMassBit:uint	= 0x0010;
+	/** Draw controllers */
+	static public var e_controllerBit:uint		= 0x0020;
 	//};
 
 	/**
@@ -192,7 +190,7 @@ public class b2DebugDraw
 	/**
 	* Draw a solid closed polygon provided in CCW order.
 	*/
-	public virtual function DrawSolidPolygon(vertices:Array, vertexCount:int, color:b2Color) : void{
+	public virtual function DrawSolidPolygon(vertices:Array/*b2Vec2*/, vertexCount:int, color:b2Color) : void{
 		
 		m_sprite.graphics.lineStyle(m_lineThickness, color.color, m_alpha);
 		m_sprite.graphics.moveTo(vertices[0].x * m_drawScale, vertices[0].y * m_drawScale);
@@ -246,7 +244,7 @@ public class b2DebugDraw
 	* Draw a transform. Choose your own length scale.
 	* @param xf a transform.
 	*/
-	public virtual function DrawXForm(xf:b2XForm) : void{
+	public virtual function DrawTransform(xf:b2Transform) : void{
 		
 		m_sprite.graphics.lineStyle(m_lineThickness, 0xff0000, m_alpha);
 		m_sprite.graphics.moveTo(xf.position.x * m_drawScale, xf.position.y * m_drawScale);

@@ -18,8 +18,6 @@
 
 package Box2D.Collision.Shapes{
 
-
-
 import Box2D.Common.Math.*;
 import Box2D.Common.*;
 import Box2D.Collision.Shapes.*;
@@ -37,10 +35,220 @@ use namespace b2internal;
 
 public class b2PolygonShape extends b2Shape
 {
+	public override function Copy():b2Shape 
+	{
+		var s:b2PolygonShape = new b2PolygonShape();
+		s.Set(this);
+		return s;
+	}
+	
+	public override function Set(other:b2Shape):void 
+	{
+		super.Set(other);
+		if (other is b2PolygonShape)
+		{
+			var other2:b2PolygonShape = other as b2PolygonShape;
+			m_centroid.SetV(other2.m_centroid);
+			m_vertexCount = other2.m_vertexCount;
+			Reserve(m_vertexCount);
+			for (var i:int = 0; i < m_vertexCount; i++)
+			{
+				m_vertices[i].SetV(other2.m_vertices[i]);
+				m_normals[i].SetV(other2.m_normals[i]);
+			}
+		}
+	}
+	
+	/**
+	 * Copy vertices. This assumes the vertices define a convex polygon.
+	 * It is assumed that the exterior is the the right of each edge.
+	 */
+	public function SetAsArray(vertices:Array, vertexCount:Number = 0):void
+	{
+		var v:Array/*b2Vec2*/ = new Array/*b2Vec2*/();
+		for each(var tVec:b2Vec2 in vertices)
+		{
+			v.push(tVec);
+		}
+		SetAsVector(v, vertexCount);
+	}
+	
+	public static function AsArray(vertices:Array, vertexCount:Number):b2PolygonShape
+	{
+		var polygonShape:b2PolygonShape = new b2PolygonShape();
+		polygonShape.SetAsArray(vertices, vertexCount);
+		return polygonShape;
+	}
+	
+	/**
+	 * Copy vertices. This assumes the vertices define a convex polygon.
+	 * It is assumed that the exterior is the the right of each edge.
+	 */
+	public function SetAsVector(vertices:Array/*b2Vec2*/, vertexCount:Number = 0):void
+	{
+		if (vertexCount == 0)
+			vertexCount = vertices.length;
+			
+		b2Settings.b2Assert(2 <= vertexCount);
+		m_vertexCount = vertexCount;
+		
+		Reserve(vertexCount);
+		
+		var i:int;
+		
+		// Copy vertices
+		for (i = 0; i < m_vertexCount; i++)
+		{
+			m_vertices[i].SetV(vertices[i]);
+		}
+		
+		// Compute normals. Ensure the edges have non-zero length.
+		for (i = 0; i < m_vertexCount; ++i)
+		{
+			var i1:int = i;
+			var i2:int = i + 1 < m_vertexCount ? i + 1 : 0;
+			var edge:b2Vec2 = b2Math.SubtractVV(m_vertices[i2], m_vertices[i1]);
+			b2Settings.b2Assert(edge.LengthSquared() > Number.MIN_VALUE /* * Number.MIN_VALUE*/);
+			m_normals[i].SetV(b2Math.CrossVF(edge, 1.0));
+			m_normals[i].Normalize();
+		}
+		
+//#ifdef _DEBUG
+		// Ensure the polygon is convex and the interior
+		// is to the left of each edge.
+		//for (int32 i = 0; i < m_vertexCount; ++i)
+		//{
+			//int32 i1 = i;
+			//int32 i2 = i + 1 < m_vertexCount ? i + 1 : 0;
+			//b2Vec2 edge = m_vertices[i2] - m_vertices[i1];
+			//for (int32 j = 0; j < m_vertexCount; ++j)
+			//{
+				// Don't check vertices on the current edge.
+				//if (j == i1 || j == i2)
+				//{
+					//continue;
+				//}
+				//
+				//b2Vec2 r = m_vertices[j] - m_vertices[i1];
+				// Your polygon is non-convex (it has an indentation) or
+				// has colinear edges.
+				//float32 s = b2Cross(edge, r);
+				//b2Assert(s > 0.0f);
+			//}
+		//}
+//#endif
+
+		// Compute the polygon centroid
+		m_centroid = ComputeCentroid(m_vertices, m_vertexCount);
+	}
+	
+	public static function AsVector(vertices:Array/*b2Vec2*/, vertexCount:Number):b2PolygonShape
+	{
+		var polygonShape:b2PolygonShape = new b2PolygonShape();
+		polygonShape.SetAsVector(vertices, vertexCount);
+		return polygonShape;
+	}
+	
+	/**
+	* Build vertices to represent an axis-aligned box.
+	* @param hx the half-width.
+	* @param hy the half-height.
+	*/
+	public function SetAsBox(hx:Number, hy:Number) : void 
+	{
+		m_vertexCount = 4;
+		Reserve(4);
+		m_vertices[0].Set(-hx, -hy);
+		m_vertices[1].Set( hx, -hy);
+		m_vertices[2].Set( hx,  hy);
+		m_vertices[3].Set(-hx,  hy);
+		m_normals[0].Set(0.0, -1.0);
+		m_normals[1].Set(1.0, 0.0);
+		m_normals[2].Set(0.0, 1.0);
+		m_normals[3].Set(-1.0, 0.0);
+		m_centroid.SetZero();
+	}
+	
+	public static function AsBox(hx:Number, hy:Number):b2PolygonShape
+	{
+		var polygonShape:b2PolygonShape = new b2PolygonShape();
+		polygonShape.SetAsBox(hx, hy);
+		return polygonShape;
+	}
+	
+	/**
+	* Build vertices to represent an oriented box.
+	* @param hx the half-width.
+	* @param hy the half-height.
+	* @param center the center of the box in local coordinates.
+	* @param angle the rotation of the box in local coordinates.
+	*/
+	static private var s_mat:b2Mat22 = new b2Mat22();
+	public function SetAsOrientedBox(hx:Number, hy:Number, center:b2Vec2 = null, angle:Number = 0.0) : void
+	{
+		m_vertexCount = 4;
+		Reserve(4);
+		m_vertices[0].Set(-hx, -hy);
+		m_vertices[1].Set( hx, -hy);
+		m_vertices[2].Set( hx,  hy);
+		m_vertices[3].Set(-hx,  hy);
+		m_normals[0].Set(0.0, -1.0);
+		m_normals[1].Set(1.0, 0.0);
+		m_normals[2].Set(0.0, 1.0);
+		m_normals[3].Set(-1.0, 0.0);
+		m_centroid = center;
+
+		var xf:b2Transform = new b2Transform();
+		xf.position = center;
+		xf.R.Set(angle);
+
+		// Transform vertices and normals.
+		for (var i:int = 0; i < m_vertexCount; ++i)
+		{
+			m_vertices[i] = b2Math.MulX(xf, m_vertices[i]);
+			m_normals[i] = b2Math.MulMV(xf.R, m_normals[i]);
+		}
+	}
+	
+	public static function AsOrientedBox(hx:Number, hy:Number, center:b2Vec2 = null, angle:Number = 0.0):b2PolygonShape
+	{
+		var polygonShape:b2PolygonShape = new b2PolygonShape();
+		polygonShape.SetAsOrientedBox(hx, hy, center, angle);
+		return polygonShape;
+	}
+	
+	/**
+	 * Set this as a single edge.
+	 */
+	public function SetAsEdge(v1:b2Vec2, v2:b2Vec2):void
+	{
+		m_vertexCount = 2;
+		Reserve(2);
+		m_vertices[0].SetV(v1);
+		m_vertices[1].SetV(v2);
+		m_centroid.x = 0.5 * (v1.x + v2.x);
+		m_centroid.y = 0.5 * (v1.y + v2.y);
+		m_normals[0] = b2Math.CrossVF(b2Math.SubtractVV(v2, v1), 1.0);
+		m_normals[0].Normalize();
+		m_normals[1].x = -m_normals[0].x;
+		m_normals[1].y = -m_normals[0].y;
+	}
+	
+	/**
+	 * Set this as a single edge.
+	 */
+	static public function AsEdge(v1:b2Vec2, v2:b2Vec2):b2PolygonShape
+	{
+		var polygonShape:b2PolygonShape = new b2PolygonShape();
+		polygonShape.SetAsEdge(v1, v2);
+		return polygonShape;
+	}
+	
+	
 	/**
 	* @inheritDoc
 	*/
-	public override function TestPoint(xf:b2XForm, p:b2Vec2) : Boolean{
+	public override function TestPoint(xf:b2Transform, p:b2Vec2) : Boolean{
 		var tVec:b2Vec2;
 		
 		//b2Vec2 pLocal = b2MulT(xf.R, p - xf.position);
@@ -68,32 +276,29 @@ public class b2PolygonShape extends b2Shape
 	}
 
 	/**
-	* @inheritDoc
-	*/
-	public override function TestSegment( xf:b2XForm,
-		lambda:Array, // float ptr
-		normal:b2Vec2, // ptr
-		segment:b2Segment,
-		maxLambda:Number) : int
+	 * @inheritDoc
+	 */
+	public override function RayCast(output:b2RayCastOutput, input:b2RayCastInput, transform:b2Transform):Boolean
 	{
 		var lower:Number = 0.0;
-		var upper:Number = maxLambda;
+		var upper:Number = input.maxFraction;
 		
 		var tX:Number;
 		var tY:Number;
 		var tMat:b2Mat22;
 		var tVec:b2Vec2;
 		
-		//b2Vec2 p1 = b2MulT(xf.R, segment.p1 - xf.position);
-		tX = segment.p1.x - xf.position.x;
-		tY = segment.p1.y - xf.position.y;
-		tMat = xf.R;
+		// Put the ray into the polygon's frame of reference. (AS3 Port Manual inlining follows)
+		//b2Vec2 p1 = b2MulT(transform.R, segment.p1 - transform.position);
+		tX = input.p1.x - transform.position.x;
+		tY = input.p1.y - transform.position.y;
+		tMat = transform.R;
 		var p1X:Number = (tX * tMat.col1.x + tY * tMat.col1.y);
 		var p1Y:Number = (tX * tMat.col2.x + tY * tMat.col2.y);
-		//b2Vec2 p2 = b2MulT(xf.R, segment.p2 - xf.position);
-		tX = segment.p2.x - xf.position.x;
-		tY = segment.p2.y - xf.position.y;
-		tMat = xf.R;
+		//b2Vec2 p2 = b2MulT(transform.R, segment.p2 - transform.position);
+		tX = input.p2.x - transform.position.x;
+		tY = input.p2.y - transform.position.y;
+		tMat = transform.R;
 		var p2X:Number = (tX * tMat.col1.x + tY * tMat.col1.y);
 		var p2Y:Number = (tX * tMat.col2.x + tY * tMat.col2.y);
 		//b2Vec2 d = p2 - p1;
@@ -118,9 +323,9 @@ public class b2PolygonShape extends b2Shape
 			
 			if (denominator == 0.0)
 			{
-				if (numerator < 0)
+				if (numerator < 0.0)
 				{
-					return e_missCollide;
+					return false;
 				}
 			}
 			else
@@ -144,100 +349,64 @@ public class b2PolygonShape extends b2Shape
 				}
 			}
 			
-			if (upper < lower)
+			if (upper < lower - Number.MIN_VALUE)
 			{
-				return e_missCollide;
+				return false;
 			}
 		}
 		
-		//b2Settings.b2Assert(0.0 <= lower && lower <= maxLambda);
+		//b2Settings.b2Assert(0.0 <= lower && lower <= input.maxLambda);
 		
 		if (index >= 0)
 		{
-			//*lambda = lower;
-			lambda[0] = lower;
-			//*normal = b2Mul(xf.R, m_normals[index]);
-			tMat = xf.R;
+			output.fraction = lower;
+			//output.normal = b2Mul(transform.R, m_normals[index]);
+			tMat = transform.R;
 			tVec = m_normals[index];
-			normal.x = (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-			normal.y = (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
-			return e_hitCollide;
+			output.normal.x = (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+			output.normal.y = (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+			return true;
 		}
 		
-		lambda[0] = 0;
-		return e_startsInsideCollide;
+		return false;
 	}
 
 
-	//
-	static private var s_computeMat:b2Mat22 = new b2Mat22();
 	/**
-	* @inheritDoc
-	*/
-	public override function ComputeAABB(aabb:b2AABB, xf:b2XForm) : void{
-		var tMat:b2Mat22;
-		var tVec:b2Vec2;
-		
-		var R:b2Mat22 = s_computeMat;
-		//b2Mat22 R = b2Mul(xf.R, m_obb.R);
-		tMat = xf.R;
-		tVec = m_obb.R.col1;
-		//R.col1 = b2MulMV(A, B.col1)
-		R.col1.x = (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-		R.col1.y = (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
-		//
-		tVec = m_obb.R.col2;
-		//R.col1 = b2MulMV(A, B.col2)
-		R.col2.x = (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-		R.col2.y = (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
-		
-		//b2Mat22 absR = b2Abs(R);
-		R.Abs();
-		var absR:b2Mat22 = R;
-		//b2Vec2 h = b2Mul(absR, m_obb.extents);
-		tVec = m_obb.extents;
-		var hX:Number = (absR.col1.x * tVec.x + absR.col2.x * tVec.y);
-		var hY:Number = (absR.col1.y * tVec.x + absR.col2.y * tVec.y);
-		//b2Vec2 position = xf.position + b2Mul(xf.R, m_obb.center);
-		tMat = xf.R;
-		tVec = m_obb.center;
-		var positionX:Number = xf.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-		var positionY:Number = xf.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
-		//aabb->lowerBound = position - h;
-		aabb.lowerBound.Set(positionX - hX, positionY - hY);
-		//aabb->upperBound = position + h;
-		aabb.upperBound.Set(positionX + hX, positionY + hY);
-	}
-
-
-	//
-	static private var s_sweptAABB1:b2AABB = new b2AABB();
-	static private var s_sweptAABB2:b2AABB = new b2AABB();
-	/**
-	* @inheritDoc
-	*/
-	public override function ComputeSweptAABB(	aabb:b2AABB,
-		transform1:b2XForm,
-		transform2:b2XForm) : void
+	 * @inheritDoc
+	 */
+	public override function ComputeAABB(aabb:b2AABB, xf:b2Transform) : void
 	{
-		//b2AABB aabb1, aabb2;
-		var aabb1:b2AABB = s_sweptAABB1;
-		var aabb2:b2AABB = s_sweptAABB2;
-		ComputeAABB(aabb1, transform1);
-		ComputeAABB(aabb2, transform2);
-		//aabb.lowerBound = b2Min(aabb1.lowerBound, aabb2.lowerBound);
-		aabb.lowerBound.Set((aabb1.lowerBound.x < aabb2.lowerBound.x ? aabb1.lowerBound.x : aabb2.lowerBound.x),
-							(aabb1.lowerBound.y < aabb2.lowerBound.y ? aabb1.lowerBound.y : aabb2.lowerBound.y));
-		//aabb.upperBound = b2Max(aabb1.upperBound, aabb2.upperBound);
-		aabb.upperBound.Set((aabb1.upperBound.x > aabb2.upperBound.x ? aabb1.upperBound.x : aabb2.upperBound.x),
-							(aabb1.upperBound.y > aabb2.upperBound.y ? aabb1.upperBound.y : aabb2.upperBound.y));
+		//var lower:b2Vec2 = b2Math.MulX(xf, m_vertices[0]);
+		var tMat:b2Mat22 = xf.R;
+		var tVec:b2Vec2 = m_vertices[0];
+		var lowerX:Number = xf.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+		var lowerY:Number = xf.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+		var upperX:Number = lowerX;
+		var upperY:Number = lowerY;
+		
+		for (var i:int = 1; i < m_vertexCount; ++i)
+		{
+			tVec = m_vertices[i];
+			var vX:Number = xf.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+			var vY:Number = xf.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+			lowerX = lowerX < vX ? lowerX : vX;
+			lowerY = lowerY < vY ? lowerY : vY;
+			upperX = upperX > vX ? upperX : vX;
+			upperY = upperY > vY ? upperY : vY;
+		}
+
+		aabb.lowerBound.x = lowerX - m_radius;
+		aabb.lowerBound.y = lowerY - m_radius;
+		aabb.upperBound.x = upperX + m_radius;
+		aabb.upperBound.y = upperY + m_radius;
 	}
 
 
 	/**
 	* @inheritDoc
 	*/
-	public override function ComputeMass(massData:b2MassData) : void{
+	public override function ComputeMass(massData:b2MassData, density:Number) : void{
 		// Polygon mass, centroid, and inertia.
 		// Let rho be the polygon density in mass per unit area.
 		// Then:
@@ -262,7 +431,17 @@ public class b2PolygonShape extends b2Shape
 		//
 		// The rest of the derivation is handled by computer algebra.
 		
-		//b2Settings.b2Assert(m_vertexCount >= 3);
+		//b2Settings.b2Assert(m_vertexCount >= 2);
+		
+		// A line segment has zero mass.
+		if (m_vertexCount == 2)
+		{
+			massData.center.x = 0.5 * (m_vertices[0].x + m_vertices[1].x);
+			massData.center.y = 0.5 * (m_vertices[0].y + m_vertices[1].y);
+			massData.mass = 0.0;
+			massData.I = 0.0;
+			return;
+		}
 		
 		//b2Vec2 center; center.Set(0.0f, 0.0f);
 		var centerX:Number = 0.0;
@@ -334,7 +513,7 @@ public class b2PolygonShape extends b2Shape
 		}
 		
 		// Total mass
-		massData.mass = m_density * area;
+		massData.mass = density * area;
 		
 		// Center of mass
 		//b2Settings.b2Assert(area > Number.MIN_VALUE);
@@ -345,23 +524,124 @@ public class b2PolygonShape extends b2Shape
 		massData.center.Set(centerX, centerY);
 		
 		// Inertia tensor relative to the local origin.
-		massData.I = m_density * I;
+		massData.I = density * I;
 	}
 
 	/**
-	* Get the oriented bounding box relative to the parent body.
+	* @inheritDoc
 	*/
-	public function GetOBB() : b2OBB{
-		return m_obb;
+	public override function ComputeSubmergedArea(
+			normal:b2Vec2,
+			offset:Number,
+			xf:b2Transform,
+			c:b2Vec2):Number
+	{
+		// Transform plane into shape co-ordinates
+		var normalL:b2Vec2 = b2Math.MulTMV(xf.R, normal);
+		var offsetL:Number = offset - b2Math.Dot(normal, xf.position);
+		
+		var depths:Array/*Number*/ = new Array/*Number*/();
+		var diveCount:int = 0;
+		var intoIndex:int = -1;
+		var outoIndex:int = -1;
+		
+		var lastSubmerged:Boolean = false;
+		var i:int;
+		for (i = 0; i < m_vertexCount;++i)
+		{
+			depths[i] = b2Math.Dot(normalL, m_vertices[i]) - offsetL;
+			var isSubmerged:Boolean = depths[i] < -Number.MIN_VALUE;
+			if (i > 0)
+			{
+				if (isSubmerged)
+				{
+					if (!lastSubmerged)
+					{
+						intoIndex = i - 1;
+						diveCount++;
+					}
+				}
+				else
+				{
+					if (lastSubmerged)
+					{
+						outoIndex = i - 1;
+						diveCount++;
+					}
+				}
+			}
+			lastSubmerged = isSubmerged;
+		}
+		switch(diveCount)
+		{
+			case 0:
+			if (lastSubmerged )
+			{
+				// Completely submerged
+				var md:b2MassData = new b2MassData();
+				ComputeMass(md, 1);
+				c.SetV(b2Math.MulX(xf, md.center));
+				return md.mass;
+			}
+			else
+			{
+				//Completely dry
+				return 0;
+			}
+			break;
+			case 1:
+			if (intoIndex == -1)
+			{
+				intoIndex = m_vertexCount - 1;
+			}
+			else
+			{
+				outoIndex = m_vertexCount - 1;
+			}
+			break;
+		}
+		var intoIndex2:int = (intoIndex + 1) % m_vertexCount;
+		var outoIndex2:int = (outoIndex + 1) % m_vertexCount;
+		var intoLamdda:Number = (0 - depths[intoIndex]) / (depths[intoIndex2] - depths[intoIndex]);
+		var outoLamdda:Number = (0 - depths[outoIndex]) / (depths[outoIndex2] - depths[outoIndex]);
+		
+		var intoVec:b2Vec2 = new b2Vec2(m_vertices[intoIndex].x * (1 - intoLamdda) + m_vertices[intoIndex2].x * intoLamdda,
+										m_vertices[intoIndex].y * (1 - intoLamdda) + m_vertices[intoIndex2].y * intoLamdda);
+		var outoVec:b2Vec2 = new b2Vec2(m_vertices[outoIndex].x * (1 - outoLamdda) + m_vertices[outoIndex2].x * outoLamdda,
+										m_vertices[outoIndex].y * (1 - outoLamdda) + m_vertices[outoIndex2].y * outoLamdda);
+										
+		// Initialize accumulator
+		var area:Number = 0;
+		var center:b2Vec2 = new b2Vec2();
+		var p2:b2Vec2 = m_vertices[intoIndex2];
+		var p3:b2Vec2;
+		
+		// An awkward loop from intoIndex2+1 to outIndex2
+		i = intoIndex2;
+		while (i != outoIndex2)
+		{
+			i = (i + 1) % m_vertexCount;
+			if(i == outoIndex2)
+				p3 = outoVec
+			else
+				p3 = m_vertices[i];
+			
+			var triangleArea:Number = 0.5 * ( (p2.x - intoVec.x) * (p3.y - intoVec.y) - (p2.y - intoVec.y) * (p3.x - intoVec.x) );
+			area += triangleArea;
+			// Area weighted centroid
+			center.x += triangleArea * (intoVec.x + p2.x + p3.x) / 3;
+			center.y += triangleArea * (intoVec.y + p2.y + p3.y) / 3;
+			
+			p2 = p3;
+		}
+		
+		//Normalize and transform centroid
+		center.Multiply(1 / area);
+		c.SetV(b2Math.MulX(xf, center));
+		
+		return area;
 	}
-
-	/**
-	* Get local centroid relative to the parent body.
-	*/
-	public function GetCentroid() : b2Vec2{
-		return m_centroid;
-	}
-
+	
 	/**
 	* Get the vertex count.
 	*/
@@ -372,122 +652,57 @@ public class b2PolygonShape extends b2Shape
 	/**
 	* Get the vertices in local coordinates.
 	*/
-	public function GetVertices() : Array{
+	public function GetVertices() : Array/*b2Vec2*/{
 		return m_vertices;
-	}
-
-	/**
-	* Get the core vertices in local coordinates. These vertices
-	* represent a smaller polygon that is used for time of impact
-	* computations.
-	*/
-	public function GetCoreVertices() : Array{
-		return m_coreVertices;
 	}
 	
 	/**
 	* Get the edge normal vectors. There is one for each vertex.
 	*/
-	public function GetNormals() : Array
+	public function GetNormals() : Array/*b2Vec2*/
 	{
 		return m_normals;
 	}
-
+	
 	/**
-	* Get the first vertex and apply the supplied transform.
-	*/
-	public function GetFirstVertex(xf:b2XForm) : b2Vec2{
-		return b2Math.b2MulX(xf, m_coreVertices[0]);
-	}
-
-	/**
-	* Get the centroid and apply the supplied transform.
-	*/
-	public function Centroid(xf:b2XForm) : b2Vec2{
-		return b2Math.b2MulX(xf, m_centroid);
-	}
-
-	private var s_supportVec:b2Vec2 = new b2Vec2();
-	/**
-	* Get the support point in the given world direction.
-	* Use the supplied transform.
-	*/
-	public function Support(xf:b2XForm, dX:Number, dY:Number) : b2Vec2{
-		var tVec:b2Vec2;
-		
-		var tMat:b2Mat22;
-		//b2Vec2 dLocal = b2MulT(xf.R, d);
-		tMat = xf.R;
-		var dLocalX:Number = (dX * tMat.col1.x + dY * tMat.col1.y);
-		var dLocalY:Number = (dX * tMat.col2.x + dY * tMat.col2.y);
-		
+	 * Get the supporting vertex index in the given direction.
+	 */
+	public function GetSupport(d:b2Vec2):int
+	{
 		var bestIndex:int = 0;
-		//var bestValue:Number = b2Dot(m_coreVertices[0], dLocal);
-		tVec = m_coreVertices[0];
-		var bestValue:Number = (tVec.x*dLocalX + tVec.y*dLocalY);
-		for (var i:int = 1; i < m_vertexCount; ++i)
+		var bestValue:Number = m_vertices[0].x * d.x + m_vertices[0].y * d.y;
+		for (var i:int= 1; i < m_vertexCount; ++i)
 		{
-			//var value:Number = b2Dot(m_coreVertices[i], dLocal);
-			tVec = m_coreVertices[i];
-			var value:Number = (tVec.x*dLocalX + tVec.y*dLocalY);
+			var value:Number = m_vertices[i].x * d.x + m_vertices[i].y * d.y;
 			if (value > bestValue)
 			{
 				bestIndex = i;
 				bestValue = value;
 			}
 		}
-		
-		//return b2Math.b2MulX(xf, m_coreVertices[bestIndex]);
-		tMat = xf.R;
-		tVec = m_coreVertices[bestIndex];
-		s_supportVec.x = xf.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-		s_supportVec.y = xf.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
-		return s_supportVec;
-		
+		return bestIndex;
+	}
+	
+	public function GetSupportVertex(d:b2Vec2):b2Vec2
+	{
+		var bestIndex:int = 0;
+		var bestValue:Number = m_vertices[0].x * d.x + m_vertices[0].y * d.y;
+		for (var i:int= 1; i < m_vertexCount; ++i)
+		{
+			var value:Number = m_vertices[i].x * d.x + m_vertices[i].y * d.y;
+			if (value > bestValue)
+			{
+				bestIndex = i;
+				bestValue = value;
+			}
+		}
+		return m_vertices[bestIndex];
 	}
 
-	//--------------- Internals Below -------------------
-	
-	/**
-	 * @private
-	 */
-	public function b2PolygonShape(def:b2ShapeDef){
-		super(def);
-		
-		//b2Settings.b2Assert(def.type == e_polygonShape);
-		m_type = e_polygonShape;
-		var poly:b2PolygonDef = def as b2PolygonDef;
-		
-		// Get the vertices transformed into the body frame.
-		m_vertexCount = poly.vertexCount;
-		//b2Settings.b2Assert(3 <= m_vertexCount && m_vertexCount <= b2_maxPolygonVertices);
-		
-		var i:int;
-		var i1:int = i;
-		var i2:int = i;
-		
-		// Copy vertices.
-		for (i = 0; i < m_vertexCount; ++i)
-		{
-			m_vertices[i] = poly.vertices[i].Copy();
-		}
-		
-		// Compute normals. Ensure the edges have non-zero length.
-		for (i = 0; i < m_vertexCount; ++i)
-		{
-			i1 = i;
-			i2 = i + 1 < m_vertexCount ? i + 1 : 0;
-			//b2Vec2 edge = m_vertices[i2] - m_vertices[i1];
-			var edgeX:Number = m_vertices[i2].x - m_vertices[i1].x;
-			var edgeY:Number = m_vertices[i2].y - m_vertices[i1].y;
-			//b2Settings.b2Assert(edge.LengthSquared() > Number.MIN_VALUE * Number.MIN_VALUE);
-			//m_normals[i] = b2Cross(edge, 1.0f); ^^ 
-			var len:Number = Math.sqrt(edgeX*edgeX + edgeY*edgeY);
-			//m_normals[i].Normalize();
-			m_normals[i] = new b2Vec2(edgeY/len, -edgeX/len);
-		}
-		
-		/*#ifdef _DEBUG
+	// TODO: Expose this
+	private function Validate():Boolean
+	{
+		/*
 		// Ensure the polygon is convex.
 		for (int32 i = 0; i < m_vertexCount; ++i)
 		{
@@ -519,91 +734,50 @@ public class b2PolygonShape extends b2Shape
 			//b2Assert(angle > b2_angularSlop);
 			trace(angle > b2Settings.b2_angularSlop);
 		}
-		#endif*/
-		
-		// Compute the polygon centroid.
-		m_centroid = ComputeCentroid(poly.vertices, poly.vertexCount);
-		
-		// Compute the oriented bounding box.
-		ComputeOBB(m_obb, m_vertices, m_vertexCount);
-		
-		// Create core polygon shape by shifting edges inward.
-		// Also compute the min/max radius for CCD.
-		for (i = 0; i < m_vertexCount; ++i)
-		{
-			i1 = i - 1 >= 0 ? i - 1 : m_vertexCount - 1;
-			i2 = i;
-			
-			//b2Vec2 n1 = m_normals[i1];
-			var n1X:Number = m_normals[i1].x;
-			var n1Y:Number = m_normals[i1].y;
-			//b2Vec2 n2 = m_normals[i2];
-			var n2X:Number = m_normals[i2].x;
-			var n2Y:Number = m_normals[i2].y;
-			//b2Vec2 v = m_vertices[i] - m_centroid;
-			var vX:Number = m_vertices[i].x - m_centroid.x;
-			var vY:Number = m_vertices[i].y - m_centroid.y;
-			
-			//b2Vec2 d;
-			var dX:Number = (n1X*vX + n1Y*vY) - b2Settings.b2_toiSlop;
-			var dY:Number = (n2X*vX + n2Y*vY) - b2Settings.b2_toiSlop;
-			
-			// Shifting the edge inward by b2_toiSlop should
-			// not cause the plane to pass the centroid.
-			
-			// Your shape has a radius/extent less than b2_toiSlop.
-			//b2Settings.b2Assert(d.x >= 0.0);
-			//b2Settings.b2Assert(d.y >= 0.0);
-			//var A:b2Mat22;
-			//A.col1.x = n1.x; A.col2.x = n1.y;
-			//A.col1.y = n2.x; A.col2.y = n2.y;
-			//m_coreVertices[i] = A.Solve(d) + m_centroid;
-			//float32 det = a11 * a22 - a12 * a21;
-			var det:Number = 1.0/(n1X * n2Y - n1Y * n2X);
-			//det = 1.0 / det;
-			m_coreVertices[i] = new b2Vec2(	det * (n2Y * dX - n1Y * dY) + m_centroid.x, 
-											det * (n1X * dY - n2X * dX) + m_centroid.y);
-		}
+		*/
+		return false;
 	}
-
-	b2internal override function UpdateSweepRadius(center:b2Vec2) : void{
-		var tVec:b2Vec2;
+	//--------------- Internals Below -------------------
+	
+	/**
+	 * @private
+	 */
+	public function b2PolygonShape(){
 		
-		// Update the sweep radius (maximum radius) as measured from
-		// a local center point.
-		m_sweepRadius = 0.0;
-		for (var i:int = 0; i < m_vertexCount; ++i)
+		//b2Settings.b2Assert(def.type == e_polygonShape);
+		m_type = e_polygonShape;
+		
+		m_centroid = new b2Vec2();
+		m_vertices = new Array/*b2Vec2*/();
+		m_normals = new Array/*b2Vec2*/();
+	}
+	
+	private function Reserve(count:int):void
+	{
+		for (var i:int = m_vertices.length; i < count; i++)
 		{
-			//b2Vec2 d = m_coreVertices[i] - center;
-			tVec = m_coreVertices[i];
-			var dX:Number = tVec.x - center.x;
-			var dY:Number = tVec.y - center.y;
-			dX = Math.sqrt(dX*dX + dY*dY);
-			//m_sweepRadius = b2Max(m_sweepRadius, d.Length());
-			if (dX > m_sweepRadius) m_sweepRadius = dX;
+			m_vertices[i] = new b2Vec2();
+			m_normals[i] = new b2Vec2();
 		}
 	}
 
 	// Local position of the polygon centroid.
 	b2internal var m_centroid:b2Vec2;
 
-	private var m_obb:b2OBB = new b2OBB();
-
-	b2internal var m_vertices:Array = new Array(b2Settings.b2_maxPolygonVertices);
-	b2internal var m_normals:Array = new Array(b2Settings.b2_maxPolygonVertices);
-	private var m_coreVertices:Array = new Array(b2Settings.b2_maxPolygonVertices);
-
+	b2internal var m_vertices:Array/*b2Vec2*/;
+	b2internal var m_normals:Array/*b2Vec2*/;
+	
 	b2internal var m_vertexCount:int;
 	
 	
 	
 	/**
 	 * Computes the centroid of the given polygon
-	 * @param	vs		array of b2Vec specifying a polygon
+	 * @param	vs		vector of b2Vec specifying a polygon
 	 * @param	count	length of vs
 	 * @return the polygon centroid
 	 */
-	static public function ComputeCentroid(vs:Array, count:int) : b2Vec2
+	static public function ComputeCentroid(vs:Array/*b2Vec2*/, count:uint) : b2Vec2
 	{
 		//b2Settings.b2Assert(count >= 3);
 		
@@ -669,11 +843,10 @@ public class b2PolygonShape extends b2Shape
 	 * Computes a polygon's OBB
 	 * @see http://www.geometrictools.com/Documentation/MinimumAreaRectangle.pdf
 	 */
-	static b2internal function ComputeOBB(obb:b2OBB, vs:Array, count:int) : void
+	static b2internal function ComputeOBB(obb:b2OBB, vs:Array/*b2Vec2*/, count:int) : void
 	{
 		var i:int;
-		//b2Settings.b2Assert(count <= b2Settings.b2_maxPolygonVertices);
-		var p:Array = new Array(b2Settings.b2_maxPolygonVertices + 1);
+		var p:Array/*b2Vec2*/ = new Array/*b2Vec2*/(count + 1);
 		for (i = 0; i < count; ++i)
 		{
 			p[i] = vs[i];
