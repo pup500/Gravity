@@ -19,6 +19,7 @@
 	import flash.net.URLRequest;
 	import flash.system.System;
 	import flash.text.TextField;
+	import flash.utils.Dictionary;
 	
 	import org.flixel.*;
 	import org.overrides.*;
@@ -125,6 +126,8 @@
 		private const WIDTH:uint = 1280;
 		private const HEIGHT:uint = 960;
 		
+		private var args:Dictionary;
+		
 		private var sensorDrag:MouseDragSelect;
 		
 		public function PhysLevelEditor() 
@@ -139,6 +142,9 @@
 			
 			FlxG.showCursor(cursorSprite);
 			
+			args = new Dictionary();
+			
+			//This turns the event layer to visible
 			ev.visible = true;
 			
 			files = new Array();
@@ -756,6 +762,7 @@
 				//Join and link essentially need to register the points
 				case JOIN:
 				case LINK:
+					args["start"] = new Point(FlxG.mouse.x, FlxG.mouse.y);
 					xmlMapLoader.registerObjectAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true);
 					
 					//Draw with snapping.....
@@ -819,9 +826,12 @@
 				if(mode == JOIN && drawingLine){
 					line.visible = false;
 					drawingLine = false;
+					
+					args["end"] = new Point(FlxG.mouse.x, FlxG.mouse.y);
 					xmlMapLoader.registerObjectAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true);
 					
-					xmlMapLoader.addJoint(jointType);
+					args["type"] = jointType;
+					xmlMapLoader.addJoint(args);
 				}
 				
 				if(mode == LINK && drawingLine){

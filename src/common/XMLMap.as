@@ -14,6 +14,7 @@ package common
 	import flash.geom.Point;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
+	import flash.utils.Dictionary;
 	
 	import org.overrides.ExSprite;
 	import org.overrides.ExState;
@@ -21,21 +22,14 @@ package common
 	public class XMLMap
 	{	
 		private var configXML:XML;
-		//private var _config:Array;
 		private var _state:ExState;
 		
 		private var _start:Point;
 		private var _end:Point;
 		
-		//private var _undo:Array;
-		
 		private var _bodies:Array;
-		//private var number:uint;
 		private var expBodyCount:uint;
 		private var _loaded:Boolean;
-		
-		//private var numXMLObjs:uint;
-		//private var totXMLObjs:uint;
 		
 		public function XMLMap(state:ExState)
 		{
@@ -45,11 +39,6 @@ package common
 			
 			_bodies = new Array();
 			
-			//number = 0;
-			//Get the initial world count..
-			//expBodyCount = getItemCount();
-			
-			trace("initial count first" + expBodyCount);
 			_loaded = false;
 		}
 
@@ -320,12 +309,21 @@ package common
 		//Add all joints from configuration file, also pass configuration jointXML along
 		private function addAllJoints():void{
 			for each (var jointXML:XML in configXML.objects.joint){
+				/*
 				registerObjectAtPoint(new Point(jointXML.body1.x, jointXML.body1.y), true);
 				registerObjectAtPoint(new Point(jointXML.body2.x, jointXML.body2.y), true);
 				addJoint(jointXML.type, jointXML);
+				*/
+				jointXML.loaded = "true";
+				JointFactory.addJoint(_state.the_world, jointXML);
 			}
 		}
 		
+		public function addJoint(args:Dictionary):void{
+			JointFactory.addJoint(_state.the_world, JointFactory.createJointXML(args));
+		}
+		
+		/*
 		//Always make sure we have registered two points
 		public function addJoint(jointType:uint, jointXML:XML=null):void{
 			if(_bodies.length != 2){
@@ -481,6 +479,8 @@ package common
 			
 			return false;
 		}
+		
+		*/
 		
 		//Add all joints from configuration file, also pass configuration jointXML along
 		private function addAllEvents():void{
