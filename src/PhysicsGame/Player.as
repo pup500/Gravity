@@ -329,7 +329,7 @@ package PhysicsGame
 		//Checks if the x coordinate is neither the far left or right bound of this sprite.
 		private function notLeftOrRight(xCoord:Number):Boolean
 		{
-			return xCoord < x + width/2 && xCoord > x - width/2
+			return xCoord < x + width/2 && xCoord > x - width/2;
 		}
 		
 		override public function removeImpactPoint(point:b2ContactPoint):void{
