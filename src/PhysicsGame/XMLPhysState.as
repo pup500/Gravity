@@ -35,7 +35,7 @@ package PhysicsGame
 			super();
 			bgColor = 0xffeeeeff;
 			
-			//debug = true;
+			debug = true;
 			initBox2DDebugRendering();
 			
 			loadLevelConfig();

@@ -1,5 +1,7 @@
 package PhysicsGame
 {
+	import Box2D.Dynamics.*;
+	import Box2D.Collision.Shapes.*;
 	import Box2D.Collision.b2ContactPoint;
 	import Box2D.Common.Math.b2Vec2;
 	
@@ -42,6 +44,8 @@ package PhysicsGame
 		private var _isJumping:Boolean;
 		private var _antiGravity:Boolean;
 		
+		private var _canJumpSensor:b2PolygonDef;
+		
 		public function Player(x:int=0, y:int=0, bullets:Array=null)
 		{
 			super(x, y, ImgSpaceman);
@@ -80,7 +84,7 @@ package PhysicsGame
 			//Bullet shooting stuff
 			_bullets = bullets;
 			_curBullet = 0;
-			_bulletVel = 200;
+			_bulletVel = 600;
 			_canShoot = true;
 			_coolDown = new Timer(500,1);
 			_coolDown.addEventListener(TimerEvent.TIMER_COMPLETE, stopTimer);
@@ -89,8 +93,16 @@ package PhysicsGame
 			_isJumping = false;
 			
 			_antiGravity = false;
+			
+			_canJumpSensor = new b2PolygonDef();//new Sensor(this.x - (width / 2 - 1), this.y + height / 2 + 1, width - 2, 2, "loaded");
+			_canJumpSensor.SetAsBox((width -1) / 2, 1);
 		}
 		
+		override public function createPhysBody(world:b2World):void
+		{
+			super.createPhysBody(world);
+			//final_body.CreateShape(_canJumpSensor);
+		}
 		
 		override public function update():void
 		{
@@ -118,12 +130,13 @@ package PhysicsGame
 			if(FlxG.keys.A)
 			{
 				facing = LEFT;
-				_applyForce.x = _canJump ? -100 : -20;
+				_applyForce.x = _canJump ? -150 : -100;
 				_applyForce.y = 0;
+				//We multiply this here because it is later multiplied by inverse mass. - Minh
 				_applyForce.Multiply(final_body.GetMass());
 				//final_body.ApplyImpulse(_applyForce, final_body.GetWorldCenter());
 				
-				if(final_body.GetLinearVelocity().x < -50) {
+				if(final_body.GetLinearVelocity().x < -100) {
 					
 				}
 				else
@@ -135,11 +148,11 @@ package PhysicsGame
 			{
 				facing = RIGHT;
 				//final_body.GetLinearVelocity().x = 30;
-				_applyForce.x = _canJump ? 100 : 20;
+				_applyForce.x = _canJump ? 150 : 100;
 				_applyForce.y = 0;
+				//We multiply this here because it is later multiplied by inverse mass. - Minh
 				_applyForce.Multiply(final_body.GetMass());
-				if(final_body.GetLinearVelocity().x > 50) {
-					
+				if(final_body.GetLinearVelocity().x > 100) {
 				}
 				else
 				//final_body.ApplyImpulse(_applyForce, final_body.GetWorldCenter());
@@ -160,13 +173,16 @@ package PhysicsGame
 				//velocity.y = -_jumpPower;
 				//final_body.SetLinearVelocity(new b2Vec2(0,-_jumpPower));
 				_applyForce.x = 0;
-				_applyForce.y = -100;
+				_applyForce.y = -145;
+				//We multiply this here because it is later multiplied by inverse mass. - Minh
 				_applyForce.Multiply(final_body.GetMass());
 				
+				FlxG.log(_applyForce.y + " || " + final_body.GetMass());
 				//trace("mass" + final_body.GetMass());
 				
 				//Apply a instantaneous upward force.
 				final_body.ApplyImpulse(_applyForce, final_body.GetWorldCenter());
+				//final_body.GetLinearVelocity().Set(_applyForce.x, _applyForce.y);
 				FlxG.play(SndJump);
 			}
 			

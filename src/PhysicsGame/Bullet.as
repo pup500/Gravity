@@ -49,6 +49,8 @@
 			_spawn = false;
 			old = new Point();
 			
+			body.isBullet = true;
+			
 			addAnimation("idle",[0, 1, 2, 3, 4, 5], 50);
 			//addAnimation("poof",[2, 3, 4], 50, false);
 		}
@@ -121,7 +123,7 @@
 			createPhysBody(_world);
 			final_body.SetBullet(true);
 			final_body.GetLinearVelocity().Set(VelocityX, VelocityY);
-			
+			//final_body.ApplyImpulse(new Box2D.Common.Math.b2Vec2(VelocityX,VelocityY), new Box2D.Common.Math.b2Vec2(x, y));
 			play("idle");
 			FlxG.play(SndShoot);
 			
