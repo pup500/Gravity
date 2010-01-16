@@ -1,0 +1,23 @@
+<config>
+  <objects>
+    <shape>
+      <file>data/editor/images/e_ass_03.png</file>
+      <layer>1</layer>
+      <bodyType>0</bodyType>
+      <shapeType>1</shapeType>
+      <angle>0</angle>
+      <x>304</x>
+      <y>392</y>
+    </shape>
+  </objects>
+  <points>
+    <start>
+      <x>128</x>
+      <y>336</y>
+    </start>
+    <end>
+      <x>448</x>
+      <y>336</y>
+    </end>
+  </points>
+</config>
