@@ -142,17 +142,17 @@ package PhysicsGame
 				
 				if(bb.GetType() == b2Body.b2_dynamicBody){//bb.IsDynamic()){
 				
-				if(bb.GetUserData() && bb.GetUserData().name == "Player"){
+				//if(bb.GetUserData() && bb.GetUserData().name == "Player"){
 					for(var i:uint = 0; i < _gravObjects.length; i++){
 						
 						var gObj:GravityObject = _gravObjects[i] as GravityObject;
-						if(!gObj.exists) continue;
+						if(!gObj.exists || gObj.dead) continue;
 						
 						var force:b2Vec2 = gObj.GetGravityForce(bb);
 						
 						bb.ApplyForce(force,bb.GetWorldCenter());
 					}
-				}
+				//}
 				}
 			}
 			

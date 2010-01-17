@@ -322,6 +322,7 @@ package PhysicsGame
 		override public function setImpactPoint(point:b2Contact):void{
 			super.setImpactPoint(point);
 			
+			//TODO:This doesn't let us jump when we are on slopes
 			if(point.GetManifold().m_localPlaneNormal.y == 1){
 				_canJump = true;
 			}
@@ -344,7 +345,9 @@ package PhysicsGame
 		override public function removeImpactPoint(point:b2Contact):void{
 			super.removeImpactPoint(point);
 			
-			_canJump = false;
+			if(point.GetManifold().m_localPlaneNormal.y == 1){
+				_canJump = false;
+			}
 			
 			//if(impactPoint.position.y > y + height/2){
 			//	_canJump = false;
