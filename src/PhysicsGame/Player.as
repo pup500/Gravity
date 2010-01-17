@@ -87,7 +87,7 @@ package PhysicsGame
 			//Bullet shooting stuff
 			_bullets = bullets;
 			_curBullet = 0;
-			_bulletVel = 30;
+			_bulletVel = 20;
 			_canShoot = true;
 			_coolDown = new Timer(500,1);
 			_coolDown.addEventListener(TimerEvent.TIMER_COMPLETE, stopTimer);
@@ -133,13 +133,13 @@ package PhysicsGame
 			if(FlxG.keys.A)
 			{
 				facing = LEFT;
-				_applyForce.x = _canJump ? -150 : -100;
+				_applyForce.x = _canJump ? -15 : -10;
 				_applyForce.y = 0;
 				//We multiply this here because it is later multiplied by inverse mass. - Minh
 				_applyForce.Multiply(final_body.GetMass());
 				//final_body.ApplyImpulse(_applyForce, final_body.GetWorldCenter());
 				
-				if(final_body.GetLinearVelocity().x < -100) {
+				if(final_body.GetLinearVelocity().x < -10) {
 					
 				}
 				else
@@ -151,11 +151,11 @@ package PhysicsGame
 			{
 				facing = RIGHT;
 				//final_body.GetLinearVelocity().x = 30;
-				_applyForce.x = _canJump ? 150 : 100;
+				_applyForce.x = _canJump ? 15 : 10;
 				_applyForce.y = 0;
 				//We multiply this here because it is later multiplied by inverse mass. - Minh
 				_applyForce.Multiply(final_body.GetMass());
-				if(final_body.GetLinearVelocity().x > 100) {
+				if(final_body.GetLinearVelocity().x > 10) {
 				}
 				else
 				//final_body.ApplyImpulse(_applyForce, final_body.GetWorldCenter());

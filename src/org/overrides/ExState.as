@@ -28,6 +28,9 @@ package org.overrides
 		public static const FG:uint = 2;
 		public static const EV:uint = 3;
 		
+		
+		public static const PHYS_SCALE:Number = 30;
+		
 		public function ExState()
 		{
 			super();
@@ -63,7 +66,7 @@ package org.overrides
 				var debug_draw:b2DebugDraw = new b2DebugDraw();
 				addChild(debug_sprite);
 				debug_draw.SetSprite(debug_sprite);
-				debug_draw.SetDrawScale(1);
+				debug_draw.SetDrawScale(PHYS_SCALE);
 				debug_draw.SetAlpha(1);
 				debug_draw.SetLineThickness(2);
 				debug_draw.SetFlags(b2DebugDraw.e_shapeBit |b2DebugDraw.e_centerOfMassBit | b2DebugDraw.e_jointBit);

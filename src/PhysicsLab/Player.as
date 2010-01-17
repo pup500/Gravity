@@ -52,21 +52,21 @@ package PhysicsLab
 			if(FlxG.keys.A)
 			{
 				facing = LEFT;
-				final_body.GetLinearVelocity().x = -150;
+				final_body.GetLinearVelocity().x = -10;
 				play("run");
 			}
 			else if(FlxG.keys.D)
 			{
 				facing = RIGHT;
-				final_body.GetLinearVelocity().x = 150;
+				final_body.GetLinearVelocity().x = 10;
 				play("run");
 			}
 			else if(FlxG.keys.W){
-				final_body.GetLinearVelocity().y = -150;
+				final_body.GetLinearVelocity().y = -10;
 				play("run");
 			}
 			else if(FlxG.keys.S){
-				final_body.GetLinearVelocity().y = 150;
+				final_body.GetLinearVelocity().y = 10;
 				play("run");
 			}
 			else{

@@ -9,6 +9,7 @@
 	
 	import org.flixel.FlxG;
 	import org.overrides.ExSprite;
+	import org.overrides.ExState;
 	
 	/**
 	 * ...
@@ -127,7 +128,7 @@
 		{
 			destroyPhysBody();
 			
-			bodyDef.position.Set(X, Y);
+			bodyDef.position.Set(X/ExState.PHYS_SCALE, Y/ExState.PHYS_SCALE);
 			createPhysBody(_world);
 			final_body.SetBullet(true);
 			final_body.SetLinearVelocity(new b2Vec2(VelocityX, VelocityY));
