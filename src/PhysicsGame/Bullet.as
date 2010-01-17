@@ -40,6 +40,7 @@
 			fixtureDef.friction = 1;
 			fixtureDef.filter.groupIndex = -2;
 			fixtureDef.filter.categoryBits = 0x0002;
+			//bodyDef.type = b2Body.b2_kinematicBody;
 			
 			name = "Bullet" + count;
 			count++;
@@ -55,7 +56,8 @@
 			bodyDef.bullet = true;
 			//bodyDef.isBullet = true;
 			
-			addAnimation("idle",[0, 1, 2, 3, 4, 5], 50);
+			//addAnimation("idle",[0, 1, 2, 3, 4, 5], 50);
+			addAnimation("idle",[0], 50);
 			//addAnimation("poof",[2, 3, 4], 50, false);
 		}
 		
@@ -84,6 +86,8 @@
 				trace("bullet:" + name +  " x,y:" + x + "," + y);
 				trace("dead:" + dead + " finished: " + finished);
 				super.update();
+				
+				trace("bullet speed" + final_body.GetLinearVelocity().x + "," + final_body.GetLinearVelocity().y);
 			}
 		}
 		
@@ -126,7 +130,8 @@
 			bodyDef.position.Set(X, Y);
 			createPhysBody(_world);
 			final_body.SetBullet(true);
-			final_body.GetLinearVelocity().Set(VelocityX, VelocityY);
+			final_body.SetLinearVelocity(new b2Vec2(VelocityX, VelocityY));
+			trace("bullet speed" + final_body.GetLinearVelocity().x + "," + final_body.GetLinearVelocity().y);
 			//final_body.ApplyImpulse(new Box2D.Common.Math.b2Vec2(VelocityX,VelocityY), new Box2D.Common.Math.b2Vec2(x, y));
 			play("idle");
 			FlxG.play(SndShoot);

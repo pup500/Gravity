@@ -38,7 +38,7 @@ package org.overrides
 			//var environment:b2AABB = new b2AABB();
 			//environment.lowerBound.Set(0.0, 0.0);
 			//environment.upperBound.Set(1280, 960);//320.0, 240.0);
-			var gravity:b2Vec2 = new b2Vec2(0.0, 160);//80.0);
+			var gravity:b2Vec2 = new b2Vec2(0.0, 10);//80.0);
 			
 			// Allow bodies to sleep
 			var doSleep:Boolean = true;
@@ -74,10 +74,13 @@ package org.overrides
 		override public function update():void
 		{
 			//the_world.Step(FlxG.elapsed, 10);
-			//the_world.Step(1/30, 10, 10);
+			the_world.Step(1/30, 10, 10);
 			
 			//This probably ensures constant physics regardless of framerate...
-			the_world.Step(FlxG.elapsed, 10, 10);
+			//We probably should not do this.... documentation says to step it with no vary
+			//the_world.Step(FlxG.elapsed, 10, 10);
+			
+			the_world.ClearForces();
 			
 			_bgLayer.update();
 			super.update();

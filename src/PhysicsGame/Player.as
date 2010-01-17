@@ -87,7 +87,7 @@ package PhysicsGame
 			//Bullet shooting stuff
 			_bullets = bullets;
 			_curBullet = 0;
-			_bulletVel = 600;
+			_bulletVel = 30;
 			_canShoot = true;
 			_coolDown = new Timer(500,1);
 			_coolDown.addEventListener(TimerEvent.TIMER_COMPLETE, stopTimer);

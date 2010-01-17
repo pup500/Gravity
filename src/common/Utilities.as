@@ -206,22 +206,5 @@ package common
 			
 			return joint;
 		}
-		
-		/*
-		public static function addJoint(the_world:b2World, body1:b2Body, body2:b2Body):void{
-			var joint:b2DistanceJointDef = new b2DistanceJointDef();
-			var body1:b2Body = _bodies[0] as b2Body;
-			var body2:b2Body = _bodies[1] as b2Body;
-			
-			if(body1 && body2){
-				joint.Initialize(body1, body2, body1.GetWorldCenter(), body2.GetWorldCenter());
-				joint.collideConnected = true;
-				_state.the_world.CreateJoint(joint);
-				
-				_bodies = new Array();
-			}
-		}*/
-
-
 	}
 }

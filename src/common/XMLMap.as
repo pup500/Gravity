@@ -182,48 +182,11 @@ package common
 		    var b2:ExSprite = new ExSprite(shape.x, shape.y, null, "", bitmapData, shape);
 		    b2.createPhysBody(_state.the_world);
 		    
-		    //Pixels should be loaded in sprite and not here anymore...
-		    //b2.pixels = bitmapData;
-		    
-		    
-		    /*
-		    var b2:ExSprite = new ExSprite(shape.x, shape.y);
-		    b2.name = "loaded";
-		    b2.layer = shape.layer;
-		    b2.imageResource = shape.file;
-		    b2.pixels = bitmapData;
-		    
-		    trace(shape.polyshape);
-		    if(shape.polyshape == "true")
-		    	b2.initShapeFromSprite();
-		    else
-		    	b2.initCircleShape();
-		    
-		    //TODO:Make this better
-		    //Objects in foreground or background should not interact with player
-		    var filter:b2FilterData = new b2FilterData();
-			filter.categoryBits = shape.layer == ExState.MG ? 1 : 0;
-			//fixture.SetFilterData(filter);
-		    
-		    //You have to put rotation first before you can create it...
-		    if(shape.angle != 0){
-				b2.bodyDef.angle = shape.angle;
-			}
-			
-			b2.createPhysBody(_state.the_world);
-			
-			if(shape.isStatic == "true"){
-				//b2.final_body.SetStatic();
-			}
-			
-			*/
-			
 			_state.addToLayer(b2, shape.layer);
-    		
-    		//number++;
     		
     		trace("itemcount" + getItemCount());
     		trace("expbody" + expBodyCount);
+    		
     		//We need to add the joints....
     		//but can only do that after all bodies are loaded...
     		

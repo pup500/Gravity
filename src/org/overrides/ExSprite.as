@@ -46,6 +46,10 @@ package org.overrides
 			fixtureDef = new b2FixtureDef();
 				
 			impactPoint = new b2ContactPoint();
+			
+			bodyDef.type = b2Body.b2_dynamicBody;
+			
+			fixtureDef.friction = 1;
 				
 			if(pixels){
 				this.pixels = pixels;
@@ -344,12 +348,10 @@ package org.overrides
 			
 			super.update();
 			var posVec:b2Vec2 = final_body.GetPosition();
+			
+			//Use width and height because sprite may be animated so each frame doesn't take up full bitmap
 			x = posVec.x - width/2;//_bw/2;
 			y = posVec.y - height/2;//_bh/2;
-			
-			//x = posVec.x;//_bw/2;
-			//y = posVec.y;//_bh/2;
-			
 			
 			angle = final_body.GetAngle();
 			
@@ -436,10 +438,8 @@ package org.overrides
 					break;
 			}
 			
-			//needshapetype...
 			bodyDef.angle = xml.angle;
 			bodyDef.position.Set(xml.x, xml.y);
-			
 		}
 	}
 }
