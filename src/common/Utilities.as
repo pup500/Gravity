@@ -135,10 +135,10 @@ package common
 			var point1:b2Vec2 = new b2Vec2();
 			var point2:b2Vec2 = new b2Vec2();
 			
-			point1.x = j.GetAnchorA().x;
-			point1.y = j.GetAnchorA().y;
-			point2.x = j.GetAnchorB().x;
-			point2.y = j.GetAnchorB().y;
+			point1.x = j.GetAnchorA().x * ExState.PHYS_SCALE;
+			point1.y = j.GetAnchorA().y * ExState.PHYS_SCALE;
+			point2.x = j.GetAnchorB().x * ExState.PHYS_SCALE;
+			point2.y = j.GetAnchorB().y * ExState.PHYS_SCALE;
 			
 			var joint:XML = new XML(<joint/>);
 			joint.type = e_distanceJoint;
@@ -159,13 +159,13 @@ package common
 			var b1:b2Body = j.GetBodyA();
 			var b2:b2Body = j.GetBodyB();
 			
-			point1.x = b1.GetPosition().x;
-			point1.y = b1.GetPosition().y;
-			point2.x = b2.GetPosition().x;
-			point2.y = b2.GetPosition().y;
+			point1.x = b1.GetPosition().x * ExState.PHYS_SCALE;
+			point1.y = b1.GetPosition().y * ExState.PHYS_SCALE;
+			point2.x = b2.GetPosition().x * ExState.PHYS_SCALE;
+			point2.y = b2.GetPosition().y * ExState.PHYS_SCALE;
 			
-			anchor.x = j.GetAnchorA().x;
-			anchor.y = j.GetAnchorB().y;
+			anchor.x = j.GetAnchorA().x * ExState.PHYS_SCALE;
+			anchor.y = j.GetAnchorA().y * ExState.PHYS_SCALE;
 			
 			//TODO:JointXML should really find a way to get at the axis...
 			axis.x = j.GetUserData().x;
@@ -193,13 +193,13 @@ package common
 			var b1:b2Body = j.GetBodyA();
 			var b2:b2Body = j.GetBodyB();
 			
-			point1.x = b1.GetPosition().x;
-			point1.y = b1.GetPosition().y;
-			point2.x = b2.GetPosition().x;
-			point2.y = b2.GetPosition().y;
+			point1.x = b1.GetPosition().x * ExState.PHYS_SCALE;
+			point1.y = b1.GetPosition().y * ExState.PHYS_SCALE;
+			point2.x = b2.GetPosition().x * ExState.PHYS_SCALE;
+			point2.y = b2.GetPosition().y * ExState.PHYS_SCALE;
 			
-			anchor.x = j.GetAnchorA().x;
-			anchor.y = j.GetAnchorB().y;
+			anchor.x = j.GetAnchorA().x * ExState.PHYS_SCALE;
+			anchor.y = j.GetAnchorA().y * ExState.PHYS_SCALE;
 			
 			var joint:XML = new XML(<joint/>);
 			joint.type = e_revoluteJoint;

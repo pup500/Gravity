@@ -4,7 +4,8 @@ package common.joints
 	import Box2D.Dynamics.Joints.b2PrismaticJointDef;
 	import Box2D.Dynamics.b2World;
 	
-
+	import org.overrides.ExState;
+	
 	public class PrismaticJoint extends Joint
 	{
 		public function PrismaticJoint(world:b2World, xml:XML)
@@ -43,8 +44,8 @@ package common.joints
 					axis.x = xml.axis.x;
 					axis.y = xml.axis.y;
 					
-					anchor.x = xml.anchor.x;
-					anchor.y = xml.anchor.y;
+					anchor.x = xml.anchor.x / ExState.PHYS_SCALE;
+					anchor.y = xml.anchor.y / ExState.PHYS_SCALE;
 				}
 				
 				//Axis should be normalized
@@ -54,10 +55,10 @@ package common.joints
 				prisJoint.Initialize(body1, body2, anchor, axis);
 				prisJoint.enableMotor = true;
 				prisJoint.enableLimit = true;
-				prisJoint.maxMotorForce = 100 * body2.GetMass();
-				prisJoint.motorSpeed = 10;
-				prisJoint.upperTranslation = 50;
-				prisJoint.lowerTranslation = -50;
+				prisJoint.maxMotorForce = 10 * body2.GetMass();
+				prisJoint.motorSpeed = 1;
+				prisJoint.upperTranslation = 5;
+				prisJoint.lowerTranslation = -5;
 				prisJoint.collideConnected = true;
 				prisJoint.userData = axis;
 				valid = true;

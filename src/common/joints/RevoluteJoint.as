@@ -3,6 +3,8 @@ package common.joints
 	import Box2D.Common.Math.b2Vec2;
 	import Box2D.Dynamics.Joints.b2RevoluteJointDef;
 	import Box2D.Dynamics.b2World;
+	
+	import org.overrides.ExState;
 
 	public class RevoluteJoint extends Joint
 	{	
@@ -34,8 +36,8 @@ package common.joints
 				
 				//If we have xml data, use that
 				if(xml.loaded == "true"){
-					anchor.x = xml.anchor.x;
-					anchor.y = xml.anchor.y;
+					anchor.x = xml.anchor.x / ExState.PHYS_SCALE;
+					anchor.y = xml.anchor.y / ExState.PHYS_SCALE;
 				}
 				
 				//Compute distance of the center point to the center of our main object

@@ -5,29 +5,52 @@
       <layer>1</layer>
       <bodyType>2</bodyType>
       <shapeType>1</shapeType>
-      <angle>-1.0795687503077342</angle>
-      <x>222.92753931844905</x>
-      <y>301.219798990437</y>
+      <angle>21.363635467475078</angle>
+      <x>364.5371250645216</x>
+      <y>46.76483302741445</y>
     </shape>
     <shape>
-      <file>data/editor/images/e_ass_08.png</file>
+      <file>data/editor/images/e_ass_10.png</file>
       <layer>1</layer>
-      <bodyType>0</bodyType>
+      <bodyType>2</bodyType>
       <shapeType>1</shapeType>
-      <angle>0</angle>
-      <x>248.5</x>
-      <y>239.50000000000003</y>
+      <angle>1.684202725649937e-17</angle>
+      <x>303.5</x>
+      <y>430.35</y>
     </shape>
     <joint>
-      <type>3</type>
+      <type>1</type>
       <body1>
-        <x>8.266666666666666</x>
-        <y>7.300000000000001</y>
+        <x>0</x>
+        <y>0</y>
       </body1>
       <body2>
-        <x>7.59087743780452</x>
-        <y>9.91831403652274</y>
+        <x>364.5371250645216</x>
+        <y>46.76483302741445</y>
       </body2>
+      <anchor>
+        <x>410</x>
+        <y>112</y>
+      </anchor>
+    </joint>
+    <joint>
+      <type>2</type>
+      <body1>
+        <x>0</x>
+        <y>0</y>
+      </body1>
+      <body2>
+        <x>303.5</x>
+        <y>430.35</y>
+      </body2>
+      <anchor>
+        <x>302</x>
+        <y>206</y>
+      </anchor>
+      <axis>
+        <x>0</x>
+        <y>1</y>
+      </axis>
     </joint>
   </objects>
   <points>
