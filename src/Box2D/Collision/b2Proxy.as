@@ -28,8 +28,8 @@ use namespace b2internal;
 public class b2Proxy{
 	public function IsValid():Boolean { return overlapCount != b2BroadPhase.b2_invalid; }
 
-	public var lowerBounds:Array = [uint(0), uint(0)];
-	public var upperBounds:Array = [uint(0), uint(0)];
+	public var lowerBounds:Array/*uint*/ = new Array/*uint*/(2);
+	public var upperBounds:Array/*uint*/ = new Array/*uint*/(2);
 	public var overlapCount:uint;
 	public var timeStamp:uint;
 	

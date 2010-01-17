@@ -19,7 +19,7 @@ package PhysicsGame.Events
 		
 		override public function update():void{
 			trace("random:" + Math.random());
-			
+			/*
 			var _state:ExState = FlxG.state as ExState;
 			
 			var b2:ExSprite = new ExSprite(100, 100, eventImg);
@@ -28,7 +28,9 @@ package PhysicsGame.Events
 		    b2.initShapeFromSprite();
 		    
 		    b2.createPhysBody(_state.the_world);
+		    
 		    _state.addToLayer(b2, ExState.MG);
+		    */
 		}
 	}
 }

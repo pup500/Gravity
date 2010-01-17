@@ -33,11 +33,14 @@
 			super();
 			loadGraphic(ImgBullet, true);
 			initShape();
-			shape.friction = 1;
+			//shape.friction = 1;
 			//Make this part of group -2, and do not collide with other in the same negative group...
 			//So player does not collide with bullets
-			shape.filter.groupIndex = -2;
-			shape.filter.categoryBits = 0x0002;
+			
+			fixtureDef.friction = 1;
+			fixtureDef.filter.groupIndex = -2;
+			fixtureDef.filter.categoryBits = 0x0002;
+			
 			name = "Bullet" + count;
 			count++;
 			
@@ -49,7 +52,8 @@
 			_spawn = false;
 			old = new Point();
 			
-			body.isBullet = true;
+			bodyDef.bullet = true;
+			//bodyDef.isBullet = true;
 			
 			addAnimation("idle",[0, 1, 2, 3, 4, 5], 50);
 			//addAnimation("poof",[2, 3, 4], 50, false);
@@ -119,7 +123,7 @@
 		{
 			destroyPhysBody();
 			
-			body.position.Set(X, Y);
+			bodyDef.position.Set(X, Y);
 			createPhysBody(_world);
 			final_body.SetBullet(true);
 			final_body.GetLinearVelocity().Set(VelocityX, VelocityY);

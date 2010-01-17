@@ -3,6 +3,7 @@ package common
 	import Box2D.Common.Math.b2Vec2;
 	import Box2D.Dynamics.Joints.*;
 	import Box2D.Dynamics.b2Body;
+	import Box2D.Dynamics.b2FilterData;
 	
 	import PhysicsGame.*;
 	
@@ -178,6 +179,14 @@ package common
 		    	shape.y = int(shape.y) + bitmapData.height/2;
 		    }
 		    
+		    var b2:ExSprite = new ExSprite(shape.x, shape.y, null, "", bitmapData, shape);
+		    b2.createPhysBody(_state.the_world);
+		    
+		    //Pixels should be loaded in sprite and not here anymore...
+		    //b2.pixels = bitmapData;
+		    
+		    
+		    /*
 		    var b2:ExSprite = new ExSprite(shape.x, shape.y);
 		    b2.name = "loaded";
 		    b2.layer = shape.layer;
@@ -192,19 +201,22 @@ package common
 		    
 		    //TODO:Make this better
 		    //Objects in foreground or background should not interact with player
-		    b2.shape.filter.categoryBits = shape.layer == ExState.MG ? 1 : 0;
-		    
+		    var filter:b2FilterData = new b2FilterData();
+			filter.categoryBits = shape.layer == ExState.MG ? 1 : 0;
+			//fixture.SetFilterData(filter);
 		    
 		    //You have to put rotation first before you can create it...
 		    if(shape.angle != 0){
-				b2.body.angle = shape.angle;
+				b2.bodyDef.angle = shape.angle;
 			}
 			
 			b2.createPhysBody(_state.the_world);
 			
 			if(shape.isStatic == "true"){
-				b2.final_body.SetStatic();
+				//b2.final_body.SetStatic();
 			}
+			
+			*/
 			
 			_state.addToLayer(b2, shape.layer);
     		
@@ -259,6 +271,7 @@ package common
 		}
 		
 		public function setObjectTypeAtPoint(point:Point, includeStatic:Boolean=false, type:String="static"):void{
+			/*
 			var b2:b2Body = Utilities.GetBodyAtMouse(_state.the_world, point, includeStatic);
 			
 			if(b2){
@@ -273,6 +286,7 @@ package common
 					}
 				}
 			}
+			*/
 		}
 		
 		public function removeObjectAtPoint(point:Point, includeStatic:Boolean=false):void{
@@ -298,12 +312,14 @@ package common
 		
 		//Registers a point and see if we get a body from it.  Null bodies will be checked during add joint
 		public function registerObjectAtPoint(point:Point, includeStatic:Boolean=false):void{
+			/*
 			var b2:b2Body = Utilities.GetBodyAtMouse(_state.the_world, point, includeStatic);
 			
 			var vec:b2Vec2 = new b2Vec2();
 			vec.x = point.x;
 			vec.y = point.y;
 			_bodies.push([b2,vec]);
+			*/
 		}
 		
 		//Add all joints from configuration file, also pass configuration jointXML along
@@ -323,165 +339,6 @@ package common
 			JointFactory.addJoint(_state.the_world, JointFactory.createJointXML(args));
 		}
 		
-		/*
-		//Always make sure we have registered two points
-		public function addJoint(jointType:uint, jointXML:XML=null):void{
-			if(_bodies.length != 2){
-				_bodies = new Array();
-				return;
-			}
-			
-			//Figure out all the bodies and points info
-			var b1:Array = _bodies[0] as Array;
-			var b2:Array = _bodies[1] as Array;
-			
-			var body1:b2Body = b1[0] as b2Body;
-			var body2:b2Body = b2[0] as b2Body;
-			
-			var point1:b2Vec2 = b1[1];
-			var point2:b2Vec2 = b2[1];
-			
-			//Switch to create different joint types
-			var result:Boolean = false;
-			switch(jointType){
-			case Utilities.e_distanceJoint:
-				result = addDistanceJoint(body1, body2, point1, point2, jointXML);
-				break;
-			case Utilities.e_prismaticJoint:
-				result = addPrismaticJoint(body1, body2, point1, point2, jointXML);
-				break;
-			case Utilities.e_revoluteJoint:
-				result = addRevoluteJoint(body1, body2, point1, point2, jointXML);
-				break;
-			}
-			
-			//Clear out bodies regardless of outcomes
-			_bodies = new Array();
-		}
-		
-		private function addDistanceJoint(body1:b2Body, body2:b2Body, point1:b2Vec2, point2:b2Vec2, jointXML:XML=null):Boolean{
-			var joint:b2DistanceJointDef = new b2DistanceJointDef();
-			
-			if(body2){
-				if(body1 == null || body1 == body2){
-					//If body1 isn't found, use world ground body
-					body1 = _state.the_world.GetGroundBody();
-				}
-				
-				joint.Initialize(body1, body2, point1, point2);
-				joint.collideConnected = true;
-				_state.the_world.CreateJoint(joint);	
-				return true;
-			}
-			
-			return false;
-		}
-		
-		private function addPrismaticJoint(body1:b2Body, body2:b2Body, point1:b2Vec2, point2:b2Vec2, jointXML:XML=null):Boolean{
-			var joint:b2PrismaticJointDef = new b2PrismaticJointDef();
-			
-			//Always draw from static to nonstatic...
-			if(body2){
-				//Axis is currently set as the normalized vector from our two points
-				var axis:b2Vec2 = new b2Vec2(point2.x, point2.y);
-				axis.Subtract(point1);
-				
-				var anchor:b2Vec2 = new b2Vec2();
-				
-				if(body1 == null){
-					//If body1 isn't found, use world ground body
-					body1 = _state.the_world.GetGroundBody();
-					
-					//Also the anchor point should be where we placed the joint
-					anchor.x = point1.x;
-					anchor.y = point1.y;
-				}else{
-					//There's two bodies, we want the anchor point to be at the midpoint of the line we drew
-					anchor.x = (point2.x + point1.x)/2;
-					anchor.y = (point2.y + point1.y)/2;
-				}
-				
-				//If we have xml data loaded from the config file, then use that
-				//NO way to ensure correct values if the level was simulated....
-				if(jointXML){
-					axis.x = jointXML.axis.x;
-					axis.y = jointXML.axis.y;
-					
-					anchor.x = jointXML.anchor.x;
-					anchor.y = jointXML.anchor.y;
-				}
-				
-				//Axis should be normalized
-				axis.Normalize();
-				
-				//Initialize some sample values for now...
-				joint.Initialize(body1, body2, anchor, axis);
-				joint.enableMotor = true;
-				joint.enableLimit = true;
-				joint.maxMotorForce = 100 * body2.GetMass();
-				joint.motorSpeed = 10;
-				joint.upperTranslation = 50;
-				joint.lowerTranslation = -50;
-				joint.collideConnected = true;
-				joint.userData = axis;
-				_state.the_world.CreateJoint(joint);	
-				return true;
-			}
-			
-			return false;
-		}
-		
-		private function addRevoluteJoint(body1:b2Body, body2:b2Body, point1:b2Vec2, point2:b2Vec2, jointXML:XML=null):Boolean{
-			var joint:b2RevoluteJointDef = new b2RevoluteJointDef();
-			
-			if(body2){
-				if(body1 == null || body1 === body2){
-					body1 = _state.the_world.GetGroundBody();
-				}
-				
-				var anchor:b2Vec2 = new b2Vec2();
-				anchor.x = point1.x;
-				anchor.y = point1.y;
-				
-				//Should we use body2 center?  This happens when we press and release inside one object
-				if(body1 === body2){
-					anchor.x = body2.GetWorldCenter().x;
-					anchor.y = body2.GetWorldCenter().y;
-				}
-				
-				//If we have xml data, use that
-				if(jointXML){
-					anchor.x = jointXML.anchor.x;
-					anchor.y = jointXML.anchor.y;
-				}
-				
-				//Compute distance of the center point to the center of our main object
-				var dist:b2Vec2 = new b2Vec2();
-				dist.x = body2.GetWorldCenter().x;
-				dist.y = body2.GetWorldCenter().x;
-				dist.Subtract(anchor);
-				
-				var distance:Number = dist.Length();
-				
-				joint.Initialize(body1, body2, anchor);
-				//joint.lowerAngle = 3.14/2; // -90 degrees
-				//joint.upperAngle = 0.25 * 3.14; // 45 degrees
-				//joint.enableLimit = true;
-				
-				//The mass and distance has to be in so that longer distances will still work...
-				joint.maxMotorTorque = 100.0 * body2.GetMass() * distance;
-				joint.motorSpeed = 100;
-				joint.enableMotor = true;
-
-				_state.the_world.CreateJoint(joint);	
-				return true;
-			}
-			
-			return false;
-		}
-		
-		*/
-		
 		//Add all joints from configuration file, also pass configuration jointXML along
 		private function addAllEvents():void{
 			for each (var eventXML:XML in configXML.objects.event){
@@ -495,6 +352,7 @@ package common
 			//This doesn't work when there's no synchronous events... So this add takes place before the render...
 			//Which means we have to worry about the updated sprite position... 
 			
+			/*
 			var b2:EventObject = new EventObject(event.x, event.y, sprite, "", event.type);
 		    b2.name = "event";
 		    b2.layer = event.layer;
@@ -502,22 +360,29 @@ package common
 		    b2._type = event.type;
 		    
 		    b2.initShape();
-		    b2.shape.filter.categoryBits = 0;
 		    
-		    b2.createPhysBody(_state.the_world);
+		    var filter:b2FilterData = new b2FilterData();
+			filter.categoryBits = 0;
+			//fixture.SetFilterData(filter);
 			
-			b2.final_body.SetStatic();
+		   	b2.createPhysBody(_state.the_world);
+			
+			//b2.final_body.SetStatic();
 			
 			//Call this to fix position of object before render phase
 			b2.update();
 			
 			trace("eventargetX:" + event.target.x + "," + event.target.y);
 			if(event.target.x.length() > 0 && event.target.y.length() > 0){
+				//TODO:
+				/*
 				var tbody:b2Body = Utilities.GetBodyAtMouse(_state.the_world, new Point(event.target.x, event.target.y), true);
 				b2.setTarget(tbody.GetUserData());
-			}
+				*/
+			//}
 			
-			_state.addToLayer(b2, ExState.EV);
+			//TODO:Events...
+			//_state.addToLayer(b2, ExState.EV);
 		}
 		
 		public function addXMLSensor(sensorXML:XML, sprite:Class = null):void {

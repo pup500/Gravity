@@ -44,21 +44,29 @@ package PhysicsGame
 		private var _isJumping:Boolean;
 		private var _antiGravity:Boolean;
 		
+<<<<<<< HEAD
+=======
+		//private var _canJumpSensor:b2PolygonDef;
+		
+>>>>>>> cb6bab22251054172cb2be231e969ace5a7805e8
 		public function Player(x:int=0, y:int=0, bullets:Array=null)
 		{
 			super(x, y, ImgSpaceman);
 			loadGraphic(ImgSpaceman,true,true,16,32);
 			
 			initShape();
-			shape.friction = .5;
-			//shape.restitution = .5;
+			fixtureDef.friction = .5;
+			fixtureDef.restitution = .5;
 			
 			//Make this part of group -2, and do not collide with other in the same negative group...
-			//So player does not collide with bullets
-			shape.filter.groupIndex = -2;
-			//So only playe collides with sensors.
-			shape.filter.categoryBits = 0x0001;
 			name = "Player";
+			
+			var filter:b2FilterData = new b2FilterData();
+			fixtureDef.filter.groupIndex = -2;
+			fixtureDef.filter.categoryBits = 0x0001;
+			
+			bodyDef.type = b2Body.b2_dynamicBody;
+			
 			
 			_restart = 0;
 			_nextLevel = false;
@@ -92,6 +100,11 @@ package PhysicsGame
 			
 			_antiGravity = false;
 			
+<<<<<<< HEAD
+=======
+			//_canJumpSensor = new b2PolygonDef();//new Sensor(this.x - (width / 2 - 1), this.y + height / 2 + 1, width - 2, 2, "loaded");
+			//_canJumpSensor.SetAsBox((width -1) / 2, 1);
+>>>>>>> cb6bab22251054172cb2be231e969ace5a7805e8
 		}
 		
 		override public function createPhysBody(world:b2World):void
@@ -318,13 +331,14 @@ package PhysicsGame
 				_canJump = true;
 			}
 			//trace(impactPoint.position.y > y + height-3);
-			
+			/*
 			if(point.shape1.GetBody().GetUserData() && point.shape1.GetBody().GetUserData().name == "end"){
 				_nextLevel = true;
 			}
 			if(point.shape2.GetBody().GetUserData() && point.shape2.GetBody().GetUserData().name == "end"){
 				_nextLevel = true;
 			}
+			*/
 		}
 		//Checks if the x coordinate is neither the far left or right bound of this sprite.
 		private function notLeftOrRight(xCoord:Number):Boolean

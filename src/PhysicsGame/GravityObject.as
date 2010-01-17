@@ -5,16 +5,13 @@
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
 	
-	import flash.display.Shape;
+	import flash.display.*;
 	import flash.events.TimerEvent;
+	import flash.geom.*;
 	import flash.utils.Timer;
 	
 	import org.flixel.FlxG;
 	import org.overrides.ExSprite;
-	import flash.display.GradientType;
-	
-	import flash.geom.*
-  	import flash.display.*
 
 	
 	/**
@@ -42,11 +39,13 @@
 			loadGraphic(GravSink, true);
 			initShape();
 			//shape.friction = 1;
-			shape.density = 0;
-			shape.isSensor = true;
+			//shape.density = 0;
+			fixtureDef.density = 0;
+			fixtureDef.friction = 1;
+			fixtureDef.isSensor = true;
 			
 			//Make this part of group -2, and do not collide with other in the same negative group...
-			shape.filter.groupIndex = -2;
+			fixtureDef.filter.groupIndex = -2;
 			
 			name = "GravityObject";
 			
@@ -93,7 +92,7 @@
 		{
 			destroyPhysBody();
 			
-			body.position.Set(X, Y);
+			bodyDef.position.Set(X, Y);
 			createPhysBody(_world);
 			
 			mass=initialMass;
@@ -194,7 +193,7 @@
 			if(!antiGravity)
 				return impulse;
 			else
-				return impulse.Negative(); 
+				return impulse.GetNegative(); 
 		}
 	}
 

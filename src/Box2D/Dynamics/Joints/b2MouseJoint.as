@@ -40,18 +40,20 @@ use namespace b2internal;
 * specified world point. This a soft constraint with a maximum
 * force. This allows the constraint to stretch and without
 * applying huge forces.
+* Note: this joint is not fully documented as it is intended primarily
+* for the testbed. See that for more instructions.
 * @see b2MouseJointDef
 */
 
 public class b2MouseJoint extends b2Joint
 {
 	/** @inheritDoc */
-	public override function GetAnchor1():b2Vec2{
+	public override function GetAnchorA():b2Vec2{
 		return m_target;
 	}
 	/** @inheritDoc */
-	public override function GetAnchor2():b2Vec2{
-		return m_body2.GetWorldPoint(m_localAnchor);
+	public override function GetAnchorB():b2Vec2{
+		return m_bodyB.GetWorldPoint(m_localAnchor);
 	}
 	/** @inheritDoc */
 	public override function GetReactionForce(inv_dt:Number):b2Vec2
@@ -63,27 +65,74 @@ public class b2MouseJoint extends b2Joint
 	{
 		return 0.0;
 	}
+	
+	public function GetTarget():b2Vec2
+	{
+		return m_target;
+	}
+	
 	/**
-	* Use this to update the target point.
-	*/
+	 * Use this to update the target point.
+	 */
 	public function SetTarget(target:b2Vec2) : void{
-		if (m_body2.IsSleeping()){
-			m_body2.WakeUp();
+		if (m_bodyB.IsAwake() == false){
+			m_bodyB.SetAwake(true);
 		}
 		m_target = target;
 	}
 
+	/// Get the maximum force in Newtons.
+	public function GetMaxForce():Number
+	{
+		return m_maxForce;
+	}
+	
+	/// Set the maximum force in Newtons.
+	public function SetMaxForce(maxForce:Number):void
+	{
+		m_maxForce = maxForce;
+	}
+	
+	/// Get frequency in Hz
+	public function GetFrequency():Number
+	{
+		return m_frequencyHz;
+	}
+	
+	/// Set the frequency in Hz
+	public function SetFrequency(hz:Number):void
+	{
+		m_frequencyHz = hz;
+	}
+	
+	/// Get damping ratio
+	public function GetDampingRatio():Number
+	{
+		return m_dampingRatio;
+	}
+	
+	/// Set damping ratio
+	public function SetDampingRatio(ratio:Number):void
+	{
+		m_dampingRatio = ratio;
+	}
+	
 	//--------------- Internals Below -------------------
 
 	/** @private */
 	public function b2MouseJoint(def:b2MouseJointDef){
 		super(def);
 		
+		//b2Settings.b2Assert(def.target.IsValid());
+		//b2Settings.b2Assert(b2Math.b2IsValid(def.maxForce) && def.maxForce > 0.0);
+		//b2Settings.b2Assert(b2Math.b2IsValid(def.frequencyHz) && def.frequencyHz > 0.0);
+		//b2Settings.b2Assert(b2Math.b2IsValid(def.dampingRatio) && def.dampingRatio > 0.0);
+		
 		m_target.SetV(def.target);
-		//m_localAnchor = b2MulT(m_body2.m_xf, m_target);
-		var tX:Number = m_target.x - m_body2.m_xf.position.x;
-		var tY:Number = m_target.y - m_body2.m_xf.position.y;
-		var tMat:b2Mat22 = m_body2.m_xf.R;
+		//m_localAnchor = b2MulT(m_bodyB.m_xf, m_target);
+		var tX:Number = m_target.x - m_bodyB.m_xf.position.x;
+		var tY:Number = m_target.y - m_bodyB.m_xf.position.y;
+		var tMat:b2Mat22 = m_bodyB.m_xf.R;
 		m_localAnchor.x = (tX * tMat.col1.x + tY * tMat.col1.y);
 		m_localAnchor.y = (tX * tMat.col2.x + tY * tMat.col2.y);
 		
@@ -102,7 +151,7 @@ public class b2MouseJoint extends b2Joint
 	private var K1:b2Mat22 = new b2Mat22();
 	private var K2:b2Mat22 = new b2Mat22();
 	b2internal override function InitVelocityConstraints(step:b2TimeStep): void{
-		var b:b2Body = m_body2;
+		var b:b2Body = m_bodyB;
 		
 		var mass:Number = b.GetMass();
 		
@@ -119,7 +168,8 @@ public class b2MouseJoint extends b2Joint
 		// gamma has units of inverse mass
 		// beta hs units of inverse time
 		//b2Settings.b2Assert(d + step.dt * k > Number.MIN_VALUE)
-		m_gamma = 1.0 / (step.dt * (d + step.dt * k));
+		m_gamma = step.dt * (d + step.dt * k);
+		m_gamma = m_gamma != 0 ? 1 / m_gamma:0.0;
 		m_beta = step.dt * k * m_gamma;
 		
 		var tMat:b2Mat22;
@@ -174,7 +224,7 @@ public class b2MouseJoint extends b2Joint
 	}
 	
 	b2internal override function SolveVelocityConstraints(step:b2TimeStep) : void{
-		var b:b2Body = m_body2;
+		var b:b2Body = m_bodyB;
 		
 		var tMat:b2Mat22;
 		var tX:Number;

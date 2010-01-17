@@ -1,14 +1,13 @@
 package common
 {
-	import Box2D.Collision.Shapes.b2PolygonDef;
+	//import Box2D.Collision.Shapes.b2PolygonDef;
 	import Box2D.Collision.Shapes.b2Shape;
 	import Box2D.Collision.b2AABB;
 	import Box2D.Common.Math.b2Vec2;
 	import Box2D.Dynamics.Joints.*;
 	import Box2D.Dynamics.b2Body;
+	import Box2D.Dynamics.b2Fixture;
 	import Box2D.Dynamics.b2World;
-	
-	import PhysicsGame.EventObject;
 	
 	import flash.geom.Point;
 	
@@ -29,29 +28,56 @@ package common
 		{
 		}
 		
-		public static function GetBodyAtMouse(the_world:b2World, point:Point, includeStatic:Boolean=false):b2Body {
+		//This might be a clean way to get body at mouse.....
+		public static function GetBodyAtPoint(the_world:b2World, p:b2Vec2, includeStatic:Boolean = false):b2Body{
+			var body:b2Body;
+			
+			// Query the world for overlapping shapes.
+			function GetBodyCallback(fixture:b2Fixture):Boolean
+			{
+				var shape:b2Shape = fixture.GetShape();
+				if (fixture.GetBody().GetType() != b2Body.b2_staticBody || includeStatic)
+				{
+					body = fixture.GetBody();
+					return false
+				}
+				return true;
+			}
+			
+			the_world.QueryPoint(GetBodyCallback, p);
+			
+			return body;
+		}
+		
+		public static function GetBodyAtMouse(the_world:b2World, point:Point, includeStatic:Boolean = false):b2Body {
+			// Make a small box.
 			var mousePVec:b2Vec2 = new b2Vec2();
 			mousePVec.Set(point.x, point.y);
 			var aabb:b2AABB = new b2AABB();
 			aabb.lowerBound.Set(point.x - 0.001, point.y - 0.001);
 			aabb.upperBound.Set(point.x + 0.001, point.y + 0.001);
-			var k_maxCount:int=10;
-			var shapes:Array = new Array();
-			var count:int=the_world.Query(aabb,shapes,k_maxCount);
-			var body:b2Body=null;
-			for (var i:int = 0; i < count; ++i) {
-				if (shapes[i].GetBody().IsStatic()==false||includeStatic) {
-					var tShape:b2Shape=shapes[i] as b2Shape;
-					var inside:Boolean=tShape.TestPoint(tShape.GetBody().GetXForm(),mousePVec);
-					if (inside) {
-						body=tShape.GetBody();
-						break;
+			var body:b2Body = null;
+			var fixture:b2Fixture;
+			
+			// Query the world for overlapping shapes.
+			function GetBodyCallback(fixture:b2Fixture):Boolean
+			{
+				var shape:b2Shape = fixture.GetShape();
+				if (fixture.GetBody().GetType() != b2Body.b2_staticBody || includeStatic)
+				{
+					var inside:Boolean = shape.TestPoint(fixture.GetBody().GetTransform(), mousePVec);
+					if (inside)
+					{
+						body = fixture.GetBody();
+						return false;
 					}
 				}
+				return true;
 			}
+			the_world.QueryAABB(GetBodyCallback, aabb);
 			return body;
 		}
-		
+				
 		public static function CreateXMLRepresentation(the_world:b2World):XML {
 			var config:XML = new XML(<config/>);
 			var objects:XML = new XML(<objects/>);
@@ -67,7 +93,7 @@ package common
 				
 				if(bSprite.name == "Player") continue;
 				
-				bb.PutToSleep();
+				bb.SetAwake(false);
 				
 				item = bSprite.getXML(); //Refactored into ExSprite and overrides.
 				
@@ -103,10 +129,10 @@ package common
 			var point1:b2Vec2 = new b2Vec2();
 			var point2:b2Vec2 = new b2Vec2();
 			
-			point1.x = j.GetAnchor1().x;
-			point1.y = j.GetAnchor1().y;
-			point2.x = j.GetAnchor2().x;
-			point2.y = j.GetAnchor2().y;
+			point1.x = j.GetAnchorA().x;
+			point1.y = j.GetAnchorA().y;
+			point2.x = j.GetAnchorB().x;
+			point2.y = j.GetAnchorB().y;
 			
 			var joint:XML = new XML(<joint/>);
 			joint.type = e_distanceJoint;
@@ -124,16 +150,16 @@ package common
 			var anchor:b2Vec2 = new b2Vec2();
 			var axis:b2Vec2 = new b2Vec2();
 			
-			var b1:b2Body = j.GetBody1();
-			var b2:b2Body = j.GetBody2();
+			var b1:b2Body = j.GetBodyA();
+			var b2:b2Body = j.GetBodyB();
 			
 			point1.x = b1.GetPosition().x;
 			point1.y = b1.GetPosition().y;
 			point2.x = b2.GetPosition().x;
 			point2.y = b2.GetPosition().y;
 			
-			anchor.x = j.GetAnchor1().x;
-			anchor.y = j.GetAnchor1().y;
+			anchor.x = j.GetAnchorA().x;
+			anchor.y = j.GetAnchorB().y;
 			
 			//TODO:JointXML should really find a way to get at the axis...
 			axis.x = j.GetUserData().x;
@@ -158,16 +184,16 @@ package common
 			var point2:b2Vec2 = new b2Vec2();
 			var anchor:b2Vec2 = new b2Vec2();
 			
-			var b1:b2Body = j.GetBody1();
-			var b2:b2Body = j.GetBody2();
+			var b1:b2Body = j.GetBodyA();
+			var b2:b2Body = j.GetBodyB();
 			
 			point1.x = b1.GetPosition().x;
 			point1.y = b1.GetPosition().y;
 			point2.x = b2.GetPosition().x;
 			point2.y = b2.GetPosition().y;
 			
-			anchor.x = j.GetAnchor1().x;
-			anchor.y = j.GetAnchor1().y;
+			anchor.x = j.GetAnchorA().x;
+			anchor.y = j.GetAnchorB().y;
 			
 			var joint:XML = new XML(<joint/>);
 			joint.type = e_revoluteJoint;

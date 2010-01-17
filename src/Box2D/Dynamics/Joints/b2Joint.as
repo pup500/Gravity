@@ -42,37 +42,37 @@ public class b2Joint
 	}
 	
 	/**
-	* Get the anchor point on body1 in world coordinates.
+	* Get the anchor point on bodyA in world coordinates.
 	*/
-	public virtual function GetAnchor1():b2Vec2{return null};
+	public virtual function GetAnchorA():b2Vec2{return null};
 	/**
-	* Get the anchor point on body2 in world coordinates.
+	* Get the anchor point on bodyB in world coordinates.
 	*/
-	public virtual function GetAnchor2():b2Vec2{return null};
+	public virtual function GetAnchorB():b2Vec2{return null};
 	
 	/**
-	* Get the reaction force on body2 at the joint anchor.
+	* Get the reaction force on body2 at the joint anchor in Newtons.
 	*/
 	public virtual function GetReactionForce(inv_dt:Number):b2Vec2 {return null};
 	/**
-	* Get the reaction torque on body2.
+	* Get the reaction torque on body2 in N*m.
 	*/
 	public virtual function GetReactionTorque(inv_dt:Number):Number {return 0.0}
 	
 	/**
 	* Get the first body attached to this joint.
 	*/
-	public function GetBody1():b2Body
+	public function GetBodyA():b2Body
 	{
-		return m_body1;
+		return m_bodyA;
 	}
 	
 	/**
 	* Get the second body attached to this joint.
 	*/
-	public function GetBody2():b2Body
+	public function GetBodyB():b2Body
 	{
-		return m_body2;
+		return m_bodyB;
 	}
 
 	/**
@@ -96,6 +96,14 @@ public class b2Joint
 		m_userData = data;
 	}
 
+	/**
+	 * Short-cut function to determine if either body is inactive.
+	 * @return
+	 */
+	public function IsActive():Boolean {
+		return m_bodyA.IsActive() && m_bodyB.IsActive();
+	}
+	
 	//--------------- Internals Below -------------------
 
 	static b2internal function Create(def:b2JointDef, allocator:*):b2Joint{
@@ -152,6 +160,20 @@ public class b2Joint
 			}
 			break;
 			
+		case e_weldJoint:
+			{
+				//void* mem = allocator->Allocate(sizeof(b2WeldJoint));
+				joint = new b2WeldJoint(def as b2WeldJointDef);
+			}
+			break;
+			
+		case e_frictionJoint:
+			{
+				//void* mem = allocator->Allocate(sizeof(b2FrictionJoint));
+				joint = new b2FrictionJoint(def as b2FrictionJointDef);
+			}
+			break;
+			
 		default:
 			//b2Settings.b2Assert(false);
 			break;
@@ -191,6 +213,14 @@ public class b2Joint
 		case e_lineJoint:
 			allocator->Free(joint, sizeof(b2LineJoint));
 			break;
+			
+		case e_weldJoint:
+			allocator->Free(joint, sizeof(b2WeldJoint));
+			break;
+			
+		case e_frictionJoint:
+			allocator->Free(joint, sizeof(b2FrictionJoint));
+			break;
 		
 		default:
 			b2Assert(false);
@@ -199,12 +229,13 @@ public class b2Joint
 	}
 
 	/** @private */
-	public function b2Joint(def:b2JointDef){
+	public function b2Joint(def:b2JointDef) {
+		b2Settings.b2Assert(def.bodyA != def.bodyB);
 		m_type = def.type;
 		m_prev = null;
 		m_next = null;
-		m_body1 = def.body1;
-		m_body2 = def.body2;
+		m_bodyA = def.bodyA;
+		m_bodyB = def.bodyB;
 		m_collideConnected = def.collideConnected;
 		m_islandFlag = false;
 		m_userData = def.userData;
@@ -212,25 +243,19 @@ public class b2Joint
 	//virtual ~b2Joint() {}
 
 	b2internal virtual function InitVelocityConstraints(step:b2TimeStep) : void{};
-	b2internal virtual function SolveVelocityConstraints(step:b2TimeStep) : void{};
+	b2internal virtual function SolveVelocityConstraints(step:b2TimeStep) : void { };
+	b2internal virtual function FinalizeVelocityConstraints() : void{};
 
 	// This returns true if the position errors are within tolerance.
 	b2internal virtual function SolvePositionConstraints(baumgarte:Number):Boolean { return false };
-	
-	b2internal function ComputeXForm(xf:b2XForm, center:b2Vec2, localCenter:b2Vec2, angle:Number):void
-	{
-		xf.R.Set(angle);
-		//xf->position = center - b2Mul(xf->R, localCenter);
-		xf.position.SetV(b2Math.SubtractVV(center, b2Math.b2MulMV(xf.R, localCenter)));
-	}
 
 	b2internal var m_type:int;
 	b2internal var m_prev:b2Joint;
 	b2internal var m_next:b2Joint;
-	b2internal var m_node1:b2JointEdge = new b2JointEdge();
-	b2internal var m_node2:b2JointEdge = new b2JointEdge();
-	b2internal var m_body1:b2Body;
-	b2internal var m_body2:b2Body;
+	b2internal var m_edgeA:b2JointEdge = new b2JointEdge();
+	b2internal var m_edgeB:b2JointEdge = new b2JointEdge();
+	b2internal var m_bodyA:b2Body;
+	b2internal var m_bodyB:b2Body;
 
 	b2internal var m_islandFlag:Boolean;
 	b2internal var m_collideConnected:Boolean;
@@ -238,12 +263,12 @@ public class b2Joint
 	private var m_userData:*;
 	
 	// Cache here per time step to reduce cache misses.
-	b2internal var m_localCenter1:b2Vec2 = new b2Vec2();
-	b2internal var m_localCenter2:b2Vec2 = new b2Vec2();
-	b2internal var m_invMass1:Number;
-	b2internal var m_invMass2:Number;
-	b2internal var m_invI1:Number;
-	b2internal var m_invI2:Number;
+	b2internal var m_localCenterA:b2Vec2 = new b2Vec2();
+	b2internal var m_localCenterB:b2Vec2 = new b2Vec2();
+	b2internal var m_invMassA:Number;
+	b2internal var m_invMassB:Number;
+	b2internal var m_invIA:Number;
+	b2internal var m_invIB:Number;
 	
 	// ENUMS
 	
@@ -256,6 +281,8 @@ public class b2Joint
 	static b2internal const e_mouseJoint:int = 5;
 	static b2internal const e_gearJoint:int = 6;
 	static b2internal const e_lineJoint:int = 7;
+	static b2internal const e_weldJoint:int = 8;
+	static b2internal const e_frictionJoint:int = 9;
 
 	// enum b2LimitState
 	static b2internal const e_inactiveLimit:int = 0;
