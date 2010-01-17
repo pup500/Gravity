@@ -3,18 +3,15 @@ package org.overrides
 	import Box2D.Collision.*;
 	import Box2D.Collision.Shapes.*;
 	import Box2D.Common.Math.*;
-	import Box2D.Common.b2internal;
 	import Box2D.Dynamics.*;
 	import Box2D.Dynamics.Joints.b2Joint;
 	import Box2D.Dynamics.Joints.b2JointEdge;
 	import Box2D.Dynamics.Joints.b2PrismaticJoint;
 	
 	import common.Utilities;
-	
-	import flash.display.BitmapData;
-	
 	import org.flixel.*;
-	use namespace b2internal;
+	
+	import flash.geom.Point;
 	
 	/**
 	 * ...
@@ -26,51 +23,34 @@ package org.overrides
 		public var imageResource:String;
 		public var layer:uint;
 		
-		public var bodyDef:b2BodyDef;
+		public var body:b2BodyDef;
 		//public var shape:b2PolygonDef;
-		public var shape:b2Shape;
-		public var fixtureDef:b2FixtureDef;
+		public var shape:b2ShapeDef;
 		public var final_body:b2Body; //The physical representation in the Body2D b2World.
-		public var fixture:b2Fixture;
+		//public var final_shape:b2Shape; //Needs to be defined in order to destroy the physical representation.
 		public var impactPoint:b2ContactPoint;
 		
 		protected var _world:b2World;
 		
-		protected var loaded:Boolean;
-		
-		public function ExSprite(x:int=0, y:int=0, sprite:Class=null, resource:String="", pixels:BitmapData=null, xml:XML=null)
+		public function ExSprite(x:int=0, y:int=0, sprite:Class=null, resource:String="")
 		{
 			super(x, y, sprite);
+			name = "ExSprite";
+			imageResource = resource;
 			
-			bodyDef = new b2BodyDef();
-			fixtureDef = new b2FixtureDef();
-				
+			body = new b2BodyDef();
+			body.position.Set(x, y);
+			shape = new b2PolygonDef();
+			
 			impactPoint = new b2ContactPoint();
-				
-			if(pixels){
-				this.pixels = pixels;
-			}	
-			
-			if(xml){
-				initFromXML(xml);
-			}
-			else{
-				name = "ExSprite";
-				imageResource = resource;
-				
-				
-				bodyDef.position.Set(x, y);
-			}
-			
-			loaded = false;
 		}
 		
 		//@desc Create a polygon shape definition based on bitmap. If this doesn't work, it will call initShape()
-		protected function initShapeFromSprite():void{
-			var shapeDef:b2PolygonShape = new b2PolygonShape();
+		public function initShapeFromSprite():void{
+			var shapeDef:b2PolygonDef = new b2PolygonDef();
 			var points:Array = new Array();
-			var newPoint:b2Vec2 = new b2Vec2();
-			var oldPoint:b2Vec2 = new b2Vec2(-1,-1);
+			var newPoint:Point = new Point();
+			var oldPoint:Point = new Point(-1,-1);
 			var i:int;
 			var j:int;
 			var pixelValue:uint;
@@ -91,7 +71,7 @@ package org.overrides
 						trace("x,y: " + i + ", " + round + " =" + alphaValue);
 						if(alphaValue != 0){
 							//Found first
-							newPoint = new b2Vec2(i,round);
+							newPoint = new Point(i,round);
 							if(oldPoint.x != newPoint.x || oldPoint.y != newPoint.y){
 								points.push(newPoint);
 								oldPoint.x = newPoint.x;
@@ -105,7 +85,7 @@ package org.overrides
 								alphaValue = pixelValue >> 24 & 0xFF;
 								trace("x,y: " + j + ", " + round + " =" + alphaValue);
 								if(alphaValue != 0){
-									newPoint = new b2Vec2(j, round);
+									newPoint = new Point(j, round);
 									if(oldPoint.x != newPoint.x || oldPoint.y != newPoint.y){
 										points.push(newPoint);
 										oldPoint.x = newPoint.x;
@@ -126,7 +106,7 @@ package org.overrides
 						alphaValue = pixelValue >> 24 & 0xFF;
 						trace("x,y: " + (pixels.width-1-round) + ", " + j + " =" + alphaValue);
 						if(alphaValue != 0){
-							newPoint = new b2Vec2(pixels.width-1-round,j);
+							newPoint = new Point(pixels.width-1-round,j);
 							if(oldPoint.x != newPoint.x || oldPoint.y != newPoint.y){
 								points.push(newPoint);
 								oldPoint.x = newPoint.x;
@@ -140,7 +120,7 @@ package org.overrides
 								alphaValue = pixelValue >> 24 & 0xFF;
 								trace("x,y: " + (pixels.width-1-round) + ", " + i + " =" + alphaValue);
 								if(alphaValue != 0){
-									newPoint = new b2Vec2(pixels.width-1-round,i);
+									newPoint = new Point(pixels.width-1-round,i);
 									if(oldPoint.x != newPoint.x || oldPoint.y != newPoint.y){
 										points.push(newPoint);
 										oldPoint.x = newPoint.x;
@@ -161,7 +141,7 @@ package org.overrides
 						alphaValue = pixelValue >> 24 & 0xFF;
 						trace("x,y: " + i + ", " + (pixels.height-1-round) + " =" + alphaValue);
 						if(alphaValue != 0){
-							newPoint = new b2Vec2(i,pixels.height-1-round);
+							newPoint = new Point(i,pixels.height-1-round);
 							if(oldPoint.x != newPoint.x || oldPoint.y != newPoint.y){
 								points.push(newPoint);
 								oldPoint.x = newPoint.x;
@@ -175,7 +155,7 @@ package org.overrides
 								alphaValue = pixelValue >> 24 & 0xFF;
 								trace("x,y: " + j + ", " + (pixels.height-1-round) + " =" + alphaValue);
 								if(alphaValue != 0){
-									newPoint = new b2Vec2(j,pixels.height-1-round);
+									newPoint = new Point(j,pixels.height-1-round);
 									if(oldPoint.x != newPoint.x || oldPoint.y != newPoint.y){
 										points.push(newPoint);
 										oldPoint.x = newPoint.x;
@@ -196,7 +176,7 @@ package org.overrides
 						alphaValue = pixelValue >> 24 & 0xFF;
 						trace("x,y: " + round + ", " + j + " =" + alphaValue);
 						if(alphaValue != 0){
-							newPoint = new b2Vec2(round,j);
+							newPoint = new Point(round,j);
 							if(oldPoint.x != newPoint.x || oldPoint.y != newPoint.y){
 								points.push(newPoint);
 								oldPoint.x = newPoint.x;
@@ -210,7 +190,7 @@ package org.overrides
 								alphaValue = pixelValue >> 24 & 0xFF;
 								trace("x,y: " + round + ", " + i + " =" + alphaValue);
 								if(alphaValue != 0){
-									newPoint = new b2Vec2(round,i);
+									newPoint = new Point(round,i);
 									if(oldPoint.x != newPoint.x || oldPoint.y != newPoint.y){
 										points.push(newPoint);
 										oldPoint.x = newPoint.x;
@@ -231,15 +211,6 @@ package org.overrides
 						points.pop();
 					}
 					
-					//Add the offset for the point
-					for(var k:uint = 0; k < points.length; k++){
-						points[k].x -= _bw/2;
-						points[k].y -= _bh/2;
-					}
-					
-					shapeDef.SetAsArray(points, points.length);
-					
-					/*
 					shapeDef.vertexCount = points.length;
 					for(var k:uint = 0; k < points.length; k++){
 						shapeDef.vertices[k].Set(points[k].x - _bw/2, points[k].y - _bh/2);
@@ -247,8 +218,8 @@ package org.overrides
 						trace("finalk:" + k + " Xy:" + points[k].x + "," + points[k].y);
 					}
 					trace("X,y:" + x + ", " + y + " bw: " + _bw + " bh: " + _bh);
-					*/
-					
+					shapeDef.friction = .5;
+					shapeDef.density = 1;
 					shape = shapeDef;
 					return;
 				}
@@ -262,35 +233,34 @@ package org.overrides
 		
 		//@desc Create a rectangle shape definition from the sprite dimensions.
 		//We're calling this outside the constructor because we need Flixel to define its sprite dimensions first in loadGraphic().
-		protected function initShape():void {
-			var shapeDef:b2PolygonShape = new b2PolygonShape();
+		public function initShape():void {
+			var shapeDef:b2PolygonDef = new b2PolygonDef();
 			shapeDef.SetAsBox(_bw/2, _bh/2);
+			shapeDef.friction = .5;
+			shapeDef.density = 1;
 			shape = shapeDef;
 		}
 		
 		//@desc Create a circle shape definition from the sprite's width.
-		protected function initCircleShape():void
+		public function initCircleShape():void
 		{
-			shape = new b2CircleShape(_bw/2);
+			var shapeDef:b2CircleDef = new b2CircleDef();
+			shapeDef.radius = _bw / 2;
+			shapeDef.friction = .5;
+			shapeDef.density = 1;
+			shape = shapeDef;
 		}
 		
 		//@desc Create the physical representation in the Box2D World using the shape definition from initShape methods.
 		//@param	world The Box2D b2World for this object to exist in.
-		public function createPhysBody(world:b2World):void{
-			fixtureDef.shape = shape
-			fixtureDef.density = 1.0;
-			
-			// Override the default friction.
-			fixtureDef.friction = 0.3;
-			fixtureDef.restitution = 0.1;
-			
-			final_body = world.CreateBody(bodyDef);
-			fixture = final_body.CreateFixture(fixtureDef);
+		public function createPhysBody(world:b2World):void
+		{
+			final_body=world.CreateBody(body);
+			final_body.CreateShape(shape);
+			final_body.SetMassFromShapes();
 			_world = world;
 			
 			final_body.SetUserData(this);
-			
-			loaded = true;
 		}
 		
 		//TODO override FlxCore.destroy() instead of using this as the public function.
@@ -340,16 +310,10 @@ package org.overrides
 		
 		override public function update():void
 		{
-			if(!loaded) return;
-			
 			super.update();
 			var posVec:b2Vec2 = final_body.GetPosition();
 			x = posVec.x - width/2;//_bw/2;
 			y = posVec.y - height/2;//_bh/2;
-			
-			//x = posVec.x;//_bw/2;
-			//y = posVec.y;//_bh/2;
-			
 			
 			angle = final_body.GetAngle();
 			
@@ -408,38 +372,16 @@ package org.overrides
 		
 		public function getXML():XML
 		{			
-			var xml:XML = new XML(<shape/>);
-			xml.file =  imageResource;
-			xml.layer = layer;
-			xml.bodyType = fixture.GetBody().GetType();//final_body. //.IsStatic();
-			xml.shapeType = fixture.GetType();//shape is b2PolygonDef;
-			xml.angle = angle;
-			xml.x = final_body.GetPosition().x;
-			xml.y = final_body.GetPosition().y;
+			var item:XML = new XML(<shape/>);
+			item.file =  imageResource;
+			item.layer = layer;
+			item.isStatic = final_body.IsStatic();
+			item.polyshape = shape is b2PolygonDef;
+			item.angle = angle;
+			item.x = final_body.GetPosition().x;
+			item.y = final_body.GetPosition().y;
 					
-			return xml;
-		}
-		
-		protected function initFromXML(xml:XML):void{
-			imageResource = xml.file;
-			layer = xml.layer;
-			
-			bodyDef.type = xml.bodyType;
-			
-			switch(int(xml.shapeType)){
-				case b2Shape.e_circleShape:
-					initCircleShape();
-					break;
-				case b2Shape.e_polygonShape:
-					//initShape();
-					initShapeFromSprite();
-					break;
-			}
-			
-			//needshapetype...
-			bodyDef.angle = xml.angle;
-			bodyDef.position.Set(xml.x, xml.y);
-			
+			return item;
 		}
 	}
 }

@@ -35,16 +35,12 @@ package org.overrides
 			_fgLayer = new FlxLayer();
 			_evLayer = new FlxLayer();
 			
-			//var environment:b2AABB = new b2AABB();
-			//environment.lowerBound.Set(0.0, 0.0);
-			//environment.upperBound.Set(1280, 960);//320.0, 240.0);
+			var environment:b2AABB = new b2AABB();
+			environment.lowerBound.Set(0.0, 0.0);
+			environment.upperBound.Set(1280, 960);//320.0, 240.0);
 			var gravity:b2Vec2 = new b2Vec2(0.0, 160);//80.0);
 			
-			// Allow bodies to sleep
-			var doSleep:Boolean = true;
-			
-			the_world = new b2World(gravity, doSleep);
-			the_world.SetWarmStarting(true);
+			the_world = new b2World(environment, gravity, true);
 			debug = false;
 			
 			_loaded = false;
@@ -107,8 +103,6 @@ package org.overrides
 			if(_layer.visible) super.render();
 			if(_fgLayer.visible) _fgLayer.render();
 			if(_evLayer.visible) _evLayer.render();
-			
-			the_world.DrawDebugData();
 		}
 		
 		protected function get bg():FlxLayer{ return _bgLayer;}

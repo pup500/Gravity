@@ -35,7 +35,7 @@ package PhysicsGame
 			super();
 			bgColor = 0xffeeeeff;
 			
-			//debug = true;
+			debug = true;
 			initBox2DDebugRendering();
 			
 			loadLevelConfig();
@@ -93,7 +93,7 @@ package PhysicsGame
 			var body:Player = new Player(start.x, start.y, _bullets);
 			
 			body.createPhysBody(the_world);
-			body.final_body.SetSleepingAllowed(false);
+			body.final_body.AllowSleeping(false);
 			body.final_body.SetFixedRotation(true);
 			add(body);
 			
@@ -135,7 +135,7 @@ package PhysicsGame
 			//Testing
 			for (var bb:b2Body = the_world.GetBodyList(); bb; bb = bb.GetNext()) {
 				
-				if(bb.GetType() == b2Body.b2_dynamicBody){//bb.IsDynamic()){
+				if(bb.IsDynamic()){
 				//if(bb.GetUserData() && bb.GetUserData().name == "Player"){
 					for(var i:uint = 0; i < _gravObjects.length; i++){
 						

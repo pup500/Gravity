@@ -20,13 +20,11 @@ package PhysicsLab
 			loadGraphic(ImgSpaceman,true,true,16,32);
 			
 			initShape();
-			fixtureDef.isSensor = true;
-			fixtureDef.filter.groupIndex = -2;
-			fixtureDef.density = 0;
-			
-			bodyDef.type = b2Body.b2_dynamicBody;
-			
 			//Make this part of group -2, and do not collide with other in the same negative group...
+			//shape.filter.groupIndex = -2;
+			
+			shape.isSensor = true;
+			//shape.density = 0;
 			
 			name = "Player";
 			

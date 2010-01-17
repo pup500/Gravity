@@ -30,7 +30,7 @@ public class b2Settings{
     /**
     * The current version of Box2D
     */
-    static public const VERSION:String = "2.1alpha";
+    static public const VERSION:String = "2.0.2";
 
 	static public const USHRT_MAX:int = 0x0000ffff;
 
@@ -40,38 +40,21 @@ public class b2Settings{
 
 	// Collision
     /**
-     *   Number of manifold points in a b2Manifold. This should NEVER change.
-     */
+    *   Number of manifold points in a b2Manifold. This should NEVER change.
+    */
 	static public const b2_maxManifoldPoints:int = 2;
-
+    /**
+    * The maximun allowed vertices in a polygon. As polygons must be convex, there is usually little point increasing this.
+    */
+	static public const b2_maxPolygonVertices:int = 8;
     /*
-     * The growable broadphase doesn't have upper limits,
-	 * so there is no b2_maxProxies or b2_maxPairs settings.
-     */
+    * The growable broadphase doesn't have upper limits,
+	* so there is no b2_maxProxies or b2_maxPairs settings.
+    */
 	//static public const b2_maxProxies:int = 0;
 	//static public const b2_maxPairs:int = 8 * b2_maxProxies;
-	
-	/**
-	 * This is used to fatten AABBs in the dynamic tree. This allows proxies
-	 * to move by a small amount without triggering a tree adjustment.
-	 * This is in meters.
-	 */
-	static public const b2_aabbExtension:Number = 0.1;
-	
- 	/**
- 	 * This is used to fatten AABBs in the dynamic tree. This is used to predict
- 	 * the future position based on the current displacement.
-	 * This is a dimensionless multiplier.
-	 */
-	static public const b2_aabbMultiplier:Number = 2.0;
 
-	/**
-	 * The radius of the polygon/edge shape skin. This should not be modified. Making
-	 * this smaller means polygons will have and insufficient for continuous collision.
-	 * Making it larger may create artifacts for vertex collision.
-	 */
-	static public const b2_polygonRadius:Number = 2.0 * b2_linearSlop;
-	
+
 	// Dynamics
 	
 	/**
@@ -126,15 +109,15 @@ public class b2Settings{
 	* The maximum linear velocity of a body. This limit is very large and is used
 	* to prevent numerical problems. You shouldn't need to adjust this.
 	*/
-	static public const b2_maxTranslation:Number = 2.0;
-	static public const b2_maxTranslationSquared:Number = b2_maxTranslation * b2_maxTranslation;
-	
+	static public const b2_maxLinearVelocity:Number = 200.0;
+	static public const b2_maxLinearVelocitySquared:Number = b2_maxLinearVelocity * b2_maxLinearVelocity;
+
 	/**
 	* The maximum angular velocity of a body. This limit is very large and is used
 	* to prevent numerical problems. You shouldn't need to adjust this.
 	*/
-	static public const b2_maxRotation:Number = 0.5 * b2_pi;
-	static public const b2_maxRotationSquared:Number = b2_maxRotation * b2_maxRotation;
+	static public const b2_maxAngularVelocity:Number = 250.0;
+	static public const b2_maxAngularVelocitySquared:Number = b2_maxAngularVelocity * b2_maxAngularVelocity;
 	
 	/**
 	* This scale factor controls how fast overlap is resolved. Ideally this would be 1 so
@@ -174,7 +157,7 @@ public class b2Settings{
 	/**
 	* A body cannot sleep if its angular velocity is above this tolerance.
 	*/
-	static public const b2_angularSleepTolerance:Number = 2.0 / 180.0 * b2Settings.b2_pi;	// 2 degrees/s
+	static public const b2_angularSleepTolerance:Number = 2.0 / 180.0;	// 2 degrees/s
 	
 	// assert
     /**
@@ -184,9 +167,8 @@ public class b2Settings{
 	static public function b2Assert(a:Boolean) : void
 	{
 		if (!a){
-			//var nullVec:b2Vec2;
-			//nullVec.x++;
-			throw "Assertion Failed";
+			var nullVec:b2Vec2;
+			nullVec.x++;
 		}
 	}
 }

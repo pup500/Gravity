@@ -3,7 +3,6 @@
 	import Box2D.Collision.*;
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
-	import Box2D.Collision.Shapes.b2Shape;
 	
 	import PhysicsGame.EventObject;
 	import PhysicsGame.LevelSelectMenu;
@@ -24,9 +23,6 @@
 	
 	import org.flixel.*;
 	import org.overrides.*;
-	
-	import Box2D.Common.b2internal;
-	use namespace b2internal;
 	
 	/**
 	 * This is the Level Editor.
@@ -231,7 +227,7 @@
 			var body:Player = new Player(100, 20, null);
 			
 			body.createPhysBody(the_world);
-			body.final_body.SetSleepingAllowed(false);
+			body.final_body.AllowSleeping(false);
 			body.final_body.SetFixedRotation(true);
 			add(body);
 			
@@ -767,6 +763,7 @@
 				case JOIN:
 				case LINK:
 					args["start"] = new Point(FlxG.mouse.x, FlxG.mouse.y);
+					xmlMapLoader.registerObjectAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true);
 					
 					//Draw with snapping.....
 					//startPoint.x = point.x;
@@ -831,8 +828,9 @@
 					drawingLine = false;
 					
 					args["end"] = new Point(FlxG.mouse.x, FlxG.mouse.y);
-					args["type"] = jointType;
+					xmlMapLoader.registerObjectAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true);
 					
+					args["type"] = jointType;
 					xmlMapLoader.addJoint(args);
 				}
 				
@@ -852,7 +850,7 @@
 				the_world.SetGravity(new b2Vec2(0,80));
 				
 				for (bb = the_world.GetBodyList(); bb; bb = bb.GetNext()) {
-					bb.SetAwake(true);
+					bb.WakeUp();
 				}
 			}
 			else{
@@ -860,7 +858,7 @@
 				for (bb = the_world.GetBodyList(); bb; bb = bb.GetNext()) {
 					if(bb.GetUserData() && bb.GetUserData().name == "Player")
 						continue;
-					 bb.SetAwake(false);
+					 bb.PutToSleep();
 				}
 			}
 		}
@@ -875,12 +873,12 @@
 			else{
 				var shape:XML = new XML(<shape/>);
 				shape.file = files[index];
-				shape.bodyType = active ? b2Body.b2_dynamicBody : b2Body.b2_staticBody;
+				shape.isStatic = !active;
 				shape.angle = 0;
 				shape.x = point.x;
 				shape.y = point.y;
 				shape.contour = "";
-				shape.shapeType = polyShape ? b2Shape.e_polygonShape : b2Shape.e_circleShape;
+				shape.polyshape = polyShape;
 				shape.layer = layer;
 				xmlMapLoader.addXMLObject(shape, true);
 			}

@@ -37,8 +37,8 @@ public class b2JointDef
 	{
 		type = b2Joint.e_unknownJoint;
 		userData = null;
-		bodyA = null;
-		bodyB = null;
+		body1 = null;
+		body2 = null;
 		collideConnected = false;
 	}
 
@@ -53,11 +53,11 @@ public class b2JointDef
 	/**
 	* The first attached body.
 	*/
-	public var bodyA:b2Body;
+	public var body1:b2Body;
 	/**
 	* The second attached body.
 	*/
-	public var bodyB:b2Body;
+	public var body2:b2Body;
 	/**
 	* Set this flag to true if the attached bodies should collide.
 	*/

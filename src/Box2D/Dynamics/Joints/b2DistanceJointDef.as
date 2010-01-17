@@ -52,15 +52,15 @@ public class b2DistanceJointDef extends b2JointDef
 	* Initialize the bodies, anchors, and length using the world
 	* anchors.
 	*/
-	public function Initialize(bA:b2Body, bB:b2Body,
-								anchorA:b2Vec2, anchorB:b2Vec2) : void
+	public function Initialize(b1:b2Body, b2:b2Body,
+								anchor1:b2Vec2, anchor2:b2Vec2) : void
 	{
-		bodyA = bA;
-		bodyB = bB;
-		localAnchorA.SetV( bodyA.GetLocalPoint(anchorA));
-		localAnchorB.SetV( bodyB.GetLocalPoint(anchorB));
-		var dX:Number = anchorB.x - anchorA.x;
-		var dY:Number = anchorB.y - anchorA.y;
+		body1 = b1;
+		body2 = b2;
+		localAnchor1.SetV( body1.GetLocalPoint(anchor1));
+		localAnchor2.SetV( body2.GetLocalPoint(anchor2));
+		var dX:Number = anchor2.x - anchor1.x;
+		var dY:Number = anchor2.y - anchor1.y;
 		length = Math.sqrt(dX*dX + dY*dY);
 		frequencyHz = 0.0;
 		dampingRatio = 0.0;
@@ -69,20 +69,20 @@ public class b2DistanceJointDef extends b2JointDef
 	/**
 	* The local anchor point relative to body1's origin.
 	*/
-	public var localAnchorA:b2Vec2 = new b2Vec2();
+	public var localAnchor1:b2Vec2 = new b2Vec2();
 
 	/**
 	* The local anchor point relative to body2's origin.
 	*/
-	public var localAnchorB:b2Vec2 = new b2Vec2();
+	public var localAnchor2:b2Vec2 = new b2Vec2();
 
 	/**
-	* The natural length between the anchor points.
+	* The equilibrium length between the anchor points.
 	*/
 	public var length:Number;
 
 	/**
-	* The mass-spring-damper frequency in Hertz.
+	* The response speed.
 	*/
 	public var frequencyHz:Number;
 

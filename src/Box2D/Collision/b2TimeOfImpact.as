@@ -22,224 +22,139 @@ import Box2D.Common.Math.*;
 import Box2D.Common.*;
 import Box2D.Collision.Shapes.*;
 import Box2D.Collision.*;
-
-import Box2D.Common.b2internal;
+import Box2D.Common.b2internal;
 use namespace b2internal;
-
 
 /**
 * @private
 */
 public class b2TimeOfImpact
 {
-	
-	private static var b2_toiCalls:int = 0;
-	private static var b2_toiIters:int = 0;
-	private static var b2_toiMaxIters:int = 0;
-	private static var b2_toiRootIters:int = 0;
-	private static var b2_toiMaxRootIters:int = 0;
 
-	private static var s_cache:b2SimplexCache = new b2SimplexCache();
-	private static var s_distanceInput:b2DistanceInput = new b2DistanceInput();
-	private static var s_xfA:b2Transform = new b2Transform();
-	private static var s_xfB:b2Transform = new b2Transform();
-	private static var s_fcn:b2SeparationFunction = new b2SeparationFunction();
-	private static var s_distanceOutput:b2DistanceOutput = new b2DistanceOutput();
-	public static function TimeOfImpact(input:b2TOIInput):Number
+// This algorithm uses conservative advancement to compute the time of
+// impact (TOI) of two shapes.
+// Refs: Bullet, Young Kim
+//
+static public var s_p1:b2Vec2 = new b2Vec2();
+static public var s_p2:b2Vec2 = new b2Vec2();
+static public var s_xf1:b2XForm = new b2XForm();
+static public var s_xf2:b2XForm = new b2XForm();
+//
+static public function TimeOfImpact(	shape1:b2Shape, sweep1:b2Sweep,
+								shape2:b2Shape, sweep2:b2Sweep) : Number
+{
+	var math1:Number;
+	var math2:Number;
+	
+	var r1:Number = shape1.m_sweepRadius;
+	var r2:Number = shape2.m_sweepRadius;
+
+	//b2Settings.b2Assert(sweep1.t0 == sweep2.t0);
+	//b2Settings.b2Assert(1.0 - sweep1.t0 > Number.MIN_VALUE);
+
+	var t0:Number = sweep1.t0;
+	//b2Vec2 v1 = sweep1.c - sweep1.c0;
+	var v1X:Number = sweep1.c.x - sweep1.c0.x;
+	var v1Y:Number = sweep1.c.y - sweep1.c0.y;
+	//b2Vec2 v2 = sweep2.c - sweep2.c0;
+	var v2X:Number = sweep2.c.x - sweep2.c0.x;
+	var v2Y:Number = sweep2.c.y - sweep2.c0.y;
+	var omega1:Number = sweep1.a - sweep1.a0;
+	var omega2:Number = sweep2.a - sweep2.a0;
+
+	var alpha:Number = 0.0;
+
+	var p1:b2Vec2 = s_p1;
+	var p2:b2Vec2 = s_p2;
+	var k_maxIterations:int = 20;	// TODO_ERIN b2Settings
+	var iter:int = 0;
+	//b2Vec2 normal = b2Vec2_zero;
+	var normalX:Number = 0.0;
+	var normalY:Number = 0.0;
+	var distance:Number = 0.0;
+	var targetDistance:Number = 0.0;
+	for(;;)
 	{
-		++b2_toiCalls;
+		var t:Number = (1.0 - alpha) * t0 + alpha;
+		//b2XForm xf1, xf2;
+		var xf1:b2XForm = s_xf1;
+		var xf2:b2XForm = s_xf2;
+		sweep1.GetXForm(xf1, t);
+		sweep2.GetXForm(xf2, t);
 		
-		var proxyA:b2DistanceProxy = input.proxyA;
-		var proxyB:b2DistanceProxy = input.proxyB;
+		// Get the distance between shapes.
+		distance = b2Distance.Distance(p1, p2, shape1, xf1, shape2, xf2);
 		
-		var sweepA:b2Sweep = input.sweepA;
-		var sweepB:b2Sweep = input.sweepB;
-		
-		b2Settings.b2Assert(sweepA.t0 == sweepB.t0);
-		b2Settings.b2Assert(1.0 - sweepA.t0 > Number.MIN_VALUE);
-		
-		var radius:Number = proxyA.m_radius + proxyB.m_radius;
-		var tolerance:Number = input.tolerance;
-		
-		var alpha:Number = 0.0;
-		
-		const k_maxIterations:int = 1000; //TODO_ERIN b2Settings
-		var iter:int = 0;
-		var target:Number = 0.0;
-		
-		// Prepare input for distance query.
-		s_cache.count = 0;
-		s_distanceInput.useRadii = false;
-		
-		for (;; )
+		if (iter == 0)
 		{
-			sweepA.GetTransform(s_xfA, alpha);
-			sweepB.GetTransform(s_xfB, alpha);
-			
-			// Get the distance between shapes
-			s_distanceInput.proxyA = proxyA;
-			s_distanceInput.proxyB = proxyB;
-			s_distanceInput.transformA = s_xfA;
-			s_distanceInput.transformB = s_xfB;
-			
-			b2Distance.Distance(s_distanceOutput, s_cache, s_distanceInput);
-			
-			if (s_distanceOutput.distance <= 0.0)
+			// Compute a reasonable target distance to give some breathing room
+			// for conservative advancement.
+			if (distance > 2.0 * b2Settings.b2_toiSlop)
 			{
-				alpha = 1.0;
-				break;
+				targetDistance = 1.5 * b2Settings.b2_toiSlop;
 			}
-			
-			s_fcn.Initialize(s_cache, proxyA, s_xfA, proxyB, s_xfB);
-			
-			var separation:Number = s_fcn.Evaluate(s_xfA, s_xfB);
-			if (separation <= 0.0)
+			else
 			{
-				alpha = 1.0;
-				break;
-			}
-			
-			if (iter == 0)
-			{
-				// Compute a reasonable target distance to give some breathing room
-				// for conservative advancement. We take advantage of the shape radii
-				// to create additional clearance
-				if (separation > radius)
-				{
-					target = b2Math.Max(radius - tolerance, 0.75 * radius);
-				}
-				else
-				{
-					target = b2Math.Max(separation - tolerance, 0.02 * radius);
-				}
-			}
-			
-			if (separation - target < 0.5 * tolerance)
-			{
-				if (iter == 0)
-				{
-					alpha = 1.0;
-					break;
-				}
-				break;
-			}
-			
-//#if 0
-			// Dump the curve seen by the root finder
-			//{
-				//const N:int = 100;
-				//var dx:Number = 1.0 / N;
-				//var xs:Array/*Number*/ = new Array(N + 1);
-				//var fs:Array/*Number*/ = new Array(N + 1);
-				//
-				//var x:Number = 0.0;
-				//for (var i:int = 0; i <= N; i++)
-				//{
-					//sweepA.GetTransform(xfA, x);
-					//sweepB.GetTransform(xfB, x);
-					//var f:Number = fcn.Evaluate(xfA, xfB) - target;
-					//
-					//trace(x, f);
-					//xs[i] = x;
-					//fx[i] = f'
-					//
-					//x += dx;
-				//}
-			//}
-//#endif
-			// Compute 1D root of f(x) - target = 0
-			var newAlpha:Number = alpha;
-			{
-				var x1:Number = alpha;
-				var x2:Number = 1.0;
-				
-				var f1:Number = separation;
-				
-				sweepA.GetTransform(s_xfA, x2);
-				sweepB.GetTransform(s_xfB, x2);
-				
-				var f2:Number = s_fcn.Evaluate(s_xfA, s_xfB);
-				
-				// If intervals don't overlap at t2, then we are done
-				if (f2 >= target)
-				{
-					alpha = 1.0;
-					break;
-				}
-				
-				// Determine when intervals intersect
-				var rootIterCount:int = 0;
-				for (;; )
-				{
-					// Use a mis of the secand rule and bisection
-					var x:Number;
-					if (rootIterCount & 1)
-					{
-						// Secant rule to improve convergence
-						x = x1 + (target - f1) * (x2 - x1) / (f2 - f1);
-					}
-					else
-					{
-						// Bisection to guarantee progress
-						x = 0.5 * (x1 + x2);
-					}
-					
-					sweepA.GetTransform(s_xfA, x);
-					sweepB.GetTransform(s_xfB, x);
-					
-					var f:Number = s_fcn.Evaluate(s_xfA, s_xfB);
-					
-					if (b2Math.Abs(f - target) < 0.025 * tolerance)
-					{
-						newAlpha = x;
-						break;
-					}
-					
-					// Ensure we continue to bracket the root
-					if (f > target)
-					{
-						x1 = x;
-						f1 = f;
-					}
-					else
-					{
-						x2 = x;
-						f2 = f;
-					}
-					
-					++rootIterCount;
-					++b2_toiRootIters;
-					if (rootIterCount == 50)
-					{
-						break;
-					}
-				}
-				
-				b2_toiMaxRootIters = b2Math.Max(b2_toiMaxRootIters, rootIterCount);
-			}
-			
-			// Ensure significant advancement
-			if (newAlpha < (1.0 + 100.0 * Number.MIN_VALUE) * alpha)
-			{
-				break;
-			}
-			
-			alpha = newAlpha;
-			
-			iter++;
-			++b2_toiIters;
-			
-			if (iter == k_maxIterations)
-			{
-				break;
+				//targetDistance = Math.max(0.05 * b2Settings.b2_toiSlop, distance - 0.5 * b2Settings.b2_toiSlop);
+				math1 = 0.05 * b2Settings.b2_toiSlop;
+				math2 = distance - 0.5 * b2Settings.b2_toiSlop;
+				targetDistance = math1 > math2 ? math1 : math2;
 			}
 		}
 		
-		b2_toiMaxIters = b2Math.Max(b2_toiMaxIters, iter);
-
-		return alpha;
+		if (distance - targetDistance < 0.05 * b2Settings.b2_toiSlop || iter == k_maxIterations)
+		{
+			break;
+		}
+		
+		//normal = p2 - p1;
+		normalX = p2.x - p1.x;
+		normalY = p2.y - p1.y;
+		//normal.Normalize();
+		var nLen:Number = Math.sqrt(normalX*normalX + normalY*normalY);
+		normalX /= nLen;
+		normalY /= nLen;
+		
+		// Compute upper bound on remaining movement.
+		//float32 approachVelocityBound = b2Dot(normal, v1 - v2) + b2Abs(omega1) * r1 + b2Abs(omega2) * r2;
+		var approachVelocityBound:Number = 	(normalX*(v1X - v2X) + normalY*(v1Y - v2Y))
+											+ (omega1 < 0 ? -omega1 : omega1) * r1 
+											+ (omega2 < 0 ? -omega2 : omega2) * r2;
+		//if (Math.abs(approachVelocityBound) < Number.MIN_VALUE)
+		if (approachVelocityBound == 0)
+		{
+			alpha = 1.0;
+			break;
+		}
+		
+		// Get the conservative time increment. Don't advance all the way.
+		var dAlpha:Number = (distance - targetDistance) / approachVelocityBound;
+		//float32 dt = (distance - 0.5f * b2_linearSlop) / approachVelocityBound;
+		var newAlpha:Number = alpha + dAlpha;
+		
+		// The shapes may be moving apart or a safe distance apart.
+		if (newAlpha < 0.0 || 1.0 < newAlpha)
+		{
+			alpha = 1.0;
+			break;
+		}
+		
+		// Ensure significant advancement.
+		if (newAlpha < (1.0 + 100.0 * Number.MIN_VALUE) * alpha)
+		{
+			break;
+		}
+		
+		alpha = newAlpha;
+		
+		++iter;
 	}
 
+	return alpha;
 }
+
+
+}
+
 
 }

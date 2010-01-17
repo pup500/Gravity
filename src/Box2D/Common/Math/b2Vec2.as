@@ -34,8 +34,7 @@ public class b2Vec2
 	public function Set(x_:Number=0, y_:Number=0) : void {x=x_; y=y_;};
 	public function SetV(v:b2Vec2) : void {x=v.x; y=v.y;};
 
-	public function GetNegative():b2Vec2 { return new b2Vec2(-x, -y); }
-	public function NegativeSelf():void { x = -x; y = -y; }
+	public function Negative():b2Vec2 { return new b2Vec2(-x, -y); }
 	
 	static public function Make(x_:Number, y_:Number):b2Vec2
 	{
@@ -70,8 +69,8 @@ public class b2Vec2
 	
 	public function MulTM(A:b2Mat22) : void
 	{
-		var tX:Number = b2Math.Dot(this, A.col1);
-		y = b2Math.Dot(this, A.col2);
+		var tX:Number = b2Math.b2Dot(this, A.col1);
+		y = b2Math.b2Dot(this, A.col2);
 		x = tX;
 	}
 	
@@ -133,7 +132,7 @@ public class b2Vec2
 
 	public function IsValid():Boolean
 	{
-		return b2Math.IsValid(x) && b2Math.IsValid(y);
+		return b2Math.b2IsValid(x) && b2Math.b2IsValid(y);
 	}
 
 	public var x:Number;

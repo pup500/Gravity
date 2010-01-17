@@ -16,39 +16,33 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-package Box2D.Dynamics.Joints{
+package Box2D.Collision.Shapes{
+
 
 
 import Box2D.Common.Math.*;
+import Box2D.Collision.Shapes.*;
 
 import Box2D.Common.b2internal;
 use namespace b2internal;
 
 
 /**
-* @private
+* This structure is used to build circle shapes.
+* @see b2CircleShape
 */
-public class b2Jacobian
+public class b2CircleDef extends b2ShapeDef
 {
-	public var linear1:b2Vec2 = new b2Vec2();
-	public var angular1:Number;
-	public var linear2:b2Vec2 = new b2Vec2();
-	public var angular2:Number;
+	public function b2CircleDef()
+	{
+		type = b2Shape.e_circleShape;
+		radius = 1.0;
+	}
 
-	public function SetZero() : void{
-		linear1.SetZero(); angular1 = 0.0;
-		linear2.SetZero(); angular2 = 0.0;
-	}
-	public function Set(x1:b2Vec2, a1:Number, x2:b2Vec2, a2:Number) : void{
-		linear1.SetV(x1); angular1 = a1;
-		linear2.SetV(x2); angular2 = a2;
-	}
-	public function Compute(x1:b2Vec2, a1:Number, x2:b2Vec2, a2:Number):Number{
-		
-		//return b2Math.b2Dot(linear1, x1) + angular1 * a1 + b2Math.b2Dot(linear2, x2) + angular2 * a2;
-		return (linear1.x*x1.x + linear1.y*x1.y) + angular1 * a1 + (linear2.x*x2.x + linear2.y*x2.y) + angular2 * a2;
-	}
+	/** The circle center in local coordinages */
+	public var localPosition:b2Vec2 = new b2Vec2(0.0, 0.0);
+	/** The circle radius */
+	public var radius:Number;
 };
-
 
 }

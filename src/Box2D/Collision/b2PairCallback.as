@@ -16,39 +16,23 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-package Box2D.Dynamics.Joints{
-
-
-import Box2D.Common.Math.*;
-
-import Box2D.Common.b2internal;
-use namespace b2internal;
-
-
+package Box2D.Collision{
+	
+	
 /**
 * @private
 */
-public class b2Jacobian
+public class b2PairCallback
 {
-	public var linear1:b2Vec2 = new b2Vec2();
-	public var angular1:Number;
-	public var linear2:b2Vec2 = new b2Vec2();
-	public var angular2:Number;
+	//virtual ~b2PairCallback() {}
 
-	public function SetZero() : void{
-		linear1.SetZero(); angular1 = 0.0;
-		linear2.SetZero(); angular2 = 0.0;
-	}
-	public function Set(x1:b2Vec2, a1:Number, x2:b2Vec2, a2:Number) : void{
-		linear1.SetV(x1); angular1 = a1;
-		linear2.SetV(x2); angular2 = a2;
-	}
-	public function Compute(x1:b2Vec2, a1:Number, x2:b2Vec2, a2:Number):Number{
-		
-		//return b2Math.b2Dot(linear1, x1) + angular1 * a1 + b2Math.b2Dot(linear2, x2) + angular2 * a2;
-		return (linear1.x*x1.x + linear1.y*x1.y) + angular1 * a1 + (linear2.x*x2.x + linear2.y*x2.y) + angular2 * a2;
-	}
+	// This returns the new pair user data.
+	public virtual function PairAdded(proxyUserData1:*, proxyUserData2:*):*{return null};
+
+	// This should free the pair's user data. In extreme circumstances, it is possible
+	// this will be called with null pairUserData because the pair never existed.
+	public virtual function PairRemoved(proxyUserData1:*, proxyUserData2:*, pairUserData:*) : void{};
 };
-
-
+	
+	
 }

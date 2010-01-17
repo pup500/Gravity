@@ -26,7 +26,7 @@ package common.joints
 			this.world = world;
 			
 			point1 = new b2Vec2(xml.body1.x, xml.body1.y);
-			point2 = new b2Vec2(xml.body2.x, xml.body2.y);
+			point2 = new b2Vec2(xml.body1.x, xml.body1.y);
 			
 			body1 = Utilities.GetBodyAtMouse(world, new Point(xml.body1.x, xml.body1.y), true);
 			body2 = Utilities.GetBodyAtMouse(world, new Point(xml.body2.x, xml.body2.y), true);
@@ -41,9 +41,7 @@ package common.joints
 		}
 		
 		public virtual function AddJoint():void{
-			if(valid){
-				world.CreateJoint(joint);
-			}
+			world.CreateJoint(joint);
 		}
 	}
 }

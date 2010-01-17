@@ -32,7 +32,8 @@ use namespace b2internal;
 public class b2NullContact extends b2Contact
 {
 	public function b2NullContact() {}
-	b2internal override function Evaluate(): void {}
+	b2internal override function Evaluate(l:b2ContactListener): void {}
+	public override function GetManifolds():Array { return null; }
 };
 
 }
