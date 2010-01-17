@@ -141,7 +141,8 @@ package PhysicsGame
 			for (var bb:b2Body = the_world.GetBodyList(); bb; bb = bb.GetNext()) {
 				
 				if(bb.GetType() == b2Body.b2_dynamicBody){//bb.IsDynamic()){
-				//if(bb.GetUserData() && bb.GetUserData().name == "Player"){
+				
+				if(bb.GetUserData() && bb.GetUserData().name == "Player"){
 					for(var i:uint = 0; i < _gravObjects.length; i++){
 						
 						var gObj:GravityObject = _gravObjects[i] as GravityObject;
@@ -151,6 +152,7 @@ package PhysicsGame
 						
 						bb.ApplyForce(force,bb.GetWorldCenter());
 					}
+				}
 				}
 			}
 			

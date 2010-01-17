@@ -1,38 +1,77 @@
 <config>
   <objects>
     <shape>
-      <file>data/editor/images/e_ass_08.png</file>
+      <file>data/editor/images/e_ass_10.png</file>
       <layer>1</layer>
-      <bodyType>2</bodyType>
+      <bodyType>0</bodyType>
       <shapeType>1</shapeType>
-      <angle>21.363635467475078</angle>
-      <x>364.5371250645216</x>
-      <y>46.76483302741445</y>
+      <angle>0</angle>
+      <x>479.5</x>
+      <y>296.5</y>
     </shape>
     <shape>
       <file>data/editor/images/e_ass_10.png</file>
       <layer>1</layer>
+      <bodyType>0</bodyType>
+      <shapeType>1</shapeType>
+      <angle>0</angle>
+      <x>431.5</x>
+      <y>360.5</y>
+    </shape>
+    <shape>
+      <file>data/editor/images/e_ass_10.png</file>
+      <layer>1</layer>
+      <bodyType>0</bodyType>
+      <shapeType>1</shapeType>
+      <angle>0</angle>
+      <x>351.5</x>
+      <y>264.5</y>
+    </shape>
+    <shape>
+      <file>data/editor/images/e_ass_10.png</file>
+      <layer>1</layer>
+      <bodyType>0</bodyType>
+      <shapeType>1</shapeType>
+      <angle>0</angle>
+      <x>287.5</x>
+      <y>264.5</y>
+    </shape>
+    <shape>
+      <file>data/editor/images/e_ass_10.png</file>
+      <layer>1</layer>
+      <bodyType>0</bodyType>
+      <shapeType>1</shapeType>
+      <angle>0</angle>
+      <x>223.5</x>
+      <y>264.5</y>
+    </shape>
+    <shape>
+      <file>data/editor/images/e_ass_03.png</file>
+      <layer>1</layer>
+      <bodyType>0</bodyType>
+      <shapeType>1</shapeType>
+      <angle>0</angle>
+      <x>608.5</x>
+      <y>424.5</y>
+    </shape>
+    <shape>
+      <file>data/editor/images/e_ass_03.png</file>
+      <layer>1</layer>
+      <bodyType>0</bodyType>
+      <shapeType>1</shapeType>
+      <angle>0</angle>
+      <x>224.5</x>
+      <y>424.5</y>
+    </shape>
+    <shape>
+      <file>data/editor/images/e_ass_08.png</file>
+      <layer>1</layer>
       <bodyType>2</bodyType>
       <shapeType>1</shapeType>
-      <angle>1.684202725649937e-17</angle>
-      <x>303.5</x>
-      <y>430.35</y>
+      <angle>154.4961507621053</angle>
+      <x>453.37435850175086</x>
+      <y>45.357933389791896</y>
     </shape>
-    <joint>
-      <type>1</type>
-      <body1>
-        <x>0</x>
-        <y>0</y>
-      </body1>
-      <body2>
-        <x>364.5371250645216</x>
-        <y>46.76483302741445</y>
-      </body2>
-      <anchor>
-        <x>410</x>
-        <y>112</y>
-      </anchor>
-    </joint>
     <joint>
       <type>2</type>
       <body1>
@@ -40,8 +79,8 @@
         <y>0</y>
       </body1>
       <body2>
-        <x>303.5</x>
-        <y>430.35</y>
+        <x>224.5</x>
+        <y>424.5</y>
       </body2>
       <anchor>
         <x>302</x>
@@ -52,15 +91,30 @@
         <y>1</y>
       </axis>
     </joint>
+    <joint>
+      <type>1</type>
+      <body1>
+        <x>0</x>
+        <y>0</y>
+      </body1>
+      <body2>
+        <x>453.37435850175086</x>
+        <y>45.357933389791896</y>
+      </body2>
+      <anchor>
+        <x>410</x>
+        <y>112</y>
+      </anchor>
+    </joint>
   </objects>
   <points>
     <start>
-      <x>0</x>
-      <y>0</y>
+      <x>80</x>
+      <y>384</y>
     </start>
     <end>
-      <x>0</x>
-      <y>0</y>
+      <x>480</x>
+      <y>384</y>
     </end>
   </points>
 </config>

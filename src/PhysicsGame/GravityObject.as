@@ -25,7 +25,8 @@
 		
 		//protected var _world:b2World;
 		public var mass:Number;
-		private var initialMass:Number = 4;//5000;//50000;
+		private var initialMass:Number = 20;//5000;//50000;
+		private var deltaMass:Number = 10;
 		
 		public var antiGravity:Boolean;
 		
@@ -62,12 +63,6 @@
 			
 			_startLosingMass = false;
 			
-			
-			//TODO:
-			_startLosingMass = true;
-			
-			
-			
 			addAnimation("idle",[0, 1, 2, 3], 12);
 			
 			_coolDown = new Timer(1000,1);
@@ -85,12 +80,11 @@
 			}
 			else { 
 				super.update();
-				//trace("gravityX: " + x + ", " + y);
-				trace("gravitymass:" + final_body.GetMass());
 				
 				if(_startLosingMass){
-					mass -= 4 * FlxG.elapsed;
+					mass -= deltaMass * FlxG.elapsed;
 					if(mass < 0){
+						mass = 0;
 						dead = true;
 					}
 					alpha = mass/ initialMass;
@@ -123,7 +117,7 @@
 			getScreenXY(_p);
 
 			var myShape:Shape = new Shape();
-			myShape.graphics.beginFill(0x669933, alpha/2);//alpha/3+.1);
+			myShape.graphics.beginFill(antiGravity ? 0x990000 : 0x669933, alpha/2);//alpha/3+.1);
 			
 			//TODO:See if we can get radient to work.....
 			/*
@@ -175,11 +169,13 @@
 			var distSq:Number = dist.x * dist.x + dist.y * dist.y;
 			
 			//For performance reasons....  assume force is 0 when distance is pretty far
-			if(distSq > 40000 ) return new b2Vec2();
+			//if(distSq > 40000 ) return new b2Vec2();
 			
 			//This is a physics hack to stop adding gravity to objects when they are too close
 			//they aren't pulling anymore because of normal force
 			//if(distanceSq < 100) continue;
+			if(distSq < Number.MIN_VALUE)
+				return new b2Vec2();
 			
 			var distance:Number = Math.sqrt(distSq);
 			var massProduct:Number = physBody.GetMass() * gMass;
@@ -188,23 +184,15 @@
 			
 			var force:Number = G*(massProduct/distSq);
 			
+			//See if this is ok....
+			force = Math.log(force + 1) * 5;
+			
 			trace("force: " + force);
+			trace("distsq: " + distSq);
 			
-			if(force > 100) force = 100;
-			if(force < 0) force = 100;
-			
-			//TODO:Force is powerful now....
-			//force = 1;
-			
-			//trace(distance);
-			//trace("mass: " + physBody.GetMass());
-			//trace("dist:" + distance + " force:" + force + " forx:" + force * (dist.x/distance) + " fory:" + force * (dist.y/distance));
-			
+			//if(force > 10) force = 10;
 			var impulse:b2Vec2 = new b2Vec2(force * (dist.x/distance), force * (dist.y/distance));
-			//impulse.Multiply(physBody.GetMass());
 			
-			//trace("impulsex: " + impulse.x + ", " + impulse.y);
-			//trace("impulsex: " + impulse.x /physBody.GetMass() + ", " + impulse.y/physBody.GetMass());
 			if(!antiGravity)
 				return impulse;
 			else

@@ -171,6 +171,9 @@ package common
 			axis.x = j.GetUserData().x;
 			axis.y = j.GetUserData().y;
 			
+			
+			//TODO:Since we aren't saving translations yet, simulating physics will save the prismatic joint
+			//at an incorrect place....
 			var joint:XML = new XML(<joint/>);
 			joint.type = e_prismaticJoint;
 			joint.body1.x = point1.x;

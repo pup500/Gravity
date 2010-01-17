@@ -85,11 +85,11 @@
 				}
 			}
 			else { 
-				trace("bullet:" + name +  " x,y:" + x + "," + y);
-				trace("dead:" + dead + " finished: " + finished);
+		//		trace("bullet:" + name +  " x,y:" + x + "," + y);
+		//		trace("dead:" + dead + " finished: " + finished);
 				super.update();
 				
-				trace("bullet speed" + final_body.GetLinearVelocity().x + "," + final_body.GetLinearVelocity().y);
+		//		trace("bullet speed" + final_body.GetLinearVelocity().x + "," + final_body.GetLinearVelocity().y);
 			}
 		}
 		
@@ -107,8 +107,8 @@
 			//old.x = x;
 			//old.y = y;
 			
-			trace("bullet hit");
-			trace("bulletxy" + old.x + "," + old.y);
+		//	trace("bullet hit");
+		//	trace("bulletxy" + old.x + "," + old.y);
 			
 			final_body.GetLinearVelocity().SetZero();
 			if(onScreen()) FlxG.play(SndHit);
@@ -134,12 +134,12 @@
 			createPhysBody(_world);
 			final_body.SetBullet(true);
 			final_body.SetLinearVelocity(new b2Vec2(VelocityX, VelocityY));
-			trace("bullet speed" + final_body.GetLinearVelocity().x + "," + final_body.GetLinearVelocity().y);
+		//	trace("bullet speed" + final_body.GetLinearVelocity().x + "," + final_body.GetLinearVelocity().y);
 			//final_body.ApplyImpulse(new Box2D.Common.Math.b2Vec2(VelocityX,VelocityY), new Box2D.Common.Math.b2Vec2(x, y));
 			play("idle");
 			FlxG.play(SndShoot);
 			
-			trace("bullet shoot");
+		//	trace("bullet shoot");
 			
 			_gravityObject.antiGravity = antiGravity;
 			
@@ -149,11 +149,11 @@
 		override public function setImpactPoint(point:b2Contact):void{
 			super.setImpactPoint(point);
 			
-			trace("manifold type: "+ point.GetManifold().m_type);
+		//	trace("manifold type: "+ point.GetManifold().m_type);
 			
 			//Physics...
 			old = final_body.GetWorldPoint(point.GetManifold().m_localPoint);
-			trace("world: " + old.x + "," + old.y);
+		//	trace("world: " + old.x + "," + old.y);
 			//trace("world" + final_body.GetWorldPoint(old).x + "," + final_body.GetWorldPoint(old).y);
 			
 			hurt(0);
