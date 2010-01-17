@@ -4,6 +4,7 @@ package PhysicsGame
 	import Box2D.Collision.Shapes.*;
 	import Box2D.Collision.b2ContactPoint;
 	import Box2D.Common.Math.b2Vec2;
+	import Box2D.Dynamics.Contacts.*;
 	
 	import flash.events.TimerEvent;
 	import flash.geom.Point;
@@ -318,13 +319,13 @@ package PhysicsGame
 			_canShoot = true;
 		}
 		
-		override public function setImpactPoint(point:b2ContactPoint):void{
+		override public function setImpactPoint(point:b2Contact):void{
 			super.setImpactPoint(point);
 			
 			//trace("imp: " + impactPoint.position.y + " playy:" + y + " hei: " + height + " both:" + (y + height));
-			if(impactPoint.position.y > y + height-3 && final_body.GetLinearVelocity().y >= 0){
-				_canJump = true;
-			}
+			//if(impactPoint.position.y > y + height-3 && final_body.GetLinearVelocity().y >= 0){
+				//_canJump = true;
+			//}
 			//trace(impactPoint.position.y > y + height-3);
 			/*
 			if(point.shape1.GetBody().GetUserData() && point.shape1.GetBody().GetUserData().name == "end"){
@@ -336,7 +337,7 @@ package PhysicsGame
 			*/
 		}
 		
-		override public function removeImpactPoint(point:b2ContactPoint):void{
+		override public function removeImpactPoint(point:b2Contact):void{
 			super.removeImpactPoint(point);
 			
 			//if(impactPoint.position.y > y + height/2){

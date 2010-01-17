@@ -4,6 +4,7 @@
 	import Box2D.Collision.Shapes.*;
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
+	import Box2D.Dynamics.Contacts.*;
 	
 	import flash.geom.Point;
 	
@@ -79,7 +80,7 @@
 				destroyPhysBody();
 				if(_spawn){
 					_spawn = false;
-					_gravityObject.shoot(impactPoint.position.x,impactPoint.position.y,0,0);
+					_gravityObject.shoot(x, y, 0, 0);//impactPoint.position.x,impactPoint.position.y,0,0);
 				}
 			}
 			else { 
@@ -143,7 +144,7 @@
 			super.reset(X,Y);
 		}
 		
-		override public function setImpactPoint(point:b2ContactPoint):void{
+		override public function setImpactPoint(point:b2Contact):void{
 			super.setImpactPoint(point);
 			
 			hurt(0);

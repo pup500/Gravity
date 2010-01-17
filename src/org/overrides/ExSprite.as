@@ -5,6 +5,7 @@ package org.overrides
 	import Box2D.Common.Math.*;
 	import Box2D.Common.b2internal;
 	import Box2D.Dynamics.*;
+	import Box2D.Dynamics.Contacts.*;
 	import Box2D.Dynamics.Joints.b2Joint;
 	import Box2D.Dynamics.Joints.b2JointEdge;
 	import Box2D.Dynamics.Joints.b2PrismaticJoint;
@@ -32,7 +33,7 @@ package org.overrides
 		public var fixtureDef:b2FixtureDef;
 		public var final_body:b2Body; //The physical representation in the Body2D b2World.
 		public var fixture:b2Fixture;
-		public var impactPoint:b2ContactPoint;
+		public var impactPoint:b2Contact;
 		
 		protected var _world:b2World;
 		
@@ -45,7 +46,7 @@ package org.overrides
 			bodyDef = new b2BodyDef();
 			fixtureDef = new b2FixtureDef();
 				
-			impactPoint = new b2ContactPoint();
+			impactPoint = new b2Contact();
 			
 			bodyDef.type = b2Body.b2_dynamicBody;
 			
@@ -394,18 +395,18 @@ package org.overrides
 		//Box2D reuses the reference to point, so we can't simply copy the reference.
 		// Since there are no copy constructors, we'll have to manually copy a few
 		//	properties here. Shape 1 and 2, and other such object references will be missing.
-		public function setImpactPoint(point:b2ContactPoint):void{
-			impactPoint.friction = point.friction;
-			impactPoint.id = point.id;
-			impactPoint.normal = point.normal;
-			impactPoint.position = point.position.Copy();
+		public function setImpactPoint(point:b2Contact):void {
+			//impactPoint.friction = point.friction;
+			//impactPoint.id = point.id;
+			//impactPoint.normal = point.normal;
+			//impactPoint.position = point.position.Copy();
 		}
 		
-		public function removeImpactPoint(point:b2ContactPoint):void{
-			impactPoint.friction = point.friction;
-			impactPoint.id = point.id;
-			impactPoint.normal = point.normal;
-			impactPoint.position = point.position.Copy();
+		public function removeImpactPoint(point:b2Contact):void{
+			//impactPoint.friction = point.friction;
+			//impactPoint.id = point.id;
+			//impactPoint.normal = point.normal;
+			//impactPoint.position = point.position.Copy();
 		}
 		
 		public function getXML():XML

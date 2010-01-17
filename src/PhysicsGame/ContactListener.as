@@ -1,8 +1,6 @@
 package PhysicsGame
 {
-	import Box2D.Collision.b2ContactPoint;
-	import Box2D.Dynamics.b2Body;
-	import Box2D.Dynamics.b2ContactListener;
+	import Box2D.Dynamics.*;
 	import Box2D.Dynamics.Contacts.*;
 
 	public class ContactListener extends b2ContactListener
@@ -14,24 +12,28 @@ package PhysicsGame
 		
 		/// Called when a contact point is added. This includes the geometry
 		/// and the forces.
-		override public function BeginContact(contact:b2Contact) : void{
-			/*
-			var body1:b2Body = point.shape1.GetBody();
-			var body2:b2Body = point.shape2.GetBody();
+		override public function BeginContact(contact:b2Contact) : void {
+		
+			//var body1:b2Body = point.shape1.GetBody();
+			//var body2:b2Body = point.shape2.GetBody();
+			
+			//Changed to this for Box2D 2.1a. We're using b2Fixtures instead of b2Shapes.
+			var body1:b2Body = contact.GetFixtureA().GetBody();
+			var body2:b2Body = contact.GetFixtureB().GetBody();
 			//trace("Body1: "+ body1.GetUserData().name + " Body2: " + body2.GetUserData().name);
 				
 			if(body1.GetUserData()){
 				trace("Body1: "+ body1.GetUserData().name + " Body2: " + body2.GetUserData().name);
-				body1.GetUserData().setImpactPoint(point);
+				body1.GetUserData().setImpactPoint(contact);
 				//body1.GetUserData().hurt(0);
 			}
 			
 			if(body2.GetUserData()){
 				trace("Body1: "+ body1.GetUserData().name + " Body2: " + body2.GetUserData().name);
-				body2.GetUserData().setImpactPoint(point);
+				body2.GetUserData().setImpactPoint(contact);
 				//body2.GetUserData().hurt(0);
 			}
-			*/
+			
 			//save contact point... use this info to determine hitwall, hitfloor, hitceiling...
 			//the contact point can be used in bullet to create grav object
 		}
