@@ -290,7 +290,6 @@ package common
 		}
 		
 		public function removeObjectAtPoint(point:Point, includeStatic:Boolean=false):void{
-			/*
 			var b2:b2Body = Utilities.GetBodyAtMouse(_state.the_world, point, includeStatic);
 			
 			if(b2){
@@ -298,11 +297,10 @@ package common
 				if(bSprite){
 					bSprite.kill();
 				}
-			}*/
+			}
 		}
 		
 		public function removeJointAtPoint(point:Point, includeStatic:Boolean=false):void{
-			/*
 			var b2:b2Body = Utilities.GetBodyAtMouse(_state.the_world, point, includeStatic);
 			if(b2){
 				var bSprite:ExSprite = b2.GetUserData() as ExSprite;
@@ -310,7 +308,6 @@ package common
 					bSprite.destroyAllJoints();
 				}
 			}
-			*/
 		}
 		
 		//Registers a point and see if we get a body from it.  Null bodies will be checked during add joint

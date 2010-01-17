@@ -202,7 +202,7 @@
 				debug_draw.SetSprite(debug_sprite);
 				debug_draw.SetDrawScale(1);
 				debug_draw.SetAlpha(1);
-				debug_draw.SetLineThickness(4);
+				debug_draw.SetLineThickness(2);
 				debug_draw.SetFlags(uint(-1));//b2DebugDraw.e_shapeBit |b2DebugDraw.e_centerOfMassBit | b2DebugDraw.e_jointBit | b2DebugDraw.e_obbBit);
 				the_world.SetDebugDraw(debug_draw);
 			}
