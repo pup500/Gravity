@@ -64,7 +64,7 @@ package org.overrides
 				imageResource = resource;
 				
 				
-				bodyDef.position.Set(x, y);
+				bodyDef.position.Set(x/ExState.PHYS_SCALE, y/ExState.PHYS_SCALE);
 			}
 			
 			loaded = false;
@@ -242,6 +242,11 @@ package org.overrides
 						points[k].y -= _bh/2;
 					}
 					
+					for(k = 0; k < points.length; k++){
+						points[k].x /= ExState.PHYS_SCALE;
+						points[k].y /= ExState.PHYS_SCALE;
+					}
+					
 					shapeDef.SetAsArray(points, points.length);
 					
 					/*
@@ -269,14 +274,14 @@ package org.overrides
 		//We're calling this outside the constructor because we need Flixel to define its sprite dimensions first in loadGraphic().
 		protected function initShape():void {
 			var shapeDef:b2PolygonShape = new b2PolygonShape();
-			shapeDef.SetAsBox(_bw/2, _bh/2);
+			shapeDef.SetAsBox((_bw/2) / ExState.PHYS_SCALE, (_bh/2)/ExState.PHYS_SCALE);
 			shape = shapeDef;
 		}
 		
 		//@desc Create a circle shape definition from the sprite's width.
 		protected function initCircleShape():void
 		{
-			shape = new b2CircleShape(_bw/2);
+			shape = new b2CircleShape((_bw/2)/ExState.PHYS_SCALE);
 		}
 		
 		//@desc Create the physical representation in the Box2D World using the shape definition from initShape methods.
@@ -350,9 +355,11 @@ package org.overrides
 			super.update();
 			var posVec:b2Vec2 = final_body.GetPosition();
 			
+			trace("posxy:" + posVec.x + "," + posVec.y + " scaledxy: " + (posVec.x * ExState.PHYS_SCALE) + "," + (posVec.y * ExState.PHYS_SCALE));
+			
 			//Use width and height because sprite may be animated so each frame doesn't take up full bitmap
-			x = posVec.x - width/2;//_bw/2;
-			y = posVec.y - height/2;//_bh/2;
+			x = (posVec.x * ExState.PHYS_SCALE) - (width/2);//_bw/2;
+			y = (posVec.y * ExState.PHYS_SCALE) - (height/2); //* ExState.PHYS_SCALE;//_bh/2;
 			
 			angle = final_body.GetAngle();
 			
@@ -417,8 +424,10 @@ package org.overrides
 			xml.bodyType = fixture.GetBody().GetType();//final_body. //.IsStatic();
 			xml.shapeType = fixture.GetType();//shape is b2PolygonDef;
 			xml.angle = angle;
-			xml.x = final_body.GetPosition().x;
-			xml.y = final_body.GetPosition().y;
+			
+			//TODO:Save without multiplying by scale...
+			xml.x = final_body.GetPosition().x * ExState.PHYS_SCALE;
+			xml.y = final_body.GetPosition().y * ExState.PHYS_SCALE;
 					
 			return xml;
 		}
@@ -440,7 +449,7 @@ package org.overrides
 			}
 			
 			bodyDef.angle = xml.angle;
-			bodyDef.position.Set(xml.x, xml.y);
+			bodyDef.position.Set(xml.x/ExState.PHYS_SCALE, xml.y/ExState.PHYS_SCALE);
 		}
 	}
 }
