@@ -25,7 +25,7 @@
 		//protected var _world:b2World;
 		protected var _gravityObject:GravityObject;
 		private var _spawn:Boolean;
-		private var old:Point;
+		private var old:b2Vec2;
 		
 		private static var count:uint = 0;
 		//@desc Bullet constructor
@@ -53,7 +53,7 @@
 			//offset.y = 1;
 			exists = false;
 			_spawn = false;
-			old = new Point();
+			old = new b2Vec2();
 			
 			bodyDef.bullet = true;
 			//bodyDef.isBullet = true;
@@ -81,7 +81,7 @@
 				destroyPhysBody();
 				if(_spawn){
 					_spawn = false;
-					_gravityObject.shoot(x, y, 0, 0);//impactPoint.position.x,impactPoint.position.y,0,0);
+					_gravityObject.shoot(old.x * ExState.PHYS_SCALE, old.y * ExState.PHYS_SCALE, 0, 0);//impactPoint.position.x,impactPoint.position.y,0,0);
 				}
 			}
 			else { 
@@ -104,10 +104,11 @@
 			
 			//Cannot create objects in hurt, this is called in collision....
 			_spawn = true;
-			old.x = x;
-			old.y = y;
+			//old.x = x;
+			//old.y = y;
 			
 			trace("bullet hit");
+			trace("bulletxy" + old.x + "," + old.y);
 			
 			final_body.GetLinearVelocity().SetZero();
 			if(onScreen()) FlxG.play(SndHit);
@@ -147,6 +148,13 @@
 		
 		override public function setImpactPoint(point:b2Contact):void{
 			super.setImpactPoint(point);
+			
+			trace("manifold type: "+ point.GetManifold().m_type);
+			
+			//Physics...
+			old = final_body.GetWorldPoint(point.GetManifold().m_localPoint);
+			trace("world: " + old.x + "," + old.y);
+			//trace("world" + final_body.GetWorldPoint(old).x + "," + final_body.GetWorldPoint(old).y);
 			
 			hurt(0);
 		}

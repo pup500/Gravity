@@ -12,6 +12,7 @@
 	
 	import org.flixel.FlxG;
 	import org.overrides.ExSprite;
+	import org.overrides.ExState;
 
 	
 	/**
@@ -24,7 +25,7 @@
 		
 		//protected var _world:b2World;
 		public var mass:Number;
-		private var initialMass:Number = 5000;//50000;
+		private var initialMass:Number = 4;//5000;//50000;
 		
 		public var antiGravity:Boolean;
 		
@@ -43,6 +44,7 @@
 			fixtureDef.density = 0;
 			fixtureDef.friction = 1;
 			fixtureDef.isSensor = true;
+			bodyDef.type = b2Body.b2_staticBody;
 			
 			//Make this part of group -2, and do not collide with other in the same negative group...
 			fixtureDef.filter.groupIndex = -2;
@@ -58,6 +60,12 @@
 			exists = false;
 			
 			_startLosingMass = false;
+			
+			
+			//TODO:
+			_startLosingMass = true;
+			
+			
 			
 			addAnimation("idle",[0, 1, 2, 3], 12);
 			
@@ -76,10 +84,10 @@
 			}
 			else { 
 				super.update();
-				//trace("X: " + x + ", " + y);
+				trace("gravityX: " + x + ", " + y);
 				
 				if(_startLosingMass){
-					mass -= 5000 * FlxG.elapsed;
+					mass -= 4 * FlxG.elapsed;
 					if(mass < 0){
 						dead = true;
 					}
@@ -92,7 +100,8 @@
 		{
 			destroyPhysBody();
 			
-			bodyDef.position.Set(X, Y);
+			bodyDef.position.Set(X/ExState.PHYS_SCALE, Y/ExState.PHYS_SCALE);
+			trace("grav body def: " + X/ExState.PHYS_SCALE + ", " + Y/ExState.PHYS_SCALE);
 			createPhysBody(_world);
 			
 			mass=initialMass;
@@ -102,6 +111,7 @@
 			_coolDown.start();
 			
 			super.reset(X,Y);
+			trace("grav shoot : " + x + ", " + y);
 		}
 		
 		override public function render():void
@@ -176,17 +186,20 @@
 			
 			var force:Number = G*(massProduct/distSq);
 			
-			//trace("force: " + force);
+			trace("force: " + force);
 			
 			if(force > 100) force = 100;
 			if(force < 0) force = 100;
+			
+			//TODO:Force is powerful now....
+			//force = 1;
 			
 			//trace(distance);
 			//trace("mass: " + physBody.GetMass());
 			//trace("dist:" + distance + " force:" + force + " forx:" + force * (dist.x/distance) + " fory:" + force * (dist.y/distance));
 			
 			var impulse:b2Vec2 = new b2Vec2(force * (dist.x/distance), force * (dist.y/distance));
-			impulse.Multiply(physBody.GetMass());
+			//impulse.Multiply(physBody.GetMass());
 			
 			//trace("impulsex: " + impulse.x + ", " + impulse.y);
 			//trace("impulsex: " + impulse.x /physBody.GetMass() + ", " + impulse.y/physBody.GetMass());

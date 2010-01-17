@@ -77,11 +77,11 @@ package org.overrides
 		override public function update():void
 		{
 			//the_world.Step(FlxG.elapsed, 10);
-			the_world.Step(1/30, 10, 10);
+			//the_world.Step(1/30, 10, 10);
 			
 			//This probably ensures constant physics regardless of framerate...
 			//We probably should not do this.... documentation says to step it with no vary
-			//the_world.Step(FlxG.elapsed, 10, 10);
+			the_world.Step(FlxG.elapsed, 10, 10);
 			
 			the_world.ClearForces();
 			

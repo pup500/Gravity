@@ -134,13 +134,13 @@ package PhysicsGame
 			if(FlxG.keys.A)
 			{
 				facing = LEFT;
-				_applyForce.x = _canJump ? -15 : -10;
+				_applyForce.x = _canJump ? -5 : -2;
 				_applyForce.y = 0;
 				//We multiply this here because it is later multiplied by inverse mass. - Minh
-				_applyForce.Multiply(final_body.GetMass());
+				//_applyForce.Multiply(final_body.GetMass());
 				//final_body.ApplyImpulse(_applyForce, final_body.GetWorldCenter());
 				
-				if(final_body.GetLinearVelocity().x < -10) {
+				if(final_body.GetLinearVelocity().x < -2) {
 					
 				}
 				else
@@ -152,11 +152,11 @@ package PhysicsGame
 			{
 				facing = RIGHT;
 				//final_body.GetLinearVelocity().x = 30;
-				_applyForce.x = _canJump ? 15 : 10;
+				_applyForce.x = _canJump ? 5 : 2;
 				_applyForce.y = 0;
 				//We multiply this here because it is later multiplied by inverse mass. - Minh
-				_applyForce.Multiply(final_body.GetMass());
-				if(final_body.GetLinearVelocity().x > 10) {
+				//_applyForce.Multiply(final_body.GetMass());
+				if(final_body.GetLinearVelocity().x > 2) {
 				}
 				else
 				//final_body.ApplyImpulse(_applyForce, final_body.GetWorldCenter());
@@ -177,9 +177,9 @@ package PhysicsGame
 				//velocity.y = -_jumpPower;
 				//final_body.SetLinearVelocity(new b2Vec2(0,-_jumpPower));
 				_applyForce.x = 0;
-				_applyForce.y = -145;
+				_applyForce.y = -3;
 				//We multiply this here because it is later multiplied by inverse mass. - Minh
-				_applyForce.Multiply(final_body.GetMass());
+				//_applyForce.Multiply(final_body.GetMass());
 				
 				FlxG.log(_applyForce.y + " || " + final_body.GetMass());
 				//trace("mass" + final_body.GetMass());
@@ -322,6 +322,10 @@ package PhysicsGame
 		override public function setImpactPoint(point:b2Contact):void{
 			super.setImpactPoint(point);
 			
+			if(point.GetManifold().m_localPlaneNormal.y == 1){
+				_canJump = true;
+			}
+			
 			//trace("imp: " + impactPoint.position.y + " playy:" + y + " hei: " + height + " both:" + (y + height));
 			//if(impactPoint.position.y > y + height-3 && final_body.GetLinearVelocity().y >= 0){
 				//_canJump = true;
@@ -339,6 +343,8 @@ package PhysicsGame
 		
 		override public function removeImpactPoint(point:b2Contact):void{
 			super.removeImpactPoint(point);
+			
+			_canJump = false;
 			
 			//if(impactPoint.position.y > y + height/2){
 			//	_canJump = false;

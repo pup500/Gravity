@@ -14,6 +14,7 @@ package PhysicsGame
 		/// and the forces.
 		override public function BeginContact(contact:b2Contact) : void {
 		
+			trace("normal" + contact.GetManifold().m_localPlaneNormal.x + "," + contact.GetManifold().m_localPlaneNormal.y);
 			//var body1:b2Body = point.shape1.GetBody();
 			//var body2:b2Body = point.shape2.GetBody();
 			
