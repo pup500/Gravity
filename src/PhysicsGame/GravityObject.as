@@ -38,13 +38,14 @@
 		{
 			super();
 			loadGraphic(GravSink, true);
-			initShape();
 			//shape.friction = 1;
 			//shape.density = 0;
 			fixtureDef.density = 0;
 			fixtureDef.friction = 1;
 			fixtureDef.isSensor = true;
 			bodyDef.type = b2Body.b2_staticBody;
+			
+			initShape();
 			
 			//Make this part of group -2, and do not collide with other in the same negative group...
 			fixtureDef.filter.groupIndex = -2;
@@ -84,7 +85,8 @@
 			}
 			else { 
 				super.update();
-				trace("gravityX: " + x + ", " + y);
+				//trace("gravityX: " + x + ", " + y);
+				trace("gravitymass:" + final_body.GetMass());
 				
 				if(_startLosingMass){
 					mass -= 4 * FlxG.elapsed;
@@ -101,7 +103,7 @@
 			destroyPhysBody();
 			
 			bodyDef.position.Set(X/ExState.PHYS_SCALE, Y/ExState.PHYS_SCALE);
-			trace("grav body def: " + X/ExState.PHYS_SCALE + ", " + Y/ExState.PHYS_SCALE);
+			//trace("grav body def: " + X/ExState.PHYS_SCALE + ", " + Y/ExState.PHYS_SCALE);
 			createPhysBody(_world);
 			
 			mass=initialMass;
@@ -111,7 +113,7 @@
 			_coolDown.start();
 			
 			super.reset(X,Y);
-			trace("grav shoot : " + x + ", " + y);
+			//trace("grav shoot : " + x + ", " + y);
 		}
 		
 		override public function render():void

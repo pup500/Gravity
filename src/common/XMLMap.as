@@ -253,7 +253,7 @@ package common
 		}
 		
 		public function removeObjectAtPoint(point:Point, includeStatic:Boolean=false):void{
-			var b2:b2Body = Utilities.GetBodyAtMouse(_state.the_world, point, includeStatic);
+			var b2:b2Body = Utilities.GetBodyAtPoint(_state.the_world, new b2Vec2(point.x, point.y), includeStatic);
 			
 			if(b2){
 				var bSprite:ExSprite = b2.GetUserData() as ExSprite;
@@ -264,7 +264,9 @@ package common
 		}
 		
 		public function removeJointAtPoint(point:Point, includeStatic:Boolean=false):void{
-			var b2:b2Body = Utilities.GetBodyAtMouse(_state.the_world, point, includeStatic);
+			//var b2:b2Body = Utilities.GetBodyAtMouse(_state.the_world, point, includeStatic);
+			var b2:b2Body = Utilities.GetBodyAtPoint(_state.the_world, new b2Vec2(point.x, point.y), includeStatic);
+			
 			if(b2){
 				var bSprite:ExSprite = b2.GetUserData() as ExSprite;
 				if(bSprite){

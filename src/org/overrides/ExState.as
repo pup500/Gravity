@@ -38,10 +38,7 @@ package org.overrides
 			_fgLayer = new FlxLayer();
 			_evLayer = new FlxLayer();
 			
-			//var environment:b2AABB = new b2AABB();
-			//environment.lowerBound.Set(0.0, 0.0);
-			//environment.upperBound.Set(1280, 960);//320.0, 240.0);
-			var gravity:b2Vec2 = new b2Vec2(0.0, 10);//80.0);
+			var gravity:b2Vec2 = new b2Vec2(0.0, 10);
 			
 			// Allow bodies to sleep
 			var doSleep:Boolean = true;

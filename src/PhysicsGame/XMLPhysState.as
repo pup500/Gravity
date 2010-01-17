@@ -3,6 +3,7 @@ package PhysicsGame
 	import Box2D.Collision.*;
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
+	import Box2D.Dynamics.Controllers.b2GravityController;
 	
 	import common.XMLMap;
 	
@@ -43,6 +44,9 @@ package PhysicsGame
 			FlxG.showCursor(cursor);
 			
 			initContactListener();
+			
+			
+			//the_world.AddController(new b2GravityController());
 			
 			//Allow for loaded status even when we might not have loaded any level file...
 			//We might need to do a better io error handling in loadconfigfile for the xml loader
@@ -132,6 +136,7 @@ package PhysicsGame
 				FlxG.switchState(LevelSelectMenu);
 			}
 			
+			
 			//Testing
 			for (var bb:b2Body = the_world.GetBodyList(); bb; bb = bb.GetNext()) {
 				
@@ -148,6 +153,7 @@ package PhysicsGame
 					}
 				}
 			}
+			
 		}
 	}
 }

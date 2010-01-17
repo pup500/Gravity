@@ -12,6 +12,7 @@ package common
 	import flash.geom.Point;
 	
 	import org.overrides.ExSprite;
+	import org.overrides.ExState;
 	
 	public class Utilities
 	{
@@ -32,6 +33,9 @@ package common
 		public static function GetBodyAtPoint(the_world:b2World, p:b2Vec2, includeStatic:Boolean = false):b2Body{
 			var body:b2Body;
 			
+			p.Multiply(1/ExState.PHYS_SCALE);
+			trace("p" + p.x + "," + p.y);
+			
 			// Query the world for overlapping shapes.
 			function GetBodyCallback(fixture:b2Fixture):Boolean
 			{
@@ -49,6 +53,7 @@ package common
 			return body;
 		}
 		
+		/*
 		public static function GetBodyAtMouse(the_world:b2World, point:Point, includeStatic:Boolean = false):b2Body {
 			// Make a small box.
 			var mousePVec:b2Vec2 = new b2Vec2();
@@ -77,6 +82,7 @@ package common
 			the_world.QueryAABB(GetBodyCallback, aabb);
 			return body;
 		}
+		*/
 				
 		public static function CreateXMLRepresentation(the_world:b2World):XML {
 			var config:XML = new XML(<config/>);

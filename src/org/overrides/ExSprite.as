@@ -355,7 +355,7 @@ package org.overrides
 			super.update();
 			var posVec:b2Vec2 = final_body.GetPosition();
 			
-			trace("name:" + name + " posxy:" + posVec.x + "," + posVec.y + " scaledxy: " + (posVec.x * ExState.PHYS_SCALE) + "," + (posVec.y * ExState.PHYS_SCALE));
+			//trace("name:" + name + " posxy:" + posVec.x + "," + posVec.y + " scaledxy: " + (posVec.x * ExState.PHYS_SCALE) + "," + (posVec.y * ExState.PHYS_SCALE));
 			
 			//Use width and height because sprite may be animated so each frame doesn't take up full bitmap
 			x = (posVec.x * ExState.PHYS_SCALE) - (width/2);//_bw/2;
@@ -410,9 +410,9 @@ package org.overrides
 			
 			//impactPoint
 			
-			trace("impact: points" + point.GetManifold().m_pointCount);
-			trace("impact: points" + point.GetManifold().m_localPoint.x * ExState.PHYS_SCALE + ","
-			 + point.GetManifold().m_localPoint.y * ExState.PHYS_SCALE);
+			//trace("impact: points" + point.GetManifold().m_pointCount);
+			//trace("impact: points" + point.GetManifold().m_localPoint.x * ExState.PHYS_SCALE + ","
+			// + point.GetManifold().m_localPoint.y * ExState.PHYS_SCALE);
 		}
 		
 		public function removeImpactPoint(point:b2Contact):void{

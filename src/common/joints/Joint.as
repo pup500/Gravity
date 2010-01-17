@@ -28,8 +28,13 @@ package common.joints
 			point1 = new b2Vec2(xml.body1.x, xml.body1.y);
 			point2 = new b2Vec2(xml.body2.x, xml.body2.y);
 			
-			body1 = Utilities.GetBodyAtMouse(world, new Point(xml.body1.x, xml.body1.y), true);
-			body2 = Utilities.GetBodyAtMouse(world, new Point(xml.body2.x, xml.body2.y), true);
+			trace("point before:" + point1.x + "," + point1.y);
+			//This is not right, utilties messes up point1 and point2....
+			//But right now, it is supposed to be that way...
+			body1 = Utilities.GetBodyAtPoint(world, point1, true);
+			body2 = Utilities.GetBodyAtPoint(world, point2, true);
+			
+			trace("point after:" + point1.x + "," + point1.y);
 		}
 		
 		public virtual function SetJointDef():void{
