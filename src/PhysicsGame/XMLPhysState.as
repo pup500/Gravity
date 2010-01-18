@@ -27,6 +27,8 @@ package PhysicsGame
 		private var _bullets:Array;
 		private var _gravObjects:Array;
 		
+		private var _gravityController:GravityObjectController;
+		
 		public function XMLPhysState() 
 		{
 			super();
@@ -40,10 +42,6 @@ package PhysicsGame
 			FlxG.showCursor(cursor);
 			
 			initContactListener();
-			
-			
-			//the_world.AddController(new b2GravityController());
-
 		}
 		
 		//Level configuration will call init when done...
@@ -52,6 +50,17 @@ package PhysicsGame
 			createBullets();
 			addPlayer();
 			addEndPoint();
+			
+			//Create a gravity controller, give it all b2d bodies that need to interact with each other
+			_gravityController = new GravityObjectController();
+			_gravityController._gravObjects = _gravObjects;
+			for (var bb:b2Body = the_world.GetBodyList(); bb; bb = bb.GetNext()) 
+			{
+				//Moves this if statement from every step to init.
+				if (bb.GetType() == b2Body.b2_dynamicBody) 
+					_gravityController.AddBody(bb);
+			}
+			the_world.AddController(_gravityController);
 		}
 		
 		private function loadLevelConfig():void{
@@ -129,10 +138,12 @@ package PhysicsGame
 			
 			super.update();
 			
-			
-			
-			
-			//Testing
+			//ApplyGravityForces();
+		}
+		
+		//Not used anymore, logic moved to GravityObjectController.
+		private function ApplyGravityForces():void
+		{
 			for (var bb:b2Body = the_world.GetBodyList(); bb; bb = bb.GetNext()) {
 				
 				if(bb.GetType() == b2Body.b2_dynamicBody){//bb.IsDynamic()){
@@ -150,7 +161,6 @@ package PhysicsGame
 				//}
 				}
 			}
-			
 		}
 	}
 }
