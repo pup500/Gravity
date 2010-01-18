@@ -3,7 +3,6 @@ package common
 	import Box2D.Common.Math.b2Vec2;
 	import Box2D.Dynamics.Joints.*;
 	import Box2D.Dynamics.b2Body;
-	import Box2D.Dynamics.b2FilterData;
 	
 	import PhysicsGame.*;
 	
@@ -275,26 +274,20 @@ package common
 			}
 		}
 		
+		//TODO:Seriously, don't call this function....
 		//Registers a point and see if we get a body from it.  Null bodies will be checked during add joint
 		public function registerObjectAtPoint(point:Point, includeStatic:Boolean=false):void{
-			/*
-			var b2:b2Body = Utilities.GetBodyAtMouse(_state.the_world, point, includeStatic);
+			var b2:b2Body = Utilities.GetBodyAtPoint(_state.the_world, new b2Vec2(point.x, point.y), includeStatic);
 			
 			var vec:b2Vec2 = new b2Vec2();
 			vec.x = point.x;
 			vec.y = point.y;
 			_bodies.push([b2,vec]);
-			*/
 		}
 		
 		//Add all joints from configuration file, also pass configuration jointXML along
 		private function addAllJoints():void{
 			for each (var jointXML:XML in configXML.objects.joint){
-				/*
-				registerObjectAtPoint(new Point(jointXML.body1.x, jointXML.body1.y), true);
-				registerObjectAtPoint(new Point(jointXML.body2.x, jointXML.body2.y), true);
-				addJoint(jointXML.type, jointXML);
-				*/
 				jointXML.loaded = "true";
 				JointFactory.addJoint(_state.the_world, jointXML);
 			}
@@ -317,37 +310,11 @@ package common
 			//This doesn't work when there's no synchronous events... So this add takes place before the render...
 			//Which means we have to worry about the updated sprite position... 
 			
-			/*
-			var b2:EventObject = new EventObject(event.x, event.y, sprite, "", event.type);
-		    b2.name = "event";
-		    b2.layer = event.layer;
-		    b2.imageResource = "";
-		    b2._type = event.type;
+			var b2:EventObject = new EventObject(event.x, event.y, sprite, "", null, event, _state.the_world);
+			b2.createPhysBody(_state.the_world);
 		    
-		    b2.initShape();
-		    
-		    var filter:b2FilterData = new b2FilterData();
-			filter.categoryBits = 0;
-			//fixture.SetFilterData(filter);
-			
-		   	b2.createPhysBody(_state.the_world);
-			
-			//b2.final_body.SetStatic();
-			
-			//Call this to fix position of object before render phase
-			b2.update();
-			
-			trace("eventargetX:" + event.target.x + "," + event.target.y);
-			if(event.target.x.length() > 0 && event.target.y.length() > 0){
-				//TODO:
-				/*
-				var tbody:b2Body = Utilities.GetBodyAtMouse(_state.the_world, new Point(event.target.x, event.target.y), true);
-				b2.setTarget(tbody.GetUserData());
-				*/
-			//}
-			
 			//TODO:Events...
-			//_state.addToLayer(b2, ExState.EV);
+			_state.addToLayer(b2, ExState.EV);
 		}
 		
 		public function addXMLSensor(sensorXML:XML, sprite:Class = null):void {
@@ -357,39 +324,19 @@ package common
 			_state.addToLayer(sensor, ExState.EV);
 		}
 		
-		public function addEventTarget():void{
-			if(_bodies.length != 2){
-				_bodies = new Array();
-				return;
+		public function addEventTarget(args:Dictionary):void{
+			var body1:b2Body = Utilities.GetBodyAtPoint(_state.the_world, args["start"], true);
+			var body2:b2Body = Utilities.GetBodyAtPoint(_state.the_world, args["end"], true);
+			
+			if(body1){
+				if(body1.GetUserData() && body1.GetUserData() is EventObject){
+					//This only happens if we select an event and link it to the target
+					var event:EventObject = body1.GetUserData() as EventObject;
+					var target:ExSprite = body2.GetUserData() as ExSprite;
+					
+					event.setTarget(target);
+				}
 			}
-			
-			//Figure out all the bodies and points info
-			var b1:Array = _bodies[0] as Array;
-			var b2:Array = _bodies[1] as Array;
-			
-			var body1:b2Body = b1[0] as b2Body;
-			var body2:b2Body = b2[0] as b2Body;
-			
-			var point1:b2Vec2 = b1[1];
-			var point2:b2Vec2 = b2[1];
-			
-			_bodies = new Array();
-			
-			if(!body1 || !body2) return;
-				
-			if(!(body1.GetUserData() is EventObject)) {
-				return;
-			}
-			
-			if(!(body2.GetUserData() is ExSprite)) {
-				return;
-			}
-			
-			//This only happens if we select an event and link it to the target
-			var event:EventObject = body1.GetUserData();
-			var target:ExSprite = body2.GetUserData();
-			
-			event.setTarget(target);
 		}
 		
 		public function getItemCount():uint{

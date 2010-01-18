@@ -766,7 +766,7 @@
 				//Join and link essentially need to register the points
 				case JOIN:
 				case LINK:
-					args["start"] = new Point(FlxG.mouse.x, FlxG.mouse.y);
+					args["start"] = new b2Vec2(FlxG.mouse.x, FlxG.mouse.y);
 					
 					//Draw with snapping.....
 					//startPoint.x = point.x;
@@ -830,7 +830,7 @@
 					line.visible = false;
 					drawingLine = false;
 					
-					args["end"] = new Point(FlxG.mouse.x, FlxG.mouse.y);
+					args["end"] = new b2Vec2(FlxG.mouse.x, FlxG.mouse.y);
 					args["type"] = jointType;
 					
 					xmlMapLoader.addJoint(args);
@@ -839,9 +839,10 @@
 				if(mode == LINK && drawingLine){
 					line.visible = false;
 					drawingLine = false;
-					xmlMapLoader.registerObjectAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true);
+					//xmlMapLoader.registerObjectAtPoint(new Point(FlxG.mouse.x, FlxG.mouse.y),true);
 					
-					xmlMapLoader.addEventTarget();
+					args["end"] = new b2Vec2(FlxG.mouse.x, FlxG.mouse.y);
+					xmlMapLoader.addEventTarget(args);
 				}
 			}
 		}

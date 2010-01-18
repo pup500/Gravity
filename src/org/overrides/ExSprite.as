@@ -438,7 +438,7 @@ package org.overrides
 			return xml;
 		}
 		
-		protected function initFromXML(xml:XML):void{
+		protected function initFromXML(xml:XML, world:b2World=null):void{
 			imageResource = xml.file;
 			layer = xml.layer;
 			
