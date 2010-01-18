@@ -1,9 +1,8 @@
 package PhysicsGame
 {
-	import Box2D.Dynamics.*;
 	import Box2D.Collision.Shapes.*;
-	import Box2D.Collision.b2ContactPoint;
 	import Box2D.Common.Math.b2Vec2;
+	import Box2D.Dynamics.*;
 	import Box2D.Dynamics.Contacts.*;
 	
 	import flash.events.TimerEvent;
@@ -47,9 +46,8 @@ package PhysicsGame
 		
 		//private var _canJumpSensor:b2PolygonDef;
 		
-		public function Player(x:int=0, y:int=0, bullets:Array=null)
-		{
-			super(x, y, ImgSpaceman);
+		public function Player(x:int=0, y:int=0){
+			super(x, y);
 			loadGraphic(ImgSpaceman,true,true,16,32);
 			
 			initShape();
@@ -59,11 +57,8 @@ package PhysicsGame
 			//Make this part of group -2, and do not collide with other in the same negative group...
 			name = "Player";
 			
-			var filter:b2FilterData = new b2FilterData();
 			fixtureDef.filter.groupIndex = -2;
 			fixtureDef.filter.categoryBits = 0x0001;
-			
-			bodyDef.type = b2Body.b2_dynamicBody;
 			
 			
 			_restart = 0;
@@ -86,7 +81,7 @@ package PhysicsGame
 			//addAnimation("jump_down", [0]);
 			
 			//Bullet shooting stuff
-			_bullets = bullets;
+			//_bullets = bullets;
 			_curBullet = 0;
 			_bulletVel = 20;
 			_canShoot = true;
@@ -100,6 +95,10 @@ package PhysicsGame
 			
 			//_canJumpSensor = new b2PolygonDef();//new Sensor(this.x - (width / 2 - 1), this.y + height / 2 + 1, width - 2, 2, "loaded");
 			//_canJumpSensor.SetAsBox((width -1) / 2, 1);
+		}
+		
+		public function SetBullets(bullets:Array):void{
+			_bullets = bullets;
 		}
 		
 		override public function createPhysBody(world:b2World):void

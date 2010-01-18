@@ -26,10 +26,6 @@ package PhysicsGame
 		
 		private var _bullets:Array;
 		private var _gravObjects:Array;
-		//private var BulletArray.gravObjects:Array;
-		//private var _bulletCollection:BulletCollection;
-		private var b2:ExSprite; //For creating environment physical objects.
-		private var time_count:Timer=new Timer(1000);
 		
 		public function XMLPhysState() 
 		{
@@ -47,11 +43,7 @@ package PhysicsGame
 			
 			
 			//the_world.AddController(new b2GravityController());
-			
-			//Allow for loaded status even when we might not have loaded any level file...
-			//We might need to do a better io error handling in loadconfigfile for the xml loader
-			//For now, it will allow the player to play a not loaded map...
-			_loaded = true;
+
 		}
 		
 		//Level configuration will call init when done...
@@ -69,10 +61,6 @@ package PhysicsGame
 		}
 		
 		private function createBullets():void {
-			//_bullets = new BulletArray(this);
-			//_bullets.createBullets(GravityObject);
-			//BulletArray.gravObjects = new Array();
-			
 			_bullets = new Array();
 			_gravObjects = new Array();
 			
@@ -94,11 +82,14 @@ package PhysicsGame
 		//Player will be called from the xmlMapLoader when the xml file is read...
 		public function addPlayer():void{
 			var start:Point = xmlMapLoader.getStartPoint();
-			var body:Player = new Player(start.x, start.y, _bullets);
 			
+			var body:Player = new Player(start.x, start.y);
 			body.createPhysBody(the_world);
-			body.final_body.SetSleepingAllowed(false);
-			body.final_body.SetFixedRotation(true);
+			
+			body.GetBody().SetSleepingAllowed(false);
+			body.GetBody().SetFixedRotation(true);
+			body.SetBullets(_bullets);
+			
 			add(body);
 			
 			//Set camera to follow player movement.
@@ -111,7 +102,7 @@ package PhysicsGame
 		
 		public function addEndPoint():void{
 			var end:Point = xmlMapLoader.getEndPoint();
-			
+			//Fix sensor...
 			var body:Sensor = new Sensor(end.x, end.y);
 			body.loadGraphic(endPoint);
 			body.createPhysBody(the_world);
@@ -126,15 +117,19 @@ package PhysicsGame
 		
 		override public function update():void
 		{
+			//Allow quiting even if level is not loaded...
+			if(FlxG.keys.justReleased("ESC")) {
+				FlxG.switchState(LevelSelectMenu);
+			}
+			
+			//Don't update if we aren't loaded...
 			if(!_loaded){
 				return;
 			}
 			
 			super.update();
 			
-			if(FlxG.keys.justReleased("ESC")) {
-				FlxG.switchState(LevelSelectMenu);
-			}
+			
 			
 			
 			//Testing

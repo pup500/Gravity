@@ -39,17 +39,17 @@
 		{
 			super();
 			loadGraphic(GravSink, true);
-			//shape.friction = 1;
-			//shape.density = 0;
+			
+			bodyDef.type = b2Body.b2_staticBody;
+			
 			fixtureDef.density = 0;
 			fixtureDef.friction = 1;
 			fixtureDef.isSensor = true;
-			bodyDef.type = b2Body.b2_staticBody;
+			fixtureDef.filter.groupIndex = -2;
 			
 			initShape();
 			
 			//Make this part of group -2, and do not collide with other in the same negative group...
-			fixtureDef.filter.groupIndex = -2;
 			
 			name = "GravityObject";
 			

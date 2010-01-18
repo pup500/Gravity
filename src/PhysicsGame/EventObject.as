@@ -10,7 +10,6 @@ package PhysicsGame
 	
 	import flash.display.Shape;
 	import flash.utils.Dictionary;
-	import flash.display.BitmapData;
 	
 	import org.flixel.FlxG;
 	import org.overrides.ExSprite;
@@ -29,13 +28,11 @@ package PhysicsGame
 			  SpawnEvent 
 			];
 		
-		public function EventObject(x:int=0, y:int=0, sprite:Class=null, resource:String="", pixels:BitmapData=null, xml:XML=null, world:b2World=null){
+		public function EventObject(x:int=0, y:int=0){
+		//(x:int=0, y:int=0, sprite:Class=null, resource:String="", pixels:BitmapData=null, xml:XML=null, world:b2World=null){
 		//EventObject(x:int=0, y:int=0, sprite:Class=null, resource:String="", type:uint = 0):void{
-			super(x, y, sprite ? sprite : eventImg, resource);
-			_type = 0;
-			if(xml){
-				this.initFromXML(xml, world);
-			}
+			//super(x, y, sprite ? sprite : eventImg, resource);
+			super(x, y, eventImg);
 		}
 		
 		public function changeType(type:uint):void{
@@ -69,6 +66,7 @@ package PhysicsGame
 			_impl.update();
 			trace("myeventobjecxy: " + x + "," + y);
 		}
+		
 		override public function render():void{
 			trace("render: " + x + "," + y);
 			super.render();
@@ -95,14 +93,14 @@ package PhysicsGame
 			
 			if(this.getTarget()){
 				var t:ExSprite = this.getTarget();
-				item.target.x = t.final_body.GetWorldCenter().x * ExState.PHYS_SCALE;
-				item.target.y = t.final_body.GetWorldCenter().y * ExState.PHYS_SCALE;
+				item.target.x = t.GetBody().GetWorldCenter().x * ExState.PHYS_SCALE;
+				item.target.y = t.GetBody().GetWorldCenter().y * ExState.PHYS_SCALE;
 			}
 			
 			return item;
 		}
 		
-		override protected function initFromXML(xml:XML, world:b2World=null):void{
+		override public function initFromXML(xml:XML, world:b2World=null):void{
 			super.initFromXML(xml);
 			
 			changeType(xml.type);

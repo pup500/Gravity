@@ -6,13 +6,7 @@ package org.overrides
 	import Box2D.Common.b2internal;
 	import Box2D.Dynamics.*;
 	import Box2D.Dynamics.Contacts.*;
-	import Box2D.Dynamics.Joints.b2Joint;
 	import Box2D.Dynamics.Joints.b2JointEdge;
-	import Box2D.Dynamics.Joints.b2PrismaticJoint;
-	
-	import common.Utilities;
-	
-	import flash.display.BitmapData;
 	
 	import org.flixel.*;
 	use namespace b2internal;
@@ -27,45 +21,32 @@ package org.overrides
 		public var imageResource:String;
 		public var layer:uint;
 		
-		public var bodyDef:b2BodyDef;
-		//public var shape:b2PolygonDef;
-		public var shape:b2Shape;
-		public var fixtureDef:b2FixtureDef;
-		public var final_body:b2Body; //The physical representation in the Body2D b2World.
-		public var fixture:b2Fixture;
-		public var impactPoint:b2Contact;
+		//Box2D
+		protected var shape:b2Shape;
+		protected var bodyDef:b2BodyDef;
+		protected var fixtureDef:b2FixtureDef;
+		protected var final_body:b2Body; //The physical representation in the Body2D b2World.
+		protected var fixture:b2Fixture;
 		
+		protected var impactPoint:b2Contact;
+		
+		//We need the world to destroy the physical objects
 		protected var _world:b2World;
 		
 		protected var loaded:Boolean;
 		
-		public function ExSprite(x:int=0, y:int=0, sprite:Class=null, resource:String="", pixels:BitmapData=null, xml:XML=null)
-		{
+		public function ExSprite(x:int=0, y:int=0, sprite:Class=null){
+			//TODO:Note that x and y needs to be offsetted by half width and height to match physics...
 			super(x, y, sprite);
 			
 			bodyDef = new b2BodyDef();
-			fixtureDef = new b2FixtureDef();
-				
-			impactPoint = new b2Contact();
-			
 			bodyDef.type = b2Body.b2_dynamicBody;
+			bodyDef.position.Set(x/ExState.PHYS_SCALE, y/ExState.PHYS_SCALE);
 			
+			fixtureDef = new b2FixtureDef();
 			fixtureDef.friction = 1;
-				
-			if(pixels){
-				this.pixels = pixels;
-			}	
 			
-			if(xml){
-				initFromXML(xml);
-			}
-			else{
-				name = "ExSprite";
-				imageResource = resource;
-				
-				
-				bodyDef.position.Set(x/ExState.PHYS_SCALE, y/ExState.PHYS_SCALE);
-			}
+			impactPoint = new b2Contact();
 			
 			loaded = false;
 		}
@@ -238,6 +219,8 @@ package org.overrides
 					
 					//Add the offset for the point
 					for(var k:uint = 0; k < points.length; k++){
+						//TODO:Are we offsetting by _bw or width height, etc...
+						//I'm thinking width and height...
 						points[k].x -= _bw/2;
 						points[k].y -= _bh/2;
 					}
@@ -296,6 +279,8 @@ package org.overrides
 			
 			final_body = world.CreateBody(bodyDef);
 			fixture = final_body.CreateFixture(fixtureDef);
+			
+			//Save the world
 			_world = world;
 			
 			final_body.SetUserData(this);
@@ -310,13 +295,14 @@ package org.overrides
 				exists = false;
 				//We might not need to save shape as destroy body should work already...
 				//final_body.DestroyShape(final_shape);
-				destroyAllJoints();
+				//destroyAllJoints();
 				_world.DestroyBody(final_body);
-				//final_shape = null;
 				final_body = null;
+				fixture = null;
 			}
 		}
 		
+		//We can remove all joints explicitly
 		public function destroyAllJoints():void{
 			var joints:b2JointEdge;
 			while(joints = final_body.GetJointList()){
@@ -324,6 +310,7 @@ package org.overrides
 			}
 		}
 		
+		/*
 		public function updateJoints():void{
 			var joint:b2Joint;
 			var joints:b2JointEdge = final_body.GetJointList();
@@ -347,12 +334,22 @@ package org.overrides
 				joints = joints.next;
 			}
 		}
+		*/
 		
 		override public function update():void
 		{
 			if(!loaded) return;
 			
 			super.update();
+			
+			updatePosition();
+			
+			angle = final_body.GetAngle();
+			
+			//updateJoints();
+		}
+		
+		public function updatePosition():void{
 			var posVec:b2Vec2 = final_body.GetPosition();
 			
 			//trace("name:" + name + " posxy:" + posVec.x + "," + posVec.y + " scaledxy: " + (posVec.x * ExState.PHYS_SCALE) + "," + (posVec.y * ExState.PHYS_SCALE));
@@ -360,10 +357,6 @@ package org.overrides
 			//Use width and height because sprite may be animated so each frame doesn't take up full bitmap
 			x = (posVec.x * ExState.PHYS_SCALE) - (width/2);//_bw/2;
 			y = (posVec.y * ExState.PHYS_SCALE) - (height/2); //* ExState.PHYS_SCALE;//_bh/2;
-			
-			angle = final_body.GetAngle();
-			
-			updateJoints();
 		}
 		
 		override public function kill():void
@@ -398,6 +391,10 @@ package org.overrides
 		
 		}
 		
+		public function GetBody():b2Body{
+			return final_body;
+		}
+		
 		//See Minh:
 		//Box2D reuses the reference to point, so we can't simply copy the reference.
 		// Since there are no copy constructors, we'll have to manually copy a few
@@ -427,18 +424,19 @@ package org.overrides
 			var xml:XML = new XML(<shape/>);
 			xml.file =  imageResource;
 			xml.layer = layer;
-			xml.bodyType = fixture.GetBody().GetType();//final_body. //.IsStatic();
-			xml.shapeType = fixture.GetType();//shape is b2PolygonDef;
+			xml.bodyType = fixture.GetBody().GetType();
+			xml.shapeType = fixture.GetType();
 			xml.angle = angle;
 			
-			//TODO:Save without multiplying by scale...
+			//XML representation is in screen coordinates, so scale up physics
 			xml.x = final_body.GetPosition().x * ExState.PHYS_SCALE;
 			xml.y = final_body.GetPosition().y * ExState.PHYS_SCALE;
 					
 			return xml;
 		}
 		
-		protected function initFromXML(xml:XML, world:b2World=null):void{
+		public function initFromXML(xml:XML, world:b2World=null):void{
+			//Assume we have pixel data already....
 			imageResource = xml.file;
 			layer = xml.layer;
 			
@@ -456,6 +454,8 @@ package org.overrides
 			
 			bodyDef.angle = xml.angle;
 			bodyDef.position.Set(xml.x/ExState.PHYS_SCALE, xml.y/ExState.PHYS_SCALE);
+			
+			//TODO:Do we need to correct for x and y...?
 		}
 	}
 }

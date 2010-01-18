@@ -1,11 +1,6 @@
 package PhysicsLab
 {
 	import Box2D.Common.Math.b2Vec2;
-	import Box2D.Dynamics.b2Body;
-	
-	import flash.events.TimerEvent;
-	import flash.geom.Point;
-	import flash.utils.Timer;
 	
 	import org.flixel.*;
 	import org.overrides.ExSprite;
@@ -14,17 +9,16 @@ package PhysicsLab
 	{
 		[Embed(source="../data/g_walk_old.png")] private var ImgSpaceman:Class;
 		
-		public function Player(x:int=0, y:int=0, bullets:Array=null)
+		public function Player(x:int=0, y:int=0)
+		//(x:int=0, y:int=0, bullets:Array=null)
 		{
-			super(x, y, ImgSpaceman);
+			super(x, y);
 			loadGraphic(ImgSpaceman,true,true,16,32);
 			
 			initShape();
 			fixtureDef.isSensor = true;
 			fixtureDef.filter.groupIndex = -2;
 			fixtureDef.density = 0;
-			
-			bodyDef.type = b2Body.b2_dynamicBody;
 			
 			//Make this part of group -2, and do not collide with other in the same negative group...
 			

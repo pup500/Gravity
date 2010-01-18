@@ -1,11 +1,12 @@
 ﻿package PhysicsGame 
 {
-	import org.overrides.ExSprite;
 	import Box2D.Collision.*;
 	import Box2D.Collision.Shapes.*;
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
-	import org.flixel.FlxG;
+	import Box2D.Dynamics.Contacts.b2Contact;
+	
+	import org.overrides.ExSprite;
 	
 	/**
 	 * ...
@@ -20,12 +21,14 @@
 		//@desc Name of object that will trigger this sensor on collision.
 		public var Trigger:String;
 		
-		public function Sensor(X:int=0, Y:int=0, Width:int=10, Height:int=10, triggerName:String="Player") 
+		public function Sensor(x:int=0, y:int=0, triggerName:String="Player")
+		//(X:int=0, Y:int=0, Width:int=10, Height:int=10, triggerName:String="Player") 
 		{
-			super(X, Y);
+			super(x, y);
 			name = "Sensor";
-			super.width = Width;
-			super.height = Height;
+			//TODO:
+			//super.width = Width;
+			//super.height = Height;
 			Trigger = triggerName;
 			_triggered = false;
 			//So only player collides with sensors. Without the if statements in SetImpactPoint() it'll still collide with world object that aren't assigned a category..
@@ -76,6 +79,10 @@
 				event.startEvent();
 			}
 			_triggered = false;
+		}
+		
+		override public function setImpactPoint(point:b2Contact):void{
+			_triggered = true;
 		}
 		
 		//TODO: Can we use shape.filter to make collisions happen exclusively with the Player? If I eliminate these if statements, world objects will collide with the end level sensor.

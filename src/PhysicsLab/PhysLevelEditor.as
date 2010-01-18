@@ -228,11 +228,12 @@
 		}
 		
 		private function addPlayer():void{
-			var body:Player = new Player(100, 20, null);
-			
+			var body:Player = new Player(100,100);
 			body.createPhysBody(the_world);
-			body.final_body.SetSleepingAllowed(false);
-			body.final_body.SetFixedRotation(true);
+			
+			body.GetBody().SetSleepingAllowed(false);
+			body.GetBody().SetFixedRotation(true);
+			
 			add(body);
 			
 			//Set camera to follow player movement.

@@ -27,7 +27,6 @@ package common
 		private var _start:Point;
 		private var _end:Point;
 		
-		private var _bodies:Array;
 		private var expBodyCount:uint;
 		private var _loaded:Boolean;
 		
@@ -36,8 +35,6 @@ package common
 			_state = state;	
 			_start = new Point();
 			_end = new Point();
-			
-			_bodies = new Array();
 			
 			_loaded = false;
 		}
@@ -178,7 +175,10 @@ package common
 		    	shape.y = int(shape.y) + bitmapData.height/2;
 		    }
 		    
-		    var b2:ExSprite = new ExSprite(shape.x, shape.y, null, "", bitmapData, shape);
+		    //TODO:Fix sprite..
+		    var b2:ExSprite = new ExSprite();
+		    b2.pixels = bitmapData;
+		    b2.initFromXML(shape, _state.the_world);
 		    b2.createPhysBody(_state.the_world);
 		    
 			_state.addToLayer(b2, shape.layer);
@@ -263,7 +263,6 @@ package common
 		}
 		
 		public function removeJointAtPoint(point:Point, includeStatic:Boolean=false):void{
-			//var b2:b2Body = Utilities.GetBodyAtMouse(_state.the_world, point, includeStatic);
 			var b2:b2Body = Utilities.GetBodyAtPoint(_state.the_world, new b2Vec2(point.x, point.y), includeStatic);
 			
 			if(b2){
@@ -272,17 +271,6 @@ package common
 					bSprite.destroyAllJoints();
 				}
 			}
-		}
-		
-		//TODO:Seriously, don't call this function....
-		//Registers a point and see if we get a body from it.  Null bodies will be checked during add joint
-		public function registerObjectAtPoint(point:Point, includeStatic:Boolean=false):void{
-			var b2:b2Body = Utilities.GetBodyAtPoint(_state.the_world, new b2Vec2(point.x, point.y), includeStatic);
-			
-			var vec:b2Vec2 = new b2Vec2();
-			vec.x = point.x;
-			vec.y = point.y;
-			_bodies.push([b2,vec]);
 		}
 		
 		//Add all joints from configuration file, also pass configuration jointXML along
@@ -310,16 +298,19 @@ package common
 			//This doesn't work when there's no synchronous events... So this add takes place before the render...
 			//Which means we have to worry about the updated sprite position... 
 			
-			var b2:EventObject = new EventObject(event.x, event.y, sprite, "", null, event, _state.the_world);
+			var b2:EventObject = new EventObject();
+			b2.initFromXML(event, _state.the_world);
 			b2.createPhysBody(_state.the_world);
 		    
-			//TODO:Events...
 			_state.addToLayer(b2, ExState.EV);
 		}
 		
 		public function addXMLSensor(sensorXML:XML, sprite:Class = null):void {
-			var sensor:Sensor = new Sensor(sensorXML.x, sensorXML.y, sensorXML.width, sensorXML.height);
+			//TODO:Fix sensor...
+			var sensor:Sensor = new Sensor();
+			//sensorXML.x, sensorXML.y, sensorXML.width, sensorXML.height);
 			sensor.loadGraphic(sprite);
+			sensor.initFromXML(sensorXML, _state.the_world);
 			sensor.createPhysBody(_state.the_world);
 			_state.addToLayer(sensor, ExState.EV);
 		}
@@ -332,9 +323,13 @@ package common
 				if(body1.GetUserData() && body1.GetUserData() is EventObject){
 					//This only happens if we select an event and link it to the target
 					var event:EventObject = body1.GetUserData() as EventObject;
-					var target:ExSprite = body2.GetUserData() as ExSprite;
-					
-					event.setTarget(target);
+					if(body2 && body2.GetUserData() && body2.GetUserData() is ExSprite){
+						var target:ExSprite = body2.GetUserData() as ExSprite;
+						event.setTarget(target);
+					}
+					else{
+						event.setTarget(null);
+					}
 				}
 			}
 		}
