@@ -17,19 +17,16 @@
 		public override function Step(step:b2TimeStep):void 
 		{
 			var edge:b2ControllerEdge = null;
-			var gObj:GravityObject;
 			var force:b2Vec2;
 			
 			//Apply force to every physics body in this controller.
-			for (edge = m_bodyList; edge; edge = edge.nextBody)
+			for (var i:uint = 0; i < _gravObjects.length; i++)
 			{
-				//Get force from each gravity object.
-				for (var i:uint = 0; i < _gravObjects.length; i++)
+				if(!_gravObjects[i].exists || _gravObjects[i].dead) continue;
+				for (edge = m_bodyList; edge; edge = edge.nextBody)
 				{
-					gObj = _gravObjects[i] as GravityObject;
-					if(!gObj.exists || gObj.dead) continue;
-					
-					force = gObj.GetGravityForce(edge.body);
+					//Get force from each gravity object.
+					force = _gravObjects[i].GetGravityB2(edge.body);
 					
 					edge.body.ApplyForce(force,edge.body.GetWorldCenter());
 				}

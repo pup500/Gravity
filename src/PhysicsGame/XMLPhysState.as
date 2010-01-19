@@ -56,7 +56,7 @@ package PhysicsGame
 			_gravityController._gravObjects = _gravObjects;
 			for (var bb:b2Body = the_world.GetBodyList(); bb; bb = bb.GetNext()) 
 			{
-				//Moves this if statement from every step to init.
+				//Moves this if statement from every step to this init.
 				if (bb.GetType() == b2Body.b2_dynamicBody) 
 					_gravityController.AddBody(bb);
 			}

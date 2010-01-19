@@ -96,7 +96,10 @@
 		{
 			destroyPhysBody();
 			
-			bodyDef.position.Set(X/ExState.PHYS_SCALE, Y/ExState.PHYS_SCALE);
+			var scaledX:Number = X / ExState.PHYS_SCALE;
+			var scaledY:Number = Y / ExState.PHYS_SCALE;
+			
+			bodyDef.position.Set(scaledX, scaledY);
 			//trace("grav body def: " + X/ExState.PHYS_SCALE + ", " + Y/ExState.PHYS_SCALE);
 			createPhysBody(_world);
 			
@@ -105,6 +108,9 @@
 			play("idle");
 			_coolDown.reset();
 			_coolDown.start();
+			
+			//Set point in here b/c GravObj won't be moving. We'll use this when we calculate the gravity force.
+			gPoint = new Point(scaledX, scaledY);
 			
 			super.reset(X,Y);
 			//trace("grav shoot : " + x + ", " + y);
@@ -159,11 +165,12 @@
 			super.render();
 			
 		}
-		
+		private var gPoint:Point //= new Point(this.final_body.GetPosition().x, this.final_body.GetPosition().y);
+		private var G:Number = 1; //gravitation constant
 		public function GetGravityForce(physBody:b2Body):b2Vec2
 		{
 			var gMass:Number = this.mass;// Hack - use object's mass not physics mass because density = 0//this.final_body.m_mass;
-			var gPoint:Point = new Point(this.final_body.GetPosition().x, this.final_body.GetPosition().y);
+			//moved gPoint outside of this function and set it in shoot() for optimization.
 			var physBodyPoint:Point = new Point(physBody.GetPosition().x, physBody.GetPosition().y);
 			var dist:Point = gPoint.subtract(physBodyPoint);
 			var distSq:Number = dist.x * dist.x + dist.y * dist.y;
@@ -180,7 +187,7 @@
 			var distance:Number = Math.sqrt(distSq);
 			var massProduct:Number = physBody.GetMass() * gMass;
 			
-			var G:Number = 1; //gravitation constant
+			//Moved G definition out of function.
 			
 			var force:Number = G*(massProduct/distSq);
 			
@@ -197,6 +204,39 @@
 				return impulse;
 			else
 				return impulse.GetNegative(); 
+		}
+		//@desc Using B2D's b2GravityController function. It's really efficient, but it's also slingshotting all the physBodies everywhere.
+		public function GetGravityB2(physBody:b2Body):b2Vec2
+		{
+			var p1:b2Vec2 = null;
+			var mass1:Number = 0;
+			var p2:b2Vec2 = null;
+			var dx:Number = 0;
+			var dy:Number = 0;
+			var r2:Number = 0;
+			var f:b2Vec2 = null;
+			
+			p1 = final_body.GetWorldCenter();
+			p2 = physBody.GetWorldCenter()
+			dx = p1.x - p2.x;
+			dy = p1.y - p2.y;
+			r2 = dx*dx+dy*dy;
+			if(r2<Number.MIN_VALUE)
+				return new b2Vec2();
+			f = new b2Vec2(dx, dy);
+			
+			f.Multiply(G / r2 / r2 * this.mass * physBody.GetMass()*this.mass);
+			//if(body1.IsAwake())
+				//final.ApplyForce(f,p1);
+			
+			//Attempting force limits to prevent slingshotting, but isn't working. -Norman
+			if (f.x > 10) f.x = 10;
+			if (f.y > 10) f.y = 10;
+			
+			if (antiGravity)
+				return f.GetNegative();
+			else
+				return f;
 		}
 	}
 
