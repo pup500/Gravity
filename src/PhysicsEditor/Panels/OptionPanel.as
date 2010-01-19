@@ -1,6 +1,6 @@
 package PhysicsEditor.Panels
 {
-	import PhysicsEditor.Actions.*;
+	import PhysicsEditor.Options.*;
 	
 	import flash.display.Sprite;
 	import flash.geom.Rectangle;
@@ -11,10 +11,10 @@ package PhysicsEditor.Panels
 	{
 		private var OPTIONS:Array = [DebugOption, GridOption, SnapOption];
 		
-		public function OptionPanel(x:uint=0, y:uint=0)
+		public function OptionPanel(x:uint=0, y:uint=0, horizontal:Boolean=false)
 		{
 			super(x,y);
-			this.addItems(OPTIONS, false);
+			addItems(OPTIONS, horizontal);
 		}
 	}
 }

@@ -1,6 +1,6 @@
 package PhysicsEditor.Panels
 {
-	import PhysicsEditor.Actions.IAction;
+	import PhysicsEditor.IAction;
 	
 	import flash.display.Sprite;
 	import flash.geom.Rectangle;
@@ -36,6 +36,7 @@ package PhysicsEditor.Panels
 			for(var i:uint=0; i < items.length; i++){
 				var aClass:Class = items[i];
 				var action:IAction = createItem(aClass);
+				action.activate(i==0);
 				action.getSprite().x = horizontal ? i*40 + 5 : 5;
 				action.getSprite().y = horizontal ? 5 : i*40 + 5;				
 				actions.push(action);

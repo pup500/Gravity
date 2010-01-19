@@ -1,8 +1,10 @@
-package PhysicsEditor.Actions
+package PhysicsEditor.Options
 {
+	import PhysicsEditor.IAction;
+	
+	import flash.display.Bitmap;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
-	import flash.display.Bitmap;
 
 	public class OptionBase implements IAction
 	{
@@ -35,9 +37,9 @@ package PhysicsEditor.Actions
 			sprite.alpha = active ? 1 : 0.5;
 		}
 		
-		public function deactivate():void
+		public function activate(flag:Boolean):void
 		{
-			active = false;
+			active = flag;
 		}
 		
 		public function handleBegin():void

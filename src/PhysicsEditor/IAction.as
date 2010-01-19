@@ -1,4 +1,4 @@
-package PhysicsEditor.Actions
+package PhysicsEditor
 {
 	import flash.display.Sprite;
 	
@@ -8,7 +8,7 @@ package PhysicsEditor.Actions
 		
 		function update():void;
 		
-		function deactivate():void;
+		function activate(flag:Boolean):void;
 		
 		function handleBegin():void;
 		

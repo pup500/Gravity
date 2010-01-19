@@ -3,7 +3,9 @@
 	import Box2D.Common.Math.b2Vec2;
 	
 	import PhysicsEditor.Panels.ActionPanel;
+	import PhysicsEditor.Panels.JointPanel;
 	import PhysicsEditor.Panels.OptionPanel;
+	import PhysicsEditor.Panels.TypePanel;
 	
 	import PhysicsGame.LevelSelectMenu;
 	
@@ -30,6 +32,8 @@
 		
 		private var actionPanel:ActionPanel;
 		private var optionPanel:OptionPanel;
+		private var typePanel:TypePanel;
+		private var jointPanel:JointPanel;
 		
 		public function PhysLevelEditor() 
 		{
@@ -55,6 +59,13 @@
 			
 			optionPanel = new OptionPanel(500, 30);
 			addChild(optionPanel.getSprite());
+			
+			typePanel = new TypePanel(50, 5, true);
+			addChild(typePanel.getSprite());
+			
+			
+			jointPanel = new JointPanel(200, 5, true);
+			addChild(jointPanel.getSprite());
 
 		}
 		
@@ -79,6 +90,8 @@
 			
 			actionPanel.update();
 			optionPanel.update();
+			typePanel.update();
+			jointPanel.update();
 		}
 	}
 }

@@ -1,5 +1,6 @@
 package PhysicsEditor.Actions
 {
+	import PhysicsEditor.Options.OptionBase;
 	import Box2D.Common.Math.b2Vec2;
 
 	import flash.events.MouseEvent;

@@ -1,4 +1,4 @@
-package PhysicsEditor.Actions
+package PhysicsEditor.Options
 {
 	public class DebugOption extends OptionBase
 	{

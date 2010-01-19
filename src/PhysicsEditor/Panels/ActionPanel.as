@@ -1,5 +1,6 @@
 package PhysicsEditor.Panels
 {
+	import PhysicsEditor.IAction;
 	import PhysicsEditor.Actions.*;
 	
 	import flash.display.Sprite;
@@ -13,19 +14,19 @@ package PhysicsEditor.Panels
 		private var ACTIONS:Array = 
 			[AddAction, RemoveAction, JoinAction, BreakAction, LinkAction];
 		
-		public function ActionPanel(x:uint=0, y:uint=0)
+		public function ActionPanel(x:uint=0, y:uint=0, horizontal:Boolean=false)
 		{
 			super(x,y);
-			this.addItems(ACTIONS, true);
+			addItems(ACTIONS, horizontal);
 		}
 		
 		override protected function createItem(aClass:Class):IAction{
 			return new aClass(deactivateAllActions, onRelease);
 		}
 		
-		private function deactivateAllActions():void{
+		protected function deactivateAllActions():void{
 			for each(var action:IAction in actions){
-				action.deactivate();
+				action.activate(false);
 			}
 		}
 		
