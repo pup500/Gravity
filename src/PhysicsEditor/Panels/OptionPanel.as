@@ -9,7 +9,8 @@ package PhysicsEditor.Panels
 	
 	public class OptionPanel extends PanelBase
 	{
-		private var OPTIONS:Array = [DebugOption, GridOption, SnapOption];
+		private var OPTIONS:Array = 
+			[DebugOption, GridOption, SnapOption, BGOption, MGOption, FGOption, EVOption];
 		
 		public function OptionPanel(x:uint=0, y:uint=0, horizontal:Boolean=false)
 		{

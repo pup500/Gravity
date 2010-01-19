@@ -54,17 +54,16 @@
 			
 			addPlayer();
 			
-			actionPanel = new ActionPanel(5, 30);
+			actionPanel = new ActionPanel(5, 5);
 			addChild(actionPanel.getSprite());
 			
-			optionPanel = new OptionPanel(500, 30);
+			optionPanel = new OptionPanel(590, 5);
 			addChild(optionPanel.getSprite());
 			
-			typePanel = new TypePanel(50, 5, true);
+			typePanel = new TypePanel(55, 5, true);
 			addChild(typePanel.getSprite());
 			
-			
-			jointPanel = new JointPanel(200, 5, true);
+			jointPanel = new JointPanel(190, 5, true);
 			addChild(jointPanel.getSprite());
 
 		}

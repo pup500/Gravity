@@ -5,11 +5,15 @@ package PhysicsEditor.Options
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
+	
+	import org.flixel.FlxG;
+	import org.overrides.ExState;
 
 	public class OptionBase implements IAction
 	{
 		protected var sprite:Sprite;
 		protected var active:Boolean;
+		protected var state:ExState;
 		
 		public function OptionBase(Graphic:Class)
 		{
@@ -21,6 +25,8 @@ package PhysicsEditor.Options
 			sprite.graphics.endFill();
 			
 			sprite.addEventListener(MouseEvent.MOUSE_DOWN, onClick);
+			
+			state = FlxG.state as ExState;
 		}
 
 		public function getSprite():Sprite

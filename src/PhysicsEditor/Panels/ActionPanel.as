@@ -12,7 +12,8 @@ package PhysicsEditor.Panels
 	public class ActionPanel extends PanelBase
 	{
 		private var ACTIONS:Array = 
-			[AddAction, RemoveAction, JoinAction, BreakAction, LinkAction];
+			[AddAction, RemoveAction, ChangeAction, JoinAction, BreakAction, 
+			EventAction, LinkAction, SensorAction, RunAction, SaveAction, HelpAction];
 		
 		public function ActionPanel(x:uint=0, y:uint=0, horizontal:Boolean=false)
 		{
@@ -20,6 +21,8 @@ package PhysicsEditor.Panels
 			addItems(ACTIONS, horizontal);
 		}
 		
+		//Maybe we should just have every action know what panel it is on...
+		//Then it can call the panel's function to deactive group or item...
 		override protected function createItem(aClass:Class):IAction{
 			return new aClass(deactivateAllActions, onRelease);
 		}
