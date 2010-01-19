@@ -344,7 +344,7 @@ package org.overrides
 			
 			updatePosition();
 			
-			//angle = final_body.GetAngle();
+			angle = final_body.GetAngle();
 			
 			//updateJoints();
 		}
