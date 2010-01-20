@@ -205,7 +205,7 @@
 			else
 				return impulse.GetNegative(); 
 		}
-		//@desc Using B2D's b2GravityController function.
+		//@desc Using B2D's b2GravityController function. Tweaked with log scaling to make the forces smoother.
 		public function GetGravityB2(physBody:b2Body):b2Vec2
 		{
 			var p1:b2Vec2 = null;
