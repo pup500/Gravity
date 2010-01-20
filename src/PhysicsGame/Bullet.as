@@ -63,18 +63,6 @@
 			//addAnimation("poof",[2, 3, 4], 50, false);
 		}
 		
-		//TODO: prevent super.createPhysBody(world) form being called?
-		//public function destroyPhys():void{
-			//if(exists){
-				//exists = false;
-				//We might not need to save shape as destroy body should work already...
-				//final_body.DestroyShape(final_shape);
-				//_world.DestroyBody(final_body);
-				//final_shape = null;
-				//final_body = null;
-			//}
-		//}
-		
 		override public function update():void
 		{
 			if(dead && finished){

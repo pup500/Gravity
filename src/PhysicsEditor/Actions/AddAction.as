@@ -16,6 +16,8 @@ package PhysicsEditor.Actions
 			args["mode"] = "add";
 			
 			super.handleEnd();
+			
+			
 		}
 
 	}

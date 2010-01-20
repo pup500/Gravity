@@ -15,7 +15,6 @@ package PhysicsEditor.Options
 		override public function update():void{
 			super.update();
 			
-			var state:ExState = FlxG.state as ExState;
 			state.debug_sprite.visible = active;
 		}
 

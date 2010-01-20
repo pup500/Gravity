@@ -8,6 +8,13 @@ package org.overrides
 	import Box2D.Dynamics.Contacts.*;
 	import Box2D.Dynamics.Joints.b2JointEdge;
 	
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
+	import flash.display.Loader;
+	import flash.display.LoaderInfo;
+	import flash.events.Event;
+	import flash.net.URLRequest;
+	
 	import org.flixel.*;
 	use namespace b2internal;
 	
@@ -435,7 +442,30 @@ package org.overrides
 			return xml;
 		}
 		
-		public function initFromXML(xml:XML, world:b2World=null):void{
+		//Initialize the ExSprite from the xml data structure
+		public function initFromXML(xml:XML, world:b2World):void{
+			//If there's no image file information, just load the file normally
+			if(xml.file.length() == 0){
+				onInitXMLComplete(xml, world);
+			}
+			
+			var loader:Loader = new Loader();
+    		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, 
+    			function(e:Event):void{
+    				onInitXMLComplete(xml, world, e)
+    			});
+    		
+    		loader.load(new URLRequest(xml.file));
+		}
+		
+		protected function onInitXMLComplete(xml:XML, world:b2World=null, event:Event=null):void{
+			//Load the bitmap data
+			if(event){
+				var loadinfo:LoaderInfo = LoaderInfo(event.target);
+				var bitmapData:BitmapData = Bitmap(loadinfo.content).bitmapData;
+		 		pixels = bitmapData;
+			}
+			
 			//Assume we have pixel data already....
 			imageResource = xml.file;
 			layer = xml.layer;
@@ -456,6 +486,7 @@ package org.overrides
 			bodyDef.position.Set(xml.x/ExState.PHYS_SCALE, xml.y/ExState.PHYS_SCALE);
 			
 			//TODO:Do we need to correct for x and y...?
+			createPhysBody(world);
 		}
 	}
 }

@@ -100,8 +100,8 @@ package PhysicsGame
 			return item;
 		}
 		
-		override public function initFromXML(xml:XML, world:b2World=null):void{
-			super.initFromXML(xml);
+		override public function initFromXML(xml:XML, world:b2World):void{
+			super.initFromXML(xml, world);
 			
 			changeType(xml.type);
 			

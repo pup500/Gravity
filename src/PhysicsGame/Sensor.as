@@ -55,11 +55,13 @@
 			_events.push(event);
 		}
 		
+		/*
 		override public function createPhysBody(world:b2World):void
 		{
 			super.createPhysBody(world);
 			//final_body.SetStatic();
 		}
+		*/
 		
 		override public function update():void
 		{

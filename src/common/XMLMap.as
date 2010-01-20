@@ -73,12 +73,21 @@ package common
 			}
 			
 			for each(var shape:XML in configXML.objects.shape){
-				addXMLObject(shape);
+				 var b2:ExSprite = new ExSprite();
+		    	b2.initFromXML(shape, _state.the_world);
+		    	//b2.createPhysBody(_state.the_world);
+		    
+				_state.addToLayer(b2, shape.layer);
+    		
+				//addXMLObject(shape);
 			}
+			
+			_state.init();
 			
 			//Joints will be added after all objects have been created...
 		}
 		
+		/*
 		//Adds a XML file that contains the resource we want...
 		public function addObjectsInXMLFile(file:String, offset:Point):void{
 			var loader:URLLoader = new URLLoader();
@@ -150,7 +159,10 @@ package common
 				addXMLObject(shape);
 			}
 		}
+		
+		*/
 
+		/*
 		//Load the xml config object at the specified coordinates
 		public function addXMLObject(shape:XML, mouse:Boolean=false):void{
 			var loader:Loader = new Loader();
@@ -158,10 +170,11 @@ package common
     			function(e:Event):void{
     				onComplete(e, shape, mouse)
     			});
-    			
+    		
     		loader.load(new URLRequest(shape.file));
 		}
 		
+		/*
 		//Actual function that creates the sprite with the bitmap data
 		private function onComplete(event:Event, shape:XML, mouse:Boolean=false):void
 		{
@@ -179,7 +192,7 @@ package common
 		    var b2:ExSprite = new ExSprite();
 		    b2.pixels = bitmapData;
 		    b2.initFromXML(shape, _state.the_world);
-		    b2.createPhysBody(_state.the_world);
+		    //b2.createPhysBody(_state.the_world);
 		    
 			_state.addToLayer(b2, shape.layer);
     		
@@ -198,6 +211,7 @@ package common
     			}
     		}
 		}
+		*/
 		
 		//Create new configuration file
 		public function createNewConfiguration():String{
@@ -300,7 +314,7 @@ package common
 			
 			var b2:EventObject = new EventObject();
 			b2.initFromXML(event, _state.the_world);
-			b2.createPhysBody(_state.the_world);
+			//b2.createPhysBody(_state.the_world);
 		    
 			_state.addToLayer(b2, ExState.EV);
 		}
@@ -311,7 +325,7 @@ package common
 			//sensorXML.x, sensorXML.y, sensorXML.width, sensorXML.height);
 			sensor.loadGraphic(sprite);
 			sensor.initFromXML(sensorXML, _state.the_world);
-			sensor.createPhysBody(_state.the_world);
+			//sensor.createPhysBody(_state.the_world);
 			_state.addToLayer(sensor, ExState.EV);
 		}
 		
