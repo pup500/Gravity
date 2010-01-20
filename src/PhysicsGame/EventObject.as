@@ -1,6 +1,7 @@
 package PhysicsGame
 {
 	import Box2D.Common.Math.b2Vec2;
+	import Box2D.Dynamics.Controllers.b2Controller;
 	import Box2D.Dynamics.b2Body;
 	import Box2D.Dynamics.b2World;
 	
@@ -100,8 +101,8 @@ package PhysicsGame
 			return item;
 		}
 		
-		override public function initFromXML(xml:XML, world:b2World):void{
-			super.initFromXML(xml, world);
+		override public function initFromXML(xml:XML, world:b2World, controller:b2Controller=null):void{
+			super.initFromXML(xml, world, controller);
 			
 			changeType(xml.type);
 			

@@ -1,8 +1,8 @@
 ﻿package PhysicsGame 
 {
-	import Box2D.Common.Math.*;
-	import Box2D.Common.*;
 	import Box2D.Collision.Shapes.*;
+	import Box2D.Common.*;
+	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
 	import Box2D.Dynamics.Controllers.*;
 	
@@ -27,11 +27,11 @@
 				{
 					if(edge.body.GetType() != b2Body.b2_dynamicBody)
 						continue;
-						
+					
 					//Get force from each gravity object.
 					force = _gravObjects[i].GetGravityB2(edge.body);
 					
-					trace("force: " + force.x + "," + force.y);
+					//trace(edge.body.GetUserData().name + " force: " + force.x + "," + force.y);
 					edge.body.ApplyForce(force,edge.body.GetWorldCenter());
 				}
 			}

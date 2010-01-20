@@ -3,6 +3,7 @@ package org.overrides
 	import Box2D.Collision.*;
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
+	import Box2D.Dynamics.Controllers.b2Controller;
 	
 	import flash.display.Sprite;
 	
@@ -16,6 +17,7 @@ package org.overrides
 		public var the_world:b2World;
 		protected var debug:Boolean;
 		public var debug_sprite:Sprite;
+		protected var controller:b2Controller;
 		
 		protected var _bgLayer:FlxLayer;
 		protected var _fgLayer:FlxLayer;
@@ -27,7 +29,6 @@ package org.overrides
 		public static const MG:uint = 1;
 		public static const FG:uint = 2;
 		public static const EV:uint = 3;
-		
 		
 		public static const PHYS_SCALE:Number = 30;
 		
@@ -55,6 +56,10 @@ package org.overrides
 		
 		public function init():void{
 			_loaded = true;
+		}
+		
+		public function getController():b2Controller{
+			return controller;
 		}
 		
 		protected function initBox2DDebugRendering():void

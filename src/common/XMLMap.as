@@ -74,7 +74,7 @@ package common
 			
 			for each(var shape:XML in configXML.objects.shape){
 				 var b2:ExSprite = new ExSprite();
-		    	b2.initFromXML(shape, _state.the_world);
+		    	b2.initFromXML(shape, _state.the_world, _state.getController());
 		    	//b2.createPhysBody(_state.the_world);
 		    
 				_state.addToLayer(b2, shape.layer);

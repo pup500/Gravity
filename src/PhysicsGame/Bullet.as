@@ -5,8 +5,7 @@
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
 	import Box2D.Dynamics.Contacts.*;
-	
-	import flash.geom.Point;
+	import Box2D.Dynamics.Controllers.b2Controller;
 	
 	import org.flixel.FlxG;
 	import org.overrides.ExSprite;
@@ -28,9 +27,13 @@
 		private var old:b2Vec2;
 		
 		private static var count:uint = 0;
+		
+		//TODO:Clean this ugly save here...
+		private var _controller:b2Controller;
+		
 		//@desc Bullet constructor
 		//@param world	We'll need this to spawn the bullet's physical body when it's shot.
-		public function Bullet(world:b2World)
+		public function Bullet(world:b2World, controller:b2Controller)
 		{
 			super();
 			loadGraphic(ImgBullet, true);
@@ -48,6 +51,7 @@
 			count++;
 			
 			_world = world; //For use when we shoot.
+			_controller = controller;
 			
 			//offset.x = 1;
 			//offset.y = 1;
@@ -119,7 +123,7 @@
 			destroyPhysBody();
 			
 			bodyDef.position.Set(X/ExState.PHYS_SCALE, Y/ExState.PHYS_SCALE);
-			createPhysBody(_world);
+			createPhysBody(_world, _controller);
 			final_body.SetBullet(true);
 			final_body.SetLinearVelocity(new b2Vec2(VelocityX, VelocityY));
 		//	trace("bullet speed" + final_body.GetLinearVelocity().x + "," + final_body.GetLinearVelocity().y);
