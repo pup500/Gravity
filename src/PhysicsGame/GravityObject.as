@@ -28,6 +28,10 @@
 		private var initialMass:Number = 20;//5000;//50000;
 		private var deltaMass:Number = 10;
 		
+		private var distf:Number = 20;
+		private var minf:b2Vec2 = new b2Vec2(-distf,-distf);
+		private var maxf:b2Vec2 = new b2Vec2(distf,distf)
+		
 		public var antiGravity:Boolean;
 		
 		private var _coolDown:Timer;
@@ -230,8 +234,7 @@
 				//final.ApplyForce(f,p1);
 			
 			//Attempting force limits to prevent slingshotting, but isn't working. -Norman
-			if (f.x > 10) f.x = 10;
-			if (f.y > 10) f.y = 10;
+			f = b2Math.ClampV(f, minf, maxf);
 			
 			if (antiGravity)
 				return f.GetNegative();

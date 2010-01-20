@@ -25,9 +25,13 @@
 				if(!_gravObjects[i].exists || _gravObjects[i].dead) continue;
 				for (edge = m_bodyList; edge; edge = edge.nextBody)
 				{
+					if(edge.body.GetType() != b2Body.b2_dynamicBody)
+						continue;
+						
 					//Get force from each gravity object.
 					force = _gravObjects[i].GetGravityB2(edge.body);
 					
+					trace("force: " + force.x + "," + force.y);
 					edge.body.ApplyForce(force,edge.body.GetWorldCenter());
 				}
 			}
