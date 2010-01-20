@@ -6,7 +6,15 @@ package org.overrides
 	import Box2D.Common.b2internal;
 	import Box2D.Dynamics.*;
 	import Box2D.Dynamics.Contacts.*;
+	import Box2D.Dynamics.Controllers.b2Controller;
 	import Box2D.Dynamics.Joints.b2JointEdge;
+	
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
+	import flash.display.Loader;
+	import flash.display.LoaderInfo;
+	import flash.events.Event;
+	import flash.net.URLRequest;
 	
 	import org.flixel.*;
 	use namespace b2internal;
@@ -269,7 +277,7 @@ package org.overrides
 		
 		//@desc Create the physical representation in the Box2D World using the shape definition from initShape methods.
 		//@param	world The Box2D b2World for this object to exist in.
-		public function createPhysBody(world:b2World):void{
+		public function createPhysBody(world:b2World, controller:b2Controller=null):void{
 			fixtureDef.shape = shape
 			fixtureDef.density = 1.0;
 			
@@ -284,6 +292,10 @@ package org.overrides
 			_world = world;
 			
 			final_body.SetUserData(this);
+			
+			if(controller){
+				controller.AddBody(final_body);
+			}
 			
 			loaded = true;
 		}
@@ -435,7 +447,30 @@ package org.overrides
 			return xml;
 		}
 		
-		public function initFromXML(xml:XML, world:b2World=null):void{
+		//Initialize the ExSprite from the xml data structure
+		public function initFromXML(xml:XML, world:b2World, controller:b2Controller=null):void{
+			//If there's no image file information, just load the file normally
+			if(xml.file.length() == 0){
+				onInitXMLComplete(xml, world, controller);
+			}
+			
+			var loader:Loader = new Loader();
+    		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, 
+    			function(e:Event):void{
+    				onInitXMLComplete(xml, world, controller, e)
+    			});
+    		
+    		loader.load(new URLRequest(xml.file));
+		}
+		
+		protected function onInitXMLComplete(xml:XML, world:b2World=null, controller:b2Controller=null, event:Event=null):void{
+			//Load the bitmap data
+			if(event){
+				var loadinfo:LoaderInfo = LoaderInfo(event.target);
+				var bitmapData:BitmapData = Bitmap(loadinfo.content).bitmapData;
+		 		pixels = bitmapData;
+			}
+			
 			//Assume we have pixel data already....
 			imageResource = xml.file;
 			layer = xml.layer;
@@ -456,6 +491,7 @@ package org.overrides
 			bodyDef.position.Set(xml.x/ExState.PHYS_SCALE, xml.y/ExState.PHYS_SCALE);
 			
 			//TODO:Do we need to correct for x and y...?
+			createPhysBody(world, controller);
 		}
 	}
 }

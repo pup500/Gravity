@@ -33,7 +33,7 @@
 	 * @author Minh
 	 */
 	public class PhysLevelEditor extends ExState
-	{
+	{	
 		[Embed(source="../data/editor/help.txt", mimeType="application/octet-stream")] public var helpFile:Class;
 		
 		[Embed(source="../data/cursor.png")] private var cursorSprite:Class;
@@ -80,7 +80,7 @@
 		private var drawingBox:Boolean;
 		private var line:Shape;
 		private var drawingLine:Boolean;
-		private var startPoint:Point;
+		//private var startPoint:Point;
 		
 		private var grid:Shape;
 		private var snapToGrid:Boolean;
@@ -168,7 +168,7 @@
 			
 			//box = new FlxSprite(0,0);
 			//add(box);
-			startPoint = new Point();
+			///startPoint = new Point();
 			layer = ExState.MG;
 			
 			line = new Shape();
@@ -774,8 +774,8 @@
 					//startPoint.y = point.y;
 					
 					//I don't like snap
-					startPoint.x = FlxG.mouse.x;
-					startPoint.y = FlxG.mouse.y;
+					//startPoint.x = FlxG.mouse.x;
+					//startPoint.y = FlxG.mouse.y;
 					drawingLine = true;
 					break;
 				case BREAK:
@@ -789,7 +789,7 @@
 			if((mode == JOIN || mode == LINK) && drawingLine){
 				line.graphics.clear();
 				line.graphics.lineStyle(1,0xFF0000,1);
-				line.graphics.moveTo(startPoint.x,startPoint.y);
+				line.graphics.moveTo(args["start"].x, args["start"].y);
 				line.graphics.lineTo(FlxG.mouse.x, FlxG.mouse.y);//point.x, point.y);
 				line.visible = true;
 			}

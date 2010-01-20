@@ -101,11 +101,13 @@ package PhysicsGame
 			_bullets = bullets;
 		}
 		
+		/*
 		override public function createPhysBody(world:b2World):void
 		{
 			super.createPhysBody(world);
 			//final_body.CreateShape(_canJumpSensor);
 		}
+		*/
 		
 		override public function update():void
 		{

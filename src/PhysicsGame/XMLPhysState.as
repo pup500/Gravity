@@ -3,12 +3,10 @@ package PhysicsGame
 	import Box2D.Collision.*;
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
-	import Box2D.Dynamics.Controllers.b2GravityController;
 	
 	import common.XMLMap;
 	
 	import flash.geom.Point;
-	import flash.utils.Timer;
 	
 	import org.flixel.*;
 	import org.overrides.*;
@@ -27,12 +25,12 @@ package PhysicsGame
 		private var _bullets:Array;
 		private var _gravObjects:Array;
 		
-		private var _gravityController:GravityObjectController;
-		
 		public function XMLPhysState() 
 		{
 			super();
 			bgColor = 0xffeeeeff;
+			controller = new GravityObjectController();
+			the_world.AddController(controller);
 			
 			//debug = true;
 			initBox2DDebugRendering();
@@ -52,15 +50,17 @@ package PhysicsGame
 			addEndPoint();
 			
 			//Create a gravity controller, give it all b2d bodies that need to interact with each other
-			_gravityController = new GravityObjectController();
-			_gravityController._gravObjects = _gravObjects;
-			for (var bb:b2Body = the_world.GetBodyList(); bb; bb = bb.GetNext()) 
+			
+			//Objects should be added to the controller when it is created dynamically
+			//This allows for spawners
+			/*for (var bb:b2Body = the_world.GetBodyList(); bb; bb = bb.GetNext()) 
 			{
 				//Moves this if statement from every step to this init.
 				if (bb.GetType() == b2Body.b2_dynamicBody) 
 					_gravityController.AddBody(bb);
 			}
-			the_world.AddController(_gravityController);
+			*/
+
 		}
 		
 		private function loadLevelConfig():void{
@@ -81,11 +81,15 @@ package PhysicsGame
 			
 			//Create bullets
 			for(i = 0; i < 8; i++){
-				var bullet:Bullet = new Bullet(the_world);
+				var bullet:Bullet = new Bullet(the_world, controller);
 				bullet.setGravityObject(_gravObjects[i]);
 				_bullets.push(this.add(bullet));
 				//don't create physical body, wait till bullet is shot.
 			}
+			
+			var gController:GravityObjectController = controller as GravityObjectController;
+			gController._gravObjects = _gravObjects;
+			
 		}
 		
 		//Player will be called from the xmlMapLoader when the xml file is read...
@@ -93,7 +97,7 @@ package PhysicsGame
 			var start:Point = xmlMapLoader.getStartPoint();
 			
 			var body:Player = new Player(start.x, start.y);
-			body.createPhysBody(the_world);
+			body.createPhysBody(the_world, controller);
 			
 			body.GetBody().SetSleepingAllowed(false);
 			body.GetBody().SetFixedRotation(true);
