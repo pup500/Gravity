@@ -205,7 +205,7 @@
 			else
 				return impulse.GetNegative(); 
 		}
-		//@desc Using B2D's b2GravityController function. It's really efficient, but it's also slingshotting all the physBodies everywhere.
+		//@desc Using B2D's b2GravityController function.
 		public function GetGravityB2(physBody:b2Body):b2Vec2
 		{
 			var p1:b2Vec2 = null;
@@ -225,13 +225,15 @@
 				return new b2Vec2();
 			f = new b2Vec2(dx, dy);
 			
+			//We're going to take this force and get it's log to scale it down to make the push/pull smoother.
 			var directionlessForce:Number = G / r2 / Math.sqrt(r2) * this.mass * physBody.GetMass() * this.mass;
 			directionlessForce = Math.log(directionlessForce + 1) * 5;
+			
+			//Separate the force into x, y direction components.
 			f.Multiply(directionlessForce);
 			
-			//Attempting force limits to prevent slingshotting, but isn't working. -Norman
 			//FlxG.log("f.x: " + f.x);
-			
+			////Check if force is exceeding extremes.
 			//if (f.x > 100) f.x = 100;
 			//else if (  f.x < -100 ) f.x = -100;
 			//if (f.y > 100) f.y = 100;
