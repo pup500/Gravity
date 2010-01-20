@@ -184,7 +184,7 @@
 			if(distSq < Number.MIN_VALUE)
 				return new b2Vec2();
 			
-			var distance:Number = Math.sqrt(distSq);
+			//var distance:Number = Math.sqrt(distSq);
 			var massProduct:Number = physBody.GetMass() * gMass;
 			
 			//Moved G definition out of function.
@@ -192,13 +192,13 @@
 			var force:Number = G*(massProduct/distSq);
 			
 			//See if this is ok....
-			force = Math.log(force + 1) * 5;
+			//force = Math.log(force + 1) * 5;
 			
 			trace("force: " + force);
 			trace("distsq: " + distSq);
 			
-			//if(force > 10) force = 10;
-			var impulse:b2Vec2 = new b2Vec2(force * (dist.x/distance), force * (dist.y/distance));
+			if(force > 100) force = 100;
+			var impulse:b2Vec2 = new b2Vec2(force * dist.x, force * dist.y);//(force * (dist.x/distance), force * (dist.y/distance));
 			
 			if(!antiGravity)
 				return impulse;
@@ -225,13 +225,17 @@
 				return new b2Vec2();
 			f = new b2Vec2(dx, dy);
 			
-			f.Multiply(G / r2 / r2 * this.mass * physBody.GetMass()*this.mass);
-			//if(body1.IsAwake())
-				//final.ApplyForce(f,p1);
+			var directionlessForce:Number = G / r2 / Math.sqrt(r2) * this.mass * physBody.GetMass() * this.mass;
+			directionlessForce = Math.log(directionlessForce + 1) * 5;
+			f.Multiply(directionlessForce);
 			
 			//Attempting force limits to prevent slingshotting, but isn't working. -Norman
-			if (f.x > 10) f.x = 10;
-			if (f.y > 10) f.y = 10;
+			//FlxG.log("f.x: " + f.x);
+			
+			//if (f.x > 100) f.x = 100;
+			//else if (  f.x < -100 ) f.x = -100;
+			//if (f.y > 100) f.y = 100;
+			//else if (f.y < -100) f.y = -100;
 			
 			if (antiGravity)
 				return f.GetNegative();
