@@ -230,7 +230,7 @@
 			f = new b2Vec2(dx, dy);
 			
 			//We're going to take this force and get it's log to scale it down to make the push/pull smoother.
-			var directionlessForce:Number = G / r2 / Math.sqrt(r2) * this.mass * physBody.GetMass() * this.mass;
+			var directionlessForce:Number = G / r2 / r2 * this.mass * physBody.GetMass();
 			directionlessForce = Math.log(directionlessForce + 1) * 5;
 			
 			//Separate the force into x, y direction components.
