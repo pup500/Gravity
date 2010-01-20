@@ -229,10 +229,12 @@
 				return new b2Vec2();
 			f = new b2Vec2(dx, dy);
 			
-			f.Multiply(G / r2 / r2 * this.mass * physBody.GetMass()*this.mass);
+			//Why did you multiply by this.mass twice?
+			f.Multiply(G / r2 / Math.sqrt(r2) * this.mass* physBody.GetMass());
+			//f.Multiply(G / r2 / r2 * this.mass * physBody.GetMass()*this.mass);
 			//if(body1.IsAwake())
 				//final.ApplyForce(f,p1);
-			
+				
 			//Attempting force limits to prevent slingshotting, but isn't working. -Norman
 			f = b2Math.ClampV(f, minf, maxf);
 			
