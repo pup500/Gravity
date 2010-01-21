@@ -28,8 +28,6 @@
 		
 		private var xmlMapLoader:XMLMap;
 		
-		private var args:Dictionary;
-		
 		private var actionPanel:ActionPanel;
 		private var optionPanel:OptionPanel;
 		private var typePanel:TypePanel;
@@ -46,8 +44,6 @@
 			debug_sprite.visible = false;
 			
 			FlxG.showCursor(cursorSprite);
-			
-			args = new Dictionary();
 			
 			//This turns the event layer to visible
 			ev.visible = true;

@@ -1,7 +1,6 @@
 package PhysicsEditor.Options
 {
-	import org.flixel.FlxG;
-	import org.overrides.ExState;
+	import flash.events.MouseEvent;
 	
 	public class DebugOption extends OptionBase
 	{
@@ -12,11 +11,12 @@ package PhysicsEditor.Options
 			super(img);
 		}
 		
+		//Maybe we should update things during the click....
 		override public function update():void{
 			super.update();
 			
 			state.debug_sprite.visible = active;
+			state.getArgs()["debug"] = active;
 		}
-
 	}
 }

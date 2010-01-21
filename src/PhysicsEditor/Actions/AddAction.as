@@ -19,7 +19,7 @@ package PhysicsEditor.Actions
 			xml.x = args["start"].x;
 			xml.y = args["start"].y;
 			xml.layer = 1;
-			xml.bodyType = 2;
+			xml.bodyType = state.getArgs()["bodyType"];
 			xml.shapeType = 1;
 			xml.angle = 0;
 			
