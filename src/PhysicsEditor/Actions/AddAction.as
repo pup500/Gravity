@@ -20,7 +20,7 @@ package PhysicsEditor.Actions
 			xml.y = args["start"].y;
 			xml.layer = 1;
 			xml.bodyType = state.getArgs()["bodyType"];
-			xml.shapeType = 1;
+			xml.shapeType = state.getArgs()["shapeType"];
 			xml.angle = 0;
 			
 			var b2:ExSprite = new ExSprite();

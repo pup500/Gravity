@@ -493,6 +493,11 @@ package org.overrides
 					//initShape();
 					initShapeFromSprite();
 					break;
+				case b2Shape.e_edgeShape:
+					//initShape();
+					//We don't have edgeshapes yet.....
+					initShapeFromSprite();
+					break;
 			}
 			
 			bodyDef.angle = xml.angle;

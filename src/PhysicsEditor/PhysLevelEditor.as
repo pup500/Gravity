@@ -5,13 +5,12 @@
 	import PhysicsEditor.Panels.ActionPanel;
 	import PhysicsEditor.Panels.JointPanel;
 	import PhysicsEditor.Panels.OptionPanel;
+	import PhysicsEditor.Panels.ShapePanel;
 	import PhysicsEditor.Panels.TypePanel;
 	
 	import PhysicsGame.LevelSelectMenu;
 	
 	import common.XMLMap;
-	
-	import flash.utils.Dictionary;
 	
 	import org.flixel.FlxG;
 	import org.overrides.ExState;
@@ -32,6 +31,7 @@
 		private var optionPanel:OptionPanel;
 		private var typePanel:TypePanel;
 		private var jointPanel:JointPanel;
+		private var shapePanel:ShapePanel;
 		
 		public function PhysLevelEditor() 
 		{
@@ -59,9 +59,11 @@
 			typePanel = new TypePanel(55, 5, true);
 			addChild(typePanel.getSprite());
 			
-			jointPanel = new JointPanel(190, 5, true);
+			shapePanel = new ShapePanel(190, 5, true);
+			addChild(shapePanel.getSprite());
+			
+			jointPanel = new JointPanel(325, 5, true);
 			addChild(jointPanel.getSprite());
-
 		}
 		
 		public function addPlayer():void{
@@ -86,6 +88,7 @@
 			actionPanel.update();
 			optionPanel.update();
 			typePanel.update();
+			shapePanel.update();
 			jointPanel.update();
 		}
 	}
