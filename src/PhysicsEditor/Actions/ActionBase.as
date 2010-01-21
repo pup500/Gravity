@@ -49,7 +49,8 @@ package PhysicsEditor.Actions
 			
 			beginDrag = false;
 			args["end"] = new b2Vec2(FlxG.mouse.x, FlxG.mouse.y);
-			onPostRelease(args);
+			
+			//onPostRelease(args);
 		}
 	}
 }

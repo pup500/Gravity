@@ -62,7 +62,9 @@ package PhysicsEditor.Panels
 					action.handleBegin();
 				}
 				
-				action.handleDrag();
+				if(FlxG.keys.SHIFT){
+					action.handleDrag();
+				}
 				
 				if(FlxG.mouse.justReleased() && FlxG.keys.SHIFT){
 					action.handleEnd();

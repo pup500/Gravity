@@ -1,19 +1,38 @@
 package PhysicsEditor.Actions
 {
-	import Box2D.Common.Math.b2Vec2;
-	import Box2D.Dynamics.b2Body;
+	import common.JointFactory;
 	
-	import common.Utilities;
+	import flash.display.Shape;
 	
-	import org.overrides.ExSprite;
+	import org.flixel.FlxG;
 	
 	public class JoinAction extends ActionBase
 	{
 		[Embed(source="../../data/editor/interface/connect-icon.png")] private var img:Class;
 		
+		private var line:Shape;
+		
 		public function JoinAction(preClick:Function, postRelease:Function)
 		{
 			super(img, preClick, postRelease);
+			line = new Shape();
+			state.addChild(line);
+		}
+		
+		override public function update():void{
+			super.update();
+			line.visible = beginDrag;
+			line.x += FlxG.scroll.x;
+			line.y += FlxG.scroll.y;
+		}
+		
+		override public function handleDrag():void{
+			if(!beginDrag) return;
+			
+			line.graphics.clear();
+			line.graphics.lineStyle(1,0xFF0000,1);
+			line.graphics.moveTo(args["start"].x, args["start"].y);
+			line.graphics.lineTo(FlxG.mouse.x, FlxG.mouse.y);//point.x, point.y);
 		}
 
 		override public function handleEnd():void{
@@ -22,13 +41,11 @@ package PhysicsEditor.Actions
 			//TODOLBOOOO I hate doing this... will make all of these callbacks 
 			super.handleEnd();
 			
-			var b2:b2Body = Utilities.GetBodyAtPoint(state.the_world, args["start"], true);
-			if(b2 && b2.GetUserData()){
-				var bSprite:ExSprite = b2.GetUserData() as ExSprite;
-				if(bSprite){
-					bSprite.kill();
-				}
-			}
+			args["type"] = 1;
+			
+			var xml:XML = JointFactory.createJointXML(args);
+			JointFactory.addJoint(state.the_world, xml);
 		}
+
 	}
 }
