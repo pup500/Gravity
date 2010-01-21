@@ -2,14 +2,11 @@ package common
 {
 	//import Box2D.Collision.Shapes.b2PolygonDef;
 	import Box2D.Collision.Shapes.b2Shape;
-	import Box2D.Collision.b2AABB;
 	import Box2D.Common.Math.b2Vec2;
 	import Box2D.Dynamics.Joints.*;
 	import Box2D.Dynamics.b2Body;
 	import Box2D.Dynamics.b2Fixture;
 	import Box2D.Dynamics.b2World;
-	
-	import flash.geom.Point;
 	
 	import org.overrides.ExSprite;
 	import org.overrides.ExState;
@@ -30,9 +27,11 @@ package common
 		}
 		
 		//This might be a clean way to get body at mouse.....
-		public static function GetBodyAtPoint(the_world:b2World, p:b2Vec2, includeStatic:Boolean = false):b2Body{
+		public static function GetBodyAtPoint(the_world:b2World, _p:b2Vec2, includeStatic:Boolean = false):b2Body{
 			var body:b2Body;
+			var p:b2Vec2 = new b2Vec2(_p.x, _p.y);
 			
+			trace("original p" + p.x + "," + p.y);
 			p.Multiply(1/ExState.PHYS_SCALE);
 			trace("p" + p.x + "," + p.y);
 			

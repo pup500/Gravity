@@ -30,9 +30,6 @@ package PhysicsGame
 			];
 		
 		public function EventObject(x:int=0, y:int=0){
-		//(x:int=0, y:int=0, sprite:Class=null, resource:String="", pixels:BitmapData=null, xml:XML=null, world:b2World=null){
-		//EventObject(x:int=0, y:int=0, sprite:Class=null, resource:String="", type:uint = 0):void{
-			//super(x, y, sprite ? sprite : eventImg, resource);
 			super(x, y, eventImg);
 		}
 		
@@ -61,11 +58,9 @@ package PhysicsGame
 		}
 		
 		override public function update():void{
-			trace("before: " + x + "," + y);
 			super.update();
 			
 			_impl.update();
-			trace("myeventobjecxy: " + x + "," + y);
 		}
 		
 		override public function render():void{
@@ -73,7 +68,7 @@ package PhysicsGame
 			super.render();
 			trace("renderafter: " + x + "," + y);
 			
-			if(_impl.target && _impl.target.exists){
+			if(_impl && _impl.target && _impl.target.exists){
 				getScreenXY(_p);
 				
 				var myShape:Shape = new Shape();

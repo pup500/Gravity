@@ -28,9 +28,6 @@
 		
 		private static var count:uint = 0;
 		
-		//TODO:Clean this ugly save here...
-		private var _controller:b2Controller;
-		
 		//@desc Bullet constructor
 		//@param world	We'll need this to spawn the bullet's physical body when it's shot.
 		public function Bullet(world:b2World, controller:b2Controller)

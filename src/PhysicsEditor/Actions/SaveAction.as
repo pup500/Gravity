@@ -8,12 +8,12 @@ package PhysicsEditor.Actions
 	
 	public class SaveAction extends ActionBase
 	{
-		[Embed(source="../../data/editor/interface/dino-icon.png")] private var img:Class;
+		[Embed(source="../../data/editor/interface/save.png")] private var img:Class;
 		[Embed(source="../../data/editor/interface/dino.mp3")] private var snd:Class;
 		
-		public function SaveAction(preClick:Function, postRelease:Function)
+		public function SaveAction(preClick:Function)
 		{
-			super(img, preClick, postRelease);
+			super(img, preClick);
 		}
 		
 		//Don't run preclick to allow the other modes to continue working...

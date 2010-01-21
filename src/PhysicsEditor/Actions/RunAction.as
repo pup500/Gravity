@@ -8,11 +8,11 @@ package PhysicsEditor.Actions
 	
 	public class RunAction extends ActionBase
 	{
-		[Embed(source="../../data/editor/interface/mammoth-icon.png")] private var img:Class;
+		[Embed(source="../../data/editor/interface/run.png")] private var img:Class;
 		
-		public function RunAction(preClick:Function, postRelease:Function)
+		public function RunAction(preClick:Function)
 		{
-			super(img, preClick, postRelease);
+			super(img, preClick);
 		}
 		
 		//Don't run preclick to allow the other modes to continue working...
@@ -22,21 +22,19 @@ package PhysicsEditor.Actions
 		}
 		
 		override public function update():void{
+			super.update();
 			updateWorldObjects();
 		}
 		
 		private function updateWorldObjects():void{
 			var bb:b2Body;
 			if(active){
-				//state.the_world.SetGravity(new b2Vec2(0,10.0));
-				
 				for (bb = state.the_world.GetBodyList(); bb; bb = bb.GetNext()) {
 					if(bb.GetType() == b2Body.b2_dynamicBody)
 						bb.SetAwake(true);
 				}
 			}
 			else{
-				state.the_world.SetGravity(new b2Vec2(0,0));
 				for (bb = state.the_world.GetBodyList(); bb; bb = bb.GetNext()) {
 					if(bb.GetType() == b2Body.b2_dynamicBody)
 						bb.SetAwake(false);

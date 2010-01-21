@@ -29,7 +29,7 @@
 						continue;
 					
 					//Get force from each gravity object.
-					force = _gravObjects[i].GetGravityForce(edge.body);
+					force = _gravObjects[i].GetGravityB2(edge.body);
 					
 					//trace(edge.body.GetUserData().name + " force: " + force.x + "," + force.y);
 					edge.body.ApplyForce(force,edge.body.GetWorldCenter());

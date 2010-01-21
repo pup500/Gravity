@@ -39,7 +39,7 @@
 		{
 			super();
 			bgColor = 0xffeeeeff;
-			the_world.SetGravity(new b2Vec2(0,0));
+			the_world.SetGravity(new b2Vec2(0,10));
 			
 			debug = true;
 			initBox2DDebugRendering();

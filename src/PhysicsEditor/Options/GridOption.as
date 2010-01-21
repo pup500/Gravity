@@ -1,6 +1,7 @@
 package PhysicsEditor.Options
 {
 	import flash.display.Shape;
+	import org.flixel.FlxG;
 	
 	public class GridOption extends OptionBase
 	{
@@ -40,6 +41,9 @@ package PhysicsEditor.Options
 		override public function update():void{
 			super.update();
 			grid.visible = active;
+			
+			grid.x = FlxG.scroll.x;
+			grid.y = FlxG.scroll.y;
 		}
 		
 	}

@@ -15,16 +15,15 @@ package PhysicsEditor.Actions
 		protected var args:Dictionary;
 		
 		protected var onPreClick:Function;
-		protected var onPostRelease:Function;
 		
-		public function ActionBase(Graphic:Class, preClick:Function, postRelease:Function)
+		public function ActionBase(Graphic:Class, preClick:Function)
 		{
 			super(Graphic);
 			
 			args = new Dictionary();
 			
+			//TODO:Preclick should probably be the panel....
 			onPreClick = preClick;
-			onPostRelease = postRelease;
 		}
 		
 		override protected function onClick(event:MouseEvent):void{
@@ -38,10 +37,14 @@ package PhysicsEditor.Actions
 			
 			beginDrag = true;
 			args["start"] = new b2Vec2(FlxG.mouse.x, FlxG.mouse.y);
+			
+			onHandleBegin();
 		}
 		
 		override public function handleDrag():void{
-			if(!active) return;
+			if(!beginDrag) return;
+			
+			onHandleDrag();
 		}
 		
 		override public function handleEnd():void{
@@ -49,7 +52,12 @@ package PhysicsEditor.Actions
 			
 			beginDrag = false;
 			args["end"] = new b2Vec2(FlxG.mouse.x, FlxG.mouse.y);
-			onPostRelease(args);
+			
+			onHandleEnd();
 		}
+		
+		virtual public function onHandleBegin():void{}
+		virtual public function onHandleDrag():void{}
+		virtual public function onHandleEnd():void{}
 	}
 }

@@ -58,14 +58,16 @@ package PhysicsEditor.Panels
 			for each(var action:IAction in actions){
 				action.update();
 				
-				if(FlxG.mouse.justPressed() && FlxG.keys.SHIFT){
-					action.handleBegin();
-				}
+				if(FlxG.keys.SHIFT){
+					if(FlxG.mouse.justPressed()){
+						action.handleBegin();
+					}
 				
-				action.handleDrag();
-				
-				if(FlxG.mouse.justReleased() && FlxG.keys.SHIFT){
-					action.handleEnd();
+					action.handleDrag();
+					
+					if(FlxG.mouse.justReleased()){
+						action.handleEnd();
+					}
 				}
 			}
 		}

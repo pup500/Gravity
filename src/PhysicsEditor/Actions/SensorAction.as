@@ -6,13 +6,13 @@ package PhysicsEditor.Actions
 	
 	public class SensorAction extends ActionBase
 	{
-		[Embed(source="../../data/editor/interface/add.png")] private var img:Class;
+		[Embed(source="../../data/editor/interface/add_sensor.png")] private var img:Class;
 		
 		protected var dragBox:Shape;
-		
-		public function SensorAction(preClick:Function, postRelease:Function)
+
+		public function SensorAction(preClick:Function)
 		{
-			super(img, preClick, postRelease);
+			super(img, preClick);
 		}
 		
 		override public function handleBegin():void
@@ -42,7 +42,7 @@ package PhysicsEditor.Actions
 			
 			beginDrag = false;
 			args["end"] = new b2Vec2(FlxG.mouse.x, FlxG.mouse.y);
-			onPostRelease(args);
+			//onPostRelease(args);
 			
 			dragBox.graphics.clear();
 			
