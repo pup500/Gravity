@@ -7,6 +7,7 @@ package PhysicsEditor.Options
 		public function BGOption()
 		{
 			super(img);
+			active = true;
 		}
 
 	}

@@ -8,6 +8,7 @@ package common.joints
 	import flash.geom.Point;
 	
 	import common.Utilities;
+	import org.overrides.ExState;
 	
 	public class Joint
 	{
@@ -33,6 +34,9 @@ package common.joints
 			//But right now, it is supposed to be that way...
 			body1 = Utilities.GetBodyAtPoint(world, point1, true);
 			body2 = Utilities.GetBodyAtPoint(world, point2, true);
+			
+			point1.Multiply(1/ExState.PHYS_SCALE);
+			point2.Multiply(1/ExState.PHYS_SCALE);
 			
 			trace("point after:" + point1.x + "," + point1.y);
 		}

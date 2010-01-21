@@ -40,6 +40,7 @@ package org.overrides
 		
 		//We need the world to destroy the physical objects
 		protected var _world:b2World;
+		protected var _controller:b2Controller;
 		
 		protected var loaded:Boolean;
 		
@@ -290,6 +291,7 @@ package org.overrides
 			
 			//Save the world
 			_world = world;
+			_controller = controller;
 			
 			final_body.SetUserData(this);
 			
@@ -308,7 +310,13 @@ package org.overrides
 				//We might not need to save shape as destroy body should work already...
 				//final_body.DestroyShape(final_shape);
 				//destroyAllJoints();
+				
+				if(_controller){
+					_controller.RemoveBody(final_body);
+				}
+				
 				_world.DestroyBody(final_body);
+				
 				final_body = null;
 				fixture = null;
 			}

@@ -22,21 +22,19 @@ package PhysicsEditor.Actions
 		}
 		
 		override public function update():void{
+			super.update();
 			updateWorldObjects();
 		}
 		
 		private function updateWorldObjects():void{
 			var bb:b2Body;
 			if(active){
-				//state.the_world.SetGravity(new b2Vec2(0,10.0));
-				
 				for (bb = state.the_world.GetBodyList(); bb; bb = bb.GetNext()) {
 					if(bb.GetType() == b2Body.b2_dynamicBody)
 						bb.SetAwake(true);
 				}
 			}
 			else{
-				state.the_world.SetGravity(new b2Vec2(0,0));
 				for (bb = state.the_world.GetBodyList(); bb; bb = bb.GetNext()) {
 					if(bb.GetType() == b2Body.b2_dynamicBody)
 						bb.SetAwake(false);

@@ -34,6 +34,8 @@ package PhysicsEditor.Panels
 		}
 		
 		private function onRelease(args:Dictionary):void{
+			//Ok, sometimes, mouse begin does not register so the end calls and args start isn't valid...
+			
 			trace(args["mode"]);
 			trace(args["start"].x + "," + args["start"].y);
 			

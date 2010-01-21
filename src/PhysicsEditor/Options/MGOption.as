@@ -7,6 +7,7 @@ package PhysicsEditor.Options
 		public function MGOption()
 		{
 			super(img);
+			active = true;
 		}
 
 	}

@@ -7,6 +7,7 @@ package PhysicsEditor.Options
 		public function EVOption()
 		{
 			super(img);
+			active = true;
 		}
 
 	}

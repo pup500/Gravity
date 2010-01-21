@@ -73,7 +73,7 @@ package PhysicsGame
 			super.render();
 			trace("renderafter: " + x + "," + y);
 			
-			if(_impl.target && _impl.target.exists){
+			if(_impl && _impl.target && _impl.target.exists){
 				getScreenXY(_p);
 				
 				var myShape:Shape = new Shape();

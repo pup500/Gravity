@@ -135,13 +135,13 @@ package PhysicsGame
 			if(FlxG.keys.A)
 			{
 				facing = LEFT;
-				_applyForce.x = _canJump ? -5 : -2;
+				_applyForce.x = _canJump ? -7 : -2;
 				_applyForce.y = 0;
 				//We multiply this here because it is later multiplied by inverse mass. - Minh
 				//_applyForce.Multiply(final_body.GetMass());
 				//final_body.ApplyImpulse(_applyForce, final_body.GetWorldCenter());
 				
-				if(final_body.GetLinearVelocity().x < -2) {
+				if(final_body.GetLinearVelocity().x < -3.5) {
 					
 				}
 				else
@@ -153,11 +153,11 @@ package PhysicsGame
 			{
 				facing = RIGHT;
 				//final_body.GetLinearVelocity().x = 30;
-				_applyForce.x = _canJump ? 5 : 2;
+				_applyForce.x = _canJump ? 7 : 2;
 				_applyForce.y = 0;
 				//We multiply this here because it is later multiplied by inverse mass. - Minh
 				//_applyForce.Multiply(final_body.GetMass());
-				if(final_body.GetLinearVelocity().x > 2) {
+				if(final_body.GetLinearVelocity().x > 3.5) {
 				}
 				else
 				//final_body.ApplyImpulse(_applyForce, final_body.GetWorldCenter());

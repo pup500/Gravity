@@ -188,7 +188,7 @@
 			if(distSq < Number.MIN_VALUE)
 				return new b2Vec2();
 			
-			var distance:Number = Math.sqrt(distSq);
+			//var distance:Number = Math.sqrt(distSq);
 			var massProduct:Number = physBody.GetMass() * gMass;
 			
 			//Moved G definition out of function.
@@ -196,20 +196,20 @@
 			var force:Number = G*(massProduct/distSq);
 			
 			//See if this is ok....
-			force = Math.log(force + 1) * 5;
+			//force = Math.log(force + 1) * 5;
 			
 			trace("force: " + force);
 			trace("distsq: " + distSq);
 			
-			//if(force > 10) force = 10;
-			var impulse:b2Vec2 = new b2Vec2(force * (dist.x/distance), force * (dist.y/distance));
+			if(force > 100) force = 100;
+			var impulse:b2Vec2 = new b2Vec2(force * dist.x, force * dist.y);//(force * (dist.x/distance), force * (dist.y/distance));
 			
 			if(!antiGravity)
 				return impulse;
 			else
 				return impulse.GetNegative(); 
 		}
-		//@desc Using B2D's b2GravityController function. It's really efficient, but it's also slingshotting all the physBodies everywhere.
+		//@desc Using B2D's b2GravityController function. Tweaked with log scaling to make the forces smoother.
 		public function GetGravityB2(physBody:b2Body):b2Vec2
 		{
 			var p1:b2Vec2 = null;
@@ -229,14 +229,22 @@
 				return new b2Vec2();
 			f = new b2Vec2(dx, dy);
 			
-			//Why did you multiply by this.mass twice?
-			f.Multiply(G / r2 / Math.sqrt(r2) * this.mass* physBody.GetMass());
-			//f.Multiply(G / r2 / r2 * this.mass * physBody.GetMass()*this.mass);
-			//if(body1.IsAwake())
-				//final.ApplyForce(f,p1);
-				
+			//We're going to take this force and get it's log to scale it down to make the push/pull smoother.
+			var directionlessForce:Number = G / r2 / r2 * this.mass * physBody.GetMass();
+			directionlessForce = Math.log(directionlessForce + 1) * 5;
+			
+			//Separate the force into x, y direction components.
+			f.Multiply(directionlessForce);
+			
+			//FlxG.log("f.x: " + f.x);
+			////Check if force is exceeding extremes.
+			//if (f.x > 100) f.x = 100;
+			//else if (  f.x < -100 ) f.x = -100;
+			//if (f.y > 100) f.y = 100;
+			//else if (f.y < -100) f.y = -100;
+			
 			//Attempting force limits to prevent slingshotting, but isn't working. -Norman
-			f = b2Math.ClampV(f, minf, maxf);
+			//f = b2Math.ClampV(f, minf, maxf);
 			
 			if (antiGravity)
 				return f.GetNegative();
