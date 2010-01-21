@@ -32,7 +32,7 @@ package PhysicsEditor.Actions
 		}
 
 		override public function onHandleEnd():void{
-			args["type"] = 1;
+			args["type"] = state.getArgs()["jointType"];
 			
 			var xml:XML = JointFactory.createJointXML(args);
 			JointFactory.addJoint(state.the_world, xml);

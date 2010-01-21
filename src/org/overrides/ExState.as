@@ -6,6 +6,7 @@ package org.overrides
 	import Box2D.Dynamics.Controllers.b2Controller;
 	
 	import flash.display.Sprite;
+	import flash.utils.Dictionary;
 	
 	import org.flixel.FlxCore;
 	import org.flixel.FlxG;
@@ -24,6 +25,8 @@ package org.overrides
 		protected var _evLayer:FlxLayer;
 		
 		public var _loaded:Boolean;
+		
+		protected var args:Dictionary;
 		
 		public static const BG:uint = 0;
 		public static const MG:uint = 1;
@@ -52,6 +55,8 @@ package org.overrides
 			debug_sprite = new Sprite();
 			
 			ev.visible = false;
+			
+			args = new Dictionary();
 		}
 		
 		public function init():void{
@@ -60,6 +65,10 @@ package org.overrides
 		
 		public function getController():b2Controller{
 			return controller;
+		}
+		
+		public function getArgs():Dictionary{
+			return args;
 		}
 		
 		protected function initBox2DDebugRendering():void
@@ -119,9 +128,9 @@ package org.overrides
 			the_world.DrawDebugData();
 		}
 		
-		protected function get bg():FlxLayer{ return _bgLayer;}
-		protected function get mg():FlxLayer{ return _layer;}
-		protected function get fg():FlxLayer{ return _fgLayer;}	
-		protected function get ev():FlxLayer{ return _evLayer;}	
+		public function get bg():FlxLayer{ return _bgLayer;}
+		public function get mg():FlxLayer{ return _layer;}
+		public function get fg():FlxLayer{ return _fgLayer;}	
+		public function get ev():FlxLayer{ return _evLayer;}	
 	}
 }

@@ -9,6 +9,11 @@ package PhysicsEditor.Options
 			super(img);
 			active = true;
 		}
-
+		
+		//See if we should move this into onClick
+		override public function update():void{
+			super.update();
+			state.fg.visible = active;
+		}
 	}
 }
