@@ -7,20 +7,12 @@ package PhysicsEditor.Actions
 	{
 		[Embed(source="../../data/editor/interface/add.png")] private var img:Class;
 		
-		public function AddAction(preClick:Function, postRelease:Function)
+		public function AddAction(preClick:Function)
 		{
-			super(img, preClick, postRelease);
+			super(img, preClick);
 		}
 		
-		override public function handleBegin():void{
-			if(!active) return;
-			
-			//Forget postRelease function, just do it here... we have state now
-			//Change args here and it will be passed back to the postRelease function
-			//args["mode"] = "add";
-			
-			super.handleBegin();
-			
+		override public function onHandleBegin():void{
 			//Should this be made as some ExSprite factory function in ExSprite?
 			var xml:XML = new XML(<shape/>);
 			xml.file = "data/end_point.png";

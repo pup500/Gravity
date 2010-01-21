@@ -10,9 +10,9 @@ package PhysicsEditor.Actions
 	{
 		[Embed(source="../../data/editor/interface/run.png")] private var img:Class;
 		
-		public function RunAction(preClick:Function, postRelease:Function)
+		public function RunAction(preClick:Function)
 		{
-			super(img, preClick, postRelease);
+			super(img, preClick);
 		}
 		
 		//Don't run preclick to allow the other modes to continue working...

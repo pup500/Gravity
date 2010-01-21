@@ -4,9 +4,9 @@ package PhysicsEditor.Actions
 	{
 		[Embed(source="../../data/editor/interface/connect-icon.png")] private var img:Class;
 		
-		public function LinkAction(preClick:Function, postRelease:Function)
+		public function LinkAction(preClick:Function)
 		{
-			super(img, preClick, postRelease);
+			super(img, preClick);
 		}
 
 	}

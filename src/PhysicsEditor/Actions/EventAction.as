@@ -7,16 +7,12 @@ package PhysicsEditor.Actions
 	{
 		[Embed(source="../../data/editor/interface/add_event.png")] private var img:Class;
 		
-		public function EventAction(preClick:Function, postRelease:Function)
+		public function EventAction(preClick:Function)
 		{
-			super(img, preClick, postRelease);
+			super(img, preClick);
 		}
 		
-		override public function handleBegin():void{
-			if(!active) return;
-			
-			super.handleBegin();
-			
+		override public function onHandleBegin():void{
 			//TODO:Fix this up....
 			var xml:XML = new XML(<event/>);
 			xml.x = args["start"].x;

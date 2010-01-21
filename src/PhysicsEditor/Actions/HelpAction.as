@@ -10,9 +10,9 @@ package PhysicsEditor.Actions
 		
 		private var helpText:TextField;
 		
-		public function HelpAction(preClick:Function, postRelease:Function)
+		public function HelpAction(preClick:Function)
 		{
-			super(img, preClick, postRelease);
+			super(img, preClick);
 		}
 		
 		private function initHelp():void{

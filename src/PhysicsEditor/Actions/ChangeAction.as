@@ -4,18 +4,13 @@ package PhysicsEditor.Actions
 	{
 		[Embed(source="../../data/editor/interface/change.png")] private var img:Class;
 		
-		public function ChangeAction(preClick:Function, postRelease:Function)
+		public function ChangeAction(preClick:Function)
 		{
-			super(img, preClick, postRelease);
+			super(img, preClick);
 		}
 		
-		override public function handleEnd():void{
-			if(!active) return;
+		override public function onHandleEnd():void{
 			
-			//Change args here and it will be passed back to the postRelease function
-			args["mode"] = "change";
-			
-			super.handleEnd();
 		}
 
 	}

@@ -7,7 +7,7 @@ package PhysicsEditor.Types
 	{
 		public function TypeBase(Graphic:Class, preClick:Function)
 		{
-			super(Graphic, preClick, null);
+			super(Graphic, preClick);
 		}
 		
 		override public function handleBegin():void{	

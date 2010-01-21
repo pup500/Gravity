@@ -12,9 +12,9 @@ package PhysicsEditor.Actions
 		
 		private var line:Shape;
 		
-		public function JoinAction(preClick:Function, postRelease:Function)
+		public function JoinAction(preClick:Function)
 		{
-			super(img, preClick, postRelease);
+			super(img, preClick);
 			line = new Shape();
 			state.addChild(line);
 		}
@@ -22,25 +22,20 @@ package PhysicsEditor.Actions
 		override public function update():void{
 			super.update();
 			line.visible = beginDrag;
-			line.x += FlxG.scroll.x;
-			line.y += FlxG.scroll.y;
+			//line.x += FlxG.scroll.x;
+			//line.y += FlxG.scroll.y;
+			
+			trace("begindrag:" + beginDrag);
 		}
 		
-		override public function handleDrag():void{
-			if(!beginDrag) return;
-			
+		override public function onHandleDrag():void{
 			line.graphics.clear();
 			line.graphics.lineStyle(1,0xFF0000,1);
-			line.graphics.moveTo(args["start"].x, args["start"].y);
-			line.graphics.lineTo(FlxG.mouse.x, FlxG.mouse.y);//point.x, point.y);
+			line.graphics.moveTo(args["start"].x + FlxG.scroll.x, args["start"].y + FlxG.scroll.y);
+			line.graphics.lineTo(FlxG.mouse.x + FlxG.scroll.x, FlxG.mouse.y + FlxG.scroll.y);
 		}
 
-		override public function handleEnd():void{
-			if(!active) return;
-			
-			//TODOLBOOOO I hate doing this... will make all of these callbacks 
-			super.handleEnd();
-			
+		override public function onHandleEnd():void{
 			args["type"] = 1;
 			
 			var xml:XML = JointFactory.createJointXML(args);

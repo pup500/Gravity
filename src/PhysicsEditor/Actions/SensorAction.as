@@ -4,9 +4,9 @@ package PhysicsEditor.Actions
 	{
 		[Embed(source="../../data/editor/interface/add_sensor.png")] private var img:Class;
 		
-		public function SensorAction(preClick:Function, postRelease:Function)
+		public function SensorAction(preClick:Function)
 		{
-			super(img, preClick, postRelease);
+			super(img, preClick);
 		}
 		
 	}
