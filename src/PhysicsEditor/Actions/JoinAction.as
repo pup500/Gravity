@@ -22,10 +22,6 @@ package PhysicsEditor.Actions
 		override public function update():void{
 			super.update();
 			line.visible = beginDrag;
-			//line.x += FlxG.scroll.x;
-			//line.y += FlxG.scroll.y;
-			
-			trace("begindrag:" + beginDrag);
 		}
 		
 		override public function onHandleDrag():void{

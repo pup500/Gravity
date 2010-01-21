@@ -17,12 +17,11 @@ package PhysicsEditor.Actions
 			var xml:XML = new XML(<event/>);
 			xml.x = args["start"].x;
 			xml.y = args["start"].y;
-			xml.type = 2;
+			xml.type = 1;//2;
 			
 			var b2:EventObject = new EventObject();
 			b2.initFromXML(xml, state.the_world);
 			state.addToLayer(b2, ExState.EV);
 		}
-		
 	}
 }
