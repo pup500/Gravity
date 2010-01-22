@@ -15,7 +15,7 @@ package PhysicsEditor.Actions
 		override public function onHandleBegin():void{
 			//Should this be made as some ExSprite factory function in ExSprite?
 			var xml:XML = new XML(<shape/>);
-			xml.file = "data/end_point.png";
+			xml.file = state.getArgs()["file"];
 			xml.x = args["start"].x;
 			xml.y = args["start"].y;
 			xml.layer = 1;
