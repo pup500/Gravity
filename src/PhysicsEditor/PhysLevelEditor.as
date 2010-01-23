@@ -2,11 +2,7 @@
 {	
 	import Box2D.Common.Math.b2Vec2;
 	
-	import PhysicsEditor.Panels.ActionPanel;
-	import PhysicsEditor.Panels.JointPanel;
-	import PhysicsEditor.Panels.OptionPanel;
-	import PhysicsEditor.Panels.ShapePanel;
-	import PhysicsEditor.Panels.TypePanel;
+	import PhysicsEditor.Panels.Panels;
 	
 	import PhysicsGame.LevelSelectMenu;
 	
@@ -32,11 +28,7 @@
 		
 		private var xmlMapLoader:XMLMap;
 		
-		private var actionPanel:ActionPanel;
-		private var optionPanel:OptionPanel;
-		private var typePanel:TypePanel;
-		private var jointPanel:JointPanel;
-		private var shapePanel:ShapePanel;
+		private var panels:Panels;
 		
 		private var files:Array;
 		private var fileIndex:uint;
@@ -62,20 +54,8 @@
 			
 			addPlayer();
 			
-			actionPanel = new ActionPanel(5, 5);
-			addChild(actionPanel.getSprite());
+			panels = new Panels(this);
 			
-			optionPanel = new OptionPanel(590, 5);
-			addChild(optionPanel.getSprite());
-			
-			typePanel = new TypePanel(55, 5, true);
-			addChild(typePanel.getSprite());
-			
-			shapePanel = new ShapePanel(190, 5, true);
-			addChild(shapePanel.getSprite());
-			
-			jointPanel = new JointPanel(325, 5, true);
-			addChild(jointPanel.getSprite());
 		}
 		
 		//Load the config file to set up world...
@@ -146,11 +126,7 @@
 			args["file"] = files[fileIndex];
 			statusText.text = args["file"];
 			
-			actionPanel.update();
-			optionPanel.update();
-			typePanel.update();
-			shapePanel.update();
-			jointPanel.update();
+			panels.update();
 		}
 	}
 }
