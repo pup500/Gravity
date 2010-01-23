@@ -1,5 +1,14 @@
 package PhysicsEditor.Actions
 {
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
+	import flash.display.Loader;
+	import flash.display.LoaderInfo;
+	import flash.display.Sprite;
+	import flash.events.Event;
+	import flash.net.URLRequest;
+	
+	import org.flixel.FlxG;
 	import org.overrides.ExSprite;
 	
 	
@@ -7,9 +16,14 @@ package PhysicsEditor.Actions
 	{
 		[Embed(source="../../data/editor/interface/add.png")] private var img:Class;
 		
+		private var assetImage:Sprite;
+		
 		public function AddAction(preClick:Function)
 		{
 			super(img, preClick);
+			
+			assetImage = new Sprite();
+			state.addChild(assetImage);
 		}
 		
 		override public function onHandleBegin():void{
@@ -27,6 +41,45 @@ package PhysicsEditor.Actions
 		    b2.initFromXML(xml, state.the_world, state.getController());
 		    
 		    state.addToLayer(b2, xml.layer);
+		}
+		
+		override public function update():void{
+			super.update();
+			
+			assetImage.visible = active;
+			
+			if(active){
+				//Draw the preview image based on the selected resource
+				assetImage.x = FlxG.mouse.x + FlxG.scroll.x;
+				assetImage.y = FlxG.mouse.y + FlxG.scroll.y;
+				
+				//Prevent reloading the same image if we didn't change
+				if(args["file"] == state.getArgs()["file"])
+					return;
+				
+				setPreviewImg(state.getArgs()["file"]);
+			}
+		}
+		
+		private function setPreviewImg(imgFile:String):void{
+			args["file"] = imgFile;
+			
+			if(imgFile.lastIndexOf(".xml") >= 0){
+				assetImage.graphics.clear();
+			 	return;
+			}
+			
+			var loader:Loader = new Loader();
+    		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onSetPreviewComplete);
+    		loader.load(new URLRequest(imgFile));
+		}
+		
+		private function onSetPreviewComplete(event:Event):void{
+			 var bitmapData:BitmapData = Bitmap(LoaderInfo(event.target).content).bitmapData;
+			 assetImage.graphics.clear();
+			 assetImage.graphics.beginBitmapFill(bitmapData);
+			 assetImage.graphics.drawRect(0,0,bitmapData.width,bitmapData.height);
+			 assetImage.graphics.endFill();
 		}
 
 	}

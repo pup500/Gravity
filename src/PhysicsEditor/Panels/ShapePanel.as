@@ -6,7 +6,7 @@ package PhysicsEditor.Panels
 	public class ShapePanel extends PanelBase
 	{
 		private var TYPES:Array = 
-			[CircleShapeType, PolyShapeType, EdgeShapeType];
+			[PolyShapeType, CircleShapeType, EdgeShapeType];
 			
 		public function ShapePanel(x:uint=0, y:uint=0, horizontal:Boolean=false)
 		{
