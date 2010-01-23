@@ -1,67 +1,40 @@
 <config>
   <objects>
-    <event>
-      <type>0</type>
-      <x>327.75</x>
-      <y>368.75</y>
-      <target>
-        <x>271.75</x>
-        <y>383.75</y>
-      </target>
-    </event>
     <shape>
-      <file>data/editor/images/e_ass_08.png</file>
+      <file>data/editor/images/e_ass_06.png</file>
       <layer>1</layer>
       <bodyType>0</bodyType>
       <shapeType>1</shapeType>
       <angle>0</angle>
-      <x>271.75</x>
-      <y>383.75</y>
+      <x>511.5</x>
+      <y>211.5</y>
     </shape>
-    <event>
-      <type>0</type>
-      <x>519.75</x>
-      <y>240.75</y>
-      <target>
-        <x>463.75</x>
-        <y>255.75</y>
-      </target>
-    </event>
     <shape>
-      <file>data/editor/images/e_ass_08.png</file>
+      <file>data/editor/images/e_ass_06.png</file>
       <layer>1</layer>
       <bodyType>0</bodyType>
       <shapeType>1</shapeType>
       <angle>0</angle>
-      <x>463.75</x>
-      <y>255.75</y>
+      <x>108.5</x>
+      <y>212.5</y>
     </shape>
-    <event>
-      <type>0</type>
-      <x>288</x>
-      <y>192</y>
-      <target>
-        <x>232.5</x>
-        <y>207.5</y>
-      </target>
-    </event>
     <shape>
-      <file>data/editor/images/e_ass_08.png</file>
+      <file>data/editor/images/e_ass_03.png</file>
       <layer>1</layer>
       <bodyType>0</bodyType>
       <shapeType>1</shapeType>
       <angle>0</angle>
-      <x>232.5</x>
-      <y>207.5</y>
+      <x>310.5</x>
+      <y>396.5</y>
     </shape>
   </objects>
   <points>
     <start>
-      <x>0</x>
+      <x>100</x>
       <y>0</y>
     </start>
     <end>
-      <x>0</x>
+      <x>200</x>
       <y>0</y>
     </end>
   </points>

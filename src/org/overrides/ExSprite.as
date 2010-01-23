@@ -477,10 +477,6 @@ package org.overrides
 				var loadinfo:LoaderInfo = LoaderInfo(event.target);
 				var bitmapData:BitmapData = Bitmap(loadinfo.content).bitmapData;
 		 		pixels = bitmapData;
-		 		
-		 		//Offset by half width and half height when changing pixels
-		 		xml.x = int(xml.x) + bitmapData.width/2;
-		    	xml.y = int(xml.y) + bitmapData.height/2;
 			}
 			
 			//Assume we have pixel data already....

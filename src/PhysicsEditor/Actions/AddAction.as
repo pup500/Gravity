@@ -30,8 +30,8 @@ package PhysicsEditor.Actions
 			//Should this be made as some ExSprite factory function in ExSprite?
 			var xml:XML = new XML(<shape/>);
 			xml.file = state.getArgs()["file"];
-			xml.x = args["start"].x;
-			xml.y = args["start"].y;
+			xml.x = args["start"].x + assetImage.width/2;		 		
+			xml.y = args["start"].y + assetImage.height/2;
 			xml.layer = 1;
 			xml.bodyType = state.getArgs()["bodyType"];
 			xml.shapeType = state.getArgs()["shapeType"];
