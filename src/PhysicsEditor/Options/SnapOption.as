@@ -8,6 +8,13 @@ package PhysicsEditor.Options
 		{
 			super(img);
 		}
+		
+		//Maybe we should update things during the click....
+		override public function update():void{
+			super.update();
+			
+			state.getArgs()["snap"] = active;
+		}
 
 	}
 }

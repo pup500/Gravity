@@ -30,8 +30,8 @@ package PhysicsEditor.Actions
 			//Should this be made as some ExSprite factory function in ExSprite?
 			var xml:XML = new XML(<shape/>);
 			xml.file = state.getArgs()["file"];
-			xml.x = args["start"].x + assetImage.width/2;		 		
-			xml.y = args["start"].y + assetImage.height/2;
+			xml.x = assetImage.x + assetImage.width/2;		 		
+			xml.y = assetImage.y + assetImage.height/2;
 			xml.layer = 1;
 			xml.bodyType = state.getArgs()["bodyType"];
 			xml.shapeType = state.getArgs()["shapeType"];
@@ -52,6 +52,11 @@ package PhysicsEditor.Actions
 				//Draw the preview image based on the selected resource
 				assetImage.x = FlxG.mouse.x + FlxG.scroll.x;
 				assetImage.y = FlxG.mouse.y + FlxG.scroll.y;
+				
+				if(state.getArgs()["snap"]){
+					assetImage.x -= (FlxG.mouse.x % 16);
+					assetImage.y -= (FlxG.mouse.y % 16);
+				}
 				
 				//Prevent reloading the same image if we didn't change
 				if(args["file"] == state.getArgs()["file"])
