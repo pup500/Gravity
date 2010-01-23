@@ -8,11 +8,6 @@
 	
 	import common.XMLMap;
 	
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.display.Loader;
-	import flash.display.LoaderInfo;
-	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
@@ -60,6 +55,9 @@
 			addPlayer();
 			
 			panels = new Panels(this);
+			
+			xmlMapLoader = new XMLMap(this);
+			xmlMapLoader.loadConfigFile(FlxG.levels[FlxG.level]);
 			
 		}
 		
@@ -111,6 +109,8 @@
 			}
 			
 			super.update();
+			
+			xmlMapLoader.update();
 			
 			//True only after the config file has been loaded
 			if(!_loaded) 

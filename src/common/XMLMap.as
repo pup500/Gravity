@@ -59,6 +59,7 @@ package common
 			
 			expBodyCount = getItemCount() + configXML.objects.shape.length();
 			
+			/*
 			trace("initialnum: " + expBodyCount);
 			trace("count:" + getItemCount());
 			
@@ -71,147 +72,30 @@ package common
     				return;
     			}
 			}
+			*/
 			
 			for each(var shape:XML in configXML.objects.shape){
 				 var b2:ExSprite = new ExSprite();
 		    	b2.initFromXML(shape, _state.the_world, _state.getController());
-		    	//b2.createPhysBody(_state.the_world);
-		    
-				_state.addToLayer(b2, shape.layer);
-    		
-				//addXMLObject(shape);
+		    	_state.addToLayer(b2, shape.layer);
 			}
 			
-			_state.init();
+			//_state.init();
 			
 			//Joints will be added after all objects have been created...
 		}
 		
-		/*
-		//Adds a XML file that contains the resource we want...
-		public function addObjectsInXMLFile(file:String, offset:Point):void{
-			var loader:URLLoader = new URLLoader();
-			loader.addEventListener(Event.COMPLETE, 
-				function(e:Event):void{
-					onAddObjectsInXMLComplete(e,offset)
-				});
-			//loader.addEventListener(IOErrorEvent.IO_ERROR, onLoadError);
-			loader.load(new URLRequest(file));
-		}
-		
-		private function onAddObjectsInXMLComplete(event:Event, point:Point):void{
-			configXML = new XML(event.target.data);
-			
-			//Save the body count so that we can check when we are done
-			expBodyCount = getItemCount() + configXML.objects.shape.length();
-			
-			//Should we figure out a better way for offset...
-			var shape:XML = configXML.objects.shape[0];
-			var offset:Point = new Point();
-			var min:Point = new Point(shape.x, shape.y);
-			var max:Point = new Point(shape.x, shape.y);
-			
-			for each(shape in configXML.objects.shape){
-				if(int(shape.x) < min.x) min.x = int(shape.x);
-				if(int(shape.y) < min.y) min.y = int(shape.y);
-				if(int(shape.x) > max.x) max.x = int(shape.x);
-				if(int(shape.y) > max.y) max.y = int(shape.y);
-			}
-			
-			//Offset is to make the midpoint of the whole object at the mouse coordinate
-			offset.x = point.x - (min.x + max.x)/2;
-			offset.y = point.y - (min.y + max.y)/2;
-			
-			//Or we can make offset at the top-left corner...
-			//offset.x = point.x - min.x;
-			//offset.y = point.y - min.y;
-			
-			
-			for each(shape in configXML.objects.shape){
-				shape.x = int(shape.x) + offset.x;
-		    	shape.y = int(shape.y) + offset.y;
-			}
-			
-			for each(var joint:XML in configXML.objects.joint){
-				joint.body1.x = int(joint.body1.x) + offset.x;
-		    	joint.body1.y = int(joint.body1.y) + offset.y;
-		    	joint.body2.x = int(joint.body2.x) + offset.x;
-		    	joint.body2.y = int(joint.body2.y) + offset.y;
-		    	
-		    	//Don't offset axis, that's a normalized vector...
-		    	//joint.axis.x = int(joint.axis.x) + offset.x;
-		    	//joint.axis.y = int(joint.axis.y) + offset.y;
-		    	joint.anchor.x = int(joint.anchor.x) + offset.x;
-		    	joint.anchor.y = int(joint.anchor.y) + offset.y;
-			}
-			
-			for each(var eventXML:XML in configXML.objects.event){
-				eventXML.x = int(eventXML.x) + offset.x;
-		    	eventXML.y = int(eventXML.y) + offset.y;
-		    	
-		    	if(eventXML.target.x.length() > 0 && eventXML.target.y.length() > 0){
-		    		eventXML.target.x = int(eventXML.target.x) + offset.x;
-		    		eventXML.target.y = int(eventXML.target.y) + offset.y;
-		    	}
-			}
-			
-			for each(shape in configXML.objects.shape){
-				addXMLObject(shape);
+		public function update():void{
+			if(_loaded)
+				return;
+				
+			if (expBodyCount == getItemCount()) {
+				addAllEvents();
+				addAllJoints();
+				_loaded = true;
+				_state.init();
 			}
 		}
-		
-		*/
-
-		/*
-		//Load the xml config object at the specified coordinates
-		public function addXMLObject(shape:XML, mouse:Boolean=false):void{
-			var loader:Loader = new Loader();
-    		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, 
-    			function(e:Event):void{
-    				onComplete(e, shape, mouse)
-    			});
-    		
-    		loader.load(new URLRequest(shape.file));
-		}
-		
-		/*
-		//Actual function that creates the sprite with the bitmap data
-		private function onComplete(event:Event, shape:XML, mouse:Boolean=false):void
-		{
-			var loadinfo:LoaderInfo = LoaderInfo(event.target);
-		    var bitmapData:BitmapData = Bitmap(loadinfo.content).bitmapData;
-		    
-		    if(mouse){
-		    	//The mouse coordinate should be the x and y... but it always put the object at center
-		    	//So we need this offset
-		    	shape.x = int(shape.x) + bitmapData.width/2;
-		    	shape.y = int(shape.y) + bitmapData.height/2;
-		    }
-		    
-		    //TODO:Fix sprite..
-		    var b2:ExSprite = new ExSprite();
-		    b2.pixels = bitmapData;
-		    b2.initFromXML(shape, _state.the_world);
-		    //b2.createPhysBody(_state.the_world);
-		    
-			_state.addToLayer(b2, shape.layer);
-    		
-    		trace("itemcount" + getItemCount());
-    		trace("expbody" + expBodyCount);
-    		
-    		//We need to add the joints....
-    		//but can only do that after all bodies are loaded...
-    		
-    		if(getItemCount() == expBodyCount){
-    			addAllJoints();
-    			addAllEvents();
-    			if(!_loaded){
-    				_loaded = true;
-    				_state.init();
-    			}
-    		}
-		}
-		*/
 		
 		//Create new configuration file
 		public function createNewConfiguration():String{
@@ -246,7 +130,8 @@ package common
 			return _end;
 		}
 		
-		public function setObjectTypeAtPoint(point:Point, includeStatic:Boolean=false, type:String="static"):void{
+		
+		//public function setObjectTypeAtPoint(point:Point, includeStatic:Boolean=false, type:String="static"):void{
 			/*
 			var b2:b2Body = Utilities.GetBodyAtMouse(_state.the_world, point, includeStatic);
 			
@@ -263,8 +148,9 @@ package common
 				}
 			}
 			*/
-		}
+		//}
 		
+		/*
 		public function removeObjectAtPoint(point:Point, includeStatic:Boolean=false):void{
 			var b2:b2Body = Utilities.GetBodyAtPoint(_state.the_world, new b2Vec2(point.x, point.y), includeStatic);
 			
@@ -286,6 +172,7 @@ package common
 				}
 			}
 		}
+		*/
 		
 		//Add all joints from configuration file, also pass configuration jointXML along
 		private function addAllJoints():void{
@@ -329,6 +216,7 @@ package common
 			_state.addToLayer(sensor, ExState.EV);
 		}
 		
+		/*
 		public function addEventTarget(args:Dictionary):void{
 			var body1:b2Body = Utilities.GetBodyAtPoint(_state.the_world, args["start"], true);
 			var body2:b2Body = Utilities.GetBodyAtPoint(_state.the_world, args["end"], true);
@@ -347,6 +235,7 @@ package common
 				}
 			}
 		}
+		*/
 		
 		public function getItemCount():uint{
 			return _state.the_world.GetBodyCount();

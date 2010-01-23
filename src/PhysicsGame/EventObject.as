@@ -101,11 +101,11 @@ package PhysicsGame
 			
 			changeType(xml.type);
 			
+			//TODO:Be careful of selecting targets by position, you might have overlapping objects
 			if(xml.target.x.length() > 0 && xml.target.y.length() > 0 && world){
 				var t:b2Body = Utilities.GetBodyAtPoint(world, new b2Vec2(xml.target.x, xml.target.y), true);
 				setTarget(t.GetUserData());
 			}
-			
 		}
 	}
 }

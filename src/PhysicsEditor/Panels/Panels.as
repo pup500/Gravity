@@ -1,5 +1,6 @@
 package PhysicsEditor.Panels
 {
+	import org.flixel.FlxG;
 	import org.overrides.ExState;
 	
 	public class Panels
@@ -24,6 +25,8 @@ package PhysicsEditor.Panels
 		
 		public function update():void{
 			for each(var panel:PanelBase in panels){
+				//Toggle visibility of control panels when SHIFT key is held
+				panel.getSprite().visible = !FlxG.keys.SHIFT;
 				panel.update();
 			}
 		}
