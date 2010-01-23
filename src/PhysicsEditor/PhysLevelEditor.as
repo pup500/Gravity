@@ -5,13 +5,17 @@
 	import PhysicsEditor.Panels.ActionPanel;
 	import PhysicsEditor.Panels.JointPanel;
 	import PhysicsEditor.Panels.OptionPanel;
+	import PhysicsEditor.Panels.ShapePanel;
 	import PhysicsEditor.Panels.TypePanel;
 	
 	import PhysicsGame.LevelSelectMenu;
 	
 	import common.XMLMap;
 	
-	import flash.utils.Dictionary;
+	import flash.events.Event;
+	import flash.net.URLLoader;
+	import flash.net.URLRequest;
+	import flash.text.TextField;
 	
 	import org.flixel.FlxG;
 	import org.overrides.ExState;
@@ -32,6 +36,11 @@
 		private var optionPanel:OptionPanel;
 		private var typePanel:TypePanel;
 		private var jointPanel:JointPanel;
+		private var shapePanel:ShapePanel;
+		
+		private var files:Array;
+		private var fileIndex:uint;
+		private var statusText:TextField;
 		
 		public function PhysLevelEditor() 
 		{
@@ -48,6 +57,9 @@
 			//This turns the event layer to visible
 			ev.visible = true;
 			
+			files = new Array();
+			loadAssetList("data/editor/LevelEditor.txt");
+			
 			addPlayer();
 			
 			actionPanel = new ActionPanel(5, 5);
@@ -59,9 +71,41 @@
 			typePanel = new TypePanel(55, 5, true);
 			addChild(typePanel.getSprite());
 			
-			jointPanel = new JointPanel(190, 5, true);
+			shapePanel = new ShapePanel(190, 5, true);
+			addChild(shapePanel.getSprite());
+			
+			jointPanel = new JointPanel(325, 5, true);
 			addChild(jointPanel.getSprite());
-
+		}
+		
+		//Load the config file to set up world...
+		public function loadAssetList(file:String):void{
+			var loader:URLLoader = new URLLoader();
+			loader.addEventListener(Event.COMPLETE, onLoadAssetList);
+			//loader.addEventListener(IOErrorEvent.IO_ERROR, onLoadError);
+			loader.load(new URLRequest(file));
+		}
+		
+		//Actual callback function for load finish
+		private function onLoadAssetList(event:Event):void{
+			var s:String = event.target.data;
+			files = s.split("\n");
+			fileIndex = 0;
+			_loaded = true;
+			
+			createStatusText();
+		}
+		
+		private function createStatusText():void{
+			statusText = new TextField;
+			statusText.background = true;
+			statusText.border = true;
+			statusText.selectable = false;
+			statusText.x = 5;
+			statusText.y = 460;
+			statusText.height = 16;
+			statusText.width = 630;
+			addChild(statusText);
 		}
 		
 		public function addPlayer():void{
@@ -83,9 +127,29 @@
 			
 			super.update();
 			
+			//True only after the config file has been loaded
+			if(!_loaded) 
+				return;
+			
+			if(FlxG.keys.justPressed("LBRACKET")) {
+				fileIndex--;
+			}
+			if(FlxG.keys.justPressed("RBRACKET")){
+				fileIndex++;
+			}
+			
+			if(fileIndex >= files.length) 
+				fileIndex = files.length - 1;
+			if(fileIndex < 0) 
+				fileIndex = 0;
+			
+			args["file"] = files[fileIndex];
+			statusText.text = args["file"];
+			
 			actionPanel.update();
 			optionPanel.update();
 			typePanel.update();
+			shapePanel.update();
 			jointPanel.update();
 		}
 	}
