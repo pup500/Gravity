@@ -1,5 +1,7 @@
 package PhysicsEditor.Actions
 {
+	import PhysicsEditor.IPanel;
+	
 	import common.JointFactory;
 	
 	import flash.display.Shape;
@@ -12,9 +14,9 @@ package PhysicsEditor.Actions
 		
 		private var line:Shape;
 		
-		public function JoinAction(preClick:Function)
+		public function JoinAction(panel:IPanel, active:Boolean)
 		{
-			super(img, preClick);
+			super(img, panel, active);
 			line = new Shape();
 			state.addChild(line);
 		}

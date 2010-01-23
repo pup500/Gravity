@@ -1,7 +1,7 @@
 package PhysicsEditor.Panels
 {
-	import PhysicsEditor.Types.*;
 	import PhysicsEditor.IAction;
+	import PhysicsEditor.Types.*;
 	
 	public class JointPanel extends PanelBase
 	{
@@ -14,15 +14,8 @@ package PhysicsEditor.Panels
 			addItems(TYPES, horizontal);
 		}
 		
-		override protected function createItem(aClass:Class):IAction{
-			return new aClass(deactivateAllActions);
+		override protected function createItem(aClass:Class, active:Boolean):IAction{
+			return new aClass(this, active);
 		}
-		
-		protected function deactivateAllActions():void{
-			for each(var action:IAction in actions){
-				action.activate(false);
-			}
-		}
-		
 	}
 }

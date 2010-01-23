@@ -1,16 +1,15 @@
 package PhysicsEditor.Options
 {
-	import flash.events.MouseEvent;
-	import org.overrides.ExState;
+	import PhysicsEditor.IPanel;
 	
 	public class BGOption extends OptionBase
 	{
 		[Embed(source="../../data/editor/interface/bg.png")] private var img:Class;
 				
-		public function BGOption()
+		public function BGOption(panel:IPanel, active:Boolean)
 		{
-			super(img);
-			active = true;
+			super(img, panel, active);
+			this.active = true;
 		}
 		
 		//See if we should move this into onClick

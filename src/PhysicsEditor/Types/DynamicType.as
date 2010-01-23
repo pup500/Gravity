@@ -2,13 +2,15 @@ package PhysicsEditor.Types
 {
 	import Box2D.Dynamics.b2Body;
 	
+	import PhysicsEditor.IPanel;
+	
 	public class DynamicType extends TypeBase
 	{
 		[Embed(source="../../data/editor/interface/sheep-icon.png")] private var img:Class;
 		
-		public function DynamicType(preClick:Function)
+		public function DynamicType(panel:IPanel, active:Boolean)
 		{
-			super(img, preClick);
+			super(img, panel, active);
 		}
 		
 		//See if we should move this into onClick

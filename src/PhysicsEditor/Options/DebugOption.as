@@ -1,14 +1,15 @@
 package PhysicsEditor.Options
 {
-	import flash.events.MouseEvent;
+	import PhysicsEditor.IPanel;
 	
 	public class DebugOption extends OptionBase
 	{
 		[Embed(source="../../data/editor/interface/frog-icon.png")] private var img:Class;
 				
-		public function DebugOption()
+		public function DebugOption(panel:IPanel, active:Boolean)
 		{
-			super(img);
+			super(img, panel, active);
+			this.active = true;
 		}
 		
 		//Maybe we should update things during the click....

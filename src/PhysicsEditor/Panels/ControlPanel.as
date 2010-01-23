@@ -1,13 +1,7 @@
 package PhysicsEditor.Panels
 {
-	import PhysicsEditor.IAction;
 	import PhysicsEditor.Actions.*;
-	
-	import flash.display.Sprite;
-	import flash.geom.Rectangle;
-	import flash.utils.Dictionary;
-	
-	import org.flixel.FlxG;
+	import PhysicsEditor.IAction;
 	
 	public class ControlPanel extends PanelBase
 	{
@@ -20,16 +14,8 @@ package PhysicsEditor.Panels
 			addItems(ACTIONS, horizontal);
 		}
 		
-		//Maybe we should just have every action know what panel it is on...
-		//Then it can call the panel's function to deactive group or item...
-		override protected function createItem(aClass:Class):IAction{
-			return new aClass(deactivateAllActions);
-		}
-		
-		protected function deactivateAllActions():void{
-			for each(var action:IAction in actions){
-				action.activate(false);
-			}
+		override protected function createItem(aClass:Class, active:Boolean):IAction{
+			return new aClass(this, active);
 		}
 	}
 }

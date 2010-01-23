@@ -1,8 +1,8 @@
 package PhysicsEditor.Actions
 {
 	import Box2D.Dynamics.b2Body;
-	import Box2D.Dynamics.b2World;
-	import Box2D.Common.Math.b2Vec2;
+	
+	import PhysicsEditor.IPanel;
 	
 	import flash.events.MouseEvent;
 	
@@ -10,9 +10,9 @@ package PhysicsEditor.Actions
 	{
 		[Embed(source="../../data/editor/interface/run.png")] private var img:Class;
 		
-		public function RunAction(preClick:Function)
+		public function RunAction(panel:IPanel, active:Boolean)
 		{
-			super(img, preClick);
+			super(img, panel, active);
 		}
 		
 		//Don't run preclick to allow the other modes to continue working...

@@ -2,14 +2,9 @@ package common
 {
 	import Box2D.Common.Math.b2Vec2;
 	import Box2D.Dynamics.Joints.*;
-	import Box2D.Dynamics.b2Body;
 	
 	import PhysicsGame.*;
 	
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.display.Loader;
-	import flash.display.LoaderInfo;
 	import flash.events.Event;
 	import flash.geom.Point;
 	import flash.net.URLLoader;
@@ -56,6 +51,9 @@ package common
 			_start.y = configXML.points.start.y;
 			_end.x = configXML.points.end.x;
 			_end.y = configXML.points.end.y;
+			
+			_state.getArgs()["startPoint"] = new b2Vec2(_start.x, _start.y);
+			_state.getArgs()["endPoint"] = new b2Vec2(_end.x, _end.y);
 			
 			expBodyCount = getItemCount() + configXML.objects.shape.length();
 			

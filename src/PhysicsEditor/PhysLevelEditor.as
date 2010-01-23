@@ -31,7 +31,7 @@
 		private var panels:Panels;
 		
 		private var files:Array;
-		private var fileIndex:uint;
+		private var fileIndex:int;
 		private var statusText:TextField;
 		
 		public function PhysLevelEditor() 

@@ -1,13 +1,15 @@
 package PhysicsEditor.Options
 {
+	import PhysicsEditor.IPanel;
+	
 	public class FGOption extends OptionBase
 	{
 		[Embed(source="../../data/editor/interface/fg.png")] private var img:Class;
 				
-		public function FGOption()
+		public function FGOption(panel:IPanel, active:Boolean)
 		{
-			super(img);
-			active = true;
+			super(img, panel, active);
+			this.active = true;
 		}
 		
 		//See if we should move this into onClick

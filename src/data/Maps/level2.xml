@@ -1,131 +1,176 @@
 <config>
   <objects>
     <shape>
-      <file>data/editor/images/e_ass_06.png</file>
+      <file>data/editor/images/e_ass_03.png</file>
       <layer>1</layer>
-      <isStatic>true</isStatic>
-      <angle>0</angle>
-      <x>136</x>
-      <y>224</y>
-    </shape>
-    <shape>
-      <file>data/editor/images/e_ass_15.png</file>
-      <layer>1</layer>
-      <isStatic>false</isStatic>
-      <angle>1590.5989447103782</angle>
-      <x>327</x>
-      <y>167</y>
+      <bodyType>2</bodyType>
+      <shapeType>1</shapeType>
+      <angle>-0.00036154262713197316</angle>
+      <x>279.27188066924344</x>
+      <y>470.119532467769</y>
     </shape>
     <shape>
       <file>data/editor/images/e_ass_03.png</file>
       <layer>1</layer>
-      <isStatic>true</isStatic>
+      <bodyType>0</bodyType>
+      <shapeType>1</shapeType>
       <angle>0</angle>
-      <x>336</x>
-      <y>408</y>
+      <x>208.5</x>
+      <y>232.5</y>
+    </shape>
+    <shape>
+      <file>data/editor/images/e_ass_18.png</file>
+      <layer>1</layer>
+      <bodyType>2</bodyType>
+      <shapeType>1</shapeType>
+      <angle>-8.420084385177027e-18</angle>
+      <x>214.64646633532504</x>
+      <y>487.35000000000036</y>
     </shape>
     <shape>
       <file>data/editor/images/e_ass_03.png</file>
       <layer>1</layer>
-      <isStatic>true</isStatic>
+      <bodyType>0</bodyType>
+      <shapeType>1</shapeType>
       <angle>0</angle>
-      <x>336</x>
-      <y>40</y>
+      <x>208.50000000000003</x>
+      <y>504.4999999999999</y>
     </shape>
     <shape>
-      <file>data/editor/images/e_ass_08.png</file>
+      <file>data/editor/images/e_ass_18.png</file>
       <layer>1</layer>
-      <isStatic>false</isStatic>
-      <angle>-2.311115933264683e-33</angle>
-      <x>264</x>
-      <y>288</y>
+      <bodyType>2</bodyType>
+      <shapeType>1</shapeType>
+      <angle>8.946980841817166e-19</angle>
+      <x>297.11989285523856</x>
+      <y>487.3500000000005</y>
     </shape>
     <shape>
-      <file>data/editor/images/e_ass_08.png</file>
+      <file>data/angled.png</file>
       <layer>1</layer>
-      <isStatic>false</isStatic>
-      <angle>0</angle>
-      <x>392</x>
-      <y>288</y>
-    </shape>
-    <shape>
-      <file>data/tower-down.png</file>
-      <layer>1</layer>
-      <isStatic>true</isStatic>
-      <angle>0</angle>
-      <x>330</x>
-      <y>319</y>
-    </shape>
-    <shape>
-      <file>data/editor/images/e_ass_06.png</file>
-      <layer>1</layer>
-      <isStatic>true</isStatic>
+      <bodyType>0</bodyType>
+      <shapeType>1</shapeType>
       <angle>0</angle>
       <x>536</x>
-      <y>224</y>
+      <y>407</y>
     </shape>
-    <joint>
-      <type>1</type>
-      <body1>
-        <x>0</x>
-        <y>0</y>
-      </body1>
-      <body2>
-        <x>327</x>
-        <y>167</y>
-      </body2>
-      <anchor>
-        <x>328</x>
-        <y>166</y>
-      </anchor>
-    </joint>
-    <joint>
-      <type>2</type>
-      <body1>
-        <x>0</x>
-        <y>0</y>
-      </body1>
-      <body2>
-        <x>392</x>
-        <y>288</y>
-      </body2>
-      <anchor>
-        <x>392</x>
-        <y>159</y>
-      </anchor>
-      <axis>
-        <x>0</x>
-        <y>1</y>
-      </axis>
-    </joint>
-    <joint>
-      <type>2</type>
-      <body1>
-        <x>0</x>
-        <y>0</y>
-      </body1>
-      <body2>
-        <x>264</x>
-        <y>288</y>
-      </body2>
-      <anchor>
-        <x>264</x>
-        <y>162</y>
-      </anchor>
-      <axis>
-        <x>0</x>
-        <y>1</y>
-      </axis>
-    </joint>
+    <shape>
+      <file>data/editor/images/e_ass_06.png</file>
+      <layer>1</layer>
+      <bodyType>0</bodyType>
+      <shapeType>1</shapeType>
+      <angle>0</angle>
+      <x>8.5</x>
+      <y>320.5</y>
+    </shape>
+    <shape>
+      <file>data/editor/images/e_ass_03.png</file>
+      <layer>1</layer>
+      <bodyType>0</bodyType>
+      <shapeType>1</shapeType>
+      <angle>0</angle>
+      <x>608.5</x>
+      <y>120.5</y>
+    </shape>
+    <shape>
+      <file>data/editor/images/e_ass_18.png</file>
+      <layer>1</layer>
+      <bodyType>2</bodyType>
+      <shapeType>1</shapeType>
+      <angle>-2.8591631084002602e-18</angle>
+      <x>356.6003762188189</x>
+      <y>487.35000000000036</y>
+    </shape>
+    <shape>
+      <file>data/editor/images/e_ass_18.png</file>
+      <layer>1</layer>
+      <bodyType>2</bodyType>
+      <shapeType>1</shapeType>
+      <angle>-2.7666455658764096e-18</angle>
+      <x>190.54635214425286</x>
+      <y>487.3500000000005</y>
+    </shape>
+    <shape>
+      <file>data/editor/images/e_ass_18.png</file>
+      <layer>1</layer>
+      <bodyType>2</bodyType>
+      <shapeType>1</shapeType>
+      <angle>3.717236950971835e-17</angle>
+      <x>234.72804320391992</x>
+      <y>487.3500000000005</y>
+    </shape>
+    <shape>
+      <file>data/editor/images/e_ass_18.png</file>
+      <layer>1</layer>
+      <bodyType>2</bodyType>
+      <shapeType>1</shapeType>
+      <angle>-7.019902342836308e-19</angle>
+      <x>336.1126497527686</x>
+      <y>487.35000000000036</y>
+    </shape>
+    <shape>
+      <file>data/editor/images/e_ass_18.png</file>
+      <layer>1</layer>
+      <bodyType>2</bodyType>
+      <shapeType>1</shapeType>
+      <angle>2.2069565581212265e-19</angle>
+      <x>316.6657326111667</x>
+      <y>487.35000000000036</y>
+    </shape>
+    <shape>
+      <file>data/editor/images/e_ass_06.png</file>
+      <layer>1</layer>
+      <bodyType>0</bodyType>
+      <shapeType>1</shapeType>
+      <angle>0</angle>
+      <x>792.5</x>
+      <y>320.5</y>
+    </shape>
+    <shape>
+      <file>data/editor/images/e_ass_18.png</file>
+      <layer>1</layer>
+      <bodyType>2</bodyType>
+      <shapeType>1</shapeType>
+      <angle>-3.6073745168918715e-18</angle>
+      <x>258.95606045510124</x>
+      <y>487.3500000000005</y>
+    </shape>
+    <shape>
+      <file>data/editor/images/e_ass_06.png</file>
+      <layer>1</layer>
+      <bodyType>0</bodyType>
+      <shapeType>1</shapeType>
+      <angle>0</angle>
+      <x>408.5</x>
+      <y>208.5</y>
+    </shape>
+    <shape>
+      <file>data/editor/images/e_ass_03.png</file>
+      <layer>1</layer>
+      <bodyType>0</bodyType>
+      <shapeType>1</shapeType>
+      <angle>0</angle>
+      <x>592.5</x>
+      <y>504.5</y>
+    </shape>
+    <shape>
+      <file>data/editor/images/e_ass_08.png</file>
+      <layer>1</layer>
+      <bodyType>0</bodyType>
+      <shapeType>1</shapeType>
+      <angle>0</angle>
+      <x>488.50000000000006</x>
+      <y>463.4999999999999</y>
+    </shape>
   </objects>
   <points>
     <start>
-      <x>160</x>
-      <y>352</y>
+      <x>80</x>
+      <y>280</y>
     </start>
     <end>
-      <x>480</x>
-      <y>352</y>
+      <x>496</x>
+      <y>303</y>
     </end>
   </points>
 </config>

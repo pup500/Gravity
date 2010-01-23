@@ -3,6 +3,8 @@ package PhysicsEditor.Types
 	import Box2D.Collision.Shapes.b2Shape;
 	import Box2D.Common.b2internal;
 	
+	import PhysicsEditor.IPanel;
+	
 	import flash.events.MouseEvent;
 	use namespace b2internal;
 	
@@ -10,9 +12,9 @@ package PhysicsEditor.Types
 	{
 		[Embed(source="../../data/editor/interface/delete.png")] private var img:Class;
 		
-		public function EdgeShapeType(preClick:Function)
+		public function EdgeShapeType(panel:IPanel, active:Boolean)
 		{
-			super(img, preClick);
+			super(img, panel, active);
 		}
 		
 		//Don't activate this object

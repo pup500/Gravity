@@ -1,12 +1,16 @@
 package PhysicsEditor.Options
 {
+	import PhysicsEditor.IPanel;
+	
+	import flash.events.MouseEvent;
+	
 	public class SnapOption extends OptionBase
 	{
 		[Embed(source="../../data/editor/interface/snap.jpg")] private var img:Class;
 				
-		public function SnapOption()
+		public function SnapOption(panel:IPanel, active:Boolean)
 		{
-			super(img);
+			super(img, panel, active);
 		}
 		
 		//Maybe we should update things during the click....

@@ -1,5 +1,7 @@
 package PhysicsEditor.Actions
 {
+	import PhysicsEditor.IPanel;
+	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Loader;
@@ -18,9 +20,9 @@ package PhysicsEditor.Actions
 		
 		private var assetImage:Sprite;
 		
-		public function AddAction(preClick:Function)
+		public function AddAction(panel:IPanel, active:Boolean)
 		{
-			super(img, preClick);
+			super(img, panel, active);
 			
 			assetImage = new Sprite();
 			state.addChild(assetImage);
@@ -30,8 +32,8 @@ package PhysicsEditor.Actions
 			//Should this be made as some ExSprite factory function in ExSprite?
 			var xml:XML = new XML(<shape/>);
 			xml.file = state.getArgs()["file"];
-			xml.x = assetImage.x + assetImage.width/2;		 		
-			xml.y = assetImage.y + assetImage.height/2;
+			xml.x = assetImage.x - FlxG.scroll.x + assetImage.width/2;		 		
+			xml.y = assetImage.y - FlxG.scroll.y + assetImage.height/2;
 			xml.layer = 1;
 			xml.bodyType = state.getArgs()["bodyType"];
 			xml.shapeType = state.getArgs()["shapeType"];

@@ -1,6 +1,9 @@
 package PhysicsEditor.Options
 {
+	import PhysicsEditor.IPanel;
+	
 	import flash.display.Shape;
+	
 	import org.flixel.FlxG;
 	
 	public class GridOption extends OptionBase
@@ -12,9 +15,9 @@ package PhysicsEditor.Options
 		private const WIDTH:uint = 1280;
 		private const HEIGHT:uint = 960;
 		
-		public function GridOption()
+		public function GridOption(panel:IPanel, active:Boolean)
 		{
-			super(img);
+			super(img, panel, active);
 			initGrid();
 		}
 		
