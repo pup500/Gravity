@@ -13,6 +13,7 @@ package PhysicsEditor.Actions
 		public function RunAction(panel:IPanel, active:Boolean)
 		{
 			super(img, panel, active);
+			this.active = false;
 		}
 		
 		//Don't run preclick to allow the other modes to continue working...

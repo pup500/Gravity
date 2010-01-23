@@ -506,6 +506,8 @@ package org.overrides
 			
 			//TODO:Do we need to correct for x and y...?
 			createPhysBody(world, controller);
+			
+			reset(xml.x, xml.y);
 		}
 	}
 }
