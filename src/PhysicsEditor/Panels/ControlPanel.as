@@ -9,13 +9,12 @@ package PhysicsEditor.Panels
 	
 	import org.flixel.FlxG;
 	
-	public class ActionPanel extends PanelBase
+	public class ControlPanel extends PanelBase
 	{
 		private var ACTIONS:Array = 
-			[AddAction, RemoveAction, ChangeAction, JoinAction, BreakAction, 
-			EventAction, LinkAction, SensorAction];
+			[RunAction, SaveAction, HelpAction];
 		
-		public function ActionPanel(x:uint=0, y:uint=0, horizontal:Boolean=false)
+		public function ControlPanel(x:uint=0, y:uint=0, horizontal:Boolean=false)
 		{
 			super(x,y);
 			addItems(ACTIONS, horizontal);

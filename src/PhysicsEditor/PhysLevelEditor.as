@@ -84,10 +84,10 @@
 			statusText.background = true;
 			statusText.border = true;
 			statusText.selectable = false;
-			statusText.x = 5;
+			statusText.x = 140;
 			statusText.y = 460;
 			statusText.height = 16;
-			statusText.width = 630;
+			statusText.width = 490;
 			addChild(statusText);
 		}
 		
