@@ -209,6 +209,48 @@
 			else
 				return impulse.GetNegative(); 
 		}
+		
+		//@desc This function for gravity is based purely on the mass of the two objects
+		//The distance factor determines the linear interpolation of distance to the two centers
+		//Basically, the resulting force is from [0, obj1.mass*obj2.mass]
+		public function GetGravityTestA(physBody:b2Body):b2Vec2
+		{
+			var p1:b2Vec2 = null;
+			var mass1:Number = 0;
+			var p2:b2Vec2 = null;
+			var dx:Number = 0;
+			var dy:Number = 0;
+			var r2:Number = 0;
+			var f:b2Vec2 = null;
+			
+			p1 = final_body.GetWorldCenter();
+			p2 = physBody.GetWorldCenter()
+			dx = p1.x - p2.x;
+			dy = p1.y - p2.y;
+			r2 = dx*dx+dy*dy;
+			if(r2<Number.MIN_VALUE)
+				return new b2Vec2();
+			
+			//maxDist is in physics unit, so 1 = 30 pixels
+			var maxDist:Number = 5;
+			var maxDistSq:Number = maxDist * maxDist;
+			if(r2 > maxDistSq)
+				return new b2Vec2();	
+				
+			f = new b2Vec2(dx, dy);
+			
+			var directionlessForce:Number = (this.mass * physBody.GetMass()) * (1-(r2/maxDistSq));
+			trace("r2: " + r2);
+			
+			//Separate the force into x, y direction components.
+			f.Multiply(directionlessForce);
+			
+			if (antiGravity)
+				return f.GetNegative();
+			else
+				return f;
+		}
+		
 		//@desc Using B2D's b2GravityController function. Tweaked with log scaling to make the forces smoother.
 		public function GetGravityB2(physBody:b2Body):b2Vec2
 		{
@@ -227,6 +269,7 @@
 			r2 = dx*dx+dy*dy;
 			if(r2<Number.MIN_VALUE)
 				return new b2Vec2();
+			
 			f = new b2Vec2(dx, dy);
 			
 			//We're going to take this force and get it's log to scale it down to make the push/pull smoother.
