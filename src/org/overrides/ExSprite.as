@@ -460,6 +460,7 @@ package org.overrides
 			//If there's no image file information, just load the file normally
 			if(xml.file.length() == 0){
 				onInitXMLComplete(xml, world, controller);
+				return;
 			}
 			
 			var loader:Loader = new Loader();
