@@ -135,6 +135,9 @@ package PhysicsGame
 				FlxG.switchState(LevelSelectMenu);
 			}
 			
+			//Allows XML Map Loader to determine when it is finished loading the level
+			xmlMapLoader.update();
+			
 			//Don't update if we aren't loaded...
 			if(!_loaded){
 				return;

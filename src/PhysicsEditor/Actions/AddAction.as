@@ -86,6 +86,5 @@ package PhysicsEditor.Actions
 			 assetImage.graphics.drawRect(0,0,bitmapData.width,bitmapData.height);
 			 assetImage.graphics.endFill();
 		}
-
 	}
 }
