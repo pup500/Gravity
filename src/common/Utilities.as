@@ -142,11 +142,11 @@ package common
 			point2.y = j.GetAnchorB().y * ExState.PHYS_SCALE;
 			
 			var joint:XML = new XML(<joint/>);
-			joint.type = e_distanceJoint;
-			joint.body1.x = point1.x;
-			joint.body1.y = point1.y;
-			joint.body2.x = point2.x;
-			joint.body2.y = point2.y;
+			joint.@type = e_distanceJoint;
+			joint.body1.@x = point1.x;
+			joint.body1.@y = point1.y;
+			joint.body2.@x = point2.x;
+			joint.body2.@y = point2.y;
 			
 			return joint;
 		}
@@ -176,15 +176,15 @@ package common
 			//TODO:Since we aren't saving translations yet, simulating physics will save the prismatic joint
 			//at an incorrect place....
 			var joint:XML = new XML(<joint/>);
-			joint.type = e_prismaticJoint;
-			joint.body1.x = point1.x;
-			joint.body1.y = point1.y;
-			joint.body2.x = point2.x;
-			joint.body2.y = point2.y;
-			joint.anchor.x = anchor.x;
-			joint.anchor.y = anchor.y;
-			joint.axis.x = axis.x;
-			joint.axis.y = axis.y;
+			joint.@type = e_prismaticJoint;
+			joint.body1.@x = point1.x;
+			joint.body1.@y = point1.y;
+			joint.body2.@x = point2.x;
+			joint.body2.@y = point2.y;
+			joint.anchor.@x = anchor.x;
+			joint.anchor.@y = anchor.y;
+			joint.axis.@x = axis.x;
+			joint.axis.@y = axis.y;
 			
 			return joint;
 		}
@@ -206,13 +206,13 @@ package common
 			anchor.y = j.GetAnchorA().y * ExState.PHYS_SCALE;
 			
 			var joint:XML = new XML(<joint/>);
-			joint.type = e_revoluteJoint;
-			joint.body1.x = point1.x;
-			joint.body1.y = point1.y;
-			joint.body2.x = point2.x;
-			joint.body2.y = point2.y;
-			joint.anchor.x = anchor.x;
-			joint.anchor.y = anchor.y;
+			joint.@type = e_revoluteJoint;
+			joint.body1.@x = point1.x;
+			joint.body1.@y = point1.y;
+			joint.body2.@x = point2.x;
+			joint.body2.@y = point2.y;
+			joint.anchor.@x = anchor.x;
+			joint.anchor.@y = anchor.y;
 			
 			return joint;
 		}

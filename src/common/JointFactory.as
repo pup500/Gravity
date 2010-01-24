@@ -34,18 +34,18 @@ package common
 		
 		//Always make sure we have registered two points
 		public static function addJoint(world:b2World, jointXML:XML):void{
-			var joint:Joint = new JOINTS[jointXML.type](world, jointXML);
+			var joint:Joint = new JOINTS[jointXML.@type](world, jointXML);
 			joint.SetJointDef();
 			joint.AddJoint();
 		}
 		
 		public static function createJointXML(args:Dictionary):XML{
 			var xml:XML = new XML(<joint/>);
-			xml.type = args["type"];
-			xml.body1.x = args["start"].x;
-			xml.body1.y = args["start"].y;
-			xml.body2.x = args["end"].x;
-			xml.body2.y = args["end"].y;
+			xml.@type = args["type"];
+			xml.body1.@x = args["start"].x;
+			xml.body1.@y = args["start"].y;
+			xml.body2.@x = args["end"].x;
+			xml.body2.@y = args["end"].y;
 			xml.loaded = false;
 			return xml;
 		}

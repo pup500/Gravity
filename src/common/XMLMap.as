@@ -47,10 +47,10 @@ package common
 			configXML = new XML(event.target.data);
 			
 			//Save the start and end positions right away
-			_start.x = configXML.points.start.x;
-			_start.y = configXML.points.start.y;
-			_end.x = configXML.points.end.x;
-			_end.y = configXML.points.end.y;
+			_start.x = configXML.points.start.@x;
+			_start.y = configXML.points.start.@y;
+			_end.x = configXML.points.end.@x;
+			_end.y = configXML.points.end.@y;
 			
 			_state.getArgs()["startPoint"] = new b2Vec2(_start.x, _start.y);
 			_state.getArgs()["endPoint"] = new b2Vec2(_end.x, _end.y);
@@ -96,6 +96,7 @@ package common
 		}
 		
 		//Create new configuration file
+		/*
 		public function createNewConfiguration():String{
 			var config:XML = Utilities.CreateXMLRepresentation(_state.the_world);
 			
@@ -109,9 +110,9 @@ package common
 			config.appendChild(points);
 			
 			return config.toXMLString();
-		}
+		}*/
 		
-		
+		/*
 		public function setStartPoint(point:Point):void{
 			_start = point;
 		}
@@ -127,6 +128,7 @@ package common
 		public function getEndPoint():Point{
 			return _end;
 		}
+		*/
 		
 		
 		//public function setObjectTypeAtPoint(point:Point, includeStatic:Boolean=false, type:String="static"):void{

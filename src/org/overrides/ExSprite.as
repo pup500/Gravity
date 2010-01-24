@@ -505,19 +505,19 @@ package org.overrides
 			
 			//Assume we have pixel data already....
 			imageResource = xml.file;
-			layer = xml.layer;
+			layer = xml.@layer;
 			
-			bodyDef.type = xml.bodyType;
+			bodyDef.type = xml.@bodyType;
 			
-			initShape(xml.shapeType);
+			initShape(xml.@shapeType);
 			
-			bodyDef.angle = xml.angle;
-			bodyDef.position.Set(xml.x/ExState.PHYS_SCALE, xml.y/ExState.PHYS_SCALE);
+			bodyDef.angle = xml.@angle;
+			bodyDef.position.Set(xml.@x/ExState.PHYS_SCALE, xml.@y/ExState.PHYS_SCALE);
 			
 			//TODO:Do we need to correct for x and y...?
 			createPhysBody(world, controller);
 			
-			reset(xml.x, xml.y);
+			reset(xml.@x, xml.@y);
 		}
 		
 		public function SetBodyType(type:uint):void{

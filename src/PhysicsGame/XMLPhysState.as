@@ -94,9 +94,9 @@ package PhysicsGame
 		
 		//Player will be called from the xmlMapLoader when the xml file is read...
 		public function addPlayer():void{
-			var start:Point = xmlMapLoader.getStartPoint();
+			//var start:Point = xmlMapLoader.getStartPoint();
 			
-			var body:Player = new Player(start.x, start.y);
+			var body:Player = new Player(args["startPoint"].x, args["startPoint"].y);
 			body.createPhysBody(the_world, controller);
 			
 			body.GetBody().SetSleepingAllowed(false);
@@ -114,9 +114,8 @@ package PhysicsGame
 		}
 		
 		public function addEndPoint():void{
-			var end:Point = xmlMapLoader.getEndPoint();
 			//Fix sensor...
-			var body:Sensor = new Sensor(end.x, end.y);
+			var body:Sensor = new Sensor(args["endPoint"].x, args["endPoint"].y);
 			body.loadGraphic(endPoint);
 			body.createPhysBody(the_world);
 			body.AddEvent(new ChangeLevelEvent(FlxG.level + 1));
