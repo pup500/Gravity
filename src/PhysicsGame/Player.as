@@ -160,8 +160,9 @@ package PhysicsGame
 				if(final_body.GetLinearVelocity().x > 3.5) {
 				}
 				else
-				//final_body.ApplyImpulse(_applyForce, final_body.GetWorldCenter());
-					final_body.ApplyForce(_applyForce, final_body.GetWorldCenter());
+				final_body.ApplyImpulse(_applyForce, final_body.GetWorldCenter());
+					
+				//final_body.ApplyForce(_applyForce, final_body.GetWorldCenter());
 			}
 
 			//trace("can jump: " + _canJump);
