@@ -2,6 +2,7 @@
 {	
 	import Box2D.Common.Math.b2Vec2;
 	
+	import PhysicsEditor.Fields.Fields;
 	import PhysicsEditor.Panels.Panels;
 	
 	import PhysicsGame.LevelSelectMenu;
@@ -34,6 +35,8 @@
 		private var fileIndex:int;
 		private var statusText:TextField;
 		
+		private var fields:Fields;
+		
 		public function PhysLevelEditor() 
 		{
 			super();
@@ -55,6 +58,7 @@
 			addPlayer();
 			
 			panels = new Panels(this);
+			fields = new Fields(this);
 			
 			xmlMapLoader = new XMLMap(this);
 			xmlMapLoader.loadConfigFile(FlxG.levels[FlxG.level]);
@@ -132,6 +136,7 @@
 			statusText.text = args["file"];
 			
 			panels.update();
+			fields.update();
 		}
 	}
 }

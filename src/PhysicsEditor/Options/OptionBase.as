@@ -3,6 +3,7 @@ package PhysicsEditor.Options
 	import PhysicsEditor.IAction;
 	import PhysicsEditor.IPanel;
 	
+	import flash.display.DisplayObject;
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
@@ -34,7 +35,7 @@ package PhysicsEditor.Options
 			this.panel = panel;
 		}
 
-		public function getSprite():Sprite
+		public function getSprite():DisplayObject
 		{
 			return sprite;
 		}

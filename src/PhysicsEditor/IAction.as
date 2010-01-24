@@ -1,10 +1,10 @@
 package PhysicsEditor
 {
-	import flash.display.Sprite;
+	import flash.display.DisplayObject;
 	
 	public interface IAction
 	{
-		function getSprite():Sprite;
+		function getSprite():DisplayObject;
 		
 		function update():void;
 		

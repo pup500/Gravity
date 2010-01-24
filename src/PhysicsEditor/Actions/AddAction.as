@@ -32,12 +32,12 @@ package PhysicsEditor.Actions
 			//Should this be made as some ExSprite factory function in ExSprite?
 			var xml:XML = new XML(<shape/>);
 			xml.file = state.getArgs()["file"];
-			xml.x = assetImage.x - FlxG.scroll.x + assetImage.width/2;		 		
-			xml.y = assetImage.y - FlxG.scroll.y + assetImage.height/2;
-			xml.layer = 1;
-			xml.bodyType = state.getArgs()["bodyType"];
-			xml.shapeType = state.getArgs()["shapeType"];
-			xml.angle = 0;
+			xml.@x = assetImage.x - FlxG.scroll.x + assetImage.width/2;		 		
+			xml.@y = assetImage.y - FlxG.scroll.y + assetImage.height/2;
+			xml.@layer = 1;
+			xml.@bodyType = state.getArgs()["bodyType"];
+			xml.@shapeType = state.getArgs()["shapeType"];
+			xml.@angle = 0;
 			
 			var b2:ExSprite = new ExSprite();
 		    b2.initFromXML(xml, state.the_world, state.getController());
@@ -59,6 +59,8 @@ package PhysicsEditor.Actions
 					assetImage.x -= (FlxG.mouse.x % 16);
 					assetImage.y -= (FlxG.mouse.y % 16);
 				}
+				
+				assetImage.rotation = state.getArgs()["angle"];
 				
 				//Prevent reloading the same image if we didn't change
 				if(args["file"] == state.getArgs()["file"])
