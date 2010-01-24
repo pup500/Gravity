@@ -390,6 +390,7 @@ package org.overrides
 			var posVec:b2Vec2 = final_body.GetPosition();
 			
 			//trace("name:" + name + " posxy:" + posVec.x + "," + posVec.y + " scaledxy: " + (posVec.x * ExState.PHYS_SCALE) + "," + (posVec.y * ExState.PHYS_SCALE));
+			//trace("width:" + width + "," + height);
 			
 			//Use width and height because sprite may be animated so each frame doesn't take up full bitmap
 			x = (posVec.x * ExState.PHYS_SCALE) - (width/2);//_bw/2;

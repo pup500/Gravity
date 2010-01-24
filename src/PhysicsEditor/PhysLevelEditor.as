@@ -133,7 +133,7 @@
 				fileIndex = 0;
 			
 			args["file"] = files[fileIndex];
-			statusText.text = args["file"];
+			statusText.text = args["file"] + " | " + FlxG.mouse.x + ", " + FlxG.mouse.y;
 			
 			panels.update();
 			fields.update();

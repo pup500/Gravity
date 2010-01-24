@@ -56,7 +56,7 @@ package PhysicsEditor.Fields
 		}
 		
 		public function update():void{
-			trace("text: " + textField.text);
+			//trace("text: " + textField.text);
 		}
 
 	}
