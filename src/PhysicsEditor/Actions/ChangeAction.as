@@ -25,6 +25,8 @@ package PhysicsEditor.Actions
 				bSprite.SetBodyType(state.getArgs()["bodyType"]);
 				bSprite.SetShapeType(state.getArgs()["shapeType"]);
 				
+				b2.SetAngle(state.getArgs()["angle"] * Math.PI/180);
+				
 				//var xml:XML = bSprite.getXML();
 				//xml.layer = 1;
 				//xml.bodyType = state.getArgs()["bodyType"];
