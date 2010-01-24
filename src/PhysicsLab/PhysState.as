@@ -208,6 +208,7 @@ package PhysicsLab
 			body.name = "Player";
 			body.loadGraphic(botSprite,true, true); //Loading again to set animation.
 			body.initShape(1);
+			var shapdef:b2PolygonShape =  body.GetShape() as Box2D.Collision.Shapes.b2PolygonShape;
 			body.createPhysBody(the_world);
 			add(body);
 			
@@ -225,6 +226,7 @@ package PhysicsLab
 			b2 = new ExSprite(300, 300, botSprite);
 			b2.initShape(1);
 			b2.createPhysBody(the_world); //Add b2 as a physical body to Box2D's world.
+			b2.GetBody().SetType(b2Body.b2_staticBody);
 			add(b2); //Add b2 as a sprite to Flixel's update loop.
 		}
 		

@@ -41,15 +41,6 @@
 			_events = new Array();
 		}
 		
-		/*
-		override public function initShape():void
-		{
-			var polyDef:b2PolygonDef = new b2PolygonDef();
-			polyDef.SetAsBox(width / 2, height / 2);
-			super.shape = polyDef;
-		}
-		*/
-		
 		public function AddEvent(event:IEvent):void
 		{
 			_events.push(event);
@@ -83,8 +74,11 @@
 			_triggered = false;
 		}
 		
-		override public function setImpactPoint(point:b2Contact):void{
-			_triggered = true;
+		override public function setImpactPoint(point:b2Contact):void {
+			var spriteA:ExSprite = point.GetFixtureA().GetBody().GetUserData() as ExSprite;
+			var spriteB:ExSprite = point.GetFixtureB().GetBody().GetUserData() as ExSprite;
+			if ( spriteA.name == Trigger || spriteB.name == Trigger)
+				_triggered = true;
 		}
 		
 		//TODO: Can we use shape.filter to make collisions happen exclusively with the Player? If I eliminate these if statements, world objects will collide with the end level sensor.
