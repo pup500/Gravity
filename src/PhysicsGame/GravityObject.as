@@ -51,7 +51,7 @@
 			fixtureDef.isSensor = true;
 			fixtureDef.filter.groupIndex = -2;
 			
-			initShape();
+			initBoxShape();
 			
 			//Make this part of group -2, and do not collide with other in the same negative group...
 			

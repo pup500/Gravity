@@ -36,7 +36,7 @@
 			fixtureDef.isSensor = true;
 			bodyDef.type = b2Body.b2_staticBody;
 			
-			initShape();
+			initBoxShape();
 			
 			_events = new Array();
 		}

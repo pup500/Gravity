@@ -28,6 +28,8 @@ package common
 		
 		//This might be a clean way to get body at mouse.....
 		public static function GetBodyAtPoint(the_world:b2World, _p:b2Vec2, includeStatic:Boolean = false):b2Body{
+			if(!_p) return null;
+			
 			var body:b2Body;
 			var p:b2Vec2 = new b2Vec2(_p.x, _p.y);
 			

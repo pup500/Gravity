@@ -50,7 +50,7 @@ package PhysicsGame
 			super(x, y);
 			loadGraphic(ImgSpaceman,true,true,16,32);
 			
-			initShape();
+			initBoxShape();
 			fixtureDef.friction = .5;
 			fixtureDef.restitution = .5;
 			

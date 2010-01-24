@@ -25,6 +25,7 @@ package PhysicsEditor.Actions
 					bSprite.kill();
 				}
 			}
+			//TODO:Do we worry about deleting joints that are only connected to the world?
 		}
 
 	}
