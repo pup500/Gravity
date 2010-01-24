@@ -1,7 +1,8 @@
 package PhysicsEditor.Actions
 {
-	import Box2D.Common.Math.b2Vec2;
 	import Box2D.Dynamics.b2Body;
+	
+	import PhysicsEditor.IPanel;
 	
 	import common.Utilities;
 	
@@ -11,9 +12,9 @@ package PhysicsEditor.Actions
 	{
 		[Embed(source="../../data/editor/interface/delete.png")] private var img:Class;
 		
-		public function RemoveAction(preClick:Function)
+		public function RemoveAction(panel:IPanel, active:Boolean)
 		{
-			super(img, preClick);
+			super(img, panel, active);
 		}
 		
 		override public function onHandleBegin():void{
@@ -24,6 +25,7 @@ package PhysicsEditor.Actions
 					bSprite.kill();
 				}
 			}
+			//TODO:Do we worry about deleting joints that are only connected to the world?
 		}
 
 	}

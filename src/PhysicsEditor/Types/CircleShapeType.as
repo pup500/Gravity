@@ -1,16 +1,16 @@
 package PhysicsEditor.Types
 {
+	import Box2D.Collision.Shapes.b2Shape;
 	import Box2D.Common.b2internal;
-	import Box2D.Dynamics.Joints.b2Joint;
 	
 	import PhysicsEditor.IPanel;
 	use namespace b2internal;
 	
-	public class RevoluteJointType extends TypeBase
+	public class CircleShapeType extends TypeBase
 	{
-		[Embed(source="../../data/editor/interface/sheep-icon.png")] private var img:Class;
+		[Embed(source="../../data/editor/interface/stop-icon.png")] private var img:Class;
 		
-		public function RevoluteJointType(panel:IPanel, active:Boolean)
+		public function CircleShapeType(panel:IPanel, active:Boolean)
 		{
 			super(img, panel, active);
 		}
@@ -18,9 +18,9 @@ package PhysicsEditor.Types
 		//See if we should move this into onClick
 		override public function update():void{
 			super.update();
-
+			
 			if(active){
-				state.getArgs()["jointType"] = b2Joint.e_revoluteJoint;
+				state.getArgs()["shapeType"] = b2Shape.e_circleShape;
 			}
 		}
 	}

@@ -2,6 +2,8 @@ package PhysicsEditor.Actions
 {
 	import Box2D.Dynamics.b2Body;
 	
+	import PhysicsEditor.IPanel;
+	
 	import common.Utilities;
 	
 	import org.overrides.ExSprite;
@@ -10,9 +12,9 @@ package PhysicsEditor.Actions
 	{
 		[Embed(source="../../data/editor/interface/disconnect-icon.png")] private var img:Class;
 		
-		public function BreakAction(preClick:Function)
+		public function BreakAction(panel:IPanel, active:Boolean)
 		{
-			super(img, preClick);
+			super(img, panel, active);
 		}
 		
 		override public function onHandleBegin():void{

@@ -1,15 +1,18 @@
 package PhysicsEditor.Actions
 {
+	import PhysicsEditor.IPanel;
+	
 	import PhysicsGame.EventObject;
+	
 	import org.overrides.ExState;
 	
 	public class EventAction extends ActionBase
 	{
 		[Embed(source="../../data/editor/interface/add_event.png")] private var img:Class;
 		
-		public function EventAction(preClick:Function)
+		public function EventAction(panel:IPanel, active:Boolean)
 		{
-			super(img, preClick);
+			super(img, panel, active);
 		}
 		
 		override public function onHandleBegin():void{

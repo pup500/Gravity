@@ -34,7 +34,7 @@
 		{
 			super();
 			loadGraphic(ImgBullet, true);
-			initShape();
+			initBoxShape();
 			//shape.friction = 1;
 			//Make this part of group -2, and do not collide with other in the same negative group...
 			//So player does not collide with bullets

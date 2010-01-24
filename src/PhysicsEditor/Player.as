@@ -18,7 +18,7 @@ package PhysicsEditor
 			
 			bodyDef.type = b2Body.b2_kinematicBody;
 			
-			initShape();
+			initBoxShape();
 			fixtureDef.isSensor = true;
 			fixtureDef.filter.groupIndex = -2;
 			fixtureDef.density = 0;

@@ -26,8 +26,8 @@ package common.joints
 			this.xml = xml;
 			this.world = world;
 			
-			point1 = new b2Vec2(xml.body1.x, xml.body1.y);
-			point2 = new b2Vec2(xml.body2.x, xml.body2.y);
+			point1 = new b2Vec2(xml.body1.@x, xml.body1.@y);
+			point2 = new b2Vec2(xml.body2.@x, xml.body2.@y);
 			
 			trace("point before:" + point1.x + "," + point1.y);
 			//This is not right, utilties messes up point1 and point2....

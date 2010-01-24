@@ -83,14 +83,14 @@ package PhysicsGame
 		override public function getXML():XML
 		{
 			var item:XML = new XML(<event/>);
-			item.type = _type;
-			item.x = final_body.GetPosition().x * ExState.PHYS_SCALE;
-			item.y = final_body.GetPosition().y * ExState.PHYS_SCALE;
+			item.@type = _type;
+			item.@x = final_body.GetPosition().x * ExState.PHYS_SCALE;
+			item.@y = final_body.GetPosition().y * ExState.PHYS_SCALE;
 			
 			if(this.getTarget()){
 				var t:ExSprite = this.getTarget();
-				item.target.x = t.GetBody().GetWorldCenter().x * ExState.PHYS_SCALE;
-				item.target.y = t.GetBody().GetWorldCenter().y * ExState.PHYS_SCALE;
+				item.target.@x = t.GetBody().GetWorldCenter().x * ExState.PHYS_SCALE;
+				item.target.@y = t.GetBody().GetWorldCenter().y * ExState.PHYS_SCALE;
 			}
 			
 			return item;
@@ -99,13 +99,13 @@ package PhysicsGame
 		override public function initFromXML(xml:XML, world:b2World, controller:b2Controller=null):void{
 			super.initFromXML(xml, world, controller);
 			
-			changeType(xml.type);
+			changeType(xml.@type);
 			
-			if(xml.target.x.length() > 0 && xml.target.y.length() > 0 && world){
-				var t:b2Body = Utilities.GetBodyAtPoint(world, new b2Vec2(xml.target.x, xml.target.y), true);
+			//TODO:Be careful of selecting targets by position, you might have overlapping objects
+			if(xml.target.@x.length() > 0 && xml.target.@y.length() > 0 && world){
+				var t:b2Body = Utilities.GetBodyAtPoint(world, new b2Vec2(xml.target.@x, xml.target.@y), true);
 				setTarget(t.GetUserData());
 			}
-			
 		}
 	}
 }

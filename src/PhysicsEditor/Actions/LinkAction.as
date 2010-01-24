@@ -2,6 +2,8 @@ package PhysicsEditor.Actions
 {
 	import Box2D.Dynamics.b2Body;
 	
+	import PhysicsEditor.IPanel;
+	
 	import PhysicsGame.EventObject;
 	
 	import common.Utilities;
@@ -17,9 +19,9 @@ package PhysicsEditor.Actions
 		
 		private var line:Shape;
 		
-		public function LinkAction(preClick:Function)
+		public function LinkAction(panel:IPanel, active:Boolean)
 		{
-			super(img, preClick);
+			super(img, panel, active);
 			line = new Shape();
 			state.addChild(line);
 		}

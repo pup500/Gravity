@@ -1,8 +1,10 @@
 package PhysicsEditor.Actions
 {
-	import PhysicsEditor.Options.OptionBase;
 	import Box2D.Common.Math.b2Vec2;
-
+	
+	import PhysicsEditor.IPanel;
+	import PhysicsEditor.Options.OptionBase;
+	
 	import flash.events.MouseEvent;
 	import flash.utils.Dictionary;
 	
@@ -14,21 +16,15 @@ package PhysicsEditor.Actions
 		
 		protected var args:Dictionary;
 		
-		protected var onPreClick:Function;
-		
-		public function ActionBase(Graphic:Class, preClick:Function)
+		public function ActionBase(Graphic:Class, panel:IPanel, active:Boolean)
 		{
-			super(Graphic);
+			super(Graphic, panel, active);
 			
 			args = new Dictionary();
-			
-			//TODO:Preclick should probably be the panel....
-			onPreClick = preClick;
 		}
 		
 		override protected function onClick(event:MouseEvent):void{
-			onPreClick();
-			
+			panel.deactivateAllActions();
 			active = true;
 		}
 		

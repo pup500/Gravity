@@ -3,12 +3,12 @@ package PhysicsEditor.Panels
 	import PhysicsEditor.IAction;
 	import PhysicsEditor.Types.*;
 	
-	public class JointPanel extends PanelBase
+	public class ShapePanel extends PanelBase
 	{
 		private var TYPES:Array = 
-			[PrismaticJointType, RevoluteJointType, DistanceJointType];
+			[PolyShapeType, CircleShapeType, EdgeShapeType];
 			
-		public function JointPanel(x:uint=0, y:uint=0, horizontal:Boolean=false)
+		public function ShapePanel(x:uint=0, y:uint=0, horizontal:Boolean=false)
 		{
 			super(x, y);
 			addItems(TYPES, horizontal);

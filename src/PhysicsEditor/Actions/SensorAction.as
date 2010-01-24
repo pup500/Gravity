@@ -3,6 +3,7 @@ package PhysicsEditor.Actions
 	import org.flixel.FlxG;
 	import flash.display.*;
 	import Box2D.Common.Math.b2Vec2;
+	import PhysicsEditor.IPanel;
 	
 	public class SensorAction extends ActionBase
 	{
@@ -10,9 +11,9 @@ package PhysicsEditor.Actions
 		
 		protected var dragBox:Shape;
 
-		public function SensorAction(preClick:Function)
+		public function SensorAction(panel:IPanel, active:Boolean)
 		{
-			super(img, preClick);
+			super(img, panel, active);
 		}
 		
 		override public function handleBegin():void

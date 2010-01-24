@@ -1,5 +1,7 @@
 package PhysicsEditor.Actions
 {
+	import PhysicsEditor.IPanel;
+	
 	import flash.events.MouseEvent;
 	import flash.text.TextField;
 	
@@ -10,9 +12,9 @@ package PhysicsEditor.Actions
 		
 		private var helpText:TextField;
 		
-		public function HelpAction(preClick:Function)
+		public function HelpAction(panel:IPanel, active:Boolean)
 		{
-			super(img, preClick);
+			super(img, panel, active);
 		}
 		
 		private function initHelp():void{

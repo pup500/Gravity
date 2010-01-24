@@ -1,131 +1,76 @@
 <config>
   <objects>
-    <shape>
-      <file>data/editor/images/e_ass_06.png</file>
-      <layer>1</layer>
-      <isStatic>true</isStatic>
-      <angle>0</angle>
-      <x>136</x>
-      <y>224</y>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" x="330" y="215.42986699999997">
+      <file>data/editor/images/blocks_3.jpg</file>
     </shape>
-    <shape>
-      <file>data/editor/images/e_ass_15.png</file>
-      <layer>1</layer>
-      <isStatic>false</isStatic>
-      <angle>1590.5989447103782</angle>
-      <x>327</x>
-      <y>167</y>
-    </shape>
-    <shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" x="336" y="40">
       <file>data/editor/images/e_ass_03.png</file>
-      <layer>1</layer>
-      <isStatic>true</isStatic>
-      <angle>0</angle>
-      <x>336</x>
-      <y>408</y>
     </shape>
-    <shape>
-      <file>data/editor/images/e_ass_03.png</file>
-      <layer>1</layer>
-      <isStatic>true</isStatic>
-      <angle>0</angle>
-      <x>336</x>
-      <y>40</y>
-    </shape>
-    <shape>
-      <file>data/editor/images/e_ass_08.png</file>
-      <layer>1</layer>
-      <isStatic>false</isStatic>
-      <angle>-2.311115933264683e-33</angle>
-      <x>264</x>
-      <y>288</y>
-    </shape>
-    <shape>
-      <file>data/editor/images/e_ass_08.png</file>
-      <layer>1</layer>
-      <isStatic>false</isStatic>
-      <angle>0</angle>
-      <x>392</x>
-      <y>288</y>
-    </shape>
-    <shape>
-      <file>data/tower-down.png</file>
-      <layer>1</layer>
-      <isStatic>true</isStatic>
-      <angle>0</angle>
-      <x>330</x>
-      <y>319</y>
-    </shape>
-    <shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" x="136" y="224">
       <file>data/editor/images/e_ass_06.png</file>
-      <layer>1</layer>
-      <isStatic>true</isStatic>
-      <angle>0</angle>
-      <x>536</x>
-      <y>224</y>
     </shape>
-    <joint>
-      <type>1</type>
-      <body1>
-        <x>0</x>
-        <y>0</y>
-      </body1>
-      <body2>
-        <x>327</x>
-        <y>167</y>
-      </body2>
-      <anchor>
-        <x>328</x>
-        <y>166</y>
-      </anchor>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" x="363" y="183.47786699999997">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" x="536" y="224">
+      <file>data/editor/images/e_ass_06.png</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" x="293" y="182.44096700000003">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" x="329" y="181.44096700000003">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" x="329" y="145.391467">
+      <file>data/editor/images/blocks_3.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" x="336" y="408">
+      <file>data/editor/images/e_ass_03.png</file>
+    </shape>
+    <joint type="1">
+      <body1 x="0" y="0"/>
+      <body2 x="329" y="181.44096700000003"/>
+      <anchor x="329" y="180"/>
     </joint>
-    <joint>
-      <type>2</type>
-      <body1>
-        <x>0</x>
-        <y>0</y>
-      </body1>
-      <body2>
-        <x>392</x>
-        <y>288</y>
-      </body2>
-      <anchor>
-        <x>392</x>
-        <y>159</y>
-      </anchor>
-      <axis>
-        <x>0</x>
-        <y>1</y>
-      </axis>
+    <joint type="1">
+      <body1 x="329" y="181.44096700000003"/>
+      <body2 x="363" y="183.47786699999997"/>
+      <anchor x="339" y="180"/>
     </joint>
-    <joint>
-      <type>2</type>
-      <body1>
-        <x>0</x>
-        <y>0</y>
-      </body1>
-      <body2>
-        <x>264</x>
-        <y>288</y>
-      </body2>
-      <anchor>
-        <x>264</x>
-        <y>162</y>
-      </anchor>
-      <axis>
-        <x>0</x>
-        <y>1</y>
-      </axis>
+    <joint type="1">
+      <body1 x="329" y="181.44096700000003"/>
+      <body2 x="330" y="215.42986699999997"/>
+      <anchor x="334" y="191"/>
+    </joint>
+    <joint type="1">
+      <body1 x="329" y="181.44096700000003"/>
+      <body2 x="293" y="182.44096700000003"/>
+      <anchor x="322" y="183"/>
+    </joint>
+    <joint type="1">
+      <body1 x="329" y="181.44096700000003"/>
+      <body2 x="329" y="145.391467"/>
+      <anchor x="331" y="169"/>
+    </joint>
+    <joint type="3">
+      <body1 x="330" y="135"/>
+      <body2 x="374" y="182"/>
+    </joint>
+    <joint type="3">
+      <body1 x="374" y="181"/>
+      <body2 x="328" y="219"/>
+    </joint>
+    <joint type="3">
+      <body1 x="328" y="219"/>
+      <body2 x="284" y="181"/>
+    </joint>
+    <joint type="3">
+      <body1 x="283" y="181"/>
+      <body2 x="328" y="134"/>
     </joint>
   </objects>
   <points>
-    <start>
-      <x>160</x>
-      <y>352</y>
-    </start>
-    <end>
-      <x>480</x>
-      <y>352</y>
-    </end>
+    <start x="160" y="352"/>
+    <end x="480" y="352"/>
   </points>
 </config>

@@ -2,11 +2,7 @@
 {	
 	import Box2D.Common.Math.b2Vec2;
 	
-	import PhysicsEditor.Panels.ActionPanel;
-	import PhysicsEditor.Panels.JointPanel;
-	import PhysicsEditor.Panels.OptionPanel;
-	import PhysicsEditor.Panels.ShapePanel;
-	import PhysicsEditor.Panels.TypePanel;
+	import PhysicsEditor.Panels.Panels;
 	
 	import PhysicsGame.LevelSelectMenu;
 	
@@ -32,14 +28,10 @@
 		
 		private var xmlMapLoader:XMLMap;
 		
-		private var actionPanel:ActionPanel;
-		private var optionPanel:OptionPanel;
-		private var typePanel:TypePanel;
-		private var jointPanel:JointPanel;
-		private var shapePanel:ShapePanel;
+		private var panels:Panels;
 		
 		private var files:Array;
-		private var fileIndex:uint;
+		private var fileIndex:int;
 		private var statusText:TextField;
 		
 		public function PhysLevelEditor() 
@@ -62,20 +54,11 @@
 			
 			addPlayer();
 			
-			actionPanel = new ActionPanel(5, 5);
-			addChild(actionPanel.getSprite());
+			panels = new Panels(this);
 			
-			optionPanel = new OptionPanel(590, 5);
-			addChild(optionPanel.getSprite());
+			xmlMapLoader = new XMLMap(this);
+			xmlMapLoader.loadConfigFile(FlxG.levels[FlxG.level]);
 			
-			typePanel = new TypePanel(55, 5, true);
-			addChild(typePanel.getSprite());
-			
-			shapePanel = new ShapePanel(190, 5, true);
-			addChild(shapePanel.getSprite());
-			
-			jointPanel = new JointPanel(325, 5, true);
-			addChild(jointPanel.getSprite());
 		}
 		
 		//Load the config file to set up world...
@@ -101,10 +84,10 @@
 			statusText.background = true;
 			statusText.border = true;
 			statusText.selectable = false;
-			statusText.x = 5;
+			statusText.x = 140;
 			statusText.y = 460;
 			statusText.height = 16;
-			statusText.width = 630;
+			statusText.width = 490;
 			addChild(statusText);
 		}
 		
@@ -127,6 +110,8 @@
 			
 			super.update();
 			
+			xmlMapLoader.update();
+			
 			//True only after the config file has been loaded
 			if(!_loaded) 
 				return;
@@ -146,11 +131,7 @@
 			args["file"] = files[fileIndex];
 			statusText.text = args["file"];
 			
-			actionPanel.update();
-			optionPanel.update();
-			typePanel.update();
-			shapePanel.update();
-			jointPanel.update();
+			panels.update();
 		}
 	}
 }

@@ -1,5 +1,9 @@
-data/start_point.png
-data/end_point.png
+data/editor/images/blocks_1.jpg
+data/editor/images/blocks_2.jpg
+data/editor/images/blocks_3.jpg
+data/editor/images/blocks_4.jpg
+data/editor/images/blocks_5.jpg
+data/editor/images/blocks_6.jpg
 data/editor/images/e_ass_03.png
 data/editor/images/e_ass_06.png
 data/editor/images/e_ass_08.png

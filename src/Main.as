@@ -16,7 +16,7 @@ package {
 		
 		public function Main():void
 		{
-			super(640, 480, PhysState, 1);
+			super(640, 480, LevelSelectMenu , 1);
 			super.showLogo = false;
 			
 			for(var i:uint = 1; i <= MAX_LEVEL; i++){

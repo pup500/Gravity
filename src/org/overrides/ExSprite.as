@@ -259,12 +259,12 @@ package org.overrides
 				}
 			}
 			
-			initShape();
+			initBoxShape();
 		}
 		
 		//@desc Create a rectangle shape definition from the sprite dimensions.
 		//We're calling this outside the constructor because we need Flixel to define its sprite dimensions first in loadGraphic().
-		protected function initShape():void {
+		protected function initBoxShape():void {
 			var shapeDef:b2PolygonShape = new b2PolygonShape();
 			shapeDef.SetAsBox((_bw/2) / ExState.PHYS_SCALE, (_bh/2)/ExState.PHYS_SCALE);
 			shape = shapeDef;
@@ -274,6 +274,23 @@ package org.overrides
 		protected function initCircleShape():void
 		{
 			shape = new b2CircleShape((_bw/2)/ExState.PHYS_SCALE);
+		}
+		
+		public function initShape(type:uint):void{
+			switch(type){
+				case b2Shape.e_circleShape:
+					initCircleShape();
+					break;
+				case b2Shape.e_polygonShape:
+					//initShape();
+					initShapeFromSprite();
+					break;
+				case b2Shape.e_edgeShape:
+					//initShape();
+					//We don't have edgeshapes yet.....
+					initShapeFromSprite();
+					break;
+			}
 		}
 		
 		//@desc Create the physical representation in the Box2D World using the shape definition from initShape methods.
@@ -415,6 +432,10 @@ package org.overrides
 			return final_body;
 		}
 		
+		public function GetShape():b2Shape{
+			return shape;
+		}
+		
 		//See Minh:
 		//Box2D reuses the reference to point, so we can't simply copy the reference.
 		// Since there are no copy constructors, we'll have to manually copy a few
@@ -439,18 +460,20 @@ package org.overrides
 			//impactPoint.position = point.position.Copy();
 		}
 		
+		//NOTE: Always change getXML first, then save all the levels into new files and then
+		//Change the init function to match getXML
 		public function getXML():XML
 		{			
 			var xml:XML = new XML(<shape/>);
 			xml.file =  imageResource;
-			xml.layer = layer;
-			xml.bodyType = fixture.GetBody().GetType();
-			xml.shapeType = fixture.GetType();
-			xml.angle = angle;
+			xml.@layer = layer;
+			xml.@bodyType = fixture.GetBody().GetType();
+			xml.@shapeType = fixture.GetType();
+			xml.@angle = angle;
 			
 			//XML representation is in screen coordinates, so scale up physics
-			xml.x = final_body.GetPosition().x * ExState.PHYS_SCALE;
-			xml.y = final_body.GetPosition().y * ExState.PHYS_SCALE;
+			xml.@x = final_body.GetPosition().x * ExState.PHYS_SCALE;
+			xml.@y = final_body.GetPosition().y * ExState.PHYS_SCALE;
 					
 			return xml;
 		}
@@ -460,6 +483,7 @@ package org.overrides
 			//If there's no image file information, just load the file normally
 			if(xml.file.length() == 0){
 				onInitXMLComplete(xml, world, controller);
+				return;
 			}
 			
 			var loader:Loader = new Loader();
@@ -481,30 +505,31 @@ package org.overrides
 			
 			//Assume we have pixel data already....
 			imageResource = xml.file;
-			layer = xml.layer;
+			layer = xml.@layer;
 			
-			bodyDef.type = xml.bodyType;
+			bodyDef.type = xml.@bodyType;
 			
-			switch(int(xml.shapeType)){
-				case b2Shape.e_circleShape:
-					initCircleShape();
-					break;
-				case b2Shape.e_polygonShape:
-					//initShape();
-					initShapeFromSprite();
-					break;
-				case b2Shape.e_edgeShape:
-					//initShape();
-					//We don't have edgeshapes yet.....
-					initShapeFromSprite();
-					break;
-			}
+			initShape(xml.@shapeType);
 			
-			bodyDef.angle = xml.angle;
-			bodyDef.position.Set(xml.x/ExState.PHYS_SCALE, xml.y/ExState.PHYS_SCALE);
+			bodyDef.angle = xml.@angle;
+			bodyDef.position.Set(xml.@x/ExState.PHYS_SCALE, xml.@y/ExState.PHYS_SCALE);
 			
 			//TODO:Do we need to correct for x and y...?
 			createPhysBody(world, controller);
+			
+			reset(xml.@x, xml.@y);
 		}
+		
+		public function SetBodyType(type:uint):void{
+			final_body.SetType(type);
+		}
+		
+		public function SetShapeType(type:uint):void{
+			initShape(type);
+			final_body.DestroyFixture(fixture);
+			final_body.CreateFixture2(shape, 1.0);
+		}
+		
+		
 	}
 }

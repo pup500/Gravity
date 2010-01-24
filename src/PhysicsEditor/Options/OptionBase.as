@@ -1,6 +1,7 @@
 package PhysicsEditor.Options
 {
 	import PhysicsEditor.IAction;
+	import PhysicsEditor.IPanel;
 	
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
@@ -14,8 +15,9 @@ package PhysicsEditor.Options
 		protected var sprite:Sprite;
 		protected var active:Boolean;
 		protected var state:ExState;
+		protected var panel:IPanel;
 		
-		public function OptionBase(Graphic:Class)
+		public function OptionBase(Graphic:Class, panel:IPanel, active:Boolean)
 		{
 			sprite = new Sprite();
 			
@@ -27,6 +29,9 @@ package PhysicsEditor.Options
 			sprite.addEventListener(MouseEvent.MOUSE_DOWN, onClick);
 			
 			state = FlxG.state as ExState;
+			
+			this.active = active;
+			this.panel = panel;
 		}
 
 		public function getSprite():Sprite

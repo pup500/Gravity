@@ -36,8 +36,8 @@ package common.joints
 				
 				//If we have xml data, use that
 				if(xml.loaded == "true"){
-					anchor.x = xml.anchor.x / ExState.PHYS_SCALE;
-					anchor.y = xml.anchor.y / ExState.PHYS_SCALE;
+					anchor.x = xml.anchor.@x / ExState.PHYS_SCALE;
+					anchor.y = xml.anchor.@y / ExState.PHYS_SCALE;
 				}
 				
 				//Compute distance of the center point to the center of our main object

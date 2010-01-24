@@ -41,11 +41,11 @@ package common.joints
 				
 				//If we have xml data loaded from the config file, then use that
 				if(xml.loaded == "true"){
-					axis.x = xml.axis.x;
-					axis.y = xml.axis.y;
+					axis.x = xml.axis.@x;
+					axis.y = xml.axis.@y;
 					
-					anchor.x = xml.anchor.x / ExState.PHYS_SCALE;
-					anchor.y = xml.anchor.y / ExState.PHYS_SCALE;
+					anchor.x = xml.anchor.@x / ExState.PHYS_SCALE;
+					anchor.y = xml.anchor.@y / ExState.PHYS_SCALE;
 				}
 				
 				//Axis should be normalized
