@@ -42,6 +42,16 @@
 			//_animationSprite.visible = true;
 			//_animationSprite.play(_animName);
 		}
+		
+		public function setTarget():void
+		{
+			
+		}
+		
+		public function setArgs():void 
+		{
+			
+		}
 	}
 
 }

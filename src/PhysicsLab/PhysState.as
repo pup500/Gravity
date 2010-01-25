@@ -1,7 +1,9 @@
 package PhysicsLab
 {
 	import Box2D.Collision.*;
+	import Box2D.Collision.Shapes.*;
 	import Box2D.Common.Math.*;
+	import Box2D.Common.b2internal;
 	import Box2D.Dynamics.*;
 	
 	import PhysicsGame.*;
@@ -40,13 +42,6 @@ package PhysicsLab
 		private var time_count:Timer=new Timer(1000);
 		private var spawned:uint = 0;
 		
-		//Our map loading code requires every map object derived classes to be referenced in this class
-		//TODO: Refactor so we don't have to reference each map like this?
-		//private var maponegap:MapOneGap;
-		//private var mapsmalloneplatform:MapSmallOnePlatform;
-		//private var mapvalley:MapValley;
-		//private var maptestlevel:MapTestLevel;
-		
 		public function PhysState() 
 		{
 			super();
@@ -62,36 +57,12 @@ package PhysicsLab
 			
 			_bullets = new Array();
 			_gravObjects = new Array();
-			//var body:Player = new Player(_map.playerSpawn_x, _map.playerSpawn_y, _bullets);
-			var body:PhysicsGame.Player = new PhysicsGame.Player(400, 100, _bullets);
+
+			controller = new GravityObjectController();
+			the_world.AddController(controller);
 			
-			body.createPhysBody(the_world);
-			body.final_body.AllowSleeping(false);
-			body.final_body.SetFixedRotation(true);
-			add(body);
-			
-			//Create GravityObjects
-			for(var i:uint= 0; i < 8; i++){
-				_gravObjects.push(this.add(new GravityObject(the_world)));
-				//don't create physical body, wait till bullet is shot.
-			}
-			
-			
-			//Create bullets
-			for(i = 0; i < 8; i++){
-				var bullet:Bullet = new Bullet(the_world);
-				bullet.setGravityObject(_gravObjects[i]);
-				_bullets.push(this.add(bullet));
-				//don't create physical body, wait till bullet is shot.
-			}
-			
-			//Set camera to follow player movement.
-			//This works, in debug mode it looks weird but that's because of layer offset...
-			FlxG.follow(body,2.5);
-			FlxG.followAdjust(0.5,0.0);
-			FlxG.followBounds(0,0,640,640);
-			
-			FlxG.showCursor(cursorSprite);
+			createBullets();
+			addPlayer();
 			
 			addSensor();
 			
@@ -104,11 +75,54 @@ package PhysicsLab
 			
 			initContactListener();
 		}
+			
+		private function createBullets():void {
+			_bullets = new Array();
+			_gravObjects = new Array();
+			
+			//Create GravityObjects
+			for(var i:uint= 0; i < 8; i++){
+				_gravObjects.push(this.add(new GravityObject(the_world)));
+				//don't create physical body, wait till bullet is shot.
+			}
+			
+			//Create bullets
+			for(i = 0; i < 8; i++){
+				var bullet:Bullet = new Bullet(the_world, controller);
+				bullet.setGravityObject(_gravObjects[i]);
+				_bullets.push(this.add(bullet));
+				//don't create physical body, wait till bullet is shot.
+			}
+			
+			var gController:GravityObjectController = controller as GravityObjectController;
+			gController._gravObjects = _gravObjects;
+			
+		}
 		
+		//Player will be called from the xmlMapLoader when the xml file is read...
+		public function addPlayer():void{
+			//var start:Point = xmlMapLoader.getStartPoint();
+			
+			var body:PhysicsGame.Player = new PhysicsGame.Player(200, 200);
+			body.createPhysBody(the_world, controller);
+			
+			body.GetBody().SetSleepingAllowed(false);
+			body.GetBody().SetFixedRotation(true);
+			body.SetBullets(_bullets);
+			
+			add(body);
+			
+			//Set camera to follow player movement.
+			//This works, in debug mode it looks weird but that's because of layer offset...
+			FlxG.follow(body,2.5);
+			FlxG.followAdjust(0.5,0.0);
+			//FlxG.followBounds(0,0,640,640);
+			FlxG.followBounds(0,0,1280,960);
+		}
 		
 		private function addSensor():void
 		{
-			var sense:Sensor = new Sensor(150,290, 10, 10);
+			var sense:Sensor = new Sensor(150,290, "Player");
 			sense.createPhysBody(the_world);
 			add(sense);
 			
@@ -117,7 +131,7 @@ package PhysicsLab
 			add(anim);
 			sense.AddEvent(anim);
 		}
-		
+		/*
 		//Load the png at the specified coordinates
 		private function loadPNG(png:String, x:Number, y:Number, s:String):void{
 			var loader:Loader = new Loader();
@@ -131,7 +145,7 @@ package PhysicsLab
 		    var bitmapData:BitmapData = Bitmap(LoaderInfo(event.target).content).bitmapData;
 		    b2 = new ExSprite(x,y);
 		    b2.pixels = bitmapData;
-		    b2.initShape();
+		    b2.initShape(b2Shape.e_polygonShape);
 			b2.createPhysBody(the_world);
 			if(s == "static")
 				b2.final_body.SetStatic();
@@ -161,7 +175,7 @@ package PhysicsLab
 				loadPNG(cols[0], cols[1], cols[2], cols[3]);
 			}
 		}
-		
+		*/
 		//private function loadSVG():void{
 			//var myxml:XML = new XML(new lineSVG);
 			//b2SVG.parseSVG(myxml, the_world, 3,0);
@@ -193,7 +207,8 @@ package PhysicsLab
 			var body:ExSprite = new ExSprite(Math.random()*300+10, 0, botSprite);
 			body.name = "Player";
 			body.loadGraphic(botSprite,true, true); //Loading again to set animation.
-			body.initShape();
+			body.initShape(1);
+			var shapdef:b2PolygonShape =  body.GetShape() as Box2D.Collision.Shapes.b2PolygonShape;
 			body.createPhysBody(the_world);
 			add(body);
 			
@@ -209,62 +224,15 @@ package PhysicsLab
 		{
 			//Platform for raining objects to interact with.
 			b2 = new ExSprite(300, 300, botSprite);
-			b2.initShape();
-			b2.shape.density = 0; //0 density makes object stationary.
-			b2.shape.SetAsBox(175, 10);
+			b2.initShape(1);
 			b2.createPhysBody(the_world); //Add b2 as a physical body to Box2D's world.
+			b2.GetBody().SetType(b2Body.b2_staticBody);
 			add(b2); //Add b2 as a sprite to Flixel's update loop.
 		}
 		
 		override public function update():void
 		{
 			super.update();
-			
-			//Testing
-			for (var bb:b2Body = the_world.GetBodyList(); bb; bb = bb.GetNext()) {
-				
-				if(bb.GetUserData() && bb.GetUserData().name == "Player"){
-					for(var i:uint = 0; i < _gravObjects.length; i++){
-						var gObj:GravityObject = _gravObjects[i] as GravityObject;
-						
-						if(!gObj.exists) continue;
-						
-						var gMass:Number = gObj.mass;// Hack - use object's mass not physics mass because density = 0//gObj.final_body.m_mass;
-						var gPoint:Point = new Point(gObj.final_body.GetPosition().x, gObj.final_body.GetPosition().y);
-						var bbPoint:Point = new Point(bb.GetPosition().x, bb.GetPosition().y);
-						var dist:Point = gPoint.subtract(bbPoint);
-						var distSq:Number = dist.x * dist.x + dist.y * dist.y;
-						
-						//For performance reasons....  assume force is 0 when distance is pretty far
-						//if(distSq > 1000 ) continue;
-						
-						//This is a physics hack to stop adding gravity to objects when they are too close
-						//they aren't pulling anymore because of normal force
-						//if(distanceSq < 100) continue;
-						
-						var distance:Number = Math.sqrt(distSq);
-						var massProduct:Number = bb.GetMass() * gMass;
-						//var massProduct:Number = massedObj.getMass() * gravObj.getMass();	//_player.mass * gravObj.mass;
-						
-						var G:Number = 1; //gravitation constant
-						
-						var force:Number = G*(massProduct/distSq);
-						
-						//force = Math.log(force) * 20;
-						
-						if(force > 200) force = 200;
-						if(force < -200) force = -200;
-						
-						//trace(distance);
-						trace("dist:" + distance + " force:" + force + " forx:" + force * (dist.x/distance) + " fory:" + force * (dist.y/distance));
-						
-						bb.ApplyImpulse(new b2Vec2(force * (dist.x/distance), force * (dist.y/distance)),bb.GetWorldCenter());
-						
-						//massedObj.accel.x += ;//xDistance >= 0 ? xForce :-xForce;
-						//massedObj.accel.y += force * (yDistance/distance);//yDistance >= 0 ? yForce :-yForce;
-					}
-				}
-			}
 		}
 	}
 }

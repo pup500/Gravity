@@ -169,8 +169,10 @@
 			super.render();
 			
 		}
+		
 		private var gPoint:Point //= new Point(this.final_body.GetPosition().x, this.final_body.GetPosition().y);
 		private var G:Number = 1; //gravitation constant
+		
 		public function GetGravityForce(physBody:b2Body):b2Vec2
 		{
 			var gMass:Number = this.mass;// Hack - use object's mass not physics mass because density = 0//this.final_body.m_mass;
