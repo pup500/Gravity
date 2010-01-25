@@ -15,14 +15,19 @@ package PhysicsEditor.Fields
 			//This is how you create new panels
 			fields = [
 				new AngleField(),
+				new FrictionField(),
+				new DensityField(),
 				new SpeedField(),
 				new TorqueField()
 			];
 			
 			for(var i:uint=0; i < fields.length; i++){
 				var sprite:Sprite = fields[i].getSprite() as Sprite;
-				sprite.x = i*80 + 140;
-				sprite.y = 440;
+				sprite.x = 545;//i*90 + 140;
+				sprite.y = i*20 + 300;//440;
+				//sprite.x = i*90 + 140;
+				//sprite.y = 440;
+				
 				state.addChild(sprite);
 			}
 		}

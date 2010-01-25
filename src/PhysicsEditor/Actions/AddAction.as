@@ -75,15 +75,83 @@ package PhysicsEditor.Actions
 			//p.y += tl.y <= br.y ? assetImage.height/2 : -assetImage.height/2;
 			
 			///VERY CLOSE
-			p.x += tl.x <= br.x ? assetImage.width/2 : -assetImage.width/2 ;
-			p.y += tl.y <= br.y ? assetImage.height/2 : -assetImage.height/2 ;
+			/*
+			if(tl.x < br.x){
+				p.x += assetImage.width/2;
+			}
+			else if (tl.x > br.x){
+				p.x -= assetImage.width/2;
+			}
+			else if (tl.x == br.x){
+				if(tl.y < br.y){
+					p.x -= assetImage.width/2;
+				}
+				else if(tl.y > br.y){
+					p.x += assetImage.width/2;
+				}
+			}
+			//p.x += tl.x < br.x ? assetImage.width/2 : -assetImage.width/2 ;
+			//p.y += tl.y < br.y ? assetImage.height/2 : -assetImage.height/2 ;
+			if(tl.y < br.y){
+				p.y += assetImage.height/2;
+			}
+			else if (tl.y > br.y){
+				p.y -= assetImage.height/2;
+			}
+			else if (tl.y == br.y){
+				 if(tl.x < br.x){
+					p.y += assetImage.height/2;
+				}
+				else if(tl.x > br.x){
+					p.y -= assetImage.height/2;
+				}
+			}
+			*/
 			
+			/*
 			if(tl.x != min.x && tl.x != max.x){
 				p.x += tr.x - tl.x;
 			}
-			else if(tl.y != min.y && tl.y != max.y){
+			if(tl.y != min.y && tl.y != max.y){
 				p.y += tr.y - tl.y;
 			}
+			*/
+			
+			
+			/*
+			if(tl.y == min.y){
+				p.y += assetImage.height/2;
+			}
+			if(tl.y == max.y){
+				p.y -= assetImage.height/2;
+			}
+			if(tl.x == min.x){
+				p.x += assetImage.width/2;
+			}
+			if(tl.x == max.x){
+				p.x -= assetImage.width/2;
+			}
+			*/
+			
+			//This completely works...
+			/*
+			if(tl.y < br.y){
+				p.y += (br.y - tl.y)/2;
+			}
+			if(tl.y > br.y){
+				p.y += (br.y - tl.y)/2;
+			}
+			if(tl.x < br.x){
+				p.x += (br.x - tl.x)/2;
+			}
+			if(tl.x > br.x){
+				p.x += (br.x - tl.x)/2;
+			}*/
+			
+			p.y += tl.y == br.y ? 0 : (br.y - tl.y)/2;
+			p.x += tl.x == br.x ? 0 : (br.x - tl.x)/2;
+			
+			
 			
 			/*
 			//top left is x greater than bottom right

@@ -25,10 +25,10 @@ package PhysicsEditor.Fields
 			labelField = new TextField();
 			labelField.text = label;
 			labelField.height = labelField.textHeight + 5;
-			labelField.width = labelField.textWidth + 5;
+			labelField.width = 50;//labelField.textWidth + 5;
 			labelField.selectable = false;
 			labelField.background = true;
-			labelField.backgroundColor = 0xffffff;
+			labelField.backgroundColor = 0x888888;
 			labelField.border = true;
 			sprite.addChild(labelField);
 			
@@ -37,9 +37,9 @@ package PhysicsEditor.Fields
 			textField.type = TextFieldType.INPUT;
 			//textField.autoSize = TextFieldAutoSize.LEFT;
 			textField.background = true;
-			textField.backgroundColor = 0xffffff;
+			textField.backgroundColor = 0xeeeeee;
 			textField.border = true;
-			textField.x = labelField.textWidth + 5;
+			textField.x = labelField.width;//labelField.textWidth + 5;
 			textField.height = textField.textHeight + 5;
 			textField.width = 40;
 			textField.maxChars = 5;			

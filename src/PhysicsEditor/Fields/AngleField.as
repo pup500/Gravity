@@ -10,6 +10,5 @@ package PhysicsEditor.Fields
 		override public function update():void{
 			state.getArgs()["angle"] = int(textField.text);
 		}
-		
 	}
 }
