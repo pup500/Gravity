@@ -27,8 +27,6 @@
 		
 		[Embed(source="../data/cursor.png")] private var cursorSprite:Class;
 		
-		private var xmlMapLoader:XMLMap;
-		
 		private var panels:Panels;
 		
 		private var files:Array;
@@ -60,9 +58,7 @@
 			panels = new Panels(this);
 			fields = new Fields(this);
 			
-			xmlMapLoader = new XMLMap(this);
 			xmlMapLoader.loadConfigFile(FlxG.levels[FlxG.level]);
-			
 		}
 		
 		//Load the config file to set up world...
@@ -88,10 +84,10 @@
 			statusText.background = true;
 			statusText.border = true;
 			statusText.selectable = false;
-			statusText.x = 140;
+			statusText.x = 5;//140;
 			statusText.y = 460;
 			statusText.height = 16;
-			statusText.width = 490;
+			statusText.width = 630;//490;
 			addChild(statusText);
 		}
 		
@@ -113,8 +109,6 @@
 			}
 			
 			super.update();
-			
-			xmlMapLoader.update();
 			
 			//True only after the config file has been loaded
 			if(!_loaded) 

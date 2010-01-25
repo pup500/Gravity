@@ -16,6 +16,7 @@ package PhysicsEditor.Fields
 			fields = [
 				new AngleField(),
 				new FrictionField(),
+				new BounceField(),
 				new DensityField(),
 				new SpeedField(),
 				new TorqueField()

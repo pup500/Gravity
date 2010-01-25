@@ -6,7 +6,7 @@ package PhysicsEditor.Types
 	
 	public class DynamicType extends TypeBase
 	{
-		[Embed(source="../../data/editor/interface/sheep-icon.png")] private var img:Class;
+		[Embed(source="../../data/editor/interface/g_dynamic.png")] private var img:Class;
 		
 		public function DynamicType(panel:IPanel, active:Boolean)
 		{

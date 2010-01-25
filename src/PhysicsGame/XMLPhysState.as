@@ -20,8 +20,6 @@ package PhysicsGame
 		[Embed(source="../data/cursor.png")] private var cursor:Class;
 		[Embed(source="../data/end_point.png")] private var endPoint:Class;
 		
-		private var xmlMapLoader:XMLMap;
-		
 		private var _bullets:Array;
 		private var _gravObjects:Array;
 		
@@ -65,7 +63,6 @@ package PhysicsGame
 		
 		private function loadLevelConfig():void{
 			var file:String = FlxG.levels[FlxG.level];
-			xmlMapLoader = new XMLMap(this);
 			xmlMapLoader.loadConfigFile(file);
 		}
 		

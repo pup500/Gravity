@@ -8,7 +8,7 @@ package PhysicsEditor.Types
 	
 	public class CircleShapeType extends TypeBase
 	{
-		[Embed(source="../../data/editor/interface/stop-icon.png")] private var img:Class;
+		[Embed(source="../../data/editor/interface/shape_circle.png")] private var img:Class;
 		
 		public function CircleShapeType(panel:IPanel, active:Boolean)
 		{

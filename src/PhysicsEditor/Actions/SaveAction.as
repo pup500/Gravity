@@ -23,10 +23,24 @@ package PhysicsEditor.Actions
 		override protected function onClick(event:MouseEvent):void{
 			var xml:XML = Utilities.CreateXMLRepresentation(state.the_world);
 			var points:XML = new XML(<points/>);
-			points.start.@x = state.getArgs()["startPoint"].x;
-			points.start.@y = state.getArgs()["startPoint"].y;
-			points.end.@x = state.getArgs()["endPoint"].x;
-			points.end.@y = state.getArgs()["endPoint"].y;
+			
+			if(state.getArgs()["startPoint"]){
+				points.start.@x = state.getArgs()["startPoint"].x;
+				points.start.@y = state.getArgs()["startPoint"].y;
+			}
+			else{
+				points.start.@x = 0;
+				points.start.@y = 0;
+			}
+			
+			if(state.getArgs()["endPoint"]){
+				points.end.@x = state.getArgs()["endPoint"].x;
+				points.end.@y = state.getArgs()["endPoint"].y;
+			}
+			else{
+				points.end.@x = 0;
+				points.end.@y = 0;
+			}
 			
 			//Create the config file as below
 			xml.appendChild(points);

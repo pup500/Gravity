@@ -10,7 +10,7 @@ package PhysicsEditor.Types
 	
 	public class EdgeShapeType extends TypeBase
 	{
-		[Embed(source="../../data/editor/interface/delete.png")] private var img:Class;
+		[Embed(source="../../data/editor/interface/shape_edge.png")] private var img:Class;
 		
 		public function EdgeShapeType(panel:IPanel, active:Boolean)
 		{

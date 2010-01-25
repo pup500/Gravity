@@ -8,7 +8,7 @@ package PhysicsEditor.Types
 	
 	public class PolyShapeType extends TypeBase
 	{
-		[Embed(source="../../data/editor/interface/play-icon.png")] private var img:Class;
+		[Embed(source="../../data/editor/interface/shape_poly.png")] private var img:Class;
 		
 		public function PolyShapeType(panel:IPanel, active:Boolean)
 		{

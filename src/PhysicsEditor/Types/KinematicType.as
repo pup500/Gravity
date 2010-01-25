@@ -6,7 +6,7 @@ package PhysicsEditor.Types
 	
 	public class KinematicType extends TypeBase
 	{
-		[Embed(source="../../data/editor/interface/fish-icon.png")] private var img:Class;
+		[Embed(source="../../data/editor/interface/g_kin.png")] private var img:Class;
 		
 		public function KinematicType(panel:IPanel, active:Boolean)
 		{

@@ -6,7 +6,7 @@ package PhysicsEditor.Types
 	
 	public class StaticType extends TypeBase
 	{
-		[Embed(source="../../data/editor/interface/elephant-icon.png")] private var img:Class;
+		[Embed(source="../../data/editor/interface/g_static.png")] private var img:Class;
 		
 		public function StaticType(panel:IPanel, active:Boolean)
 		{

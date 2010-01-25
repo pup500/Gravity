@@ -1,0 +1,45 @@
+<config>
+  <objects>
+    <shape layer="1" bodyType="2" shapeType="1" angle="-0.4363323129985824" x="459.5" y="139.09105">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="-0.4363323129985824" x="554.5" y="141.09105">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0.4363323129985824" x="347.5" y="139.04305">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0.4363323129985824" x="252.49999999999997" y="137.04305000000002">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" x="719.9912147464531" y="368">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" x="464" y="368">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" x="208" y="368">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <joint type="3">
+      <body1 x="417.17680965432527" y="48.328675405657286"/>
+      <body2 x="509.03526803147463" y="50.69022240384275"/>
+    </joint>
+    <joint type="3">
+      <body1 x="495.47845002031914" y="228.0780929735442"/>
+      <body2 x="596.8226045295758" y="227.1197651413593"/>
+    </joint>
+    <joint type="3">
+      <body1 x="294.8029046691112" y="46.324178179435044"/>
+      <body2 x="387.50659956974187" y="46.15001560717629"/>
+    </joint>
+    <joint type="3">
+      <body1 x="207.43818643275083" y="221.84741312991494"/>
+      <body2 x="308.78234094200735" y="226.80574096209986"/>
+    </joint>
+  </objects>
+  <points>
+    <start x="94" y="315"/>
+    <end x="812" y="318"/>
+  </points>
+</config>

@@ -529,6 +529,7 @@ package org.overrides
 			initShape(type);
 			final_body.DestroyFixture(fixture);
 			final_body.CreateFixture2(shape, 1.0);
+			fixture = final_body.GetFixtureList();
 		}
 		
 		

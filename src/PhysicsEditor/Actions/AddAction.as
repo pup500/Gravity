@@ -2,6 +2,8 @@ package PhysicsEditor.Actions
 {
 	import PhysicsEditor.IPanel;
 	
+	import common.XMLMap;
+	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Loader;
@@ -40,7 +42,7 @@ package PhysicsEditor.Actions
 		}
 		
 		private function addXMLObject():void{
-			
+			state.getXMLLoader().loadConfigFile(args["file"], false, args["start"]);
 		}
 		
 		private function addObject():void{

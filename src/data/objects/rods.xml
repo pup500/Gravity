@@ -1,0 +1,22 @@
+<config>
+  <objects>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" x="301" y="253.1083">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" x="206" y="251.15870000000004">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+    <joint type="3">
+      <body1 x="201" y="347"/>
+      <body2 x="303" y="349"/>
+    </joint>
+    <joint type="3">
+      <body1 x="206.99999999999997" y="151"/>
+      <body2 x="298" y="152"/>
+    </joint>
+  </objects>
+  <points>
+    <start x="0" y="0"/>
+    <end x="0" y="0"/>
+  </points>
+</config>

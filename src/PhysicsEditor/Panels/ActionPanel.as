@@ -7,7 +7,7 @@ package PhysicsEditor.Panels
 	{
 		private var ACTIONS:Array = 
 			[AddAction, RemoveAction, ChangeAction, JoinAction, BreakAction, 
-			EventAction, LinkAction, SensorAction, StartAction, EndAction];
+			EventAction, LinkAction, SensorAction, SelectAction, StartAction, EndAction];
 		
 		public function ActionPanel(x:uint=0, y:uint=0, horizontal:Boolean=false)
 		{

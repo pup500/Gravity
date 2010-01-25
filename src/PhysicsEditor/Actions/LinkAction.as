@@ -15,7 +15,7 @@ package PhysicsEditor.Actions
 	
 	public class LinkAction extends ActionBase
 	{
-		[Embed(source="../../data/editor/interface/connect-icon.png")] private var img:Class;
+		[Embed(source="../../data/editor/interface/link.png")] private var img:Class;
 		
 		private var line:Shape;
 		

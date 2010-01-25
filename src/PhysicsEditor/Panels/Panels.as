@@ -16,7 +16,7 @@ package PhysicsEditor.Panels
 				new TypePanel(55, 5, true),
 				new ShapePanel(190, 5, true),
 				new JointPanel(325, 5, true),
-				new ControlPanel(5, 430, true)
+				new ControlPanel(55, 325)
 			];
 			
 			for each(var panel:PanelBase in panels){

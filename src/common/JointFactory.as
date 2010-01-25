@@ -34,9 +34,11 @@ package common
 		
 		//Always make sure we have registered two points
 		public static function addJoint(world:b2World, jointXML:XML):void{
-			var joint:Joint = new JOINTS[jointXML.@type](world, jointXML);
-			joint.SetJointDef();
-			joint.AddJoint();
+			//if(jointXML.@type.length() > 0){
+				var joint:Joint = new JOINTS[jointXML.@type](world, jointXML);
+				joint.SetJointDef();
+				joint.AddJoint();
+			//}
 		}
 		
 		public static function createJointXML(args:Dictionary):XML{

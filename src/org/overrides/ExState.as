@@ -5,6 +5,8 @@ package org.overrides
 	import Box2D.Dynamics.*;
 	import Box2D.Dynamics.Controllers.b2Controller;
 	
+	import common.XMLMap;
+	
 	import flash.display.Sprite;
 	import flash.utils.Dictionary;
 	
@@ -27,6 +29,7 @@ package org.overrides
 		public var _loaded:Boolean;
 		
 		protected var args:Dictionary;
+		protected var xmlMapLoader:XMLMap;
 		
 		public static const BG:uint = 0;
 		public static const MG:uint = 1;
@@ -57,6 +60,7 @@ package org.overrides
 			ev.visible = false;
 			
 			args = new Dictionary();
+			xmlMapLoader = new XMLMap(this);
 		}
 		
 		public function init():void{
@@ -69,6 +73,10 @@ package org.overrides
 		
 		public function getArgs():Dictionary{
 			return args;
+		}
+		
+		public function getXMLLoader():XMLMap{
+			return xmlMapLoader;
 		}
 		
 		protected function initBox2DDebugRendering():void
@@ -105,6 +113,9 @@ package org.overrides
 			//For the physics....
 			debug_sprite.x = FlxG.scroll.x;
 			debug_sprite.y = FlxG.scroll.y;
+			
+			xmlMapLoader.update();
+			
 		}
 		
 		public function addToLayer(Core:FlxCore, layer:uint=0):FlxCore
