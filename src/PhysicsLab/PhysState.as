@@ -224,6 +224,8 @@ package PhysicsLab
 		{
 			//Platform for raining objects to interact with.
 			b2 = new ExSprite(300, 300, botSprite);
+			b2.height = 10;
+			b2.width = 20;
 			b2.initShape(1);
 			b2.createPhysBody(the_world); //Add b2 as a physical body to Box2D's world.
 			b2.GetBody().SetType(b2Body.b2_staticBody);

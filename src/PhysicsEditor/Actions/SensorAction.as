@@ -4,6 +4,7 @@ package PhysicsEditor.Actions
 	import flash.display.*;
 	import Box2D.Common.Math.b2Vec2;
 	import PhysicsEditor.IPanel;
+	import PhysicsGame.Sensor;
 	
 	public class SensorAction extends ActionBase
 	{
@@ -14,17 +15,11 @@ package PhysicsEditor.Actions
 		public function SensorAction(panel:IPanel, active:Boolean)
 		{
 			super(img, panel, active);
+			dragBox = new Shape();
 		}
 		
-		override public function handleBegin():void
-		{
-			super.handleBegin();
-		}
-		
-		override public function handleDrag():void
-		{
-			if (!active) return;
-			
+		override public function onHandleDrag():void
+		{			
 			var startPoint:b2Vec2 = args["start"];
 			
 			if (FlxG.mouse.x != startPoint.x || FlxG.mouse.y != startPoint.y)
@@ -37,14 +32,8 @@ package PhysicsEditor.Actions
 			}
 		}
 		
-		override public function handleEnd():void
+		override public function onHandleEnd():void
 		{
-			if(!active) return;
-			
-			beginDrag = false;
-			args["end"] = new b2Vec2(FlxG.mouse.x, FlxG.mouse.y);
-			//onPostRelease(args);
-			
 			dragBox.graphics.clear();
 			
 			createSensor();
@@ -63,6 +52,17 @@ package PhysicsEditor.Actions
 			//TODO: what if the end point is less than the start point?
 
 			//Add the sensor to the state and XML
+			var xml:XML = new XML(<sensor/>);
+			xml.file = state.getArgs()["file"];
+			xml.@x = boxCenterX;		 		
+			xml.@y = boxCenterY;
+			xml.@width = width;
+			xml.@height = height;
+			
+			var b2:Sensor = new Sensor();
+		    b2.initFromXML(xml, state.the_world, state.getController());
+		    
+		    state.addToLayer(b2, xml.layer);
 		}
 	}
 }

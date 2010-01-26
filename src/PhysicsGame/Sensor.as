@@ -5,8 +5,20 @@
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
 	import Box2D.Dynamics.Contacts.b2Contact;
+	import Box2D.Dynamics.Controllers.b2Controller;
+	
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
+	import flash.display.Loader;
+	import flash.display.LoaderInfo;
+	import flash.events.Event;
+	import flash.net.URLRequest;
 	
 	import org.overrides.ExSprite;
+	import org.overrides.ExState;
+	
+	import Box2D.Common.b2internal;
+	use namespace b2internal;
 	
 	/**
 	 * ...
@@ -81,18 +93,44 @@
 				_triggered = true;
 		}
 		
-		//TODO: Can we use shape.filter to make collisions happen exclusively with the Player? If I eliminate these if statements, world objects will collide with the end level sensor.
-		/*
-		override public function setImpactPoint(point:b2ContactPoint):void{
-			super.setImpactPoint(point);
+		override public function getXML():XML
+		{
+			var xml:XML = new XML(<sensor/>);
+			xml.@x = x;		 		
+			xml.@y = y;
+			xml.@width = _bw;
+			xml.@height = _bh;
 			
-			if(point.shape1.GetBody().GetUserData() && point.shape1.GetBody().GetUserData().name == Trigger){
-				_triggered = true;
-			}
-			else if(point.shape2.GetBody().GetUserData() && point.shape2.GetBody().GetUserData().name == Trigger){
-				_triggered = true;
-			}
+			return xml;
 		}
-		*/
+		
+		override protected function onInitXMLComplete(xml:XML, world:b2World = null, controller:b2Controller = null, event:Event = null):void
+		{
+			//Load the bitmap data
+			//if(event){
+				//var loadinfo:LoaderInfo = LoaderInfo(event.target);
+				//var bitmapData:BitmapData = Bitmap(loadinfo.content).bitmapData;
+		 		//pixels = bitmapData;
+			//}
+			
+			//Assume we have pixel data already....
+			//imageResource = xml.file;
+			//layer = xml.@layer;
+			
+			bodyDef.type = xml.@bodyType;
+			
+			_bw = xml.@width;
+			_bh = xml.@height;
+			
+			initBoxShape();
+			
+			//bodyDef.angle = xml.@angle;
+			bodyDef.position.Set(xml.@x/ExState.PHYS_SCALE, xml.@y/ExState.PHYS_SCALE);
+			
+			//TODO:Do we need to correct for x and y...?
+			createPhysBody(world, controller);
+			
+			reset(xml.@x, xml.@y);
+		}
 	}
 }
