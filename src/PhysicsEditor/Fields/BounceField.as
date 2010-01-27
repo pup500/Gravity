@@ -8,7 +8,7 @@ package PhysicsEditor.Fields
 		}
 		
 		override public function update():void{
-			state.getArgs()["restitution"] = int(textField.text);
+			state.getArgs()["restitution"] = getValue();
 		}
 	}
 }

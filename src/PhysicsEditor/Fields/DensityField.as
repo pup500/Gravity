@@ -12,7 +12,7 @@ package PhysicsEditor.Fields
 		override public function update():void{
 			textField.visible = state.getArgs()["bodyType"] == b2Body.b2_dynamicBody;
 			
-			state.getArgs()["density"] = int(textField.text);
+			state.getArgs()["density"] = getValue();
 		}
 	}
 }

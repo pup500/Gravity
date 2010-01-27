@@ -297,11 +297,11 @@ package org.overrides
 		//@param	world The Box2D b2World for this object to exist in.
 		public function createPhysBody(world:b2World, controller:b2Controller=null):void{
 			fixtureDef.shape = shape
-			fixtureDef.density = 1.0;
 			
-			// Override the default friction.
-			fixtureDef.friction = 0.3;
-			fixtureDef.restitution = 0.1;
+			//These are set up already.
+			//fixtureDef.density = 1.0;
+			//fixtureDef.friction = 0.3;
+			//fixtureDef.restitution = 0.1;
 			
 			final_body = world.CreateBody(bodyDef);
 			fixture = final_body.CreateFixture(fixtureDef);
@@ -471,6 +471,9 @@ package org.overrides
 			xml.@bodyType = fixture.GetBody().GetType();
 			xml.@shapeType = fixture.GetType();
 			xml.@angle = angle;
+			xml.@friction = fixture.GetFriction();
+			xml.@density = fixture.GetDensity();
+			xml.@restitution = fixture.GetRestitution();
 			
 			//XML representation is in screen coordinates, so scale up physics
 			xml.@x = final_body.GetPosition().x * ExState.PHYS_SCALE;
@@ -515,6 +518,10 @@ package org.overrides
 			bodyDef.angle = xml.@angle;
 			bodyDef.position.Set(xml.@x/ExState.PHYS_SCALE, xml.@y/ExState.PHYS_SCALE);
 			
+			fixtureDef.friction = xml.@friction;
+			fixtureDef.density = xml.@density;
+			fixtureDef.restitution = xml.@restitution;
+			
 			//TODO:Do we need to correct for x and y...?
 			createPhysBody(world, controller);
 			
@@ -525,10 +532,10 @@ package org.overrides
 			final_body.SetType(type);
 		}
 		
-		public function SetShapeType(type:uint):void{
+		public function SetShapeType(type:uint, density:Number=1.0):void{
 			initShape(type);
 			final_body.DestroyFixture(fixture);
-			final_body.CreateFixture2(shape, 1.0);
+			final_body.CreateFixture2(shape, density);
 			fixture = final_body.GetFixtureList();
 		}
 		

@@ -67,6 +67,9 @@ package PhysicsEditor.Actions
 			xml.@bodyType = state.getArgs()["bodyType"];
 			xml.@shapeType = state.getArgs()["shapeType"];
 			xml.@angle = state.getArgs()["angle"] * Math.PI/180;
+			xml.@friction = state.getArgs()["friction"];
+			xml.@density = state.getArgs()["density"];
+			xml.@restitution = state.getArgs()["restitution"];
 			
 			var b2:ExSprite = new ExSprite();
 		    b2.initFromXML(xml, state.the_world, state.getController());

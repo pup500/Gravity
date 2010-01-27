@@ -27,6 +27,12 @@ package PhysicsEditor.Actions
 				
 				b2.SetAngle(state.getArgs()["angle"] * Math.PI/180);
 				
+				var fixture:b2Fixture = b2.GetFixtureList();
+				fixture.SetFriction(state.getArgs()["friction"]);
+				fixture.SetDensity(state.getArgs()["density"]);
+				fixture.SetRestitution(state.getArgs()["restitution"]);
+				b2.ResetMassData();
+				
 				//var xml:XML = bSprite.getXML();
 				//xml.layer = 1;
 				//xml.bodyType = state.getArgs()["bodyType"];

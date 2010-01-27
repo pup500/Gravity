@@ -4,7 +4,6 @@ package PhysicsEditor.Fields
 	import flash.display.Sprite;
 	import flash.text.TextField;
 	import flash.text.TextFieldType;
-	import flash.text.TextFieldAutoSize;
 	
 	import org.flixel.FlxG;
 	import org.overrides.ExState;
@@ -58,6 +57,9 @@ package PhysicsEditor.Fields
 		public function update():void{
 			//trace("text: " + textField.text);
 		}
-
+		
+		public function getValue():String{
+			return textField.text;
+		}
 	}
 }

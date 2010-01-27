@@ -1,0 +1,14 @@
+<config>
+  <objects>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.5" density="2" restitution="0.9" x="203" y="255.1452">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0.1" x="300" y="248.10830000000004">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+  </objects>
+  <points>
+    <start x="190" y="81"/>
+    <end x="285" y="83"/>
+  </points>
+</config>
