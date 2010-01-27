@@ -136,6 +136,18 @@ package common
 		    		eventXML.target.@y = int(eventXML.target.@y) + offset.y;
 		    	}
 			}
+			
+			for each(var sensorXML:XML in configXML.objects.sensor){
+				sensorXML.@x = int(eventXML.@x) + offset.x;
+		    	sensorXML.@y = int(eventXML.@y) + offset.y;
+		    	
+		    	/*
+		    	if(sensorXML.target.@x.length() > 0 && sensorXML.target.@y.length() > 0){
+		    		sensorXML.target.@x = int(sensorXML.target.@x) + offset.x;
+		    		sensorXML.target.@y = int(sensorXML.target.@y) + offset.y;
+		    	}
+		    	*/
+			}
 		}
 		
 		public function update():void{
@@ -146,6 +158,7 @@ package common
 					bodiesLoaded = true;
 					addAllEvents();
 					addAllJoints();
+					addAllSensors();
 					
 					if(!_loaded && savePoints){
 						_loaded = true;
@@ -339,12 +352,18 @@ package common
 			_state.addToLayer(b2, ExState.EV);
 		}
 		
+		public function addAllSensors():void{
+			for each (var sensorXML:XML in configXML.objects.sensor){
+				addXMLSensor(sensorXML);
+			}
+		}
+		
 		public function addXMLSensor(sensorXML:XML, sprite:Class = null):void {
 			//TODO:Fix sensor...
 			var sensor:Sensor = new Sensor();
 			//sensorXML.x, sensorXML.y, sensorXML.width, sensorXML.height);
-			sensor.loadGraphic(sprite);
-			sensor.initFromXML(sensorXML, _state.the_world);
+			//sensor.loadGraphic(sprite);
+			sensor.initFromXML(sensorXML, _state.the_world, _state.getController());
 			//sensor.createPhysBody(_state.the_world);
 			_state.addToLayer(sensor, ExState.EV);
 		}

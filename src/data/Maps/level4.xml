@@ -1,0 +1,16 @@
+<config>
+  <objects>
+    <event type="1" x="177" y="242"/>
+    <sensor x="334" y="389" width="141" height="85"/>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" x="208" y="400">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" x="464" y="400">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+  </objects>
+  <points>
+    <start x="98" y="343"/>
+    <end x="555" y="347"/>
+  </points>
+</config>
