@@ -7,7 +7,7 @@ package PhysicsGame.Events
 			super();
 		}
 		
-		override public function activate():void{
+		override public function startEvent():void{
 			_target.play(_args["anim"]);
 		}
 		

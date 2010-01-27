@@ -4,7 +4,7 @@ package PhysicsGame.Events
 	
 	import org.overrides.ExSprite;
 	
-	public class EventBase
+	public class EventBase implements IEvent
 	{
 		protected var _target:ExSprite;
 		protected var _args:Dictionary;
@@ -21,7 +21,7 @@ package PhysicsGame.Events
 			_target = target;
 		}
 		
-		public virtual function activate():void{}
+		public virtual function startEvent():void{}
 		public virtual function update():void{}
 		
 		public virtual function get target():ExSprite{

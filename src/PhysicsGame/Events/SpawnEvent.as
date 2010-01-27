@@ -13,7 +13,7 @@ package PhysicsGame.Events
 			super();
 		}
 		
-		override public function activate():void{
+		override public function startEvent():void{
 			
 		}
 		

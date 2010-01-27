@@ -14,6 +14,8 @@
 	import flash.events.Event;
 	import flash.net.URLRequest;
 	
+	import PhysicsGame.Events.IEvent;
+	
 	import org.overrides.ExSprite;
 	import org.overrides.ExState;
 	
@@ -78,7 +80,7 @@
 		
 		protected function playEvents():void
 		{
-			//trace("Sensed by sensor.as");
+			trace("Sensed by sensor.as");
 			for each(var event:IEvent in _events)
 			{
 				event.startEvent();

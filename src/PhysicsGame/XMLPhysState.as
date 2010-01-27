@@ -5,6 +5,7 @@ package PhysicsGame
 	import Box2D.Dynamics.*;
 	
 	import common.XMLMap;
+	import PhysicsGame.Events.ChangeLevelEvent;
 	
 	import flash.geom.Point;
 	

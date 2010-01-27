@@ -54,7 +54,7 @@ package PhysicsGame
 		}
 		
 		public function activate():void{
-			_impl.activate();
+			_impl.startEvent();
 		}
 		
 		override public function update():void{

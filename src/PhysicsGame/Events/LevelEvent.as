@@ -11,7 +11,7 @@ package PhysicsGame.Events
 		}
 		
 		//Fake for now....
-		override public function activate():void{
+		override public function startEvent():void{
 			FlxG.level = _args["level"];
 			FlxG.switchState(XMLPhysState);
 		}
