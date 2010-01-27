@@ -3,23 +3,16 @@
 	import Box2D.Collision.*;
 	import Box2D.Collision.Shapes.*;
 	import Box2D.Common.Math.*;
+	import Box2D.Common.b2internal;
 	import Box2D.Dynamics.*;
 	import Box2D.Dynamics.Contacts.b2Contact;
 	import Box2D.Dynamics.Controllers.b2Controller;
 	
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.display.Loader;
-	import flash.display.LoaderInfo;
 	import flash.events.Event;
-	import flash.net.URLRequest;
-	
-	import PhysicsGame.Events.IEvent;
+	import common.Utilities;
 	
 	import org.overrides.ExSprite;
 	import org.overrides.ExState;
-	
-	import Box2D.Common.b2internal;
 	use namespace b2internal;
 	
 	/**
@@ -55,9 +48,9 @@
 			_events = new Array();
 		}
 		
-		public function AddEvent(event:IEvent):void
+		public function AddEvent(eventObj:EventObject):void
 		{
-			_events.push(event);
+			_events.push(eventObj);
 		}
 		
 		/*
@@ -81,9 +74,9 @@
 		protected function playEvents():void
 		{
 			trace("Sensed by sensor.as");
-			for each(var event:IEvent in _events)
+			for each(var eventObj:EventObject in _events)
 			{
-				event.startEvent();
+				eventObj.activate();
 			}
 			_triggered = false;
 		}
@@ -102,6 +95,13 @@
 			xml.@y = y;
 			xml.@width = _bw;
 			xml.@height = _bh;
+			
+			var eventXML:XML = new XML(<event/>);
+			for each (var event:EventObject in _events){
+				eventXML.@x = event.GetBody().GetWorldCenter().x * ExState.PHYS_SCALE;;
+				eventXML.@y = event.GetBody().GetWorldCenter().y * ExState.PHYS_SCALE;;
+				xml.appendChild(eventXML);
+			}
 			
 			return xml;
 		}
@@ -131,6 +131,12 @@
 			
 			//TODO:Do we need to correct for x and y...?
 			createPhysBody(world, controller);
+			
+			for each(var evXML:XML in xml.event){
+				var t:b2Body = Utilities.GetBodyAtPoint(world, new b2Vec2(evXML.@x, evXML.@y), true);
+				if(t)
+		    		AddEvent(t.GetUserData());
+		    }
 			
 			reset(xml.@x, xml.@y);
 		}

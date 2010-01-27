@@ -5,6 +5,8 @@ package PhysicsEditor.Actions
 	import PhysicsEditor.IPanel;
 	
 	import PhysicsGame.EventObject;
+	import PhysicsGame.Events.EventBase;
+	import PhysicsGame.Sensor;
 	
 	import common.Utilities;
 	
@@ -42,19 +44,34 @@ package PhysicsEditor.Actions
 			var body1:b2Body = Utilities.GetBodyAtPoint(state.the_world, args["start"], true);
 			var body2:b2Body = Utilities.GetBodyAtPoint(state.the_world, args["end"], true);
 			
-			if(body1){
-				if(body1.GetUserData() && body1.GetUserData() is EventObject){
-					//This only happens if we select an event and link it to the target
-					var event:EventObject = body1.GetUserData() as EventObject;
-					if(body2 && body2.GetUserData() && body2.GetUserData() is ExSprite){
-						var target:ExSprite = body2.GetUserData() as ExSprite;
-						event.setTarget(target);
-					}
-					else{
-						event.setTarget(null);
-					}
+			//TODO:Fix this
+			if(body1 && body2){
+				if(body1.GetUserData() is Sensor && body2.GetUserData() is EventObject){
+					linkSensorToEvent(body1.GetUserData(), body2.GetUserData());
+				}
+				else if(body1.GetUserData() is EventObject && body2.GetUserData() is Sensor){
+					linkSensorToEvent(body2.GetUserData(), body1.GetUserData());	
+				}
+				else if(body1.GetUserData() is EventObject){
+					linkEventToTarget(body1.GetUserData(), body2.GetUserData());
+				}
+				else{
+					linkEventToTarget(body2.GetUserData(), body1.GetUserData());
 				}
 			}
+			else if(body1 && !body2){
+				if(body1.GetUserData() && body1.GetUserData() is EventObject){
+					linkEventToTarget(body1.GetUserData(), null);
+				}
+			}
+		}
+		
+		private function linkSensorToEvent(sensor:Sensor, event:EventObject):void{
+			sensor.AddEvent(event);
+		}
+		
+		private function linkEventToTarget(event:EventBase, target:ExSprite):void{
+			event.setTarget(target);
 		}
 	}
 }

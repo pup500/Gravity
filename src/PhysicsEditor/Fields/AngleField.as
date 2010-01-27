@@ -8,7 +8,12 @@ package PhysicsEditor.Fields
 		}
 		
 		override public function update():void{
-			state.getArgs()["angle"] = getValue();
+			super.update();
+			
+			if(lock)
+				state.getArgs()["angle"] = getValue();
+			else
+				setValue(state.getArgs()["angle"]);
 		}
 	}
 }

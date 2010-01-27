@@ -8,7 +8,12 @@ package PhysicsEditor.Fields
 		}
 		
 		override public function update():void{
-			state.getArgs()["friction"] = getValue();
+			super.update();
+			
+			if(lock)
+				state.getArgs()["friction"] = getValue();
+			else
+				setValue(state.getArgs()["friction"]);
 		}
 		
 	}

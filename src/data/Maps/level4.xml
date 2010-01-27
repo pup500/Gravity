@@ -1,11 +1,13 @@
 <config>
   <objects>
-    <event type="1" x="177" y="242"/>
-    <sensor x="334" y="389" width="141" height="85"/>
-    <shape layer="1" bodyType="0" shapeType="1" angle="0" x="208" y="400">
+    <sensor x="318" y="373" width="141" height="85">
+      <event x="177" y="242"/>
+    </sensor>
+    <event type="2" x="177" y="242"/>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0" density="0" restitution="0" x="208" y="400">
       <file>data/editor/images/blocks_2.jpg</file>
     </shape>
-    <shape layer="1" bodyType="0" shapeType="1" angle="0" x="464" y="400">
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0" density="0" restitution="0" x="464" y="400">
       <file>data/editor/images/blocks_2.jpg</file>
     </shape>
   </objects>
