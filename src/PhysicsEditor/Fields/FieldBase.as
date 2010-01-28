@@ -47,7 +47,8 @@ package PhysicsEditor.Fields
 			textField.maxChars = 5;			
 			sprite.addChild(textField);
 			
-			lock = false;
+			//TODO:This is a quick fix to the editor issue...
+			lock = true;
 		}
 		
 		protected function onClick(event:MouseEvent):void{

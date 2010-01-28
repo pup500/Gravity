@@ -81,10 +81,13 @@
 			_triggered = false;
 		}
 		
-		override public function setImpactPoint(point:b2Contact):void {
-			var spriteA:ExSprite = point.GetFixtureA().GetBody().GetUserData() as ExSprite;
-			var spriteB:ExSprite = point.GetFixtureB().GetBody().GetUserData() as ExSprite;
-			if ( spriteA.name == Trigger || spriteB.name == Trigger)
+		override public function setImpactPoint(point:b2Contact, oBody:b2Body):void {
+			if(!oBody) 
+				return;
+			
+			var spriteA:ExSprite = oBody.GetUserData() as ExSprite;
+			//var spriteB:ExSprite = point.GetFixtureB().GetBody().GetUserData() as ExSprite;
+			if (spriteA.name == Trigger)
 				_triggered = true;
 		}
 		

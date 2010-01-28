@@ -11,7 +11,7 @@ package PhysicsEditor.Fields
 			super.update();
 			
 			if(lock)
-				state.getArgs()["friction"] = getValue();
+				state.getArgs()["friction"] = Number(getValue());
 			else
 				setValue(state.getArgs()["friction"]);
 		}

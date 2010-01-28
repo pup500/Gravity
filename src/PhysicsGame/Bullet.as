@@ -135,8 +135,8 @@
 			super.reset(X,Y);
 		}
 		
-		override public function setImpactPoint(point:b2Contact):void{
-			super.setImpactPoint(point);
+		override public function setImpactPoint(point:b2Contact, oBody:b2Body):void{
+			super.setImpactPoint(point, oBody);
 			
 		//	trace("manifold type: "+ point.GetManifold().m_type);
 			

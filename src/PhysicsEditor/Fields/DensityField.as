@@ -13,7 +13,7 @@ package PhysicsEditor.Fields
 			super.update();
 			
 			if(lock)
-				state.getArgs()["density"] = getValue();
+				state.getArgs()["density"] = Number(getValue());
 			else
 				setValue(state.getArgs()["density"]);
 		}

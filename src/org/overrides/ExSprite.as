@@ -441,7 +441,7 @@ package org.overrides
 		//Box2D reuses the reference to point, so we can't simply copy the reference.
 		// Since there are no copy constructors, we'll have to manually copy a few
 		//	properties here. Shape 1 and 2, and other such object references will be missing.
-		public function setImpactPoint(point:b2Contact):void {
+		public function setImpactPoint(point:b2Contact, oBody:b2Body):void {
 			//impactPoint.friction = point.friction;
 			//impactPoint.id = point.id;
 			//impactPoint.normal = point.normal;
@@ -454,7 +454,7 @@ package org.overrides
 			// + point.GetManifold().m_localPoint.y * ExState.PHYS_SCALE);
 		}
 		
-		public function removeImpactPoint(point:b2Contact):void{
+		public function removeImpactPoint(point:b2Contact, oBody:b2Body):void{
 			//impactPoint.friction = point.friction;
 			//impactPoint.id = point.id;
 			//impactPoint.normal = point.normal;

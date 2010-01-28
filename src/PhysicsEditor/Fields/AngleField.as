@@ -11,7 +11,7 @@ package PhysicsEditor.Fields
 			super.update();
 			
 			if(lock)
-				state.getArgs()["angle"] = getValue();
+				state.getArgs()["angle"] = Number(getValue());
 			else
 				setValue(state.getArgs()["angle"]);
 		}

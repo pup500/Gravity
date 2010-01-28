@@ -32,7 +32,7 @@ package PhysicsGame.Events
 		}
 		
 		override public function update():void{
-			trace("random:" + Math.random());
+			//trace("random:" + Math.random());
 		}
 	}
 }

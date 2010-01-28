@@ -11,7 +11,7 @@ package PhysicsEditor.Fields
 			super.update();
 			
 			if(lock)
-				state.getArgs()["restitution"] = getValue();
+				state.getArgs()["restitution"] = Number(getValue());
 			else
 				setValue(state.getArgs()["restitution"]);
 		}
