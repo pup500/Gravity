@@ -107,7 +107,7 @@ package PhysicsGame
 			FlxG.follow(body,2.5);
 			FlxG.followAdjust(0.5,0.0);
 			//FlxG.followBounds(0,0,640,640);
-			FlxG.followBounds(0,0,1280,960);
+			FlxG.followBounds(0,0,2400,960);
 		}
 		
 		public function addEndPoint():void{

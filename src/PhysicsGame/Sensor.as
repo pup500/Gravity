@@ -99,7 +99,7 @@
 			xml.@x = x;		 		
 			xml.@y = y;
 			xml.@width = _bw;
-			xml.@height = _bh;
+			xml.@height = _bh; 
 			
 			return xml;
 		}
