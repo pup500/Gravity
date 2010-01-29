@@ -52,6 +52,9 @@ package org.overrides
 			bodyDef.type = b2Body.b2_dynamicBody;
 			bodyDef.position.Set(x/ExState.PHYS_SCALE, y/ExState.PHYS_SCALE);
 			
+			//TODO:To add this as an option
+			//bodyDef.fixedRotation = false;
+			
 			fixtureDef = new b2FixtureDef();
 			fixtureDef.friction = 1;
 			
@@ -297,11 +300,11 @@ package org.overrides
 		//@param	world The Box2D b2World for this object to exist in.
 		public function createPhysBody(world:b2World, controller:b2Controller=null):void{
 			fixtureDef.shape = shape
-			fixtureDef.density = 1.0;
 			
-			// Override the default friction.
-			fixtureDef.friction = 0.3;
-			fixtureDef.restitution = 0.1;
+			//These are set up already.
+			//fixtureDef.density = 1.0;
+			//fixtureDef.friction = 0.3;
+			//fixtureDef.restitution = 0.1;
 			
 			final_body = world.CreateBody(bodyDef);
 			fixture = final_body.CreateFixture(fixtureDef);
@@ -441,7 +444,7 @@ package org.overrides
 		//Box2D reuses the reference to point, so we can't simply copy the reference.
 		// Since there are no copy constructors, we'll have to manually copy a few
 		//	properties here. Shape 1 and 2, and other such object references will be missing.
-		public function setImpactPoint(point:b2Contact):void {
+		public function setImpactPoint(point:b2Contact, oBody:b2Body):void {
 			//impactPoint.friction = point.friction;
 			//impactPoint.id = point.id;
 			//impactPoint.normal = point.normal;
@@ -454,7 +457,7 @@ package org.overrides
 			// + point.GetManifold().m_localPoint.y * ExState.PHYS_SCALE);
 		}
 		
-		public function removeImpactPoint(point:b2Contact):void{
+		public function removeImpactPoint(point:b2Contact, oBody:b2Body):void{
 			//impactPoint.friction = point.friction;
 			//impactPoint.id = point.id;
 			//impactPoint.normal = point.normal;
@@ -471,6 +474,9 @@ package org.overrides
 			xml.@bodyType = fixture.GetBody().GetType();
 			xml.@shapeType = fixture.GetType();
 			xml.@angle = angle;
+			xml.@friction = fixture.GetFriction();
+			xml.@density = fixture.GetDensity();
+			xml.@restitution = fixture.GetRestitution();
 			
 			//XML representation is in screen coordinates, so scale up physics
 			xml.@x = final_body.GetPosition().x * ExState.PHYS_SCALE;
@@ -515,6 +521,10 @@ package org.overrides
 			bodyDef.angle = xml.@angle;
 			bodyDef.position.Set(xml.@x/ExState.PHYS_SCALE, xml.@y/ExState.PHYS_SCALE);
 			
+			fixtureDef.friction = xml.@friction;
+			fixtureDef.density = xml.@density;
+			fixtureDef.restitution = xml.@restitution;
+			
 			//TODO:Do we need to correct for x and y...?
 			createPhysBody(world, controller);
 			
@@ -525,10 +535,10 @@ package org.overrides
 			final_body.SetType(type);
 		}
 		
-		public function SetShapeType(type:uint):void{
+		public function SetShapeType(type:uint, density:Number=1.0):void{
 			initShape(type);
 			final_body.DestroyFixture(fixture);
-			final_body.CreateFixture2(shape, 1.0);
+			final_body.CreateFixture2(shape, density);
 			fixture = final_body.GetFixtureList();
 		}
 		

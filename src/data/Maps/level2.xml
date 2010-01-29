@@ -1,72 +1,72 @@
 <config>
   <objects>
-    <shape layer="1" bodyType="2" shapeType="1" angle="0" x="330" y="215.42986699999997">
+    <shape layer="1" bodyType="2" shapeType="1" angle="97.24315741784868" friction="0.3" density="5" restitution="0" x="332.345070541891" y="213.4274897633364">
       <file>data/editor/images/blocks_3.jpg</file>
     </shape>
-    <shape layer="1" bodyType="0" shapeType="1" angle="0" x="336" y="40">
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0" density="1" restitution="0" x="336" y="40">
       <file>data/editor/images/e_ass_03.png</file>
     </shape>
-    <shape layer="1" bodyType="0" shapeType="1" angle="0" x="136" y="224">
+    <shape layer="1" bodyType="2" shapeType="1" angle="97.25062118297609" friction="0.3" density="5" restitution="0" x="324.41014420028114" y="143.8356641759383">
+      <file>data/editor/images/blocks_3.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0" density="1" restitution="0" x="336" y="408">
+      <file>data/editor/images/e_ass_03.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0" density="1" restitution="0" x="136" y="224">
       <file>data/editor/images/e_ass_06.png</file>
     </shape>
-    <shape layer="1" bodyType="2" shapeType="1" angle="0" x="363" y="183.47786699999997">
+    <shape layer="1" bodyType="2" shapeType="1" angle="97.24888405992986" friction="0.3" density="5" restitution="0" x="364.6399237143477" y="172.95928754992426">
       <file>data/editor/images/blocks_4.jpg</file>
     </shape>
-    <shape layer="1" bodyType="0" shapeType="1" angle="0" x="536" y="224">
-      <file>data/editor/images/e_ass_06.png</file>
-    </shape>
-    <shape layer="1" bodyType="2" shapeType="1" angle="0" x="293" y="182.44096700000003">
-      <file>data/editor/images/blocks_4.jpg</file>
-    </shape>
-    <shape layer="1" bodyType="2" shapeType="1" angle="0" x="329" y="181.44096700000003">
+    <shape layer="1" bodyType="2" shapeType="1" angle="109.95273972518315" friction="0.3" density="2" restitution="0" x="328.9941546746918" y="178.0535744846272">
       <file>data/editor/images/blocks_6.jpg</file>
     </shape>
-    <shape layer="1" bodyType="2" shapeType="1" angle="0" x="329" y="145.391467">
-      <file>data/editor/images/blocks_3.jpg</file>
+    <shape layer="1" bodyType="2" shapeType="1" angle="97.27026160606727" friction="0.3" density="5" restitution="0" x="294.7629223987418" y="178.94825575216717">
+      <file>data/editor/images/blocks_4.jpg</file>
     </shape>
-    <shape layer="1" bodyType="0" shapeType="1" angle="0" x="336" y="408">
-      <file>data/editor/images/e_ass_03.png</file>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0" density="1" restitution="0" x="536" y="224">
+      <file>data/editor/images/e_ass_06.png</file>
     </shape>
     <joint type="1">
       <body1 x="0" y="0"/>
-      <body2 x="329" y="181.44096700000003"/>
+      <body2 x="328.9941546746918" y="178.0535744846272"/>
       <anchor x="329" y="180"/>
     </joint>
     <joint type="1">
-      <body1 x="329" y="181.44096700000003"/>
-      <body2 x="363" y="183.47786699999997"/>
-      <anchor x="339" y="180"/>
+      <body1 x="328.9941546746918" y="178.0535744846272"/>
+      <body2 x="294.7629223987418" y="178.94825575216717"/>
+      <anchor x="319.0000451945964" y="180.0300311667289"/>
     </joint>
     <joint type="1">
-      <body1 x="329" y="181.44096700000003"/>
-      <body2 x="330" y="215.42986699999997"/>
-      <anchor x="334" y="191"/>
+      <body1 x="328.9941546746918" y="178.0535744846272"/>
+      <body2 x="324.41014420028114" y="143.8356641759383"/>
+      <anchor x="323.96698804193204" y="169.01506504098427"/>
     </joint>
     <joint type="1">
-      <body1 x="329" y="181.44096700000003"/>
-      <body2 x="293" y="182.44096700000003"/>
-      <anchor x="322" y="183"/>
+      <body1 x="328.9941546746918" y="178.0535744846272"/>
+      <body2 x="364.6399237143477" y="172.95928754992426"/>
+      <anchor x="335.99095909606" y="176.97899121401556"/>
     </joint>
     <joint type="1">
-      <body1 x="329" y="181.44096700000003"/>
-      <body2 x="329" y="145.391467"/>
-      <anchor x="331" y="169"/>
+      <body1 x="328.9941546746918" y="178.0535744846272"/>
+      <body2 x="332.345070541891" y="213.4274897633364"/>
+      <anchor x="327.0330437243725" y="191.005956395183"/>
     </joint>
     <joint type="3">
-      <body1 x="330" y="135"/>
-      <body2 x="374" y="182"/>
+      <body1 x="332.94336335398134" y="224.35384397283178"/>
+      <body2 x="284.0765386177943" y="182.22465857261807"/>
     </joint>
     <joint type="3">
-      <body1 x="374" y="181"/>
-      <body2 x="328" y="219"/>
+      <body1 x="284.1953678286759" y="183.2175732812619"/>
+      <body2 x="325.9670605777764" y="140.52383853363114"/>
     </joint>
     <joint type="3">
-      <body1 x="328" y="219"/>
-      <body2 x="284" y="181"/>
+      <body1 x="325.9670605777764" y="140.52383853363114"/>
+      <body2 x="373.8238058768611" y="173.62630609646098"/>
     </joint>
     <joint type="3">
-      <body1 x="283" y="181"/>
-      <body2 x="328" y="134"/>
+      <body1 x="374.81395362993464" y="173.4862795736755"/>
+      <body2 x="335.06771705164067" y="225.0517847778009"/>
     </joint>
   </objects>
   <points>

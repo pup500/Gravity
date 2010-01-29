@@ -1,6 +1,8 @@
 package PhysicsGame
 {
 	import Box2D.Collision.Shapes.*;
+	import Box2D.Collision.b2ManifoldPoint;
+	import Box2D.Collision.b2WorldManifold;
 	import Box2D.Common.Math.b2Vec2;
 	import Box2D.Dynamics.*;
 	import Box2D.Dynamics.Contacts.*;
@@ -11,6 +13,7 @@ package PhysicsGame
 	
 	import org.flixel.*;
 	import org.overrides.ExSprite;
+	import org.overrides.ExState;
 	
 	public class Player extends ExSprite
 	{
@@ -160,9 +163,8 @@ package PhysicsGame
 				if(final_body.GetLinearVelocity().x > 3.5) {
 				}
 				else
-				final_body.ApplyImpulse(_applyForce, final_body.GetWorldCenter());
-					
-				//final_body.ApplyForce(_applyForce, final_body.GetWorldCenter());
+				//final_body.ApplyImpulse(_applyForce, final_body.GetWorldCenter());
+					final_body.ApplyForce(_applyForce, final_body.GetWorldCenter());
 			}
 
 			//trace("can jump: " + _canJump);
@@ -321,8 +323,24 @@ package PhysicsGame
 			_canShoot = true;
 		}
 		
-		override public function setImpactPoint(point:b2Contact):void{
-			super.setImpactPoint(point);
+		override public function setImpactPoint(point:b2Contact, oBody:b2Body):void{
+			super.setImpactPoint(point, oBody);
+			
+			trace("normal: " + point.GetManifold().m_localPlaneNormal.x + "," + point.GetManifold().m_localPlaneNormal.y);
+			
+			var e:ExState;
+			
+			for each(var lpoint:b2ManifoldPoint in point.GetManifold().m_points){
+				trace("local: " + lpoint.m_localPoint.x * width/2 + "," + lpoint.m_localPoint.y * height/2);
+			}
+			
+			var worldManifold:b2WorldManifold = new b2WorldManifold();
+			point.GetWorldManifold(worldManifold);
+			
+			trace("new");
+			for each(var mpoint:b2Vec2 in worldManifold.m_points){
+				trace("impact world impact: " + mpoint.x * ExState.PHYS_SCALE + "," + mpoint.y * ExState.PHYS_SCALE);
+			}
 			
 			//TODO:This doesn't let us jump when we are on slopes
 			if(point.GetManifold().m_localPlaneNormal.y == 1){
@@ -344,8 +362,10 @@ package PhysicsGame
 			*/
 		}
 		
-		override public function removeImpactPoint(point:b2Contact):void{
-			super.removeImpactPoint(point);
+		override public function removeImpactPoint(point:b2Contact, oBody:b2Body):void{
+			super.removeImpactPoint(point, oBody);
+			
+			//point.GetManifold().m_points
 			
 			if(point.GetManifold().m_localPlaneNormal.y == 1){
 				_canJump = false;

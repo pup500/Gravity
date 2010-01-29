@@ -54,7 +54,7 @@ package PhysicsGame
 		}
 		
 		public function activate():void{
-			_impl.activate();
+			_impl.startEvent();
 		}
 		
 		override public function update():void{
@@ -67,6 +67,9 @@ package PhysicsGame
 			trace("render: " + x + "," + y);
 			super.render();
 			trace("renderafter: " + x + "," + y);
+			
+			if(!visible)
+				return;
 			
 			if(_impl && _impl.target && _impl.target.exists){
 				getScreenXY(_p);

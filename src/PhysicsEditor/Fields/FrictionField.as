@@ -4,11 +4,17 @@ package PhysicsEditor.Fields
 	{
 		public function FrictionField()
 		{
-			super("Friction", "0");
+			super("Friction", "0.3");
+			state.getArgs()["friction"] = 0.3;
 		}
 		
 		override public function update():void{
-			state.getArgs()["friction"] = int(textField.text);
+			super.update();
+			
+			if(lock)
+				setValue(state.getArgs()["friction"]);
+			else
+				state.getArgs()["friction"] = Number(getValue());
 		}
 		
 	}

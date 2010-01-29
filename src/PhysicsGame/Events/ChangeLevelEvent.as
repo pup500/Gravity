@@ -1,6 +1,11 @@
-﻿package PhysicsGame 
+﻿package PhysicsGame.Events
 {
+	import PhysicsGame.XMLPhysState;
+	
+	import flash.utils.Dictionary;
+	
 	import org.flixel.FlxG;
+	import org.overrides.ExSprite;
 	
 	/**
 	 * ...
@@ -22,8 +27,8 @@
 			FlxG.switchState(XMLPhysState);
 		}
 		
-		public function setTarget():void{};
-		public function setArgs():void{};
+		public function setTarget(target:ExSprite):void{};
+		public function setArgs(args:Dictionary):void{};
 	}
 
 }

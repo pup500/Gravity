@@ -38,6 +38,8 @@ package PhysicsEditor.Options
 				grid.graphics.lineTo(WIDTH,y);
 			}
 			
+			grid.cacheAsBitmap = true;
+			
 			state.addChildAt(grid, 0);
 		}
 		

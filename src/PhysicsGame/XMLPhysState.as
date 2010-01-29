@@ -4,9 +4,7 @@ package PhysicsGame
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
 	
-	import common.XMLMap;
-	
-	import flash.geom.Point;
+	import flash.utils.Dictionary;
 	
 	import org.flixel.*;
 	import org.overrides.*;
@@ -32,6 +30,8 @@ package PhysicsGame
 			
 			//debug = true;
 			initBox2DDebugRendering();
+			
+			//ev.visible = true;
 			
 			loadLevelConfig();
 			
@@ -115,9 +115,20 @@ package PhysicsGame
 			var body:Sensor = new Sensor(args["endPoint"].x, args["endPoint"].y);
 			body.loadGraphic(endPoint);
 			body.createPhysBody(the_world);
-			body.AddEvent(new ChangeLevelEvent(FlxG.level + 1));
+			
+			//TODO:Make this more concise
+			var levelEvent:EventObject = new EventObject();
+			levelEvent.changeType(0);
+			
+			var a:Dictionary = new Dictionary();
+			a["level"] = FlxG.level + 1;
+			levelEvent.setArgs(a);
+			
+			body.AddEvent(levelEvent);
+			//body.AddEvent(new ChangeLevelEvent(FlxG.level + 1));
 			
 			add(body);
+			//addToLayer(body, ExState.EV);
 		}
 		
 		private function initContactListener():void{

@@ -27,6 +27,7 @@ package common
 		private var _loaded:Boolean;
 		private var savePoints:Boolean;
 		private var bodiesLoaded:Boolean;
+		private var eventsLoaded:Boolean;
 		
 		public function XMLMap(state:ExState)
 		{
@@ -39,6 +40,7 @@ package common
 			
 			_loaded = false;
 			bodiesLoaded = true;
+			eventsLoaded = true;
 		}
 
 		//Load the config file to set up world...
@@ -79,6 +81,7 @@ package common
 			
 			expBodyCount = getItemCount() + configXML.objects.shape.length();
 			bodiesLoaded = false;
+			eventsLoaded = false;
 			
 			for each(var shape:XML in configXML.objects.shape){
 				 var b2:ExSprite = new ExSprite();
@@ -136,6 +139,16 @@ package common
 		    		eventXML.target.@y = int(eventXML.target.@y) + offset.y;
 		    	}
 			}
+			
+			for each(var sensorXML:XML in configXML.objects.sensor){
+				sensorXML.@x = int(eventXML.@x) + offset.x;
+		    	sensorXML.@y = int(eventXML.@y) + offset.y;
+		    	
+		    	for each(var evXML:XML in configXML.objects.sensor.event){
+		    		evXML.target.@x = int(evXML.target.@x) + offset.x;
+		    		evXML.target.@y = int(evXML.target.@y) + offset.y;
+		    	}
+			}
 		}
 		
 		public function update():void{
@@ -144,8 +157,16 @@ package common
 				
 				if (expBodyCount == getItemCount()) {
 					bodiesLoaded = true;
+					
 					addAllEvents();
 					addAllJoints();
+					
+				}
+			}
+			else if(!eventsLoaded){
+				if (expBodyCount == getItemCount()) {
+					eventsLoaded = true;
+					addAllSensors();
 					
 					if(!_loaded && savePoints){
 						_loaded = true;
@@ -154,158 +175,6 @@ package common
 				}
 			}
 		}
-		
-		/*
-		public function addObjectsInXMLFile(file:String, offset:Point):void{
-			var loader:URLLoader = new URLLoader();
-			loader.addEventListener(Event.COMPLETE, 
-				function(e:Event):void{
-					onAddObjectsInXMLComplete(e,offset)
-				});
-			//loader.addEventListener(IOErrorEvent.IO_ERROR, onLoadError);
-			loader.load(new URLRequest(file));
-		}
-		
-		private function onAddObjectsInXMLComplete(event:Event, point:Point):void{
-			configXML = new XML(event.target.data);
-			
-			//Save the body count so that we can check when we are done
-			expBodyCount = getItemCount() + configXML.objects.shape.length();
-			
-			//Should we figure out a better way for offset...
-			var shape:XML = configXML.objects.shape[0];
-			var offset:Point = new Point();
-			var min:Point = new Point(shape.x, shape.y);
-			var max:Point = new Point(shape.x, shape.y);
-			
-			for each(shape in configXML.objects.shape){
-				if(int(shape.x) < min.x) min.x = int(shape.x);
-				if(int(shape.y) < min.y) min.y = int(shape.y);
-				if(int(shape.x) > max.x) max.x = int(shape.x);
-				if(int(shape.y) > max.y) max.y = int(shape.y);
-			}
-			
-			//Offset is to make the midpoint of the whole object at the mouse coordinate
-			offset.x = point.x - (min.x + max.x)/2;
-			offset.y = point.y - (min.y + max.y)/2;
-			
-			//Or we can make offset at the top-left corner...
-			//offset.x = point.x - min.x;
-			//offset.y = point.y - min.y;
-			
-			
-			for each(shape in configXML.objects.shape){
-				shape.x = int(shape.x) + offset.x;
-		    	shape.y = int(shape.y) + offset.y;
-			}
-			
-			for each(var joint:XML in configXML.objects.joint){
-				joint.body1.x = int(joint.body1.x) + offset.x;
-		    	joint.body1.y = int(joint.body1.y) + offset.y;
-		    	joint.body2.x = int(joint.body2.x) + offset.x;
-		    	joint.body2.y = int(joint.body2.y) + offset.y;
-		    	
-		    	//Don't offset axis, that's a normalized vector...
-		    	//joint.axis.x = int(joint.axis.x) + offset.x;
-		    	//joint.axis.y = int(joint.axis.y) + offset.y;
-		    	joint.anchor.x = int(joint.anchor.x) + offset.x;
-		    	joint.anchor.y = int(joint.anchor.y) + offset.y;
-			}
-			
-			for each(var eventXML:XML in configXML.objects.event){
-				eventXML.x = int(eventXML.x) + offset.x;
-		    	eventXML.y = int(eventXML.y) + offset.y;
-		    	
-		    	if(eventXML.target.x.length() > 0 && eventXML.target.y.length() > 0){
-		    		eventXML.target.x = int(eventXML.target.x) + offset.x;
-		    		eventXML.target.y = int(eventXML.target.y) + offset.y;
-		    	}
-			}
-			
-			for each(shape in configXML.objects.shape){
-				addXMLObject(shape);
-			}
-		}
-		*/
-		
-		//Create new configuration file
-		/*
-		public function createNewConfiguration():String{
-			var config:XML = Utilities.CreateXMLRepresentation(_state.the_world);
-			
-			var points:XML = new XML(<points/>);
-			points.start.x = _start.x
-			points.start.y = _start.y;
-			points.end.x = _end.x;
-			points.end.y = _end.y;
-			
-			//Create the config file as below
-			config.appendChild(points);
-			
-			return config.toXMLString();
-		}*/
-		
-		/*
-		public function setStartPoint(point:Point):void{
-			_start = point;
-		}
-		
-		public function setEndPoint(point:Point):void{
-			_end = point;
-		}
-		
-		public function getStartPoint():Point{
-			return _start;
-		}
-		
-		public function getEndPoint():Point{
-			return _end;
-		}
-		*/
-		
-		
-		//public function setObjectTypeAtPoint(point:Point, includeStatic:Boolean=false, type:String="static"):void{
-			/*
-			var b2:b2Body = Utilities.GetBodyAtMouse(_state.the_world, point, includeStatic);
-			
-			if(b2){
-				var bSprite:ExSprite = b2.GetUserData() as ExSprite;
-				if(bSprite){
-					//TODO:This is a really bad way
-					if(type == "static"){
-						bSprite.final_body.SetStatic();
-					}
-					else{
-						bSprite.final_body.SetMassFromShapes();
-					}
-				}
-			}
-			*/
-		//}
-		
-		/*
-		public function removeObjectAtPoint(point:Point, includeStatic:Boolean=false):void{
-			var b2:b2Body = Utilities.GetBodyAtPoint(_state.the_world, new b2Vec2(point.x, point.y), includeStatic);
-			
-			if(b2){
-				var bSprite:ExSprite = b2.GetUserData() as ExSprite;
-				if(bSprite){
-					bSprite.kill();
-				}
-			}
-		}
-		
-		public function removeJointAtPoint(point:Point, includeStatic:Boolean=false):void{
-			var b2:b2Body = Utilities.GetBodyAtPoint(_state.the_world, new b2Vec2(point.x, point.y), includeStatic);
-			
-			if(b2){
-				var bSprite:ExSprite = b2.GetUserData() as ExSprite;
-				if(bSprite){
-					bSprite.destroyAllJoints();
-				}
-			}
-		}
-		*/
 		
 		//Add all joints from configuration file, also pass configuration jointXML along
 		private function addAllJoints():void{
@@ -321,6 +190,8 @@ package common
 		
 		//Add all joints from configuration file, also pass configuration jointXML along
 		private function addAllEvents():void{
+			expBodyCount = getItemCount() + configXML.objects.event.length();
+			
 			for each (var eventXML:XML in configXML.objects.event){
 				addXMLEvent(eventXML);
 			}
@@ -339,36 +210,21 @@ package common
 			_state.addToLayer(b2, ExState.EV);
 		}
 		
+		public function addAllSensors():void{
+			for each (var sensorXML:XML in configXML.objects.sensor){
+				addXMLSensor(sensorXML);
+			}
+		}
+		
 		public function addXMLSensor(sensorXML:XML, sprite:Class = null):void {
 			//TODO:Fix sensor...
 			var sensor:Sensor = new Sensor();
 			//sensorXML.x, sensorXML.y, sensorXML.width, sensorXML.height);
-			sensor.loadGraphic(sprite);
-			sensor.initFromXML(sensorXML, _state.the_world);
+			//sensor.loadGraphic(sprite);
+			sensor.initFromXML(sensorXML, _state.the_world, _state.getController());
 			//sensor.createPhysBody(_state.the_world);
 			_state.addToLayer(sensor, ExState.EV);
 		}
-		
-		/*
-		public function addEventTarget(args:Dictionary):void{
-			var body1:b2Body = Utilities.GetBodyAtPoint(_state.the_world, args["start"], true);
-			var body2:b2Body = Utilities.GetBodyAtPoint(_state.the_world, args["end"], true);
-			
-			if(body1){
-				if(body1.GetUserData() && body1.GetUserData() is EventObject){
-					//This only happens if we select an event and link it to the target
-					var event:EventObject = body1.GetUserData() as EventObject;
-					if(body2 && body2.GetUserData() && body2.GetUserData() is ExSprite){
-						var target:ExSprite = body2.GetUserData() as ExSprite;
-						event.setTarget(target);
-					}
-					else{
-						event.setTarget(null);
-					}
-				}
-			}
-		}
-		*/
 		
 		public function getItemCount():uint{
 			return _state.the_world.GetBodyCount();

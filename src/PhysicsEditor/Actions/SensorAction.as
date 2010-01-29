@@ -1,6 +1,8 @@
 package PhysicsEditor.Actions
 {
 	import org.flixel.FlxG;
+	import org.overrides.ExState;
+	
 	import flash.display.*;
 	import Box2D.Common.Math.b2Vec2;
 	import PhysicsEditor.IPanel;
@@ -53,7 +55,7 @@ package PhysicsEditor.Actions
 
 			//Add the sensor to the state and XML
 			var xml:XML = new XML(<sensor/>);
-			xml.file = state.getArgs()["file"];
+			//xml.file = state.getArgs()["file"];
 			xml.@x = boxCenterX;		 		
 			xml.@y = boxCenterY;
 			xml.@width = width;
@@ -62,7 +64,7 @@ package PhysicsEditor.Actions
 			var b2:Sensor = new Sensor();
 		    b2.initFromXML(xml, state.the_world, state.getController());
 		    
-		    state.addToLayer(b2, xml.layer);
+		    state.addToLayer(b2, ExState.EV);
 		}
 	}
 }

@@ -1,4 +1,4 @@
-﻿package PhysicsGame 
+﻿package PhysicsGame.Events
 {
 	import org.flixel.*;
 	

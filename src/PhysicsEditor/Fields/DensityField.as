@@ -7,12 +7,16 @@ package PhysicsEditor.Fields
 		public function DensityField()
 		{
 			super("Density", "1");
+			state.getArgs()["density"] = 1;
 		}
 		
 		override public function update():void{
-			textField.visible = state.getArgs()["bodyType"] == b2Body.b2_dynamicBody;
+			super.update();
 			
-			state.getArgs()["density"] = int(textField.text);
+			if(lock)
+				setValue(state.getArgs()["density"]);				
+			else
+				state.getArgs()["density"] = Number(getValue());
 		}
 	}
 }

@@ -5,10 +5,17 @@ package PhysicsEditor.Fields
 		public function AngleField()
 		{
 			super("Angle", "0");
+			
+			state.getArgs()["angle"] = 0;
 		}
 		
 		override public function update():void{
-			state.getArgs()["angle"] = int(textField.text);
+			super.update();
+			
+			if(lock)
+				setValue(state.getArgs()["angle"]);
+			else
+				state.getArgs()["angle"] = Number(getValue());
 		}
 	}
 }

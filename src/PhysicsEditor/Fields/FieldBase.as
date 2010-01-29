@@ -2,9 +2,9 @@ package PhysicsEditor.Fields
 {
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
+	import flash.events.MouseEvent;
 	import flash.text.TextField;
 	import flash.text.TextFieldType;
-	import flash.text.TextFieldAutoSize;
 	
 	import org.flixel.FlxG;
 	import org.overrides.ExState;
@@ -16,6 +16,7 @@ package PhysicsEditor.Fields
 		protected var textField:TextField;
 		
 		protected var state:ExState;
+		protected var lock:Boolean;
 		
 		public function FieldBase(label:String, text:String)
 		{
@@ -30,6 +31,7 @@ package PhysicsEditor.Fields
 			labelField.background = true;
 			labelField.backgroundColor = 0x888888;
 			labelField.border = true;
+			labelField.addEventListener(MouseEvent.MOUSE_DOWN, onClick);
 			sprite.addChild(labelField);
 			
 			textField = new TextField();
@@ -44,6 +46,13 @@ package PhysicsEditor.Fields
 			textField.width = 40;
 			textField.maxChars = 5;			
 			sprite.addChild(textField);
+			
+			//TODO:This is a quick fix to the editor issue...
+			lock = false;
+		}
+		
+		protected function onClick(event:MouseEvent):void{
+			lock = !lock;
 		}
 		
 		public function addField(field:TextField):void{
@@ -56,8 +65,22 @@ package PhysicsEditor.Fields
 		}
 		
 		public function update():void{
+			labelField.backgroundColor = lock ? 0x3366FF : 0x888888;
+			textField.selectable = !lock;
+			textField.backgroundColor = lock ? 0x888888 : 0xeeeeee;
 			//trace("text: " + textField.text);
 		}
-
+		
+		public function getValue():String{
+			if(textField)
+				return textField.text;
+			else
+				return null;
+		}
+		
+		public function setValue(s:String):void{
+			if(textField && s)
+				textField.text = s;
+		}
 	}
 }
