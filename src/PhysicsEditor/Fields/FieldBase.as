@@ -48,7 +48,7 @@ package PhysicsEditor.Fields
 			sprite.addChild(textField);
 			
 			//TODO:This is a quick fix to the editor issue...
-			lock = true;
+			lock = false;
 		}
 		
 		protected function onClick(event:MouseEvent):void{

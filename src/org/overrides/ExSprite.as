@@ -52,6 +52,9 @@ package org.overrides
 			bodyDef.type = b2Body.b2_dynamicBody;
 			bodyDef.position.Set(x/ExState.PHYS_SCALE, y/ExState.PHYS_SCALE);
 			
+			//TODO:To add this as an option
+			//bodyDef.fixedRotation = false;
+			
 			fixtureDef = new b2FixtureDef();
 			fixtureDef.friction = 1;
 			

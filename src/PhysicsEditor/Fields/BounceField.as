@@ -5,15 +5,18 @@ package PhysicsEditor.Fields
 		public function BounceField()
 		{
 			super("Bounce", "0");
+			
+			state.getArgs()["restitution"] = 0;
 		}
 		
 		override public function update():void{
 			super.update();
 			
 			if(lock)
-				state.getArgs()["restitution"] = Number(getValue());
-			else
 				setValue(state.getArgs()["restitution"]);
+			else
+				state.getArgs()["restitution"] = Number(getValue());
+				
 		}
 	}
 }

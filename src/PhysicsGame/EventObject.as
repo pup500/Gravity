@@ -68,6 +68,9 @@ package PhysicsGame
 			super.render();
 			trace("renderafter: " + x + "," + y);
 			
+			if(!visible)
+				return;
+			
 			if(_impl && _impl.target && _impl.target.exists){
 				getScreenXY(_p);
 				

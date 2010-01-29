@@ -31,6 +31,8 @@ package PhysicsGame
 			//debug = true;
 			initBox2DDebugRendering();
 			
+			//ev.visible = true;
+			
 			loadLevelConfig();
 			
 			FlxG.showCursor(cursor);
@@ -126,6 +128,7 @@ package PhysicsGame
 			//body.AddEvent(new ChangeLevelEvent(FlxG.level + 1));
 			
 			add(body);
+			//addToLayer(body, ExState.EV);
 		}
 		
 		private function initContactListener():void{

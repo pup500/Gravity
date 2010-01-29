@@ -7,15 +7,16 @@ package PhysicsEditor.Fields
 		public function DensityField()
 		{
 			super("Density", "1");
+			state.getArgs()["density"] = 1;
 		}
 		
 		override public function update():void{
 			super.update();
 			
 			if(lock)
-				state.getArgs()["density"] = Number(getValue());
+				setValue(state.getArgs()["density"]);				
 			else
-				setValue(state.getArgs()["density"]);
+				state.getArgs()["density"] = Number(getValue());
 		}
 	}
 }

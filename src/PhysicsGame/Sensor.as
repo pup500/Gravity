@@ -8,9 +8,14 @@
 	import Box2D.Dynamics.Contacts.b2Contact;
 	import Box2D.Dynamics.Controllers.b2Controller;
 	
-	import flash.events.Event;
 	import common.Utilities;
 	
+	import flash.display.BitmapData;
+	import flash.display.Shape;
+	import flash.events.Event;
+	import flash.geom.Rectangle;
+	
+	import org.flixel.FlxG;
 	import org.overrides.ExSprite;
 	import org.overrides.ExState;
 	use namespace b2internal;
@@ -71,6 +76,27 @@
 			}
 		}
 		
+		override public function render():void{
+			trace("render: " + x + "," + y);
+			super.render();
+			trace("renderafter: " + x + "," + y);
+			
+			if(!visible)
+				return;
+			
+			//TODO:Need something to specify when to not draw the lines
+			for each(var event:EventObject in _events){
+				getScreenXY(_p);
+
+				var myShape:Shape = new Shape();
+				myShape.graphics.lineStyle(2,0xff3333,1);
+				myShape.graphics.moveTo(_p.x + width/2, _p.y + height/2);
+				myShape.graphics.lineTo(_p.x  - x + event.x + event.width/2, _p.y - y + event.y + event.height/2);
+				FlxG.buffer.draw(myShape);
+			}
+			
+		}
+		
 		protected function playEvents():void
 		{
 			trace("Sensed by sensor.as");
@@ -121,6 +147,11 @@
 			//Assume we have pixel data already....
 			//imageResource = xml.file;
 			//layer = xml.@layer;
+			
+			//Setup the sensor graphics
+			var bitmapData:BitmapData = new BitmapData(xml.@width, xml.@height, true, 0x0);
+			bitmapData.fillRect(new Rectangle(0,0,xml.@width, xml.@height), 0xff888888);
+			pixels = bitmapData;
 			
 			bodyDef.type = xml.@bodyType;
 			
