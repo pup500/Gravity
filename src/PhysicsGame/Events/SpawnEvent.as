@@ -15,13 +15,13 @@ package PhysicsGame.Events
 		
 		override public function startEvent():void{
 			var xml:XML = new XML(<shape/>);
-			xml.file = "data/end_point.png";
+			xml.file = "data/editor/images/blocks_1.jpg";
 			xml.@x = Math.random()*640;
 			xml.@y = Math.random()*480;
 			xml.@layer = 1;
 			xml.@bodyType = 2;
 			xml.@shapeType = 1;
-			xml.@angle = 0;
+			xml.@angle = 1.4;
 			
 			var state:ExState = FlxG.state as ExState;
 			

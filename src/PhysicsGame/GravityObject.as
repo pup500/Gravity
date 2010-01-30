@@ -42,6 +42,12 @@
 		public function GravityObject(world:b2World)
 		{
 			super();
+			
+			//Setup shape first to avoid screwing up pixels
+			width = 1;
+			height = 1;
+			initCircleShape();
+			
 			loadGraphic(GravSink, true);
 			
 			bodyDef.type = b2Body.b2_staticBody;
@@ -51,7 +57,6 @@
 			fixtureDef.isSensor = true;
 			fixtureDef.filter.groupIndex = -2;
 			
-			initBoxShape();
 			
 			//Make this part of group -2, and do not collide with other in the same negative group...
 			
@@ -242,7 +247,7 @@
 			f = new b2Vec2(dx, dy);
 			
 			var directionlessForce:Number = (this.mass * physBody.GetMass()) * (1-(r2/maxDistSq));
-			trace("r2: " + r2);
+			//trace("r2: " + r2);
 			
 			//Separate the force into x, y direction components.
 			f.Multiply(directionlessForce);

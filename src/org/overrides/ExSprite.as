@@ -53,7 +53,7 @@ package org.overrides
 			bodyDef.position.Set(x/ExState.PHYS_SCALE, y/ExState.PHYS_SCALE);
 			
 			//TODO:To add this as an option
-			//bodyDef.fixedRotation = false;
+			bodyDef.fixedRotation = false;
 			
 			fixtureDef = new b2FixtureDef();
 			fixtureDef.friction = 1;
@@ -303,7 +303,9 @@ package org.overrides
 		//@desc Create the physical representation in the Box2D World using the shape definition from initShape methods.
 		//@param	world The Box2D b2World for this object to exist in.
 		public function createPhysBody(world:b2World, controller:b2Controller=null):void{
-			fixtureDef.shape = shape
+			fixtureDef.shape = shape;
+			
+			bodyDef.fixedRotation = false;
 			
 			//These are set up already.
 			//fixtureDef.density = 1.0;

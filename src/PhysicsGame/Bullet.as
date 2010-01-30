@@ -34,7 +34,8 @@
 		{
 			super();
 			loadGraphic(ImgBullet, true);
-			initBoxShape();
+			width = 8;
+			initCircleShape();
 			//shape.friction = 1;
 			//Make this part of group -2, and do not collide with other in the same negative group...
 			//So player does not collide with bullets
@@ -138,11 +139,32 @@
 		override public function setImpactPoint(point:b2Contact, oBody:b2Body):void{
 			super.setImpactPoint(point, oBody);
 			
-		//	trace("manifold type: "+ point.GetManifold().m_type);
 			
+			/*
+			trace("normal: " + point.GetManifold().m_localPlaneNormal.x + "," + point.GetManifold().m_localPlaneNormal.y);
+			
+			for each(var lpoint:b2ManifoldPoint in point.GetManifold().m_points){
+				trace("local: " + lpoint.m_localPoint.x * width/2 + "," + lpoint.m_localPoint.y * height/2);
+			}
+			*/
+			
+			var worldManifold:b2WorldManifold = new b2WorldManifold();
+			point.GetWorldManifold(worldManifold);
+			
+			/*
+			trace("new");
+			for each(var mpoint:b2Vec2 in worldManifold.m_points){
+				trace("impact world impact: " + mpoint.x * ExState.PHYS_SCALE + "," + mpoint.y * ExState.PHYS_SCALE);
+				old = mpoint;
+			}
+			*/
+			
+			if(worldManifold.m_points.length > 1){
+				old = worldManifold.m_points[0];
+			}
 			//Physics...
-			old = final_body.GetWorldPoint(point.GetManifold().m_localPoint);
-		//	trace("world: " + old.x + "," + old.y);
+			//old = final_body.GetWorldPoint(point.GetManifold().m_localPoint);
+			//	trace("world: " + old.x + "," + old.y);
 			//trace("world" + final_body.GetWorldPoint(old).x + "," + final_body.GetWorldPoint(old).y);
 			
 			hurt(0);

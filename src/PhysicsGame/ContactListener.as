@@ -13,6 +13,7 @@ package PhysicsGame
 		/// Called when a contact point is added. This includes the geometry
 		/// and the forces.
 		override public function BeginContact(contact:b2Contact) : void {
+			super.BeginContact(contact);
 		
 			trace("normal" + contact.GetManifold().m_localPlaneNormal.x + "," + contact.GetManifold().m_localPlaneNormal.y);
 			//var body1:b2Body = point.shape1.GetBody();
@@ -74,6 +75,8 @@ package PhysicsGame
 		/// Called when a contact point is removed. This includes the last
 		/// computed geometry and forces.
 		override public function EndContact(contact:b2Contact) : void{
+			
+			super.EndContact(contact);
 			/*
 			//point.shape1.GetUserData().hurt(0);
 			//point.shape2.GetUserData().hurt(0);

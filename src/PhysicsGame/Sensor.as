@@ -77,9 +77,9 @@
 		}
 		
 		override public function render():void{
-			trace("render: " + x + "," + y);
+			//trace("render: " + x + "," + y);
 			super.render();
-			trace("renderafter: " + x + "," + y);
+			//trace("renderafter: " + x + "," + y);
 			
 			if(!visible)
 				return;
