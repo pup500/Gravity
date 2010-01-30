@@ -44,9 +44,10 @@ package PhysicsEditor
 		public function addSensor():void{
 			var e:ExState;
 			var s:b2PolygonShape = new b2PolygonShape();
-			//Sensor is only .4 of width
+			//Sensor is only portion of width
 			s.SetAsOrientedBox((width*.4)/ExState.PHYS_SCALE, 1/ExState.PHYS_SCALE, 
-				new b2Vec2(0, (height/2)/ExState.PHYS_SCALE),0);	
+				new b2Vec2(0, (height/2)/ExState.PHYS_SCALE),0);
+			
 			//var s:b2CircleShape = new b2CircleShape(2 / ExState.PHYS_SCALE);
 			
 			//s.SetLocalPosition(new b2Vec2(0, (height/2) / ExState.PHYS_SCALE));

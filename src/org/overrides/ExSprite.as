@@ -80,6 +80,8 @@ package org.overrides
 			var top:Boolean = false;
 			var round:uint = 0;
 			
+			//TODO:This doesn't account for frame data so we can't use this for animated objects
+			
 			while(round < 5){
 				if(!top){
 					//Go from top left to top right
@@ -269,14 +271,16 @@ package org.overrides
 		//We're calling this outside the constructor because we need Flixel to define its sprite dimensions first in loadGraphic().
 		protected function initBoxShape():void {
 			var shapeDef:b2PolygonShape = new b2PolygonShape();
-			shapeDef.SetAsBox((_bw/2) / ExState.PHYS_SCALE, (_bh/2)/ExState.PHYS_SCALE);
+			//Use width and height and not bw and bh because we are looking at frame data...
+			shapeDef.SetAsBox((width/2) / ExState.PHYS_SCALE, (height/2)/ExState.PHYS_SCALE);
 			shape = shapeDef;
 		}
 		
 		//@desc Create a circle shape definition from the sprite's width.
 		protected function initCircleShape():void
 		{
-			shape = new b2CircleShape((_bw/2)/ExState.PHYS_SCALE);
+			//Using width instead of bw because we are looking at frame data
+			shape = new b2CircleShape((width/2)/ExState.PHYS_SCALE);
 		}
 		
 		public function initShape(type:uint):void{

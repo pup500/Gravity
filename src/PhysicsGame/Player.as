@@ -52,10 +52,13 @@ package PhysicsGame
 		public function Player(x:int=0, y:int=0){
 			super(x, y);
 			loadGraphic(ImgSpaceman,true,true,16,32);
+			width = 16;
+			height = 28;
+			
 			
 			initBoxShape();
 			fixtureDef.friction = .5;
-			fixtureDef.restitution = .5;
+			fixtureDef.restitution = 0;
 			
 			//Make this part of group -2, and do not collide with other in the same negative group...
 			name = "Player";
@@ -103,7 +106,7 @@ package PhysicsGame
 		public function addSensor():void{
 			var e:ExState;
 			var s:b2PolygonShape = new b2PolygonShape();
-			//Sensor is only .4 of width
+			//Sensor is only portion of width
 			s.SetAsOrientedBox((width*.4)/ExState.PHYS_SCALE, 1/ExState.PHYS_SCALE, 
 				new b2Vec2(0, (height/2)/ExState.PHYS_SCALE),0);
 			
@@ -197,9 +200,9 @@ package PhysicsGame
 				//velocity.y = -_jumpPower;
 				//final_body.SetLinearVelocity(new b2Vec2(0,-_jumpPower));
 				_applyForce.x = 0;
-				_applyForce.y = -3;
+				_applyForce.y = -5;
 				//We multiply this here because it is later multiplied by inverse mass. - Minh
-				//_applyForce.Multiply(final_body.GetMass());
+				_applyForce.Multiply(final_body.GetMass());
 				
 				FlxG.log(_applyForce.y + " || " + final_body.GetMass());
 				//trace("mass" + final_body.GetMass());
@@ -342,6 +345,10 @@ package PhysicsGame
 		override public function setImpactPoint(point:b2Contact, oBody:b2Body):void{
 			super.setImpactPoint(point, oBody);
 			
+			//TODO:Fix this so that the sensor doesn't do any collision impact with point
+			//I think we might have to do this in presolve...
+			if(oBody.GetUserData() is GravityObject || oBody.GetUserData() is Bullet) return;
+			
 			if(point.GetFixtureA() == gFixture || point.GetFixtureB() == gFixture){
 				_canJump = true;
 			}
@@ -349,6 +356,11 @@ package PhysicsGame
 		
 		override public function removeImpactPoint(point:b2Contact, oBody:b2Body):void{
 			super.setImpactPoint(point, oBody);
+			
+			//TODO:Fix this so that the sensor doesn't do any collision impact with point
+			//I think we might have to do this in presolve...
+			if(oBody.GetUserData() is GravityObject || oBody.GetUserData() is Bullet) return;
+			
 			
 			if(point.GetFixtureA() == gFixture || point.GetFixtureB() == gFixture){
 				_canJump = false;
