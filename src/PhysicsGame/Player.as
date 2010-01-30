@@ -52,11 +52,12 @@ package PhysicsGame
 		public function Player(x:int=0, y:int=0){
 			super(x, y);
 			loadGraphic(ImgSpaceman,true,true,16,32);
-			width = 16;
-			height = 28;
 			
-			
+			//Do this after to set graphics and shape first...
+			width = 14;
+			height = 30;
 			initBoxShape();
+			
 			fixtureDef.friction = .5;
 			fixtureDef.restitution = 0;
 			

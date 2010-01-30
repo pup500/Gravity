@@ -1,0 +1,23 @@
+<config>
+  <objects>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0.4363323129985824" friction="0.3" density="1" restitution="0" x="245.94999999999996" y="155.19780000000003">
+      <file>data/editor/images/e_ass_10.png</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0.4363323129985824" friction="0.3" density="1" restitution="0" x="220.95" y="175.21249999999998">
+      <file>data/editor/images/e_ass_10.png</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0.4363323129985824" friction="0.3" density="1" restitution="0" x="175.95" y="203.1837">
+      <file>data/editor/images/e_ass_10.png</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0.4363323129985824" friction="0.3" density="1" restitution="0" x="143.95" y="226.1837">
+      <file>data/editor/images/e_ass_10.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="195" y="392">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+  </objects>
+  <points>
+    <start x="81" y="335"/>
+    <end x="292" y="337"/>
+  </points>
+</config>
