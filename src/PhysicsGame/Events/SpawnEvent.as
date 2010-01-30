@@ -22,6 +22,8 @@ package PhysicsGame.Events
 			xml.@bodyType = 2;
 			xml.@shapeType = 1;
 			xml.@angle = 1.4;
+			xml.@friction = .3;
+			xml.@density = 1;
 			
 			var state:ExState = FlxG.state as ExState;
 			
