@@ -5,9 +5,8 @@
 	import PhysicsEditor.Fields.Fields;
 	import PhysicsEditor.Panels.Panels;
 	
+	import PhysicsGame.ContactListener;
 	import PhysicsGame.LevelSelectMenu;
-	
-	import common.XMLMap;
 	
 	import flash.events.Event;
 	import flash.net.URLLoader;
@@ -59,6 +58,13 @@
 			fields = new Fields(this);
 			
 			xmlMapLoader.loadConfigFile(FlxG.levels[FlxG.level]);
+			
+			initContactListener();
+		}
+		
+				
+		private function initContactListener():void{
+			the_world.SetContactListener(new ContactListener());
 		}
 		
 		//Load the config file to set up world...
@@ -94,6 +100,7 @@
 		public function addPlayer():void{
 			var body:Player = new Player(100, 100);
 			body.createPhysBody(the_world);
+			body.addSensor();
 			body.GetBody().SetSleepingAllowed(false);
 			body.GetBody().SetFixedRotation(true);
 			add(body);

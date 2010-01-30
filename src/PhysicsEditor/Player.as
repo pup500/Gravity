@@ -1,14 +1,23 @@
 package PhysicsEditor
 {
+	import Box2D.Collision.Shapes.b2CircleShape;
+	import Box2D.Collision.b2ManifoldPoint;
+	import Box2D.Collision.b2WorldManifold;
 	import Box2D.Common.Math.b2Vec2;
+	import Box2D.Dynamics.Contacts.b2Contact;
 	import Box2D.Dynamics.b2Body;
+	import Box2D.Dynamics.b2Fixture;
+	import Box2D.Dynamics.b2FixtureDef;
 	
 	import org.flixel.*;
 	import org.overrides.ExSprite;
+	import org.overrides.ExState;
 	
 	public class Player extends ExSprite
 	{
 		[Embed(source="../data/g_walk_old.png")] private var ImgSpaceman:Class;
+		
+		private var gFixture:b2Fixture;
 		
 		public function Player(x:int=0, y:int=0)
 		//(x:int=0, y:int=0, bullets:Array=null)
@@ -32,6 +41,21 @@ package PhysicsEditor
 			addAnimation("run", [1, 2, 3, 4, 5], 10);
 			addAnimation("jump", [1]);
 			
+		}
+		
+		public function addSensor():void{
+			var e:ExState;
+			var s:b2CircleShape = new b2CircleShape(2 / ExState.PHYS_SCALE);
+			
+			s.SetLocalPosition(new b2Vec2(0, (height/2) / ExState.PHYS_SCALE));
+			
+			var f:b2FixtureDef = new b2FixtureDef();
+			f.shape = s;
+			f.isSensor = true;
+			f.density = 0;
+			fixtureDef.filter.groupIndex = -2;
+			//final_body.SetPosition(new b2Vec2(x/ ExState.PHYS_SCALE, (y + 32) / ExState.PHYS_SCALE));
+			gFixture = final_body.CreateFixture(f);
 		}
 		
 		
@@ -72,6 +96,17 @@ package PhysicsEditor
 			}
 
 			super.update();
+		}
+		
+		override public function setImpactPoint(point:b2Contact, oBody:b2Body):void{
+			super.setImpactPoint(point, oBody);
+			
+			if(point.GetFixtureA() == gFixture || point.GetFixtureB() == gFixture){
+				trace("canJump");
+			}
+			else{
+				trace("can't jump");
+			}
 		}
 	}
 }

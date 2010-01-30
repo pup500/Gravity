@@ -328,24 +328,34 @@ package PhysicsGame
 			
 			trace("normal: " + point.GetManifold().m_localPlaneNormal.x + "," + point.GetManifold().m_localPlaneNormal.y);
 			
-			var e:ExState;
-			
+			trace("manifold type: " + point.GetManifold().m_type);
 			for each(var lpoint:b2ManifoldPoint in point.GetManifold().m_points){
-				trace("local: " + lpoint.m_localPoint.x * width/2 + "," + lpoint.m_localPoint.y * height/2);
+				trace("local: " + lpoint.m_localPoint.x + "," + lpoint.m_localPoint.y);
+				//trace("local to world: " + 
 			}
 			
 			var worldManifold:b2WorldManifold = new b2WorldManifold();
 			point.GetWorldManifold(worldManifold);
 			
+			var localPoint:b2Vec2 = new b2Vec2();
+			
 			trace("new");
 			for each(var mpoint:b2Vec2 in worldManifold.m_points){
 				trace("impact world impact: " + mpoint.x * ExState.PHYS_SCALE + "," + mpoint.y * ExState.PHYS_SCALE);
+				localPoint = final_body.GetLocalPoint(mpoint);
+				trace("that same point as local point to body: " + final_body.GetLocalPoint(mpoint).x + "," +final_body.GetLocalPoint(mpoint).y); 
+				trace("local point to phys scale: " + localPoint.x * ExState.PHYS_SCALE + "," + localPoint.y * ExState.PHYS_SCALE);
+				if(localPoint.y * ExState.PHYS_SCALE > 16){
+					_canJump = true;
+				}
 			}
 			
+			/*
 			//TODO:This doesn't let us jump when we are on slopes
 			if(point.GetManifold().m_localPlaneNormal.y == 1){
 				_canJump = true;
 			}
+			*/
 			
 			//trace("imp: " + impactPoint.position.y + " playy:" + y + " hei: " + height + " both:" + (y + height));
 			//if(impactPoint.position.y > y + height-3 && final_body.GetLinearVelocity().y >= 0){
@@ -367,9 +377,11 @@ package PhysicsGame
 			
 			//point.GetManifold().m_points
 			
+			/*
 			if(point.GetManifold().m_localPlaneNormal.y == 1){
 				_canJump = false;
 			}
+			*/
 			
 			//if(impactPoint.position.y > y + height/2){
 			//	_canJump = false;
