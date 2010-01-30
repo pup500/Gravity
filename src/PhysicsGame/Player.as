@@ -1,8 +1,6 @@
 package PhysicsGame
 {
 	import Box2D.Collision.Shapes.*;
-	import Box2D.Collision.b2ManifoldPoint;
-	import Box2D.Collision.b2WorldManifold;
 	import Box2D.Common.Math.b2Vec2;
 	import Box2D.Dynamics.*;
 	import Box2D.Dynamics.Contacts.*;
@@ -46,6 +44,8 @@ package PhysicsGame
 		private var _canJump:Boolean;
 		private var _isJumping:Boolean;
 		private var _antiGravity:Boolean;
+		
+		private var gFixture:b2Fixture;
 		
 		//private var _canJumpSensor:b2PolygonDef;
 		
@@ -98,6 +98,20 @@ package PhysicsGame
 			
 			//_canJumpSensor = new b2PolygonDef();//new Sensor(this.x - (width / 2 - 1), this.y + height / 2 + 1, width - 2, 2, "loaded");
 			//_canJumpSensor.SetAsBox((width -1) / 2, 1);
+		}
+		
+		public function addSensor():void{
+			var s:b2CircleShape = new b2CircleShape(2 / ExState.PHYS_SCALE);
+			
+			s.SetLocalPosition(new b2Vec2(0, (height/2) / ExState.PHYS_SCALE));
+			
+			var f:b2FixtureDef = new b2FixtureDef();
+			f.shape = s;
+			f.isSensor = true;
+			f.density = 0;
+			fixtureDef.filter.groupIndex = -2;
+			//final_body.SetPosition(new b2Vec2(x/ ExState.PHYS_SCALE, (y + 32) / ExState.PHYS_SCALE));
+			gFixture = final_body.CreateFixture(f);
 		}
 		
 		public function SetBullets(bullets:Array):void{
@@ -326,66 +340,17 @@ package PhysicsGame
 		override public function setImpactPoint(point:b2Contact, oBody:b2Body):void{
 			super.setImpactPoint(point, oBody);
 			
-			trace("normal: " + point.GetManifold().m_localPlaneNormal.x + "," + point.GetManifold().m_localPlaneNormal.y);
-			
-			trace("manifold type: " + point.GetManifold().m_type);
-			for each(var lpoint:b2ManifoldPoint in point.GetManifold().m_points){
-				trace("local: " + lpoint.m_localPoint.x + "," + lpoint.m_localPoint.y);
-				//trace("local to world: " + 
-			}
-			
-			var worldManifold:b2WorldManifold = new b2WorldManifold();
-			point.GetWorldManifold(worldManifold);
-			
-			var localPoint:b2Vec2 = new b2Vec2();
-			
-			trace("new");
-			for each(var mpoint:b2Vec2 in worldManifold.m_points){
-				trace("impact world impact: " + mpoint.x * ExState.PHYS_SCALE + "," + mpoint.y * ExState.PHYS_SCALE);
-				localPoint = final_body.GetLocalPoint(mpoint);
-				trace("that same point as local point to body: " + final_body.GetLocalPoint(mpoint).x + "," +final_body.GetLocalPoint(mpoint).y); 
-				trace("local point to phys scale: " + localPoint.x * ExState.PHYS_SCALE + "," + localPoint.y * ExState.PHYS_SCALE);
-				if(localPoint.y * ExState.PHYS_SCALE > 16){
-					_canJump = true;
-				}
-			}
-			
-			/*
-			//TODO:This doesn't let us jump when we are on slopes
-			if(point.GetManifold().m_localPlaneNormal.y == 1){
+			if(point.GetFixtureA() == gFixture || point.GetFixtureB() == gFixture){
 				_canJump = true;
 			}
-			*/
-			
-			//trace("imp: " + impactPoint.position.y + " playy:" + y + " hei: " + height + " both:" + (y + height));
-			//if(impactPoint.position.y > y + height-3 && final_body.GetLinearVelocity().y >= 0){
-				//_canJump = true;
-			//}
-			//trace(impactPoint.position.y > y + height-3);
-			/*
-			if(point.shape1.GetBody().GetUserData() && point.shape1.GetBody().GetUserData().name == "end"){
-				_nextLevel = true;
-			}
-			if(point.shape2.GetBody().GetUserData() && point.shape2.GetBody().GetUserData().name == "end"){
-				_nextLevel = true;
-			}
-			*/
 		}
 		
 		override public function removeImpactPoint(point:b2Contact, oBody:b2Body):void{
-			super.removeImpactPoint(point, oBody);
+			super.setImpactPoint(point, oBody);
 			
-			//point.GetManifold().m_points
-			
-			/*
-			if(point.GetManifold().m_localPlaneNormal.y == 1){
+			if(point.GetFixtureA() == gFixture || point.GetFixtureB() == gFixture){
 				_canJump = false;
 			}
-			*/
-			
-			//if(impactPoint.position.y > y + height/2){
-			//	_canJump = false;
-			//}
 		}
 		
 		override public function hurt(Damage:Number):void{

@@ -1,14 +1,47 @@
 <config>
   <objects>
-    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.5" density="1" restitution="0.1" x="203" y="255.222">
-      <file>data/editor/images/blocks_1.jpg</file>
+    <shape layer="1" bodyType="0" shapeType="1" angle="-0.4363323129985824" friction="0.3" density="1" restitution="0" x="461.075" y="260.375">
+      <file>data/editor/images/e_ass_18.png</file>
     </shape>
-    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0.1" x="300" y="248.18510000000006">
-      <file>data/editor/images/blocks_1.jpg</file>
+    <shape layer="1" bodyType="0" shapeType="1" angle="-0.4363323129985824" friction="0.3" density="1" restitution="0" x="397.075" y="292.375">
+      <file>data/editor/images/e_ass_18.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="-0.4363323129985824" friction="0.3" density="1" restitution="0" x="333.075" y="324.375">
+      <file>data/editor/images/e_ass_18.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="-0.4363323129985824" friction="0.3" density="1" restitution="0" x="493.07499999999993" y="244.37500000000003">
+      <file>data/editor/images/e_ass_18.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="-0.4363323129985824" friction="0.3" density="1" restitution="0" x="429.075" y="276.375">
+      <file>data/editor/images/e_ass_18.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="-0.4363323129985824" friction="0.3" density="1" restitution="0" x="365.075" y="308.375">
+      <file>data/editor/images/e_ass_18.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="-0.4363323129985824" friction="0.3" density="1" restitution="0" x="528.1400000000006" y="250.40000000000003">
+      <file>data/editor/images/e_ass_10.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="-0.4363323129985824" friction="0.3" density="1" restitution="0" x="464.14000000000055" y="282.4">
+      <file>data/editor/images/e_ass_10.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="-0.4363323129985824" friction="0.3" density="1" restitution="0" x="400.14000000000055" y="314.4">
+      <file>data/editor/images/e_ass_10.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="-0.4363323129985824" friction="0.3" density="1" restitution="0" x="336.14000000000055" y="346.4">
+      <file>data/editor/images/e_ass_10.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="703.9908176919025" y="384">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="448" y="384">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="192" y="384">
+      <file>data/editor/images/blocks_2.jpg</file>
     </shape>
   </objects>
   <points>
-    <start x="190" y="81"/>
-    <end x="285" y="83"/>
+    <start x="75" y="327"/>
+    <end x="791" y="332"/>
   </points>
 </config>
