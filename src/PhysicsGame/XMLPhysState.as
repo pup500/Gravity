@@ -118,7 +118,7 @@ package PhysicsGame
 			body.createPhysBody(the_world);
 			
 			//TODO:Make this more concise
-			var levelEvent:EventObject = new EventObject();
+			var levelEvent:EventObject = new EventObject(args["endPoint"].x, args["endPoint"].y);
 			levelEvent.changeType(0);
 			
 			var a:Dictionary = new Dictionary();
