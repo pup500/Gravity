@@ -46,19 +46,6 @@ package PhysicsGame
 			createBullets();
 			addPlayer();
 			addEndPoint();
-			
-			//Create a gravity controller, give it all b2d bodies that need to interact with each other
-			
-			//Objects should be added to the controller when it is created dynamically
-			//This allows for spawners
-			/*for (var bb:b2Body = the_world.GetBodyList(); bb; bb = bb.GetNext()) 
-			{
-				//Moves this if statement from every step to this init.
-				if (bb.GetType() == b2Body.b2_dynamicBody) 
-					_gravityController.AddBody(bb);
-			}
-			*/
-
 		}
 		
 		private function loadLevelConfig():void{
@@ -84,6 +71,7 @@ package PhysicsGame
 				//don't create physical body, wait till bullet is shot.
 			}
 			
+			//Add gravity object to controller so that it can step through them with all other objects
 			var gController:GravityObjectController = controller as GravityObjectController;
 			gController._gravObjects = _gravObjects;
 			
@@ -95,8 +83,6 @@ package PhysicsGame
 			
 			var body:Player = new Player(args["startPoint"].x, args["startPoint"].y);
 			body.createPhysBody(the_world, controller);
-			body.addSensor();
-			
 			body.GetBody().SetSleepingAllowed(false);
 			body.GetBody().SetFixedRotation(true);
 			body.SetBullets(_bullets);
@@ -152,30 +138,6 @@ package PhysicsGame
 			}
 			
 			super.update();
-			
-			//ApplyGravityForces();
-		}
-		
-		//Not used anymore, logic moved to GravityObjectController.
-		private function ApplyGravityForces():void
-		{
-			for (var bb:b2Body = the_world.GetBodyList(); bb; bb = bb.GetNext()) {
-				
-				if(bb.GetType() == b2Body.b2_dynamicBody){//bb.IsDynamic()){
-				
-				//if(bb.GetUserData() && bb.GetUserData().name == "Player"){
-					for(var i:uint = 0; i < _gravObjects.length; i++){
-						
-						var gObj:GravityObject = _gravObjects[i] as GravityObject;
-						if(!gObj.exists || gObj.dead) continue;
-						
-						var force:b2Vec2 = gObj.GetGravityForce(bb);
-						
-						bb.ApplyForce(force,bb.GetWorldCenter());
-					}
-				//}
-				}
-			}
 		}
 	}
 }

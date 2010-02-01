@@ -3,9 +3,11 @@ package PhysicsEditor
 	import Box2D.Collision.Shapes.b2PolygonShape;
 	import Box2D.Common.Math.b2Vec2;
 	import Box2D.Dynamics.Contacts.b2Contact;
+	import Box2D.Dynamics.Controllers.b2Controller;
 	import Box2D.Dynamics.b2Body;
 	import Box2D.Dynamics.b2Fixture;
 	import Box2D.Dynamics.b2FixtureDef;
+	import Box2D.Dynamics.b2World;
 	
 	import org.flixel.*;
 	import org.overrides.ExSprite;
@@ -41,7 +43,7 @@ package PhysicsEditor
 			
 		}
 		
-		public function addSensor():void{
+		private function addSensor():void{
 			var e:ExState;
 			var s:b2PolygonShape = new b2PolygonShape();
 			//Sensor is only portion of width
@@ -59,6 +61,11 @@ package PhysicsEditor
 			fixtureDef.filter.groupIndex = -2;
 			//final_body.SetPosition(new b2Vec2(x/ ExState.PHYS_SCALE, (y + 32) / ExState.PHYS_SCALE));
 			gFixture = final_body.CreateFixture(f);
+		}
+		
+		override public function createPhysBody(world:b2World, controller:b2Controller=null):void{
+			super.createPhysBody(world, controller);
+			addSensor();
 		}
 		
 		

@@ -100,7 +100,6 @@
 		public function addPlayer():void{
 			var body:Player = new Player(100, 100);
 			body.createPhysBody(the_world);
-			body.addSensor();
 			body.GetBody().SetSleepingAllowed(false);
 			body.GetBody().SetFixedRotation(true);
 			add(body);

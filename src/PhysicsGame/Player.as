@@ -4,6 +4,7 @@ package PhysicsGame
 	import Box2D.Common.Math.b2Vec2;
 	import Box2D.Dynamics.*;
 	import Box2D.Dynamics.Contacts.*;
+	import Box2D.Dynamics.Controllers.b2Controller;
 	
 	import flash.events.TimerEvent;
 	import flash.geom.Point;
@@ -42,12 +43,11 @@ package PhysicsGame
 		private var _canShoot:Boolean;
 		
 		private var _canJump:Boolean;
-		private var _isJumping:Boolean;
+		private var _jumpTimer:Timer;
+		private var _justJumped:Boolean;
 		private var _antiGravity:Boolean;
 		
 		private var gFixture:b2Fixture;
-		
-		//private var _canJumpSensor:b2PolygonDef;
 		
 		public function Player(x:int=0, y:int=0){
 			super(x, y);
@@ -87,24 +87,22 @@ package PhysicsGame
 			//addAnimation("jump_up", [0]);
 			//addAnimation("jump_down", [0]);
 			
-			//Bullet shooting stuff
-			//_bullets = bullets;
 			_curBullet = 0;
 			_bulletVel = 20;
 			_canShoot = true;
 			_coolDown = new Timer(500,1);
 			_coolDown.addEventListener(TimerEvent.TIMER_COMPLETE, stopTimer);
 			
+			_jumpTimer = new Timer(500,1);
+			_jumpTimer.addEventListener(TimerEvent.TIMER_COMPLETE, jumpTimer);
+			
 			_canJump = false;
-			_isJumping = false;
+			_justJumped = false;
 			
 			_antiGravity = false;
-			
-			//_canJumpSensor = new b2PolygonDef();//new Sensor(this.x - (width / 2 - 1), this.y + height / 2 + 1, width - 2, 2, "loaded");
-			//_canJumpSensor.SetAsBox((width -1) / 2, 1);
 		}
 		
-		public function addSensor():void{
+		private function addSensor():void{
 			var e:ExState;
 			var s:b2PolygonShape = new b2PolygonShape();
 			//Sensor is only portion of width
@@ -116,21 +114,17 @@ package PhysicsGame
 			f.isSensor = true;
 			f.density = 0;
 			fixtureDef.filter.groupIndex = -2;
-			//final_body.SetPosition(new b2Vec2(x/ ExState.PHYS_SCALE, (y + 32) / ExState.PHYS_SCALE));
 			gFixture = final_body.CreateFixture(f);
+		}
+		
+		override public function createPhysBody(world:b2World, controller:b2Controller=null):void{
+			super.createPhysBody(world, controller);
+			addSensor();
 		}
 		
 		public function SetBullets(bullets:Array):void{
 			_bullets = bullets;
 		}
-		
-		/*
-		override public function createPhysBody(world:b2World):void
-		{
-			super.createPhysBody(world);
-			//final_body.CreateShape(_canJumpSensor);
-		}
-		*/
 		
 		override public function update():void
 		{
@@ -190,13 +184,13 @@ package PhysicsGame
 			//trace("can jump: " + _canJump);
 			//trace("vel" + final_body.m_linearVelocity.y);
 			////TODO only when collision from bottom
-			if((FlxG.keys.SPACE || FlxG.keys.W) && _canJump)//impactPoint.position.y > y + height - 1)///&& Math.abs(final_body.m_linearVelocity.y) < 0.1)
+			if((FlxG.keys.SPACE || FlxG.keys.W) && _canJump && !_justJumped)//impactPoint.position.y > y + height - 1)///&& Math.abs(final_body.m_linearVelocity.y) < 0.1)
 			{
 				//Hack... attempt at jumping...
 				//impactPoint.position.y = -100;
 				_canJump = false;
-				_isJumping = true;
-				
+				_justJumped = true;
+				_jumpTimer.start();
 				
 				//velocity.y = -_jumpPower;
 				//final_body.SetLinearVelocity(new b2Vec2(0,-_jumpPower));
@@ -341,6 +335,10 @@ package PhysicsGame
 		
 		private function stopTimer($e:TimerEvent):void{
 			_canShoot = true;
+		}
+		
+		private function jumpTimer($e:TimerEvent):void{
+			_justJumped = false;
 		}
 		
 		override public function setImpactPoint(point:b2Contact, oBody:b2Body):void{

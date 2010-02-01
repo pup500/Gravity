@@ -1,55 +1,55 @@
 <config>
   <objects>
-    <shape layer="1" bodyType="0" shapeType="1" angle="0" x="208.5" y="232.5">
-      <file>data/editor/images/e_ass_03.png</file>
-    </shape>
-    <shape layer="1" bodyType="2" shapeType="1" angle="0" x="218" y="377.832667">
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="282" y="346.1653340000001">
       <file>data/editor/images/e_ass_18.png</file>
     </shape>
-    <shape layer="1" bodyType="0" shapeType="1" angle="0" x="208.5" y="504.5">
-      <file>data/editor/images/e_ass_03.png</file>
-    </shape>
-    <shape layer="1" bodyType="2" shapeType="1" angle="0" x="282" y="345.8326670000001">
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="346" y="362.16533400000003">
       <file>data/editor/images/e_ass_18.png</file>
     </shape>
-    <shape layer="1" bodyType="0" shapeType="1" angle="0" x="536" y="407">
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0" density="0" restitution="0" x="488.50000000000006" y="463.5">
+      <file>data/editor/images/e_ass_08.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0" density="0" restitution="0" x="608.5" y="120.5">
+      <file>data/editor/images/e_ass_03.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0" density="0" restitution="0" x="592.5" y="504.5">
+      <file>data/editor/images/e_ass_03.png</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="298" y="314.16533400000003">
+      <file>data/editor/images/e_ass_18.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0" density="0" restitution="0" x="208.5" y="232.5">
+      <file>data/editor/images/e_ass_03.png</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="314" y="410.16533400000003">
+      <file>data/editor/images/e_ass_18.png</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="266" y="282.16533400000003">
+      <file>data/editor/images/e_ass_18.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0" density="0" restitution="0" x="792.5" y="320.5">
+      <file>data/editor/images/e_ass_06.png</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="202" y="314.16533400000003">
+      <file>data/editor/images/e_ass_18.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0" density="0" restitution="0" x="8.5" y="320.5">
+      <file>data/editor/images/e_ass_06.png</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="250.00000000000003" y="394.16533400000003">
+      <file>data/editor/images/e_ass_18.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0" density="0" restitution="0" x="208.5" y="504.5">
+      <file>data/editor/images/e_ass_03.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0" density="0" restitution="0" x="536" y="407">
       <file>data/angled.png</file>
     </shape>
-    <shape layer="1" bodyType="0" shapeType="1" angle="0" x="8.5" y="320.5">
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0" density="0" restitution="0" x="408.5" y="208.5">
       <file>data/editor/images/e_ass_06.png</file>
     </shape>
-    <shape layer="1" bodyType="0" shapeType="1" angle="0" x="608.5" y="120.5">
-      <file>data/editor/images/e_ass_03.png</file>
-    </shape>
-    <shape layer="1" bodyType="2" shapeType="1" angle="0" x="346" y="361.832667">
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="218" y="378.1653340000001">
       <file>data/editor/images/e_ass_18.png</file>
-    </shape>
-    <shape layer="1" bodyType="2" shapeType="1" angle="0" x="202" y="313.832667">
-      <file>data/editor/images/e_ass_18.png</file>
-    </shape>
-    <shape layer="1" bodyType="2" shapeType="1" angle="0" x="250.00000000000003" y="393.832667">
-      <file>data/editor/images/e_ass_18.png</file>
-    </shape>
-    <shape layer="1" bodyType="2" shapeType="1" angle="0" x="314" y="409.832667">
-      <file>data/editor/images/e_ass_18.png</file>
-    </shape>
-    <shape layer="1" bodyType="2" shapeType="1" angle="0" x="298" y="313.832667">
-      <file>data/editor/images/e_ass_18.png</file>
-    </shape>
-    <shape layer="1" bodyType="0" shapeType="1" angle="0" x="792.5" y="320.5">
-      <file>data/editor/images/e_ass_06.png</file>
-    </shape>
-    <shape layer="1" bodyType="2" shapeType="1" angle="0" x="266" y="281.832667">
-      <file>data/editor/images/e_ass_18.png</file>
-    </shape>
-    <shape layer="1" bodyType="0" shapeType="1" angle="0" x="408.5" y="208.5">
-      <file>data/editor/images/e_ass_06.png</file>
-    </shape>
-    <shape layer="1" bodyType="0" shapeType="1" angle="0" x="592.5" y="504.5">
-      <file>data/editor/images/e_ass_03.png</file>
-    </shape>
-    <shape layer="1" bodyType="0" shapeType="1" angle="0" x="488.50000000000006" y="463.5">
-      <file>data/editor/images/e_ass_08.png</file>
     </shape>
   </objects>
   <points>
