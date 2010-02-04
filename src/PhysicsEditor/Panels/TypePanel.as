@@ -6,7 +6,7 @@ package PhysicsEditor.Panels
 	public class TypePanel extends PanelBase
 	{
 		private var TYPES:Array = 
-			[DynamicType, KinematicType, StaticType];
+			[StaticType, KinematicType, DynamicType];
 			
 		public function TypePanel(x:uint=0, y:uint=0, horizontal:Boolean=false)
 		{

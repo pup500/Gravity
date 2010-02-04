@@ -11,6 +11,7 @@ package PhysicsEditor.Options
 		public function SnapOption(panel:IPanel, active:Boolean)
 		{
 			super(img, panel, active);
+			this.active = true;
 		}
 		
 		//Maybe we should update things during the click....
