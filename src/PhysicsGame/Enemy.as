@@ -62,7 +62,7 @@ package PhysicsGame
 			//addAnimation("jump_up", [0]);
 			//addAnimation("jump_down", [0]);
 			
-			brain = BrainFactory.createDefaultBrain();
+			brain = BrainFactory.createWalkingBrain();//.createDefaultBrain();
 			brain.blackboard.setObject("me", this);
 			
 			var _applyForce:b2Vec2 = new b2Vec2(2,0);
