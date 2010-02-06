@@ -399,8 +399,10 @@ package PhysicsGame
 		override public function render():void{
 			super.render();
 			
-			var p1:b2Vec2 = final_body.GetWorldPoint(new b2Vec2(-(width/2 + .1)/ExState.PHYS_SCALE,(height/4) / ExState.PHYS_SCALE));
-			var p2:b2Vec2 = final_body.GetWorldPoint(new b2Vec2(-20/ExState.PHYS_SCALE, (height/4) / ExState.PHYS_SCALE));
+			var dir:int = facing == RIGHT ? 1 : -1;
+			
+			var p1:b2Vec2 = final_body.GetWorldPoint(new b2Vec2((width/2 + .1)/ExState.PHYS_SCALE * dir,(height/4) / ExState.PHYS_SCALE));
+			var p2:b2Vec2 = final_body.GetWorldPoint(new b2Vec2(20/ExState.PHYS_SCALE * dir, (height/4) / ExState.PHYS_SCALE));
 				
 			var state:ExState = FlxG.state as ExState;
 			var f:b2Fixture = state.the_world.RayCastOne(p1, p2);
