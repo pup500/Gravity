@@ -20,7 +20,7 @@ package PhysicsGame.Events
 			xml.@y = Math.random()*480;
 			xml.@layer = 1;
 			xml.@bodyType = 2;
-			xml.@shapeType = 1;
+			xml.@shapeType = 0;
 			xml.@angle = 0;
 			xml.@friction = .3;
 			xml.@density = 1;

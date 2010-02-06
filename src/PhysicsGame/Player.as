@@ -56,7 +56,13 @@ package PhysicsGame
 			//Do this after to set graphics and shape first...
 			width = 14;
 			height = 30;
-			initBoxShape();
+			
+			var s:b2CircleShape = new b2CircleShape((width/2)/ExState.PHYS_SCALE);
+			s.SetLocalPosition(new b2Vec2(0, (height/4)/ ExState.PHYS_SCALE));
+			shape = s;
+			
+			//initCircleShape();
+			//initBoxShape();
 			
 			fixtureDef.friction = .5;
 			fixtureDef.restitution = 0;
@@ -106,7 +112,7 @@ package PhysicsGame
 			var e:ExState;
 			var s:b2PolygonShape = new b2PolygonShape();
 			//Sensor is only portion of width
-			s.SetAsOrientedBox((width*.4)/ExState.PHYS_SCALE, 1/ExState.PHYS_SCALE, 
+			s.SetAsOrientedBox((width/4)/ExState.PHYS_SCALE, 1/ExState.PHYS_SCALE, 
 				new b2Vec2(0, (height/2)/ExState.PHYS_SCALE),0);
 			
 			var f:b2FixtureDef = new b2FixtureDef();

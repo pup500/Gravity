@@ -46,6 +46,11 @@
 			//So only player collides with sensors. Without the if statements in SetImpactPoint() it'll still collide with world object that aren't assigned a category..
 			fixtureDef.filter.maskBits = 0x0001;
 			fixtureDef.isSensor = true;
+			
+			//fixtureDef.isSensor = true;
+			fixtureDef.filter.groupIndex = -2;
+			fixtureDef.filter.categoryBits = 0x0001;
+			
 			bodyDef.type = b2Body.b2_staticBody;
 			
 			initBoxShape();
