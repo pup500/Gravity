@@ -402,8 +402,8 @@ package org.overrides
 			//trace("width:" + width + "," + height);
 			
 			//Use width and height because sprite may be animated so each frame doesn't take up full bitmap
-			x = (posVec.x * ExState.PHYS_SCALE) - (width/2);//_bw/2;
-			y = (posVec.y * ExState.PHYS_SCALE) - (height/2); //* ExState.PHYS_SCALE;//_bh/2;
+			x = Math.round((posVec.x * ExState.PHYS_SCALE) - (width/2));//_bw/2;
+			y = Math.round((posVec.y * ExState.PHYS_SCALE) - (height/2)); //* ExState.PHYS_SCALE;//_bh/2;
 		}
 		
 		override public function kill():void

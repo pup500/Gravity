@@ -1,6 +1,8 @@
 package PhysicsGame
 {
 	import Box2D.Collision.Shapes.*;
+	import Box2D.Collision.b2RayCastInput;
+	import Box2D.Collision.b2RayCastOutput;
 	import Box2D.Common.Math.b2Vec2;
 	import Box2D.Dynamics.*;
 	import Box2D.Dynamics.Contacts.*;
@@ -11,6 +13,8 @@ package PhysicsGame
 	import ai.brains.BrainFactory;
 	import ai.conditions.*;
 	import ai.decorators.*;
+	
+	import flash.display.Shape;
 	
 	import org.flixel.*;
 	import org.overrides.ExSprite;
@@ -60,6 +64,8 @@ package PhysicsGame
 			
 			brain = BrainFactory.createDefaultBrain();
 			brain.blackboard.setObject("me", this);
+			
+			brain.blackboard.setObject("canWalkForward", true);
 		}
 		
 		private function addHead():void{
@@ -102,11 +108,38 @@ package PhysicsGame
 		
 		override public function update():void
 		{
+			//final_body.GetFixtureList().RayCast();
+			brain.blackboard.setObject("canWalkForward", false);
 			
 			brain.update();
 			
 			//UPDATE POSITION AND ANIMATION			
 			super.update();
+		}
+		
+		override public function render():void{
+			super.render();
+			
+			var p1:b2Vec2 = new b2Vec2(0,0);
+			var p2:b2Vec2 = new b2Vec2(0,1);
+			
+			var f:b2Fixture = fixture;
+			var lambda:Number = 1;
+			if (f)
+			{
+				var input:b2RayCastInput = new b2RayCastInput(p1, p2);
+				var output:b2RayCastOutput = new b2RayCastOutput();
+				f.RayCast(output, input);
+				lambda = output.fraction;
+			}
+			
+			var myShape:Shape = new Shape();
+			
+			myShape.graphics.lineStyle(1,0xff0000,1);
+			myShape.graphics.moveTo(p1.x * ExState.PHYS_SCALE, p1.y * ExState.PHYS_SCALE);
+			myShape.graphics.lineTo( 	(p2.x * lambda + (1 - lambda) * p1.x) * ExState.PHYS_SCALE,
+										(p2.y * lambda + (1 - lambda) * p1.y) * ExState.PHYS_SCALE);
+
 		}
 		
 		

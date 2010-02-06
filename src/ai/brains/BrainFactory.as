@@ -13,6 +13,18 @@ package ai.brains
 		
 		public static function createDefaultBrain():TaskTree{
 			return new TaskTree()
+				.composite(new SequenceTask())
+					.add(new CanWalkForward())
+					.add(new WalkTask())
+					.add(new CanJump())
+					.add(new Not(new IsFalling()))
+					.add(new PlayAnimWalk())
+				.end()
+			;
+		}
+		
+	public static function createWalkingBrain():TaskTree{
+			return new TaskTree()
 				.composite(new SelectorTask())
 					.composite(new SequenceTask())
 						.add(new Not(new IsMoving()))
@@ -40,5 +52,7 @@ package ai.brains
 				.end()
 			;
 		}
+
+		
 	}
 }
