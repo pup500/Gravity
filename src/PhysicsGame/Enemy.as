@@ -65,6 +65,9 @@ package PhysicsGame
 			brain = BrainFactory.createDefaultBrain();
 			brain.blackboard.setObject("me", this);
 			
+			var _applyForce:b2Vec2 = new b2Vec2(2,0);
+			brain.blackboard.setObject("force", _applyForce);
+			
 			brain.blackboard.setObject("canWalkForward", true);
 		}
 		
@@ -109,7 +112,7 @@ package PhysicsGame
 		override public function update():void
 		{
 			//final_body.GetFixtureList().RayCast();
-			brain.blackboard.setObject("canWalkForward", false);
+			
 			
 			brain.update();
 			
@@ -120,13 +123,26 @@ package PhysicsGame
 		override public function render():void{
 			super.render();
 			
-			var p1:b2Vec2 = new b2Vec2(0,0);
-			var p2:b2Vec2 = new b2Vec2(0,1);
+			var dir:int = facing == RIGHT ? 1 : -1;
 			
-			var f:b2Fixture = fixture;
-			var lambda:Number = 1;
+			var p1:b2Vec2 = final_body.GetWorldPoint(new b2Vec2((width/2 + .1)/ExState.PHYS_SCALE * dir,(height/4) / ExState.PHYS_SCALE));
+			var p2:b2Vec2 = final_body.GetWorldPoint(new b2Vec2(20/ExState.PHYS_SCALE * dir, height / ExState.PHYS_SCALE));
+				
+			var state:ExState = FlxG.state as ExState;
+			var f:b2Fixture = state.the_world.RayCastOne(p1, p2);
+			
+			//TODO:Maybe we can see if lambda is close to 1
+			brain.blackboard.setObject("canWalkForward", f != null);
+			
+			var lambda:Number = 0;
 			if (f)
 			{
+				
+				
+				trace("p1: " + p1.x + "," + p1.y);
+				trace("p2: " + p2.x + "," + p2.y);
+				
+				
 				var input:b2RayCastInput = new b2RayCastInput(p1, p2);
 				var output:b2RayCastOutput = new b2RayCastOutput();
 				f.RayCast(output, input);
@@ -135,10 +151,37 @@ package PhysicsGame
 			
 			var myShape:Shape = new Shape();
 			
+			/*
 			myShape.graphics.lineStyle(1,0xff0000,1);
 			myShape.graphics.moveTo(p1.x * ExState.PHYS_SCALE, p1.y * ExState.PHYS_SCALE);
 			myShape.graphics.lineTo( 	(p2.x * lambda + (1 - lambda) * p1.x) * ExState.PHYS_SCALE,
 										(p2.y * lambda + (1 - lambda) * p1.y) * ExState.PHYS_SCALE);
+					*/
+			getScreenXY(_p);
+			trace( "screen xy " + _p.x + ", "+ _p.y);
+			trace("scaled p1: " + (p1.x * ExState.PHYS_SCALE + FlxG.scroll.x)+ "," + (p1.y * ExState.PHYS_SCALE + FlxG.scroll.y));
+			trace("scaled p2: " + (p2.x * ExState.PHYS_SCALE + FlxG.scroll.x)+ "," + (p2.y * ExState.PHYS_SCALE + FlxG.scroll.y));
+			
+			//var myShape:Shape = new Shape();
+			myShape.graphics.lineStyle(2,0x0,1);
+			
+			p1.x = p1.x * ExState.PHYS_SCALE;
+			p1.y = p1.y * ExState.PHYS_SCALE;
+			
+			p2.x = p2.x * ExState.PHYS_SCALE;
+			p2.y = p2.y * ExState.PHYS_SCALE;
+			
+			trace( "lambda " + lambda);
+			
+			//myShape.graphics.moveTo(p1.x * ExState.PHYS_SCALE + FlxG.scroll.x, p1.y * ExState.PHYS_SCALE + FlxG.scroll.y);
+			//myShape.graphics.lineTo((p2.x * lambda + (1 - lambda) * p1.x) * ExState.PHYS_SCALE + FlxG.scroll.x,
+			//						 (p2.y * lambda + (1 - lambda) * p1.y) * ExState.PHYS_SCALE + FlxG.scroll.y);
+			
+			myShape.graphics.moveTo(p1.x + FlxG.scroll.x, p1.y  + FlxG.scroll.y);
+			myShape.graphics.lineTo((p2.x * lambda + (1 - lambda) * p1.x)  + FlxG.scroll.x, 
+									(p2.y * lambda + (1 - lambda) * p1.y)  + FlxG.scroll.y);
+			
+			FlxG.buffer.draw(myShape);
 
 		}
 		

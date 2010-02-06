@@ -14,10 +14,14 @@ package ai.brains
 		public static function createDefaultBrain():TaskTree{
 			return new TaskTree()
 				.composite(new SequenceTask())
+					.add(new Not(new CanWalkForward()))
+					.add(new StopTask())
+					.add(new PlayAnimIdle())
+					.add(new TurnTask())
+				.end()
+				.composite(new SequenceTask())
 					.add(new CanWalkForward())
 					.add(new WalkTask())
-					.add(new CanJump())
-					.add(new Not(new IsFalling()))
 					.add(new PlayAnimWalk())
 				.end()
 			;
