@@ -28,7 +28,7 @@ package PhysicsEditor.Actions
 			{
 				dragBox.graphics.clear();
 				dragBox.graphics.beginFill(0x111111, .25);
-				dragBox.graphics.drawRect(startPoint.x, startPoint.y, FlxG.mouse.x - startPoint.x, FlxG.mouse.y - startPoint.y);
+				dragBox.graphics.drawRect(startPoint.x, startPoint.y, (FlxG.mouse.x+FlxG.scroll.x) - startPoint.x, (FlxG.mouse.y+FlxG.scroll.y) - startPoint.y);
 				dragBox.graphics.endFill();
 				FlxG.buffer.draw(dragBox);
 			}
@@ -61,6 +61,10 @@ package PhysicsEditor.Actions
 			else
 				boxCenter.y = endPoint.y + height / 2;
 			
+			//Adjust for flixel's camera offset.
+			boxCenter.x += FlxG.scroll.x;
+			boxCenter.y += FlxG.scroll.y;
+				
 			//TODO: what if the end point is less than the start point?
 
 			//Add the sensor to the state and XML

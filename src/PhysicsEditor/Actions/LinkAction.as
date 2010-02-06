@@ -69,7 +69,7 @@ package PhysicsEditor.Actions
 		private function linkSensorToEvent(sensor:Sensor, event:EventObject):void{
 			sensor.AddEvent(event);
 		}
-		
+		  
 		private function linkEventToTarget(event:EventObject, target:ExSprite):void{
 			event.setTarget(target);
 		}

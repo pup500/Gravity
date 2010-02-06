@@ -58,6 +58,11 @@
 			_events = new Array();
 		}
 		
+		public function setTarget(target:ExSprite):void
+		{
+			_events.push(target);
+		}
+		
 		public function AddEvent(eventObj:EventObject):void
 		{
 			_events.push(eventObj);
