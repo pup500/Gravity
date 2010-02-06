@@ -28,7 +28,7 @@ package PhysicsGame
 			controller = new GravityObjectController();
 			the_world.AddController(controller);
 			
-			//debug = true;
+			debug = true;
 			initBox2DDebugRendering();
 			
 			//ev.visible = true;
@@ -81,6 +81,7 @@ package PhysicsGame
 		public function addPlayer():void{
 			//var start:Point = xmlMapLoader.getStartPoint();
 			
+			//var body:Enemy = new Enemy(args["startPoint"].x, args["startPoint"].y);
 			var body:Player = new Player(args["startPoint"].x, args["startPoint"].y);
 			body.createPhysBody(the_world, controller);
 			body.GetBody().SetSleepingAllowed(false);

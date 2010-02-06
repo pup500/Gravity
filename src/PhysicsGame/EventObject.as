@@ -23,6 +23,8 @@ package PhysicsGame
 		public var _impl:EventBase;
 		public var _type:uint;
 		
+		private var args:Dictionary;
+		
 		public static const EVENTS:Array =
 			[ LevelEvent, 
 			  AnimateEvent,
@@ -34,6 +36,8 @@ package PhysicsGame
 			fixtureDef.isSensor = true;
 			fixtureDef.filter.groupIndex = -2;
 			fixtureDef.filter.categoryBits = 0x0001;
+			
+			args = new Dictionary();
 		}
 		
 		public function changeType(type:uint):void{
@@ -63,6 +67,10 @@ package PhysicsGame
 		override public function update():void{
 			super.update();
 			
+			args["x"] = x;
+			args["y"] = y;
+			
+			_impl.setArgs(args);
 			_impl.update();
 		}
 		

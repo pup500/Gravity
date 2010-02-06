@@ -108,6 +108,19 @@ package PhysicsGame
 			_antiGravity = false;
 		}
 		
+		private function addHead():void{
+			var s:b2CircleShape = new b2CircleShape((width/2)/ExState.PHYS_SCALE);
+			s.SetLocalPosition(new b2Vec2(0, -(height/4) / ExState.PHYS_SCALE));
+			
+			var f:b2FixtureDef = new b2FixtureDef();
+			f.shape = s;
+			f.friction = 0;
+			f.density = 1;
+			f.filter.groupIndex = -2;
+			f.filter.categoryBits = 0x0001;
+			final_body.CreateFixture(f);
+		}
+		
 		private function addSensor():void{
 			var e:ExState;
 			var s:b2PolygonShape = new b2PolygonShape();
@@ -119,13 +132,16 @@ package PhysicsGame
 			f.shape = s;
 			f.isSensor = true;
 			f.density = 0;
-			fixtureDef.filter.groupIndex = -2;
-			fixtureDef.filter.categoryBits = 0x0001;
+			//TODO:Do we need to have a filter to avoid collision with bullet
+			//But be careful because we want sensors to work...
+			//f.filter.groupIndex = -2;
+			//f.filter.categoryBits = 0x0001;
 			gFixture = final_body.CreateFixture(f);
 		}
 		
 		override public function createPhysBody(world:b2World, controller:b2Controller=null):void{
 			super.createPhysBody(world, controller);
+			addHead();
 			addSensor();
 		}
 		

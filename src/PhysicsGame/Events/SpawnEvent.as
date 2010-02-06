@@ -1,7 +1,8 @@
 package PhysicsGame.Events
 {
+	import PhysicsGame.Enemy;
+	
 	import org.flixel.FlxG;
-	import org.overrides.ExSprite;
 	import org.overrides.ExState;
 	
 	public class SpawnEvent extends EventBase
@@ -14,6 +15,8 @@ package PhysicsGame.Events
 		}
 		
 		override public function startEvent():void{
+			
+			/*
 			var xml:XML = new XML(<shape/>);
 			xml.file = "data/end_point.png";
 			xml.@x = Math.random()*640;
@@ -30,8 +33,14 @@ package PhysicsGame.Events
 			
 			var b2:ExSprite = new ExSprite();
 		    b2.initFromXML(xml, state.the_world, state.getController());
+		    */
 		    
-		    state.addToLayer(b2, xml.@layer);
+		    var state:ExState = FlxG.state as ExState;
+		    var body:Enemy = new Enemy(_args["x"], _args["y"]);
+			body.createPhysBody(state.the_world, state.getController());
+			body.GetBody().SetFixedRotation(true);
+		    
+		    state.addToLayer(body, 1);
 		}
 		
 		override public function update():void{
