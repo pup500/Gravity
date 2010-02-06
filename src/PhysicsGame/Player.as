@@ -114,6 +114,7 @@ package PhysicsGame
 			f.isSensor = true;
 			f.density = 0;
 			fixtureDef.filter.groupIndex = -2;
+			fixtureDef.filter.categoryBits = 0x0001;
 			gFixture = final_body.CreateFixture(f);
 		}
 		
@@ -152,7 +153,7 @@ package PhysicsGame
 			if(FlxG.keys.A)
 			{
 				facing = LEFT;
-				_applyForce.x = _canJump ? -7 : -2;
+				_applyForce.x = -7;//_canJump ? -7 : -2;
 				_applyForce.y = 0;
 				//We multiply this here because it is later multiplied by inverse mass. - Minh
 				//_applyForce.Multiply(final_body.GetMass());
@@ -170,7 +171,7 @@ package PhysicsGame
 			{
 				facing = RIGHT;
 				//final_body.GetLinearVelocity().x = 30;
-				_applyForce.x = _canJump ? 7 : 2;
+				_applyForce.x = 7;//_canJump ? 7 : 2;
 				_applyForce.y = 0;
 				//We multiply this here because it is later multiplied by inverse mass. - Minh
 				//_applyForce.Multiply(final_body.GetMass());

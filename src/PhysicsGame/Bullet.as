@@ -42,8 +42,13 @@
 			//So player does not collide with bullets
 			
 			fixtureDef.friction = 1;
+			
+			//SThis prevents collision with player and player sensor,
+			//same category bit as player and same group as player....
 			fixtureDef.filter.groupIndex = -2;
-			fixtureDef.filter.categoryBits = 0x0002;
+			fixtureDef.filter.categoryBits = 0x0001;
+			
+			
 			//bodyDef.type = b2Body.b2_kinematicBody;
 			
 			name = "Bullet" + count;
