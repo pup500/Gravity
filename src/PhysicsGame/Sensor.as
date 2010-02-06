@@ -173,6 +173,8 @@
 			//bodyDef.angle = xml.@angle;
 			bodyDef.position.Set(xml.@x/ExState.PHYS_SCALE, xml.@y/ExState.PHYS_SCALE);
 			
+			trace("at sensor CreateFromXML: " + xml.@x + " " + xml.@y);
+			
 			//TODO:Do we need to correct for x and y...?
 			createPhysBody(world, controller);
 			

@@ -28,7 +28,8 @@ package PhysicsGame
 		public static const EVENTS:Array =
 			[ LevelEvent, 
 			  AnimateEvent,
-			  SpawnEvent 
+			  SpawnEvent,
+			  LerpEvent
 			];
 		
 		public function EventObject(x:int=0, y:int=0){
@@ -119,6 +120,11 @@ package PhysicsGame
 			if(xml.target.@x.length() > 0 && xml.target.@y.length() > 0 && world){
 				var t:b2Body = Utilities.GetBodyAtPoint(world, new b2Vec2(xml.target.@x, xml.target.@y), true);
 				setTarget(t.GetUserData());
+			}
+			
+			if (xml.force)
+			{
+				
 			}
 		}
 	}

@@ -61,7 +61,7 @@ package PhysicsGame
 			//addAnimation("run_up", [6, 7, 8, 5], 12);
 			//addAnimation("jump_up", [0]);
 			//addAnimation("jump_down", [0]);
-			
+
 			brain = BrainFactory.createRandomBrain();
 			brain.blackboard.setObject("me", this);
 			

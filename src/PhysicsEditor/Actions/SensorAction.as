@@ -28,7 +28,7 @@ package PhysicsEditor.Actions
 			{
 				dragBox.graphics.clear();
 				dragBox.graphics.beginFill(0x111111, .25);
-				dragBox.graphics.drawRect(startPoint.x, startPoint.y, (FlxG.mouse.x+FlxG.scroll.x) - startPoint.x, (FlxG.mouse.y+FlxG.scroll.y) - startPoint.y);
+				dragBox.graphics.drawRect(startPoint.x+FlxG.scroll.x, startPoint.y+FlxG.scroll.y, FlxG.mouse.x - startPoint.x, FlxG.mouse.y - startPoint.y);
 				dragBox.graphics.endFill();
 				FlxG.buffer.draw(dragBox);
 			}
@@ -52,21 +52,21 @@ package PhysicsEditor.Actions
 			
 			//We use the center of the box because Sensor is a sprite and a sprite's x,y coordinates are for its center.
 			if(endPoint.x > startPoint.x)
-				boxCenter.x = startPoint.x + width / 2;
+				boxCenter.x = startPoint.x+ (width / 2);
 			else
-				boxCenter.x = endPoint.x + width / 2;
+				boxCenter.x = endPoint.x +(width / 2);
 			
 			if(endPoint.y > startPoint.y)
-				boxCenter.y = startPoint.y + height / 2;
+				boxCenter.y = startPoint.y + (height / 2);
 			else
-				boxCenter.y = endPoint.y + height / 2;
+				boxCenter.y = endPoint.y + (height / 2);
 			
 			//Adjust for flixel's camera offset.
-			boxCenter.x += FlxG.scroll.x;
-			boxCenter.y += FlxG.scroll.y;
-				
-			//TODO: what if the end point is less than the start point?
-
+			trace("b4 adjust: at sensorAction CreateSensor: " + boxCenter.x + " " + boxCenter.y);
+			trace("b4 adjust SCROLL: at sensorAction CreateSensor: " + FlxG.scroll.x + " " + FlxG.scroll.y);
+			//boxCenter.x -= FlxG.scroll.x;
+			//boxCenter.y -= FlxG.scroll.y;
+			trace("at sensorAction CreateSensor: " + boxCenter.x + " " + boxCenter.y);
 			//Add the sensor to the state and XML
 			var xml:XML = new XML(<sensor/>);
 			//xml.file = state.getArgs()["file"];
