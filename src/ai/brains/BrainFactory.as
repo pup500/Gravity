@@ -7,10 +7,28 @@ package ai.brains
 
 	public class BrainFactory
 	{
+		public static var BRAINS:Array = [
+			WalkAroundBrain,
+			JumpAroundBrain
+			];
+			
 		public function BrainFactory()
 		{
 		}
 		
+		public static function createRandomBrain():TaskTree{
+			var i:uint = Math.floor(Math.random()*BRAINS.length);
+			return new BRAINS[i]();
+		}
+		
+		public static function createBrain(i:uint=0):TaskTree{
+			if(i < 0 || i >= BRAINS.length)
+				return null;
+			
+			return new BRAINS[i]();
+		}
+		
+		/*
 		public static function createDefaultBrain():TaskTree{
 			return new TaskTree()
 				.composite(new SequenceTask())
@@ -25,6 +43,7 @@ package ai.brains
 					.add(new PlayAnimWalk())
 				.end()
 			;
+			return new BRAINS[0]();
 		}
 		
 	public static function createWalkingBrain():TaskTree{
@@ -56,7 +75,7 @@ package ai.brains
 				.end()
 			;
 		}
-
 		
+	*/
 	}
 }
