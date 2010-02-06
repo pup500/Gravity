@@ -45,19 +45,29 @@ package PhysicsEditor.Actions
 		{
 			var startPoint:b2Vec2 = args["start"];
 			var endPoint:b2Vec2 = args["end"];
-			var width:int = endPoint.x - startPoint.x;
-			var height:int = endPoint.y - startPoint.y;
+			var width:int = Math.abs(endPoint.x - startPoint.x);
+			var height:int = Math.abs(endPoint.y - startPoint.y);
+			
+			var boxCenter:b2Vec2 = new b2Vec2();
+			
 			//We use the center of the box because Sensor is a sprite and a sprite's x,y coordinates are for its center.
-			var boxCenterX:int = startPoint.x + width / 2;
-			var boxCenterY:int = startPoint.y + height / 2;
+			if(endPoint.x > startPoint.x)
+				boxCenter.x = startPoint.x + width / 2;
+			else
+				boxCenter.x = endPoint.x + width / 2;
+			
+			if(endPoint.y > startPoint.y)
+				boxCenter.y = startPoint.y + height / 2;
+			else
+				boxCenter.y = endPoint.y + height / 2;
 			
 			//TODO: what if the end point is less than the start point?
 
 			//Add the sensor to the state and XML
 			var xml:XML = new XML(<sensor/>);
 			//xml.file = state.getArgs()["file"];
-			xml.@x = boxCenterX;		 		
-			xml.@y = boxCenterY;
+			xml.@x = boxCenter.x;		 		
+			xml.@y = boxCenter.y;
 			xml.@width = width;
 			xml.@height = height;
 			
