@@ -122,9 +122,15 @@ package PhysicsGame
 				setTarget(t.GetUserData());
 			}
 			
-			if (xml.force)
-			{
-				
+			if (xml.arg.length() > 0)
+			{ 
+				for each(var arg:XML in xml.arg)
+				{
+					//trace("parsing out args: " + arg.@name + " " +  arg.@value);
+					args[arg.@name.toString()] = arg.@value;
+					trace("parsing out args: " + args[arg.@name.toString()] + " " +  arg.@value);
+				}
+				setArgs(args);
 			}
 		}
 	}

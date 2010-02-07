@@ -17,7 +17,9 @@
 	public class LerpEvent extends EventBase
 	{
 		protected var _time:Number;
-		protected var _body:b2Body;
+		
+		protected var _active:Boolean;
+		
 		public function LerpEvent() 
 		{
 			super();
@@ -26,14 +28,17 @@
 		
 		override public function startEvent():void
 		{
-			var targetPoint:b2Vec2 = new b2Vec2(_args["x"],_args["y"]); 
+			trace("START EVENT " + _args["movex"] + " "  + _args["movey"]);
+			//var targetPoint:b2Vec2 = new b2Vec2(_args["x"],_args["y"]); 
 			_time = _args["time"];
 			
-			var state:ExState = FlxG.state as ExState;
+			//var state:ExState = FlxG.state as ExState;
 			
-			_body = Utilities.GetBodyAtPoint( state.the_world, targetPoint);
-			var force:b2Vec2 = new b2Vec2(_args["forcex"],_args["forcey"]);
-			_body.ApplyImpulse(force, _body.GetWorldCenter());
+			//_body = Utilities.GetBodyAtPoint( state.the_world, targetPoint);
+			var move:b2Vec2 = new b2Vec2(_args["movex"]/ExState.PHYS_SCALE,_args["movey"]/ExState.PHYS_SCALE);
+			target.GetBody().GetPosition().Add(move);//
+			//target.GetBody().ApplyImpulse(move, target.GetBody().GetWorldCenter());
+			//target.GetBody().SetActive(false);
 		}
 		
 		override public function update():void
