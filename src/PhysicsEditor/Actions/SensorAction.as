@@ -48,6 +48,10 @@ package PhysicsEditor.Actions
 			var width:int = Math.abs(endPoint.x - startPoint.x);
 			var height:int = Math.abs(endPoint.y - startPoint.y);
 			
+			if(width == 0 || height == 0){
+				return;
+			}
+			
 			var boxCenter:b2Vec2 = new b2Vec2();
 			
 			//We use the center of the box because Sensor is a sprite and a sprite's x,y coordinates are for its center.
