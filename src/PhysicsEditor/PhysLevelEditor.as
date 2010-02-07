@@ -6,6 +6,7 @@
 	import PhysicsEditor.Panels.Panels;
 	
 	import PhysicsGame.ContactListener;
+	import PhysicsGame.EventObject;
 	import PhysicsGame.LevelSelectMenu;
 	
 	import flash.events.Event;
@@ -32,6 +33,8 @@
 		private var fileIndex:int;
 		private var statusText:TextField;
 		
+		private var eventType:int;
+		
 		private var fields:Fields;
 		
 		public function PhysLevelEditor() 
@@ -48,6 +51,8 @@
 			
 			//This turns the event layer to visible
 			ev.visible = true;
+			
+			eventType = 0;
 			
 			files = new Array();
 			loadAssetList("data/editor/LevelEditor.txt");
@@ -127,13 +132,26 @@
 				fileIndex++;
 			}
 			
+			if(FlxG.keys.justPressed("O")) {
+				eventType--;
+			}
+			if(FlxG.keys.justPressed("P")){
+				eventType++;
+			}
+			
 			if(fileIndex >= files.length) 
 				fileIndex = files.length - 1;
 			if(fileIndex < 0) 
 				fileIndex = 0;
+				
+			if(eventType < 0)
+				eventType = EventObject.EVENTS.length - 1;
+			if(eventType >= EventObject.EVENTS.length)
+				eventType = 0;
 			
 			args["file"] = files[fileIndex];
-			statusText.text = args["file"] + " | " + FlxG.mouse.x + ", " + FlxG.mouse.y;
+			args["event"] = eventType;
+			statusText.text = args["file"] + " | " + EventObject.EVENTS[eventType].toString() + " | " + FlxG.mouse.x + ", " + FlxG.mouse.y;
 			
 			panels.update();
 			fields.update();

@@ -20,7 +20,7 @@ package PhysicsEditor.Actions
 			var xml:XML = new XML(<event/>);
 			xml.@x = args["start"].x;
 			xml.@y = args["start"].y;
-			xml.@type = 1;//2;
+			xml.@type = state.getArgs()["event"];
 			
 			var b2:EventObject = new EventObject();
 			b2.initFromXML(xml, state.the_world);

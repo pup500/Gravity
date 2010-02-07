@@ -44,7 +44,8 @@ package PhysicsEditor.Fields
 			textField.x = labelField.width;//labelField.textWidth + 5;
 			textField.height = textField.textHeight + 5;
 			textField.width = 40;
-			textField.maxChars = 5;			
+			textField.maxChars = 5;		
+			textField.restrict = "0-9-.";	
 			sprite.addChild(textField);
 			
 			//TODO:This is a quick fix to the editor issue...
