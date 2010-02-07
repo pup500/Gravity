@@ -18,7 +18,7 @@ package PhysicsGame
 
 	public class EventObject extends ExSprite
 	{
-		[Embed(source="../data/editor/interface/pig-icon.png")] private  var eventImg:Class;
+		[Embed(source="../data/editor/interface/add_event.png")] private  var eventImg:Class;
 		
 		public var _impl:EventBase;
 		public var _type:uint;

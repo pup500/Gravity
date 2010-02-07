@@ -13,7 +13,7 @@ package ai.conditions
 		}
 		
 		override public function run(bb:BlackBoard):uint{
-			trace("running can jump");
+			trace("running can walk forward");
 			
 			if(bb.getObject("canWalkForward", false)){
 				return e_succeeded;
