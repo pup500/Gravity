@@ -26,14 +26,20 @@
 		
 		override public function startEvent():void
 		{
-			var targetPoint:b2Vec2 = new b2Vec2(_args["x"],_args["y"]); 
+			//var targetPoint:b2Vec2 = new b2Vec2(_args["x"],_args["y"]); 
 			_time = _args["time"];
 			
 			var state:ExState = FlxG.state as ExState;
 			
-			_body = Utilities.GetBodyAtPoint( state.the_world, targetPoint);
-			var force:b2Vec2 = new b2Vec2(_args["forcex"],_args["forcey"]);
-			_body.ApplyImpulse(force, _body.GetWorldCenter());
+			if(target){
+				var force:b2Vec2 = new b2Vec2(0,-10);//_args["forcex"],_args["forcey"]);
+				force.Multiply(target.GetBody().GetMass());
+				target.GetBody().ApplyImpulse(force, target.GetBody().GetWorldCenter());
+			}
+			
+			//_body = Utilities.GetBodyAtPoint( state.the_world, targetPoint);
+			//var force:b2Vec2 = new b2Vec2(_args["forcex"],_args["forcey"]);
+			//_body.ApplyImpulse(force, _body.GetWorldCenter());
 		}
 		
 		override public function update():void
