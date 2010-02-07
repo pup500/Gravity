@@ -15,7 +15,7 @@ package ai.actions
 		}
 		
 		override public function run(bb:BlackBoard):uint{
-			trace("in walk task");
+			trace("in stop task");
 			
 			var me:ExSprite = bb.getObject("me", null) as ExSprite;
 			

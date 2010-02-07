@@ -172,7 +172,7 @@ package PhysicsGame
 			
 			var _applyForce:b2Vec2 = new b2Vec2(0,0);
 			
-			//trace("vel.x " + final_body.GetLinearVelocity().x);
+			////trace("vel.x " + final_body.GetLinearVelocity().x);
 			//MOVEMENT
 			//acceleration.x = 0;
 			if(FlxG.keys.A)
@@ -207,8 +207,8 @@ package PhysicsGame
 					final_body.ApplyForce(_applyForce, final_body.GetWorldCenter());
 			}
 
-			//trace("can jump: " + _canJump);
-			//trace("vel" + final_body.m_linearVelocity.y);
+			////trace("can jump: " + _canJump);
+			////trace("vel" + final_body.m_linearVelocity.y);
 			////TODO only when collision from bottom
 			if((FlxG.keys.SPACE || FlxG.keys.W) && _canJump && !_justJumped)//impactPoint.position.y > y + height - 1)///&& Math.abs(final_body.m_linearVelocity.y) < 0.1)
 			{
@@ -226,7 +226,7 @@ package PhysicsGame
 				_applyForce.Multiply(final_body.GetMass());
 				
 				FlxG.log(_applyForce.y + " || " + final_body.GetMass());
-				//trace("mass" + final_body.GetMass());
+				////trace("mass" + final_body.GetMass());
 				
 				//Apply a instantaneous upward force.
 				final_body.ApplyImpulse(_applyForce, final_body.GetWorldCenter());
@@ -243,7 +243,7 @@ package PhysicsGame
 			if(FlxG.keys.W) _up = true;
 			else if(FlxG.keys.S && velocity.y) _down = true;
 			
-			//trace("XXXYYY: " + final_body.GetLinearVelocity().x + ", " + final_body.GetLinearVelocity().y);
+			////trace("XXXYYY: " + final_body.GetLinearVelocity().x + ", " + final_body.GetLinearVelocity().y);
 			
 			//ANIMATION
 			if(Math.abs(final_body.GetLinearVelocity().y) > 0.1)
@@ -253,7 +253,7 @@ package PhysicsGame
 				//if(_up) play("jump_up");
 				//else if(_down) play("jump_down");
 				//else play("jump");
-				//trace("jumping");
+				////trace("jumping");
 			}
 			else if(Math.abs(final_body.GetLinearVelocity().x) < 0.1)
 			{
@@ -412,8 +412,8 @@ package PhysicsGame
 			{
 				
 				
-				trace("p1: " + p1.x + "," + p1.y);
-				trace("p2: " + p2.x + "," + p2.y);
+				//trace("p1: " + p1.x + "," + p1.y);
+				//trace("p2: " + p2.x + "," + p2.y);
 				
 				
 				var input:b2RayCastInput = new b2RayCastInput(p1, p2);
@@ -431,9 +431,9 @@ package PhysicsGame
 										(p2.y * lambda + (1 - lambda) * p1.y) * ExState.PHYS_SCALE);
 					*/
 			getScreenXY(_p);
-			trace( "screen xy " + _p.x + ", "+ _p.y);
-			trace("scaled p1: " + (p1.x * ExState.PHYS_SCALE + FlxG.scroll.x)+ "," + (p1.y * ExState.PHYS_SCALE + FlxG.scroll.y));
-			trace("scaled p2: " + (p2.x * ExState.PHYS_SCALE + FlxG.scroll.x)+ "," + (p2.y * ExState.PHYS_SCALE + FlxG.scroll.y));
+			//trace( "screen xy " + _p.x + ", "+ _p.y);
+			//trace("scaled p1: " + (p1.x * ExState.PHYS_SCALE + FlxG.scroll.x)+ "," + (p1.y * ExState.PHYS_SCALE + FlxG.scroll.y));
+			//trace("scaled p2: " + (p2.x * ExState.PHYS_SCALE + FlxG.scroll.x)+ "," + (p2.y * ExState.PHYS_SCALE + FlxG.scroll.y));
 			
 			//var myShape:Shape = new Shape();
 			myShape.graphics.lineStyle(2,0x0,1);
@@ -444,7 +444,7 @@ package PhysicsGame
 			p2.x = p2.x * ExState.PHYS_SCALE;
 			p2.y = p2.y * ExState.PHYS_SCALE;
 			
-			trace( "lambda " + lambda);
+			//trace( "lambda " + lambda);
 			
 			//myShape.graphics.moveTo(p1.x * ExState.PHYS_SCALE + FlxG.scroll.x, p1.y * ExState.PHYS_SCALE + FlxG.scroll.y);
 			//myShape.graphics.lineTo((p2.x * lambda + (1 - lambda) * p1.x) * ExState.PHYS_SCALE + FlxG.scroll.x,

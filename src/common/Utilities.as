@@ -33,9 +33,9 @@ package common
 			var body:b2Body;
 			var p:b2Vec2 = new b2Vec2(_p.x, _p.y);
 			
-			trace("original p" + p.x + "," + p.y);
+			//trace("original p" + p.x + "," + p.y);
 			p.Multiply(1/ExState.PHYS_SCALE);
-			trace("p" + p.x + "," + p.y);
+			//trace("p" + p.x + "," + p.y);
 			
 			// Query the world for overlapping shapes.
 			function GetBodyCallback(fixture:b2Fixture):Boolean

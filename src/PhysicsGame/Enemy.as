@@ -85,6 +85,8 @@ package PhysicsGame
 		}
 		
 		private function addSensor():void{
+			//TODO:We can probably add sensors to detect forward motion etc...
+			
 			var e:ExState;
 			var s:b2PolygonShape = new b2PolygonShape();
 			//Sensor is only portion of width
@@ -126,21 +128,18 @@ package PhysicsGame
 			var dir:int = facing == RIGHT ? 1 : -1;
 			
 			var p1:b2Vec2 = final_body.GetWorldPoint(new b2Vec2((width/2 + .1)/ExState.PHYS_SCALE * dir,(height/4) / ExState.PHYS_SCALE));
-			var p2:b2Vec2 = final_body.GetWorldPoint(new b2Vec2(20/ExState.PHYS_SCALE * dir, height / ExState.PHYS_SCALE));
+			var p2:b2Vec2 = final_body.GetWorldPoint(new b2Vec2((width)/ExState.PHYS_SCALE * dir, (height/2+2)/ ExState.PHYS_SCALE));
 				
 			var state:ExState = FlxG.state as ExState;
 			var f:b2Fixture = state.the_world.RayCastOne(p1, p2);
-			
-			//TODO:Maybe we can see if lambda is close to 1
-			brain.blackboard.setObject("canWalkForward", f != null);
 			
 			var lambda:Number = 0;
 			if (f)
 			{
 				
-				
-				trace("p1: " + p1.x + "," + p1.y);
-				trace("p2: " + p2.x + "," + p2.y);
+				trace(f.GetBody().GetUserData().name);
+				//trace("p1: " + p1.x + "," + p1.y);
+				//trace("p2: " + p2.x + "," + p2.y);
 				
 				
 				var input:b2RayCastInput = new b2RayCastInput(p1, p2);
@@ -148,6 +147,11 @@ package PhysicsGame
 				f.RayCast(output, input);
 				lambda = output.fraction;
 			}
+			
+			trace(lambda);
+			//TODO:Maybe we can see if lambda is close to 1
+			brain.blackboard.setObject("canWalkForward", lambda > .7); //f != null);
+			
 			
 			var myShape:Shape = new Shape();
 			
@@ -158,9 +162,9 @@ package PhysicsGame
 										(p2.y * lambda + (1 - lambda) * p1.y) * ExState.PHYS_SCALE);
 					*/
 			getScreenXY(_p);
-			trace( "screen xy " + _p.x + ", "+ _p.y);
-			trace("scaled p1: " + (p1.x * ExState.PHYS_SCALE + FlxG.scroll.x)+ "," + (p1.y * ExState.PHYS_SCALE + FlxG.scroll.y));
-			trace("scaled p2: " + (p2.x * ExState.PHYS_SCALE + FlxG.scroll.x)+ "," + (p2.y * ExState.PHYS_SCALE + FlxG.scroll.y));
+			//trace( "screen xy " + _p.x + ", "+ _p.y);
+			//trace("scaled p1: " + (p1.x * ExState.PHYS_SCALE + FlxG.scroll.x)+ "," + (p1.y * ExState.PHYS_SCALE + FlxG.scroll.y));
+			//trace("scaled p2: " + (p2.x * ExState.PHYS_SCALE + FlxG.scroll.x)+ "," + (p2.y * ExState.PHYS_SCALE + FlxG.scroll.y));
 			
 			//var myShape:Shape = new Shape();
 			myShape.graphics.lineStyle(2,0x0,1);
@@ -171,7 +175,8 @@ package PhysicsGame
 			p2.x = p2.x * ExState.PHYS_SCALE;
 			p2.y = p2.y * ExState.PHYS_SCALE;
 			
-			trace( "lambda " + lambda);
+			lambda = 1;
+			//trace( "lambda " + lambda);
 			
 			//myShape.graphics.moveTo(p1.x * ExState.PHYS_SCALE + FlxG.scroll.x, p1.y * ExState.PHYS_SCALE + FlxG.scroll.y);
 			//myShape.graphics.lineTo((p2.x * lambda + (1 - lambda) * p1.x) * ExState.PHYS_SCALE + FlxG.scroll.x,
@@ -196,6 +201,9 @@ package PhysicsGame
 			if(point.GetFixtureA() == gFixture || point.GetFixtureB() == gFixture){
 				brain.blackboard.setObject("canJump", true);
 			}
+			else{
+				brain.blackboard.setObject("blocked", true);
+			}
 		}
 		
 		override public function removeImpactPoint(point:b2Contact, oBody:b2Body):void{
@@ -207,7 +215,10 @@ package PhysicsGame
 			
 			
 			if(point.GetFixtureA() == gFixture || point.GetFixtureB() == gFixture){
-				brain.blackboard.setObject("canJump", true);
+				brain.blackboard.setObject("canJump", false);
+			}
+			else{
+				brain.blackboard.setObject("blocked", false);
 			}
 		}
 	}

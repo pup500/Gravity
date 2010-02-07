@@ -26,6 +26,8 @@ package ai.actions
 			_applyForce.x *= -1;
 			bb.setObject("force", _applyForce);
 			
+			trace("turn force: " + _applyForce.x + "," + _applyForce.y);
+			
 			me.facing = _applyForce.x > 0 ? FlxSprite.RIGHT : FlxSprite.LEFT;
 			
 			return e_succeeded;

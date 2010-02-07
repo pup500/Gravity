@@ -88,7 +88,7 @@ package org.overrides
 					for(i = 0; i < pixels.width; i++){
 						pixelValue = pixels.getPixel32(i,round);
 						alphaValue = pixelValue >> 24 & 0xFF;
-						trace("x,y: " + i + ", " + round + " =" + alphaValue);
+						//trace("x,y: " + i + ", " + round + " =" + alphaValue);
 						if(alphaValue != 0){
 							//Found first
 							newPoint = new b2Vec2(i,round);
@@ -103,7 +103,7 @@ package org.overrides
 							for(j = pixels.width-1; j > i; j--){
 								pixelValue = pixels.getPixel32(j,round);
 								alphaValue = pixelValue >> 24 & 0xFF;
-								trace("x,y: " + j + ", " + round + " =" + alphaValue);
+								//trace("x,y: " + j + ", " + round + " =" + alphaValue);
 								if(alphaValue != 0){
 									newPoint = new b2Vec2(j, round);
 									if(oldPoint.x != newPoint.x || oldPoint.y != newPoint.y){
@@ -124,7 +124,7 @@ package org.overrides
 					for(j = 0; j < pixels.height; j++){
 						pixelValue = pixels.getPixel32(pixels.width-1-round,j);
 						alphaValue = pixelValue >> 24 & 0xFF;
-						trace("x,y: " + (pixels.width-1-round) + ", " + j + " =" + alphaValue);
+						//trace("x,y: " + (pixels.width-1-round) + ", " + j + " =" + alphaValue);
 						if(alphaValue != 0){
 							newPoint = new b2Vec2(pixels.width-1-round,j);
 							if(oldPoint.x != newPoint.x || oldPoint.y != newPoint.y){
@@ -138,7 +138,7 @@ package org.overrides
 							for(i = pixels.height-1; i > j; i--){
 								pixelValue = pixels.getPixel32(pixels.width-1-round,i);
 								alphaValue = pixelValue >> 24 & 0xFF;
-								trace("x,y: " + (pixels.width-1-round) + ", " + i + " =" + alphaValue);
+								//trace("x,y: " + (pixels.width-1-round) + ", " + i + " =" + alphaValue);
 								if(alphaValue != 0){
 									newPoint = new b2Vec2(pixels.width-1-round,i);
 									if(oldPoint.x != newPoint.x || oldPoint.y != newPoint.y){
@@ -159,7 +159,7 @@ package org.overrides
 					for(i = pixels.width - 1; i >= 0; i--){
 						pixelValue = pixels.getPixel32(i,pixels.height-1-round);
 						alphaValue = pixelValue >> 24 & 0xFF;
-						trace("x,y: " + i + ", " + (pixels.height-1-round) + " =" + alphaValue);
+						//trace("x,y: " + i + ", " + (pixels.height-1-round) + " =" + alphaValue);
 						if(alphaValue != 0){
 							newPoint = new b2Vec2(i,pixels.height-1-round);
 							if(oldPoint.x != newPoint.x || oldPoint.y != newPoint.y){
@@ -173,7 +173,7 @@ package org.overrides
 							for(j = 0; j < i; j++){
 								pixelValue = pixels.getPixel32(j,pixels.height-1-round);
 								alphaValue = pixelValue >> 24 & 0xFF;
-								trace("x,y: " + j + ", " + (pixels.height-1-round) + " =" + alphaValue);
+								//trace("x,y: " + j + ", " + (pixels.height-1-round) + " =" + alphaValue);
 								if(alphaValue != 0){
 									newPoint = new b2Vec2(j,pixels.height-1-round);
 									if(oldPoint.x != newPoint.x || oldPoint.y != newPoint.y){
@@ -194,7 +194,7 @@ package org.overrides
 					for(j = pixels.height - 1; j >= 0; j--){
 						pixelValue = pixels.getPixel32(round,j);
 						alphaValue = pixelValue >> 24 & 0xFF;
-						trace("x,y: " + round + ", " + j + " =" + alphaValue);
+						//trace("x,y: " + round + ", " + j + " =" + alphaValue);
 						if(alphaValue != 0){
 							newPoint = new b2Vec2(round,j);
 							if(oldPoint.x != newPoint.x || oldPoint.y != newPoint.y){
@@ -208,7 +208,7 @@ package org.overrides
 							for(i = 0; i < j; i++){
 								pixelValue = pixels.getPixel32(round,i);
 								alphaValue = pixelValue >> 24 & 0xFF;
-								trace("x,y: " + round + ", " + i + " =" + alphaValue);
+								//trace("x,y: " + round + ", " + i + " =" + alphaValue);
 								if(alphaValue != 0){
 									newPoint = new b2Vec2(round,i);
 									if(oldPoint.x != newPoint.x || oldPoint.y != newPoint.y){
@@ -251,9 +251,9 @@ package org.overrides
 					for(var k:uint = 0; k < points.length; k++){
 						shapeDef.vertices[k].Set(points[k].x - _bw/2, points[k].y - _bh/2);
 						
-						trace("finalk:" + k + " Xy:" + points[k].x + "," + points[k].y);
+						//trace("finalk:" + k + " Xy:" + points[k].x + "," + points[k].y);
 					}
-					trace("X,y:" + x + ", " + y + " bw: " + _bw + " bh: " + _bh);
+					//trace("X,y:" + x + ", " + y + " bw: " + _bw + " bh: " + _bh);
 					*/
 					
 					shape = shapeDef;
@@ -365,13 +365,13 @@ package org.overrides
 					//TODO:SEE IF THIS MAKES SENSE, can we put this anywhere else....
 					case Utilities.e_prismaticJoint:
 						var jointRev:b2PrismaticJoint = joints.joint as b2PrismaticJoint;
-						//trace("limit:" + jointRev.GetLowerLimit() + ", " + jointRev.GetUpperLimit() + " : " + jointRev.GetJointTranslation());
+						////trace("limit:" + jointRev.GetLowerLimit() + ", " + jointRev.GetUpperLimit() + " : " + jointRev.GetJointTranslation());
 						if(Math.abs(jointRev.GetJointTranslation() - jointRev.GetLowerLimit()) < .1){
 							jointRev.SetMotorSpeed(Math.abs(jointRev.GetMotorSpeed()));
-							//trace("speed:" + jointRev.GetMotorSpeed());
+							////trace("speed:" + jointRev.GetMotorSpeed());
 						}
 						else if(Math.abs(jointRev.GetJointTranslation() - jointRev.GetUpperLimit()) < .1){
-							//trace("speed:" + jointRev.GetMotorSpeed());
+							////trace("speed:" + jointRev.GetMotorSpeed());
 							jointRev.SetMotorSpeed(-Math.abs(jointRev.GetMotorSpeed()));
 						}
 						break;
@@ -398,8 +398,8 @@ package org.overrides
 		public function updatePosition():void{
 			var posVec:b2Vec2 = final_body.GetPosition();
 			
-			//trace("name:" + name + " posxy:" + posVec.x + "," + posVec.y + " scaledxy: " + (posVec.x * ExState.PHYS_SCALE) + "," + (posVec.y * ExState.PHYS_SCALE));
-			//trace("width:" + width + "," + height);
+			////trace("name:" + name + " posxy:" + posVec.x + "," + posVec.y + " scaledxy: " + (posVec.x * ExState.PHYS_SCALE) + "," + (posVec.y * ExState.PHYS_SCALE));
+			////trace("width:" + width + "," + height);
 			
 			//Use width and height because sprite may be animated so each frame doesn't take up full bitmap
 			x = Math.round((posVec.x * ExState.PHYS_SCALE) - (width/2));//_bw/2;
@@ -458,8 +458,8 @@ package org.overrides
 			
 			//impactPoint
 			
-			//trace("impact: points" + point.GetManifold().m_pointCount);
-			//trace("impact: points" + point.GetManifold().m_localPoint.x * ExState.PHYS_SCALE + ","
+			////trace("impact: points" + point.GetManifold().m_pointCount);
+			////trace("impact: points" + point.GetManifold().m_localPoint.x * ExState.PHYS_SCALE + ","
 			// + point.GetManifold().m_localPoint.y * ExState.PHYS_SCALE);
 		}
 		
