@@ -130,8 +130,8 @@
 		override public function getXML():XML
 		{
 			var xml:XML = new XML(<sensor/>);
-			xml.@x = x;		 		
-			xml.@y = y;
+			xml.@x = final_body.GetWorldCenter().x * ExState.PHYS_SCALE;		 		
+			xml.@y = final_body.GetWorldCenter().y * ExState.PHYS_SCALE;//y;
 			xml.@width = _bw;
 			xml.@height = _bh; 
 			
@@ -172,8 +172,6 @@
 			
 			//bodyDef.angle = xml.@angle;
 			bodyDef.position.Set(xml.@x/ExState.PHYS_SCALE, xml.@y/ExState.PHYS_SCALE);
-			
-			trace("at sensor CreateFromXML: " + xml.@x + " " + xml.@y);
 			
 			//TODO:Do we need to correct for x and y...?
 			createPhysBody(world, controller);

@@ -15,7 +15,7 @@ package PhysicsGame
 		override public function BeginContact(contact:b2Contact) : void {
 			super.BeginContact(contact);
 		
-			trace("normal" + contact.GetManifold().m_localPlaneNormal.x + "," + contact.GetManifold().m_localPlaneNormal.y);
+			//trace("normal" + contact.GetManifold().m_localPlaneNormal.x + "," + contact.GetManifold().m_localPlaneNormal.y);
 			//var body1:b2Body = point.shape1.GetBody();
 			//var body2:b2Body = point.shape2.GetBody();
 			
@@ -25,13 +25,13 @@ package PhysicsGame
 			//trace("Body1: "+ body1.GetUserData().name + " Body2: " + body2.GetUserData().name);
 				
 			if(body1.GetUserData()){
-				trace("Body1: "+ body1.GetUserData().name + " Body2: " + body2.GetUserData().name);
+				//trace("Body1: "+ body1.GetUserData().name + " Body2: " + body2.GetUserData().name);
 				body1.GetUserData().setImpactPoint(contact, body2);
 				//body1.GetUserData().hurt(0);
 			}
 			
 			if(body2.GetUserData()){
-				trace("Body1: "+ body1.GetUserData().name + " Body2: " + body2.GetUserData().name);
+				//trace("Body1: "+ body1.GetUserData().name + " Body2: " + body2.GetUserData().name);
 				body2.GetUserData().setImpactPoint(contact, body1);
 				//body2.GetUserData().hurt(0);
 			}

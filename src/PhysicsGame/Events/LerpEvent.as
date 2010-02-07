@@ -34,11 +34,22 @@
 			
 			//var state:ExState = FlxG.state as ExState;
 			
+/*
 			//_body = Utilities.GetBodyAtPoint( state.the_world, targetPoint);
 			var move:b2Vec2 = new b2Vec2(_args["movex"]/ExState.PHYS_SCALE,_args["movey"]/ExState.PHYS_SCALE);
 			target.GetBody().GetPosition().Add(move);//
 			//target.GetBody().ApplyImpulse(move, target.GetBody().GetWorldCenter());
 			//target.GetBody().SetActive(false);
+*/
+			if(target){
+				var force:b2Vec2 = new b2Vec2(_args["movex"],_args["movey"]);//_args["forcex"],_args["forcey"]);
+				force.Multiply(target.GetBody().GetMass());
+				target.GetBody().ApplyImpulse(force, target.GetBody().GetWorldCenter());
+			}
+			
+			//_body = Utilities.GetBodyAtPoint( state.the_world, targetPoint);
+			//var force:b2Vec2 = new b2Vec2(_args["forcex"],_args["forcey"]);
+			//_body.ApplyImpulse(force, _body.GetWorldCenter());
 		}
 		
 		override public function update():void

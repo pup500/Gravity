@@ -114,7 +114,7 @@
 			
 			mass=initialMass;
 			
-			play("idle");
+			//play("idle");
 			_coolDown.reset();
 			_coolDown.start();
 			
@@ -205,8 +205,8 @@
 			//See if this is ok....
 			//force = Math.log(force + 1) * 5;
 			
-			trace("force: " + force);
-			trace("distsq: " + distSq);
+			//trace("force: " + force);
+			//trace("distsq: " + distSq);
 			
 			if(force > 100) force = 100;
 			var impulse:b2Vec2 = new b2Vec2(force * dist.x, force * dist.y);//(force * (dist.x/distance), force * (dist.y/distance));

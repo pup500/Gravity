@@ -15,6 +15,9 @@ package ai.conditions
 		override public function run(bb:BlackBoard):uint{
 			trace("running moving");
 			
+			//TODo:The problem is that movement picks up, so we can be turning incorrectly because
+			//We don't give it the chance to turn....
+			
 			var me:ExSprite = bb.getObject("me", null) as ExSprite;
 			
 			if(!me) return e_failed;
