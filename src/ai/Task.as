@@ -6,6 +6,7 @@ package ai
 	{
 		public static const e_succeeded:uint = 1;
 		public static const e_failed:uint = 2;
+		public static const e_running:uint = 3;
 		
 		protected var subtasks:Array;
 		

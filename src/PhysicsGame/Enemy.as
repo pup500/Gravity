@@ -8,11 +8,13 @@ package PhysicsGame
 	import Box2D.Dynamics.Contacts.*;
 	import Box2D.Dynamics.Controllers.b2Controller;
 	
-	import ai.*;
-	import ai.actions.*;
-	import ai.brains.BrainFactory;
-	import ai.conditions.*;
-	import ai.decorators.*;
+	import ailab.*;
+	import ailab.actions.*;
+	import ailab.conditions.*;
+	import ailab.basic.*;
+	import ailab.decorators.*;
+	import ailab.groups.*;
+	import ailab.brains.*;
 	
 	import flash.display.Shape;
 	
@@ -62,7 +64,9 @@ package PhysicsGame
 			//addAnimation("jump_up", [0]);
 			//addAnimation("jump_down", [0]);
 
-			brain = BrainFactory.createRandomBrain();
+			//Working new brain
+			brain = BrainFactory.createBrain(0);
+			
 			brain.blackboard.setObject("me", this);
 			
 			var _applyForce:b2Vec2 = new b2Vec2(2,0);
@@ -120,6 +124,8 @@ package PhysicsGame
 			
 			//UPDATE POSITION AND ANIMATION			
 			super.update();
+			
+			brain.blackboard.setObject("moving", final_body.GetLinearVelocity().x > 0.1);
 		}
 		
 		override public function render():void{
@@ -137,7 +143,7 @@ package PhysicsGame
 			if (f)
 			{
 				
-				trace(f.GetBody().GetUserData().name);
+				//trace(f.GetBody().GetUserData().name);
 				//trace("p1: " + p1.x + "," + p1.y);
 				//trace("p2: " + p2.x + "," + p2.y);
 				
@@ -148,7 +154,7 @@ package PhysicsGame
 				lambda = output.fraction;
 			}
 			
-			trace(lambda);
+			//trace(lambda);
 			//TODO:Maybe we can see if lambda is close to 1
 			brain.blackboard.setObject("canWalkForward", lambda > .7); //f != null);
 			
