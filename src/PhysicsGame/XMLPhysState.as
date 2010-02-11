@@ -28,7 +28,7 @@ package PhysicsGame
 			controller = new GravityObjectController();
 			the_world.AddController(controller);
 			
-			debug = true;
+			debug = false;
 			initBox2DDebugRendering();
 			
 			//ev.visible = true;
