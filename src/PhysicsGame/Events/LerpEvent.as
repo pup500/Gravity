@@ -41,10 +41,15 @@
 			//target.GetBody().ApplyImpulse(move, target.GetBody().GetWorldCenter());
 			//target.GetBody().SetActive(false);
 */
+			/*
 			if(target){
 				var force:b2Vec2 = new b2Vec2(_args["movex"],_args["movey"]);//_args["forcex"],_args["forcey"]);
 				force.Multiply(target.GetBody().GetMass());
 				target.GetBody().ApplyImpulse(force, target.GetBody().GetWorldCenter());
+			}*/
+			
+			if(target){
+				target.setJointMotorSpeed(-10);
 			}
 			
 			//_body = Utilities.GetBodyAtPoint( state.the_world, targetPoint);
