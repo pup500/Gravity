@@ -59,6 +59,8 @@ package PhysicsGame
 		
 		public function setArgs(args:Dictionary):void{
 			_impl.setArgs(args);
+			
+			this.args = args;
 		}
 		
 		public function activate():void{
@@ -106,6 +108,13 @@ package PhysicsGame
 				var t:ExSprite = this.getTarget();
 				item.target.@x = t.GetBody().GetWorldCenter().x * ExState.PHYS_SCALE;
 				item.target.@y = t.GetBody().GetWorldCenter().y * ExState.PHYS_SCALE;
+			}
+			
+			var arg:XML = <arg/>
+			if(args["speed"]){
+				arg.@name = "speed"
+				arg.@value = args["speed"];
+				item.appendChild(arg);
 			}
 			
 			return item;

@@ -368,7 +368,7 @@ package org.overrides
 						var jointPris:b2PrismaticJoint = joint as b2PrismaticJoint;
 						trace("joint speed: " + jointPris.GetMotorSpeed());
 						trace("joint force: " + jointPris.GetMotorForce());
-						jointPris.SetMotorSpeed(-Math.abs(jointPris.GetMotorSpeed()));
+						jointPris.SetMotorSpeed(speed);//-Math.abs(jointPris.GetMotorSpeed()));
 						
 						//jointPris.SetMotorSpeed(speed);
 						break;
