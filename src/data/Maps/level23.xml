@@ -1,0 +1,206 @@
+﻿<config>
+  <objects>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="304" y="312">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="272" y="296">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="272" y="312">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="400" y="312">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="576" y="192">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="80" y="312">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="304" y="88">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="144" y="296">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="240" y="312">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="464" y="296">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="432" y="296">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="552.5" y="256.5">
+      <file>data/editor/images/e_ass_06.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="400" y="232">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="304" y="152">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="208" y="280">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="144" y="312">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="400" y="296">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="496.00000000000006" y="312">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="160" y="48">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="464" y="280">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="80" y="280">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="328" y="48">
+      <file>data/editor/images/blocks_3.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="304" y="104">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="95.5" y="264.5">
+      <file>data/editor/images/e_ass_10.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="240" y="296">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="80" y="296">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="176" y="312">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="112" y="296">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="240" y="248.00000000000003">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="304" y="120">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="336" y="152">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="447.5" y="264.5">
+      <file>data/editor/images/e_ass_10.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="432" y="312">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="144" y="280">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="528" y="312">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="208" y="296">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="464" y="336">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="160" y="336">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="368" y="152">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="400" y="264">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="464" y="48">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="400" y="280">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="48" y="192">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="528" y="296">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="496.00000000000006" y="280">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="176" y="296">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="511.5" y="264.5">
+      <file>data/editor/images/e_ass_10.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="304" y="72">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="240" y="280">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="400" y="248.00000000000003">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="112" y="312">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="296" y="336">
+      <file>data/editor/images/blocks_3.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="432" y="280">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="312" y="336">
+      <file>data/editor/images/blocks_3.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="208" y="312">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="496.00000000000006" y="296">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="464" y="312">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="112" y="280">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="159.5" y="264.5">
+      <file>data/editor/images/e_ass_10.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="223.5" y="264.5">
+      <file>data/editor/images/e_ass_10.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="176" y="280">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="296" y="48">
+      <file>data/editor/images/blocks_3.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="528" y="280">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="328" y="336">
+      <file>data/editor/images/blocks_3.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="312" y="48">
+      <file>data/editor/images/blocks_3.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="304" y="136">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+  </objects>
+  <points>
+    <start x="96" y="223"/>
+    <end x="513" y="218"/>
+  </points>
+</config>
