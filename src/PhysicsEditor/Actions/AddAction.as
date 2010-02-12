@@ -70,6 +70,7 @@ package PhysicsEditor.Actions
 			xml.@friction = state.getArgs()["friction"];
 			xml.@density = state.getArgs()["density"];
 			xml.@restitution = state.getArgs()["restitution"];
+			xml.@damage = state.getArgs()["damage"];
 			
 			var b2:ExSprite = new ExSprite();
 		    b2.initFromXML(xml, state.the_world, state.getController());

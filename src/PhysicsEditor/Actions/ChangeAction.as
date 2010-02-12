@@ -33,6 +33,8 @@ package PhysicsEditor.Actions
 				fixture.SetRestitution(state.getArgs()["restitution"]);
 				b2.ResetMassData();
 				
+				bSprite.damage = state.getArgs()["damage"];
+				
 				//var xml:XML = bSprite.getXML();
 				//xml.layer = 1;
 				//xml.bodyType = state.getArgs()["bodyType"];

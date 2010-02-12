@@ -52,6 +52,8 @@ package PhysicsGame
 			//Make this part of group -2, and do not collide with other in the same negative group...
 			name = "Player";
 			
+			damage = 10;
+			
 			//fixtureDef.filter.groupIndex = -2;
 			fixtureDef.filter.categoryBits = 0x0002;
 

@@ -28,9 +28,9 @@
 		
 		override public function startEvent():void
 		{
-			trace("START EVENT " + _args["movex"] + " "  + _args["movey"]);
+			//trace("START EVENT " + _args["movex"] + " "  + _args["movey"]);
 			//var targetPoint:b2Vec2 = new b2Vec2(_args["x"],_args["y"]); 
-			_time = _args["time"];
+			//_time = _args["time"];
 			
 			//var state:ExState = FlxG.state as ExState;
 			
@@ -41,10 +41,15 @@
 			//target.GetBody().ApplyImpulse(move, target.GetBody().GetWorldCenter());
 			//target.GetBody().SetActive(false);
 */
+			/*
 			if(target){
 				var force:b2Vec2 = new b2Vec2(_args["movex"],_args["movey"]);//_args["forcex"],_args["forcey"]);
 				force.Multiply(target.GetBody().GetMass());
 				target.GetBody().ApplyImpulse(force, target.GetBody().GetWorldCenter());
+			}*/
+			
+			if(target){
+				target.setJointMotorSpeed(_args["speed"]);
 			}
 			
 			//_body = Utilities.GetBodyAtPoint( state.the_world, targetPoint);

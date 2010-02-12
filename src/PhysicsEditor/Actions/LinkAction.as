@@ -5,12 +5,12 @@ package PhysicsEditor.Actions
 	import PhysicsEditor.IPanel;
 	
 	import PhysicsGame.EventObject;
-	import PhysicsGame.Events.EventBase;
 	import PhysicsGame.Sensor;
 	
 	import common.Utilities;
 	
 	import flash.display.Shape;
+	import flash.utils.Dictionary;
 	
 	import org.flixel.FlxG;
 	import org.overrides.ExSprite;
@@ -72,6 +72,10 @@ package PhysicsEditor.Actions
 		  
 		private function linkEventToTarget(event:EventObject, target:ExSprite):void{
 			event.setTarget(target);
+			
+			var temp:Dictionary = new Dictionary();
+			temp["speed"] = state.getArgs()["speed"];
+			event.setArgs(temp);
 		}
 	}
 }

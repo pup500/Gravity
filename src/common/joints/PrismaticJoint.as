@@ -55,7 +55,7 @@ package common.joints
 				prisJoint.Initialize(body1, body2, anchor, axis);
 				prisJoint.enableMotor = true;
 				prisJoint.enableLimit = true;
-				prisJoint.maxMotorForce = 10 * body2.GetMass();
+				prisJoint.maxMotorForce = 100 * body2.GetMass();
 				prisJoint.motorSpeed = 1;
 				prisJoint.upperTranslation = 5;
 				prisJoint.lowerTranslation = -5;

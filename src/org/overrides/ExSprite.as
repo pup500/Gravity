@@ -7,7 +7,9 @@ package org.overrides
 	import Box2D.Dynamics.*;
 	import Box2D.Dynamics.Contacts.*;
 	import Box2D.Dynamics.Controllers.b2Controller;
+	import Box2D.Dynamics.Joints.b2Joint;
 	import Box2D.Dynamics.Joints.b2JointEdge;
+	import Box2D.Dynamics.Joints.b2PrismaticJoint;
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -43,6 +45,8 @@ package org.overrides
 		protected var _controller:b2Controller;
 		
 		protected var loaded:Boolean;
+		
+		public var damage:int;
 		
 		public function ExSprite(x:int=0, y:int=0, sprite:Class=null){
 			//TODO:Note that x and y needs to be offsetted by half width and height to match physics...
@@ -356,6 +360,26 @@ package org.overrides
 			}
 		}
 		
+		public function setJointMotorSpeed(speed:Number):void{
+			var joints:b2JointEdge = final_body.GetJointList();
+			while(joints){
+				var joint:b2Joint = joints.joint;
+				
+				switch(joint.GetType()){
+					case b2Joint.e_prismaticJoint:
+						var jointPris:b2PrismaticJoint = joint as b2PrismaticJoint;
+						trace("joint speed: " + jointPris.GetMotorSpeed());
+						trace("joint force: " + jointPris.GetMotorForce());
+						jointPris.SetMotorSpeed(speed);//-Math.abs(jointPris.GetMotorSpeed()));
+						
+						//jointPris.SetMotorSpeed(speed);
+						break;
+				}
+				
+				joints = joints.next;
+			}
+		}
+		
 		/*
 		public function updateJoints():void{
 			var joint:b2Joint;
@@ -461,6 +485,8 @@ package org.overrides
 			////trace("impact: points" + point.GetManifold().m_pointCount);
 			////trace("impact: points" + point.GetManifold().m_localPoint.x * ExState.PHYS_SCALE + ","
 			// + point.GetManifold().m_localPoint.y * ExState.PHYS_SCALE);
+			
+			hurt(oBody.GetUserData().damage);
 		}
 		
 		public function removeImpactPoint(point:b2Contact, oBody:b2Body):void{
@@ -483,6 +509,7 @@ package org.overrides
 			xml.@friction = fixture.GetFriction();
 			xml.@density = fixture.GetDensity();
 			xml.@restitution = fixture.GetRestitution();
+			xml.@damage = damage;
 			
 			//XML representation is in screen coordinates, so scale up physics
 			xml.@x = final_body.GetPosition().x * ExState.PHYS_SCALE;
@@ -530,6 +557,8 @@ package org.overrides
 			fixtureDef.friction = xml.@friction;
 			fixtureDef.density = xml.@density;
 			fixtureDef.restitution = xml.@restitution;
+			
+			damage = xml.@damage;
 			
 			//TODO:Do we need to correct for x and y...?
 			createPhysBody(world, controller);

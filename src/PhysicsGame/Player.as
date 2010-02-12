@@ -72,9 +72,13 @@ package PhysicsGame
 			
 			//Make this part of group -2, and do not collide with other in the same negative group...
 			name = "Player";
+			health = 20;
 			
 			fixtureDef.filter.groupIndex = -2;
 			fixtureDef.filter.categoryBits = 0x0001;
+			
+			//adding this to play around with player's density to get maximum platformy/gravity-y goodness - MK
+			fixtureDef.density = 50;
 			
 			
 			_restart = 0;
@@ -178,7 +182,7 @@ package PhysicsGame
 			if(FlxG.keys.A)
 			{
 				facing = LEFT;
-				_applyForce.x = -7;//_canJump ? -7 : -2;
+				_applyForce.x = -75;//_canJump ? -7 : -2;  (this was originally -7 -MK)
 				_applyForce.y = 0;
 				//We multiply this here because it is later multiplied by inverse mass. - Minh
 				//_applyForce.Multiply(final_body.GetMass());
@@ -196,7 +200,7 @@ package PhysicsGame
 			{
 				facing = RIGHT;
 				//final_body.GetLinearVelocity().x = 30;
-				_applyForce.x = 7;//_canJump ? 7 : 2;
+				_applyForce.x = 75;//_canJump ? 7 : 2;    (this was originally 7  -MK)
 				_applyForce.y = 0;
 				//We multiply this here because it is later multiplied by inverse mass. - Minh
 				//_applyForce.Multiply(final_body.GetMass());
@@ -393,7 +397,12 @@ package PhysicsGame
 		}
 		
 		override public function hurt(Damage:Number):void{
+			health -= Damage;
 			
+			if(Damage > 0){
+				//dead = true;
+				flicker(2);
+			}
 		}
 		
 		override public function render():void{
