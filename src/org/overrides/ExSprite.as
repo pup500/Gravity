@@ -63,6 +63,7 @@ package org.overrides
 			fixtureDef.friction = 1;
 			
 			impactPoint = new b2Contact();
+			damage = 0;
 			
 			loaded = false;
 		}
@@ -558,7 +559,7 @@ package org.overrides
 			fixtureDef.density = xml.@density;
 			fixtureDef.restitution = xml.@restitution;
 			
-			damage = xml.@damage;
+			damage = xml.@damage.length() > 0 ? xml.@damage : 0;
 			
 			//TODO:Do we need to correct for x and y...?
 			createPhysBody(world, controller);
