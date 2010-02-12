@@ -10,6 +10,7 @@ package org.overrides
 	import Box2D.Dynamics.Joints.b2Joint;
 	import Box2D.Dynamics.Joints.b2JointEdge;
 	import Box2D.Dynamics.Joints.b2PrismaticJoint;
+	import Box2D.Dynamics.Joints.b2RevoluteJoint;
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -372,6 +373,14 @@ package org.overrides
 						trace("joint speed: " + jointPris.GetMotorSpeed());
 						trace("joint force: " + jointPris.GetMotorForce());
 						jointPris.SetMotorSpeed(speed);//-Math.abs(jointPris.GetMotorSpeed()));
+						
+						//jointPris.SetMotorSpeed(speed);
+						break;
+					case b2Joint.e_revoluteJoint:
+						var jointRev:b2RevoluteJoint = joint as b2RevoluteJoint;
+						trace("joint speed: " + jointRev.GetMotorSpeed());
+						trace("joint torque: " + jointRev.GetMotorTorque());
+						jointRev.SetMotorSpeed(speed);//-Math.abs(jointPris.GetMotorSpeed()));
 						
 						//jointPris.SetMotorSpeed(speed);
 						break;

@@ -135,8 +135,8 @@
 			xml.@width = _bw;
 			xml.@height = _bh; 
 			
-			var eventXML:XML = new XML(<event/>);
 			for each (var event:EventObject in _events){
+				var eventXML:XML = new XML(<event/>);
 				eventXML.@x = event.GetBody().GetWorldCenter().x * ExState.PHYS_SCALE;;
 				eventXML.@y = event.GetBody().GetWorldCenter().y * ExState.PHYS_SCALE;;
 				xml.appendChild(eventXML);
