@@ -1,9 +1,10 @@
-package ai.actions
+package ailab.actions
 {
 	import Box2D.Common.Math.b2Vec2;
 	
-	import ai.Task;
-	import ai.blackboard.BlackBoard;
+	import ailab.Task;
+	import ailab.TaskResult;
+	import ailab.blackboard.BlackBoard;
 	
 	import org.overrides.ExSprite;
 
@@ -14,12 +15,12 @@ package ai.actions
 			super();
 		}
 		
-		override public function run(bb:BlackBoard):uint{
+		override public function run(bb:BlackBoard):TaskResult{
 			trace("in stop task");
 			
 			var me:ExSprite = bb.getObject("me", null) as ExSprite;
 			
-			if(!me) return e_failed;
+			if(!me) return TaskResult.FAILED;
 			
 			//var _applyForce:b2Vec2 = bb.getObject("force", new b2Vec2(0,0)) as b2Vec2;
 			
@@ -36,7 +37,7 @@ package ai.actions
 			//me.play("run", false);
 			
 			//TODO: Fix this random hack
-			return e_succeeded;//(Math.random() < .9) ? e_succeeded : e_failed;
+			return TaskResult.SUCCEEDED;//(Math.random() < .9) ? e_succeeded : e_failed;
 			//
 			//return e_succeeded;
 		}

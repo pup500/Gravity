@@ -1,42 +1,32 @@
 package ailab.brains
 {
 	import ailab.*;
+	import ailab.actions.*;
 	import ailab.conditions.*;
 	import ailab.decorators.*;
-	import ailab.actions.*;
+	import ailab.groups.*;
 
 	public class JumpAroundBrain extends TaskTree
 	{
 		public function JumpAroundBrain()
 		{
 			super();
-			/*
+			
 			composite(new SelectorTask())
 				.composite(new SequenceTask())
-					.add(new Not(new IsMoving()))
-					.composite(new RandomTask())
-						.add(new JumpTask())
-						.add(new TurnTask())
-						.add(new Task())
-					.end()
+					.add(new PlayAnimWalk())
 					.add(new WalkTask())
 				.end()
-			.end()
-			.composite(new SequenceTask())
-				.add(new IsFalling())
-				.add(new CanJump())
 				.composite(new RandomTask())
-					.add(new JumpTask())
+					//This seems to work out well
+					.composite(new SequenceTask())
+						.add(new JumpTask())
+						.add(new TimeOut(new MoveTask(), .5, TaskResult.SUCCEEDED))
+					.end()
 					.add(new TurnTask())
 				.end()
 			.end()
-			.composite(new SequenceTask())
-				.add(new WalkTask())
-				.add(new CanJump())
-				.add(new Not(new IsFalling()))
-				.add(new PlayAnimWalk())
-			.end();
-			*/
+			;
 		}
 	}
 }

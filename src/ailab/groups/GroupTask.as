@@ -6,7 +6,7 @@ package ailab.groups
 	
 	public class GroupTask extends Task
 	{
-		private var currentIndex:int;
+		protected var currentIndex:int;
 		
 		protected var _subtasks:Array;
 		

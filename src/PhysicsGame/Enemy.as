@@ -67,11 +67,11 @@ package PhysicsGame
 			//addAnimation("jump_down", [0]);
 
 			//Working new brain
-			brain = BrainFactory.createBrain(0);
+			brain = BrainFactory.createBrain(1);
 			
 			brain.blackboard.setObject("me", this);
 			
-			var _applyForce:b2Vec2 = new b2Vec2(2,0);
+			var _applyForce:b2Vec2 = new b2Vec2(1,0);
 			brain.blackboard.setObject("force", _applyForce);
 			
 			brain.blackboard.setObject("canWalkForward", true);
@@ -135,10 +135,16 @@ package PhysicsGame
 			
 			var dir:int = facing == RIGHT ? 1 : -1;
 			
-			var p1:b2Vec2 = final_body.GetWorldPoint(new b2Vec2((width/2 + .1)/ExState.PHYS_SCALE * dir,(height/4) / ExState.PHYS_SCALE));
+			//var p1:b2Vec2 = final_body.GetWorldPoint(new b2Vec2((width/2 + .1)/ExState.PHYS_SCALE * dir,(height/4) / ExState.PHYS_SCALE));
+			//var p2:b2Vec2 = final_body.GetWorldPoint(new b2Vec2((width)/ExState.PHYS_SCALE * dir, (height/2+2)/ ExState.PHYS_SCALE));
+			
+			var p1:b2Vec2 = final_body.GetWorldPoint(new b2Vec2((width/2-2)/ExState.PHYS_SCALE * dir,(height/4) / ExState.PHYS_SCALE));
 			var p2:b2Vec2 = final_body.GetWorldPoint(new b2Vec2((width)/ExState.PHYS_SCALE * dir, (height/2+2)/ ExState.PHYS_SCALE));
 				
+				
 			var state:ExState = FlxG.state as ExState;
+			
+			/*
 			var f:b2Fixture = state.the_world.RayCastOne(p1, p2);
 			
 			var lambda:Number = 0;
@@ -156,9 +162,30 @@ package PhysicsGame
 				lambda = output.fraction;
 			}
 			
-			//trace(lambda);
+			*/
+			
+			var f:b2Fixture = null;
+			var lambda:Number = 1;
+			
+			function castFunction(fixture:b2Fixture, point:b2Vec2, normal:b2Vec2, fraction:Number):Number
+			{
+				if(fraction < lambda){
+					f = fixture;
+					lambda = fraction;
+				}
+				//lambda = lambda < fraction ? lambda : fraction;
+				return fraction;
+			}
+			
+			state.the_world.RayCast(castFunction, p1, p2);
+			
+			if(lambda == 0){
+				trace("here");
+			}
+			
+			trace("render lambda: " +lambda);
 			//TODO:Maybe we can see if lambda is close to 1
-			brain.blackboard.setObject("canWalkForward", lambda > .7); //f != null);
+			brain.blackboard.setObject("canWalkForward", lambda > .9); //f != null);
 			
 			
 			var myShape:Shape = new Shape();
@@ -183,7 +210,7 @@ package PhysicsGame
 			p2.x = p2.x * ExState.PHYS_SCALE;
 			p2.y = p2.y * ExState.PHYS_SCALE;
 			
-			lambda = 1;
+			//lambda = 1;
 			//trace( "lambda " + lambda);
 			
 			//myShape.graphics.moveTo(p1.x * ExState.PHYS_SCALE + FlxG.scroll.x, p1.y * ExState.PHYS_SCALE + FlxG.scroll.y);

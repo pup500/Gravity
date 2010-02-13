@@ -20,6 +20,7 @@ package ailab.actions
 			
 			var me:ExSprite = bb.getObject("me", null) as ExSprite;
 			
+			//HACK to allow jumping to always succeed
 			if(!bb.getObject("canJump", false)){
 				return TaskResult.FAILED;
 			}
