@@ -11,6 +11,8 @@ package org.overrides
 	import Box2D.Dynamics.Joints.b2JointEdge;
 	import Box2D.Dynamics.Joints.b2PrismaticJoint;
 	
+	import PhysicsGame.FilterData;
+	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Loader;
@@ -61,6 +63,7 @@ package org.overrides
 			
 			fixtureDef = new b2FixtureDef();
 			fixtureDef.friction = 1;
+			fixtureDef.filter.categoryBits = FilterData.NORMAL;
 			
 			impactPoint = new b2Contact();
 			
@@ -311,11 +314,6 @@ package org.overrides
 			
 			bodyDef.fixedRotation = false;
 			
-			//These are set up already.
-			//fixtureDef.density = 1.0;
-			//fixtureDef.friction = 0.3;
-			//fixtureDef.restitution = 0.1;
-			
 			final_body = world.CreateBody(bodyDef);
 			fixture = final_body.CreateFixture(fixtureDef);
 			
@@ -470,30 +468,12 @@ package org.overrides
 			return shape;
 		}
 		
-		//See Minh:
-		//Box2D reuses the reference to point, so we can't simply copy the reference.
-		// Since there are no copy constructors, we'll have to manually copy a few
-		//	properties here. Shape 1 and 2, and other such object references will be missing.
-		public function setImpactPoint(point:b2Contact, oBody:b2Body):void {
-			//impactPoint.friction = point.friction;
-			//impactPoint.id = point.id;
-			//impactPoint.normal = point.normal;
-			//impactPoint.position = point.position.Copy();
-			
-			//impactPoint
-			
-			////trace("impact: points" + point.GetManifold().m_pointCount);
-			////trace("impact: points" + point.GetManifold().m_localPoint.x * ExState.PHYS_SCALE + ","
-			// + point.GetManifold().m_localPoint.y * ExState.PHYS_SCALE);
-			
-			hurt(oBody.GetUserData().damage);
+		public function setImpactPoint(point:b2Contact, myFixture:b2Fixture, oFixture:b2Fixture):void {
+			hurt(oFixture.GetBody().GetUserData().damage);
 		}
 		
-		public function removeImpactPoint(point:b2Contact, oBody:b2Body):void{
-			//impactPoint.friction = point.friction;
-			//impactPoint.id = point.id;
-			//impactPoint.normal = point.normal;
-			//impactPoint.position = point.position.Copy();
+		public function removeImpactPoint(point:b2Contact, myFixture:b2Fixture, oFixture:b2Fixture):void{
+			
 		}
 		
 		//NOTE: Always change getXML first, then save all the levels into new files and then
@@ -576,7 +556,5 @@ package org.overrides
 			final_body.CreateFixture2(shape, density);
 			fixture = final_body.GetFixtureList();
 		}
-		
-		
 	}
 }
