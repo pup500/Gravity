@@ -67,7 +67,7 @@ package PhysicsGame
 			//addAnimation("jump_down", [0]);
 
 			//Working new brain
-			brain = BrainFactory.createBrain(1);
+			brain = BrainFactory.createRandomBrain();//.createBrain(1);
 			
 			brain.blackboard.setObject("me", this);
 			

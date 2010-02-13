@@ -89,12 +89,13 @@ package ailab.actions
 			
 			function castFunction(fixture:b2Fixture, point:b2Vec2, normal:b2Vec2, fraction:Number):Number
 			{
-				if(fraction < lambda){
+				if(fraction < lambda && !fixture.IsSensor()){
 					f = fixture;
 					lambda = fraction;
+					return fraction;
 				}
 				//lambda = lambda < fraction ? lambda : fraction;
-				return fraction;
+				return 1;//fraction;
 			}
 			
 			state.the_world.RayCast(castFunction, p1, p2);
