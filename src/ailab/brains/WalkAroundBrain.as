@@ -15,11 +15,12 @@ package ailab.brains
 			composite(new SelectorTask())
 				.composite(new SequenceTask())
 					.add(new PlayAnimWalk())
-					.add(new WalkTask())
+					.add(new WalkUntilNoPlatformTask())
 				.end()
 				.composite(new SequenceTask())
 					.add(new StopTask())
 					.add(new TurnTask())
+				.end()
 			.end()
 			;
 		}

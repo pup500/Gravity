@@ -22,7 +22,7 @@ package ailab.actions
 		}
 		
 		override public function run(bb:BlackBoard):TaskResult{
-			trace("in walk task");
+			trace("in move task");
 			
 			var me:ExSprite = bb.getObject("me", null) as ExSprite;
 			
@@ -32,20 +32,7 @@ package ailab.actions
 			
 			me.GetBody().ApplyForce(_applyForce, me.GetBody().GetWorldCenter());
 			
-			me.rayTrace();
-			
-			//TODO:Probably make into different types of walk behaviors
-			
-			//If I am blocked forward, then stop walking
-			//Thus, if there's jump after this task, it will jump if it is stopped by something ahead
-			return me.isBlockedForward() ? TaskResult.FAILED : TaskResult.RUNNING;
-			
-			//If there's anything ahead of me, including the ground then stop walking
-			//return me.isAnythingForward() ? TaskResult.FAILED : TaskResult.RUNNING;
-			
-			//If there is no ground ahead of me, then stop walking
-			//This would allow for jumping away from platforms
-			//return !me.isGroundForward() ? TaskResult.FAILED : TaskResult.RUNNING;
+			return TaskResult.RUNNING;
 		}
 	}
 }
