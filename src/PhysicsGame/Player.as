@@ -378,6 +378,9 @@ package PhysicsGame
 			//I think we might have to do this in presolve...
 			if(oBody.GetUserData() is GravityObject || oBody.GetUserData() is Bullet) return;
 			
+			//TODO:use point.fixtureA and B and not from oBody...
+			if(oBody.GetFixtureList().IsSensor()) return;
+			
 			if(point.GetFixtureA() == gFixture || point.GetFixtureB() == gFixture){
 				_canJump = true;
 			}
@@ -390,6 +393,8 @@ package PhysicsGame
 			//I think we might have to do this in presolve...
 			if(oBody.GetUserData() is GravityObject || oBody.GetUserData() is Bullet) return;
 			
+			//TODO:use point.fixtureA and B and not from oBody...
+			if(oBody.GetFixtureList().IsSensor()) return;
 			
 			if(point.GetFixtureA() == gFixture || point.GetFixtureB() == gFixture){
 				_canJump = false;
