@@ -46,10 +46,11 @@ package ailab.actions
 			moving++;
 			
 			//HACK!!!!!
+			/*
 			if(moving > 100){
 				moving = 0;
 				return TaskResult.FAILED;
-			}
+			}*/
 			
 			//bb.setObject("walking", true);
 			//me.play("run", false);
