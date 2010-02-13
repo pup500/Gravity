@@ -19,8 +19,6 @@
 			var edge:b2ControllerEdge = null;
 			var force:b2Vec2;
 			
-			return;
-			
 			//Apply force to every physics body in this controller.
 			for (var i:uint = 0; i < _gravObjects.length; i++)
 			{
