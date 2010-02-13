@@ -55,8 +55,9 @@
 			fixtureDef.density = 0;
 			fixtureDef.friction = 1;
 			fixtureDef.isSensor = true;
-			fixtureDef.filter.groupIndex = -2;
 			
+			//fixtureDef.filter.groupIndex = -2;
+			fixtureDef.filter.categoryBits = FilterData.PLAYER;
 			
 			//Make this part of group -2, and do not collide with other in the same negative group...
 			

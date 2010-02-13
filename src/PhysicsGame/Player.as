@@ -74,8 +74,7 @@ package PhysicsGame
 			name = "Player";
 			health = 20;
 			
-			fixtureDef.filter.groupIndex = -2;
-			fixtureDef.filter.categoryBits = 0x0001;
+			fixtureDef.filter.categoryBits = FilterData.PLAYER;
 			
 			//adding this to play around with player's density to get maximum platformy/gravity-y goodness - MK
 			fixtureDef.density = 50;
@@ -83,14 +82,7 @@ package PhysicsGame
 			
 			_restart = 0;
 			_nextLevel = false;
-			//_mass = 100; //default
-			
-			//basic player physics
-			//var runSpeed:uint = 40;//80;
-			//_jumpPower = 100;
-			//maxVelocity.x = runSpeed;
-			//maxVelocity.y = _jumpPower;
-			
+
 			//animations
 			addAnimation("idle", [0]);
 			addAnimation("run", [1, 2, 3, 4, 5], 10);
@@ -123,8 +115,7 @@ package PhysicsGame
 			f.shape = s;
 			f.friction = 0;
 			f.density = 1;
-			f.filter.groupIndex = -2;
-			f.filter.categoryBits = 0x0001;
+			f.filter.categoryBits = FilterData.PLAYER;
 			final_body.CreateFixture(f);
 		}
 		
@@ -139,10 +130,7 @@ package PhysicsGame
 			f.shape = s;
 			f.isSensor = true;
 			f.density = 0;
-			//TODO:Do we need to have a filter to avoid collision with bullet
-			//But be careful because we want sensors to work...
-			//f.filter.groupIndex = -2;
-			//f.filter.categoryBits = 0x0001;
+			f.filter.categoryBits = FilterData.PLAYER;
 			gFixture = final_body.CreateFixture(f);
 		}
 		
@@ -163,13 +151,6 @@ package PhysicsGame
 			{
 				return;
 			}
-			
-			/*
-			if(_nextLevel){
-				FlxG.level++;
-				FlxG.switchState(XMLPhysState);
-			}
-			*/
 			
 			//final_body.SetLinearDamping(.5);
 			
@@ -237,9 +218,6 @@ package PhysicsGame
 				//final_body.GetLinearVelocity().Set(_applyForce.x, _applyForce.y);
 				FlxG.play(SndJump);
 			}
-			
-			//Make it so player doesn't rotate.
-			//final_body.m_sweep.a = 0;
 			
 			//AIMING
 			_up = false;
@@ -371,27 +349,25 @@ package PhysicsGame
 			_justJumped = false;
 		}
 		
-		override public function setImpactPoint(point:b2Contact, oBody:b2Body):void{
-			super.setImpactPoint(point, oBody);
+		override public function setImpactPoint(point:b2Contact, myFixture:b2Fixture, oFixture:b2Fixture):void{
+			super.setImpactPoint(point, myFixture, oFixture);
 			
-			//TODO:Fix this so that the sensor doesn't do any collision impact with point
-			//I think we might have to do this in presolve...
-			if(oBody.GetUserData() is GravityObject || oBody.GetUserData() is Bullet) return;
+			//We can impact with sensor but we just won't use that for jump check
+			if(oFixture.IsSensor()) 
+				return;
 			
-			if(point.GetFixtureA() == gFixture || point.GetFixtureB() == gFixture){
+			if(myFixture == gFixture){
 				_canJump = true;
 			}
 		}
 		
-		override public function removeImpactPoint(point:b2Contact, oBody:b2Body):void{
-			super.setImpactPoint(point, oBody);
+		override public function removeImpactPoint(point:b2Contact, myFixture:b2Fixture, oFixture:b2Fixture):void{
+			super.setImpactPoint(point, myFixture, oFixture);
 			
-			//TODO:Fix this so that the sensor doesn't do any collision impact with point
-			//I think we might have to do this in presolve...
-			if(oBody.GetUserData() is GravityObject || oBody.GetUserData() is Bullet) return;
+			if(oFixture.IsSensor()) 
+				return;
 			
-			
-			if(point.GetFixtureA() == gFixture || point.GetFixtureB() == gFixture){
+			if(myFixture == gFixture){
 				_canJump = false;
 			}
 		}

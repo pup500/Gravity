@@ -37,19 +37,14 @@
 			initCircleShape();
 			
 			loadGraphic(ImgBullet, true);
-			//shape.friction = 1;
-			//Make this part of group -2, and do not collide with other in the same negative group...
-			//So player does not collide with bullets
 			
 			fixtureDef.friction = 1;
 			
-			//SThis prevents collision with player and player sensor,
-			//same category bit as player and same group as player....
-			fixtureDef.filter.groupIndex = -2;
-			fixtureDef.filter.categoryBits = 0x0001;
+			//Bullets should pass through player and special objects like events and sensors
+			fixtureDef.filter.maskBits ^= FilterData.PLAYER;
+			fixtureDef.filter.maskBits ^= FilterData.SPECIAL;
 			
-			
-			//bodyDef.type = b2Body.b2_kinematicBody;
+			fixtureDef.filter.categoryBits = FilterData.PLAYER;
 			
 			name = "Bullet" + count;
 			count++;
@@ -137,8 +132,11 @@
 			super.reset(X,Y);
 		}
 		
-		override public function setImpactPoint(point:b2Contact, oBody:b2Body):void{
-			super.setImpactPoint(point, oBody);
+		override public function setImpactPoint(point:b2Contact, myFixture:b2Fixture, oFixture:b2Fixture):void{
+			super.setImpactPoint(point, myFixture, oFixture);
+			
+			trace("bullet impact with something: " + oFixture.GetBody().GetUserData().name);
+			trace("is it a sensor? " + oFixture.IsSensor());
 			
 			var worldManifold:b2WorldManifold = new b2WorldManifold();
 			point.GetWorldManifold(worldManifold);

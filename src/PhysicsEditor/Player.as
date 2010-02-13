@@ -108,10 +108,10 @@ package PhysicsEditor
 			super.update();
 		}
 		
-		override public function setImpactPoint(point:b2Contact, oBody:b2Body):void{
-			super.setImpactPoint(point, oBody);
+		override public function setImpactPoint(point:b2Contact, myFixture:b2Fixture, oFixture:b2Fixture):void{
+			super.setImpactPoint(point, myFixture, oFixture);
 			
-			if(point.GetFixtureA() == gFixture || point.GetFixtureB() == gFixture){
+			if(myFixture == gFixture){
 				trace("canJump");
 			}
 			else{

@@ -35,8 +35,8 @@ package PhysicsGame
 		public function EventObject(x:int=0, y:int=0){
 			super(x, y, eventImg);
 			fixtureDef.isSensor = true;
-			fixtureDef.filter.groupIndex = -2;
-			fixtureDef.filter.categoryBits = 0x0001;
+			//fixtureDef.filter.groupIndex = -2;
+			fixtureDef.filter.categoryBits = FilterData.SPECIAL;
 			
 			args = new Dictionary();
 		}

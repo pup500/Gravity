@@ -14,6 +14,10 @@ package ailab
 			name = "Task";
 		}
 		
+		public function decide():Boolean{
+			return true;
+		}
+		
 		public function addSubtask(task:Task):void{
 			throw new Error("Can't add subtasks to a non-group task.");
 		}

@@ -47,8 +47,12 @@ package ailab.conditions
 			if(!me) return TaskResult.FAILED;
 			var dir:int = me.facing == FlxSprite.RIGHT ? 1 : -1;
 			
-			var p1:b2Vec2 = me.GetBody().GetWorldPoint(new b2Vec2((me.width/2 + .1)/ExState.PHYS_SCALE * dir,(me.height/4) / ExState.PHYS_SCALE));
-			var p2:b2Vec2 = me.GetBody().GetWorldPoint(new b2Vec2((me.width)/ExState.PHYS_SCALE * dir, (me.height/2)/ ExState.PHYS_SCALE));
+			//var p1:b2Vec2 = me.GetBody().GetWorldPoint(new b2Vec2((me.width/2 + .1)/ExState.PHYS_SCALE * dir,(me.height/4) / ExState.PHYS_SCALE));
+			//var p2:b2Vec2 = me.GetBody().GetWorldPoint(new b2Vec2((me.width)/ExState.PHYS_SCALE * dir, (me.height/2)/ ExState.PHYS_SCALE));
+			
+			var p1:b2Vec2 = final_body.GetWorldPoint(new b2Vec2((width/2-1)/ExState.PHYS_SCALE * dir,(height/4) / ExState.PHYS_SCALE));
+			var p2:b2Vec2 = final_body.GetWorldPoint(new b2Vec2((width)/ExState.PHYS_SCALE * dir, (height/2)/ ExState.PHYS_SCALE));
+			
 				
 			var state:ExState = FlxG.state as ExState;
 			var f:b2Fixture = state.the_world.RayCastOne(p1, p2);

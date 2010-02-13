@@ -1,9 +1,8 @@
-package ai.actions
+package ailab.actions
 {
-	import Box2D.Common.Math.b2Vec2;
-	
-	import ai.Task;
-	import ai.blackboard.BlackBoard;
+	import ailab.Task;
+	import ailab.TaskResult;
+	import ailab.blackboard.BlackBoard;
 	
 	import org.overrides.ExSprite;
 
@@ -14,16 +13,16 @@ package ai.actions
 			super();
 		}
 		
-		override public function run(bb:BlackBoard):uint{
+		override public function run(bb:BlackBoard):TaskResult{
 			trace("in play idle anim task");
 			
 			var me:ExSprite = bb.getObject("me", null) as ExSprite;
 			
-			if(!me) return e_failed;
+			if(!me) return TaskResult.FAILED;
 			
 			me.play("idle", false);
 			
-			return e_succeeded;
+			return TaskResult.SUCCEEDED;
 		}
 	}
 }
