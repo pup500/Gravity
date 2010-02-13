@@ -14,12 +14,11 @@ package org.overrides
 	
 	import PhysicsGame.FilterData;
 	
-	import PhysicsGame.FilterData;
-	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Loader;
 	import flash.display.LoaderInfo;
+	import flash.display.Shape;
 	import flash.events.Event;
 	import flash.net.URLRequest;
 	
@@ -486,6 +485,78 @@ package org.overrides
 		
 		public function removeImpactPoint(point:b2Contact, myFixture:b2Fixture, oFixture:b2Fixture):void{
 			
+		}
+		
+		
+		public var cacheRTF:b2Fixture;
+		public var cacheRTLambda:Number;
+		public var cacheP1:b2Vec2;
+		public var cacheP2:b2Vec2;
+		
+		//TODO:Refactor this
+		//This function caches a ray trace so we can see what's ahead of us
+		//And use the results in the other functions for detection
+		public function rayTrace():void{
+			var dir:int = facing == RIGHT ? 1 : -1;
+			
+			//TODO:Make it not so arbitrary
+			cacheP1 = final_body.GetWorldPoint(new b2Vec2((width/2 -2)/ExState.PHYS_SCALE * dir,(height/4) / ExState.PHYS_SCALE));
+			cacheP2 = final_body.GetWorldPoint(new b2Vec2((width)/ExState.PHYS_SCALE * dir, (height/2+2)/ ExState.PHYS_SCALE));
+				
+			var state:ExState = FlxG.state as ExState;
+			
+			cacheRTF = null;
+			cacheRTLambda = 1;
+			
+			function castFunction(fixture:b2Fixture, point:b2Vec2, normal:b2Vec2, fraction:Number):Number
+			{
+				if(fraction < cacheRTLambda && !fixture.IsSensor()){
+					cacheRTF = fixture;
+					cacheRTLambda = fraction;
+					return fraction;
+				}
+				
+				return 1;
+			}
+			
+			state.the_world.RayCast(castFunction, cacheP1, cacheP2);
+		}
+		
+		public function drawGroundRayTrace():void{
+			rayTrace();
+			
+			var myShape:Shape = new Shape();
+			
+			getScreenXY(_p);
+			
+			myShape.graphics.lineStyle(2,0x0,1);
+			
+			var p1:b2Vec2 = cacheP1.Copy();
+			var p2:b2Vec2 = cacheP2.Copy();
+			
+			p1.Multiply(ExState.PHYS_SCALE);
+			p2.Multiply(ExState.PHYS_SCALE);
+			
+			myShape.graphics.moveTo(p1.x + FlxG.scroll.x, p1.y  + FlxG.scroll.y);
+			myShape.graphics.lineTo((p2.x * cacheRTLambda + (1 - cacheRTLambda) * p1.x)  + FlxG.scroll.x, 
+									(p2.y * cacheRTLambda + (1 - cacheRTLambda) * p1.y)  + FlxG.scroll.y);
+			
+			FlxG.buffer.draw(myShape);
+		}
+		
+		//As long as there's something ahead of me
+		public function isAnythingForward():Boolean{
+			return cacheRTF ? true : false;
+		}
+		
+		//There is ground ahead of me if there is something ahead at my feet
+		public function isGroundForward():Boolean{
+			return cacheRTF && cacheRTLambda > .7;
+		}
+		
+		//I am blocked forward if there is something in my way that's in front of me
+		public function isBlockedForward():Boolean{
+			return cacheRTF && cacheRTLambda < .7;
 		}
 		
 		//NOTE: Always change getXML first, then save all the levels into new files and then
