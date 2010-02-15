@@ -35,7 +35,7 @@
     <option linkReport="" />
     <option loadExterns="" />
     <option additional="" />
-    <option customSDK="C:\Users\Patches\Desktop\flex_sdk_3.5" />
+    <option customSDK="" />
   </build>
   <!-- SWC Include Libraries -->
   <includeLibraries>

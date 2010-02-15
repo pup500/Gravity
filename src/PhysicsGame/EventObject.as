@@ -110,11 +110,10 @@ package PhysicsGame
 				item.target.@y = t.GetBody().GetWorldCenter().y * ExState.PHYS_SCALE;
 			}
 			
-<<<<<<< HEAD
+			/*
 			var arg:XML;
-			
 			for (var key:Object in args)
-			//for (var i:int = 0; i < args.length; i++)
+
 			{
 				trace("EventArgs" + key + " || " + args[key]);
 				arg = new XML(<arg/>);
@@ -122,15 +121,13 @@ package PhysicsGame
 				arg.@value = args[key];
 				
 				item.appendChild(arg);
-				//item.args[i].@name = key;
-				//item.args[i].@value = args[key];
-=======
+			}
+			*/
 			var arg:XML = <arg/>
 			if(args["speed"]){
 				arg.@name = "speed"
 				arg.@value = args["speed"];
 				item.appendChild(arg);
->>>>>>> fb5b0137e10ead8530237907f69f490ab2202d16
 			}
 			
 			return item;

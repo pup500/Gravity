@@ -79,8 +79,16 @@
 			super.render();
 			//trace("renderafter: " + x + "," + y);
 			
-			if(!visible)
-				return;
+			getScreenXY(_p);
+			
+			var box:Shape = new Shape();
+			box.graphics.beginFill(0x111111, .5);
+			box.graphics.drawRect(_p.x+width/2, _p.y+height/2, width, height);
+			box.graphics.endFill();
+			FlxG.buffer.draw(box);
+			
+			//if(!visible)
+			//	return;
 			
 			//TODO:Need something to specify when to not draw the lines
 			for each(var event:EventObject in _events){

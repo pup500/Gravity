@@ -1,5 +1,47 @@
-﻿<config>
+<config>
   <objects>
+    <sensor x="515.5" y="586.5" width="79" height="53">
+      <event x="449" y="635"/>
+    </sensor>
+    <event type="0" x="449" y="635">
+      <target x="350.3556078233438" y="841.834251753939"/>
+    </event>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="352" y="952">
+      <file>data/editor/images/blocks_4.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="207" y="866">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="495.99999999999983" y="866">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0.0005080412632983078" friction="0.3" density="1" restitution="0" x="350.85535373819664" y="842.3345057100332">
+      <file>data/editor/images/e_ass_10.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="32" y="688">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="176" y="816">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="527.9999999999998" y="816">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="384" y="799.9500000000004">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="320" y="799.9500000000004">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="384" y="575.9500000000004">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="320" y="575.9500000000004">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="-0.0008701456152361152" friction="0.3" density="1" restitution="0" x="351.3528270171702" y="706.655939361812">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
     <sensor x="239.5" y="511.00000000000006" width="41" height="34">
       <event x="244.99999999999997" y="363"/>
     </sensor>
@@ -8,17 +50,16 @@
     </sensor>
     <event type="3" x="244.99999999999997" y="363">
       <target x="351.49999999999994" y="400.16533399999713"/>
-      <arg name="speed" value="-1"/>
     </event>
     <event type="2" x="300" y="320"/>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="176" y="543.9500005842026">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
     <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="384" y="271.95000000000016">
       <file>data/editor/images/blocks_6.jpg</file>
     </shape>
-    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="943.993830673609" y="543.999988136788">
-      <file>data/editor/images/blocks_2.jpg</file>
-    </shape>
-    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="176" y="287.9500000000061">
-      <file>data/editor/images/blocks_2.jpg</file>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="32" y="431.99999999999966">
+      <file>data/editor/images/blocks_1.jpg</file>
     </shape>
     <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="320" y="271.95000000000016">
       <file>data/editor/images/blocks_6.jpg</file>
@@ -26,19 +67,13 @@
     <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="176" y="543.9500005842026">
       <file>data/editor/images/blocks_2.jpg</file>
     </shape>
-    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="687.9864295653819" y="543.9806838228409">
-      <file>data/editor/images/blocks_2.jpg</file>
-    </shape>
-    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="176" y="543.9500005842026">
-      <file>data/editor/images/blocks_2.jpg</file>
-    </shape>
     <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="431.999999999995" y="543.9500000004382">
       <file>data/editor/images/blocks_2.jpg</file>
     </shape>
-    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="32" y="431.99999999999966">
-      <file>data/editor/images/blocks_1.jpg</file>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="176" y="287.9500000000061">
+      <file>data/editor/images/blocks_2.jpg</file>
     </shape>
-    <shape layer="1" bodyType="2" shapeType="1" angle="-2.2478425765051567e-18" friction="0.3" density="1" restitution="0" x="352" y="400.66533399999713">
+    <shape layer="1" bodyType="2" shapeType="1" angle="-2.261613156804075e-18" friction="0.3" density="1" restitution="0" x="352" y="400.66533399999713">
       <file>data/editor/images/blocks_1.jpg</file>
     </shape>
     <joint type="2">
