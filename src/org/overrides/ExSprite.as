@@ -10,11 +10,15 @@ package org.overrides
 	import Box2D.Dynamics.Joints.b2Joint;
 	import Box2D.Dynamics.Joints.b2JointEdge;
 	import Box2D.Dynamics.Joints.b2PrismaticJoint;
+	import Box2D.Dynamics.Joints.b2RevoluteJoint;
+	
+	import PhysicsGame.FilterData;
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Loader;
 	import flash.display.LoaderInfo;
+	import flash.display.Shape;
 	import flash.events.Event;
 	import flash.net.URLRequest;
 	
@@ -46,6 +50,8 @@ package org.overrides
 		
 		protected var loaded:Boolean;
 		
+		public var damage:int;
+		
 		public function ExSprite(x:int=0, y:int=0, sprite:Class=null){
 			//TODO:Note that x and y needs to be offsetted by half width and height to match physics...
 			super(x, y, sprite);
@@ -59,8 +65,10 @@ package org.overrides
 			
 			fixtureDef = new b2FixtureDef();
 			fixtureDef.friction = 1;
+			fixtureDef.filter.categoryBits = FilterData.NORMAL;
 			
 			impactPoint = new b2Contact();
+			damage = 0;
 			
 			loaded = false;
 		}
@@ -309,11 +317,6 @@ package org.overrides
 			
 			bodyDef.fixedRotation = false;
 			
-			//These are set up already.
-			//fixtureDef.density = 1.0;
-			//fixtureDef.friction = 0.3;
-			//fixtureDef.restitution = 0.1;
-			
 			final_body = world.CreateBody(bodyDef);
 			fixture = final_body.CreateFixture(fixtureDef);
 			
@@ -368,7 +371,15 @@ package org.overrides
 						var jointPris:b2PrismaticJoint = joint as b2PrismaticJoint;
 						trace("joint speed: " + jointPris.GetMotorSpeed());
 						trace("joint force: " + jointPris.GetMotorForce());
-						jointPris.SetMotorSpeed(-Math.abs(jointPris.GetMotorSpeed()));
+						jointPris.SetMotorSpeed(speed);//-Math.abs(jointPris.GetMotorSpeed()));
+						
+						//jointPris.SetMotorSpeed(speed);
+						break;
+					case b2Joint.e_revoluteJoint:
+						var jointRev:b2RevoluteJoint = joint as b2RevoluteJoint;
+						trace("joint speed: " + jointRev.GetMotorSpeed());
+						trace("joint torque: " + jointRev.GetMotorTorque());
+						jointRev.SetMotorSpeed(speed);//-Math.abs(jointPris.GetMotorSpeed()));
 						
 						//jointPris.SetMotorSpeed(speed);
 						break;
@@ -468,28 +479,84 @@ package org.overrides
 			return shape;
 		}
 		
-		//See Minh:
-		//Box2D reuses the reference to point, so we can't simply copy the reference.
-		// Since there are no copy constructors, we'll have to manually copy a few
-		//	properties here. Shape 1 and 2, and other such object references will be missing.
-		public function setImpactPoint(point:b2Contact, oBody:b2Body):void {
-			//impactPoint.friction = point.friction;
-			//impactPoint.id = point.id;
-			//impactPoint.normal = point.normal;
-			//impactPoint.position = point.position.Copy();
-			
-			//impactPoint
-			
-			////trace("impact: points" + point.GetManifold().m_pointCount);
-			////trace("impact: points" + point.GetManifold().m_localPoint.x * ExState.PHYS_SCALE + ","
-			// + point.GetManifold().m_localPoint.y * ExState.PHYS_SCALE);
+		public function setImpactPoint(point:b2Contact, myFixture:b2Fixture, oFixture:b2Fixture):void {
+			hurt(oFixture.GetBody().GetUserData().damage);
 		}
 		
-		public function removeImpactPoint(point:b2Contact, oBody:b2Body):void{
-			//impactPoint.friction = point.friction;
-			//impactPoint.id = point.id;
-			//impactPoint.normal = point.normal;
-			//impactPoint.position = point.position.Copy();
+		public function removeImpactPoint(point:b2Contact, myFixture:b2Fixture, oFixture:b2Fixture):void{
+			
+		}
+		
+		
+		public var cacheRTF:b2Fixture;
+		public var cacheRTLambda:Number;
+		public var cacheP1:b2Vec2;
+		public var cacheP2:b2Vec2;
+		
+		//TODO:Refactor this
+		//This function caches a ray trace so we can see what's ahead of us
+		//And use the results in the other functions for detection
+		public function rayTrace():void{
+			var dir:int = facing == RIGHT ? 1 : -1;
+			
+			//TODO:Make it not so arbitrary
+			cacheP1 = final_body.GetWorldPoint(new b2Vec2((width/2 -2)/ExState.PHYS_SCALE * dir,(height/4) / ExState.PHYS_SCALE));
+			cacheP2 = final_body.GetWorldPoint(new b2Vec2((width)/ExState.PHYS_SCALE * dir, (height/2+2)/ ExState.PHYS_SCALE));
+				
+			var state:ExState = FlxG.state as ExState;
+			
+			cacheRTF = null;
+			cacheRTLambda = 1;
+			
+			function castFunction(fixture:b2Fixture, point:b2Vec2, normal:b2Vec2, fraction:Number):Number
+			{
+				if(fraction < cacheRTLambda && !fixture.IsSensor()){
+					cacheRTF = fixture;
+					cacheRTLambda = fraction;
+					return fraction;
+				}
+				
+				return 1;
+			}
+			
+			state.the_world.RayCast(castFunction, cacheP1, cacheP2);
+		}
+		
+		public function drawGroundRayTrace():void{
+			rayTrace();
+			
+			var myShape:Shape = new Shape();
+			
+			getScreenXY(_p);
+			
+			myShape.graphics.lineStyle(2,0x0,1);
+			
+			var p1:b2Vec2 = cacheP1.Copy();
+			var p2:b2Vec2 = cacheP2.Copy();
+			
+			p1.Multiply(ExState.PHYS_SCALE);
+			p2.Multiply(ExState.PHYS_SCALE);
+			
+			myShape.graphics.moveTo(p1.x + FlxG.scroll.x, p1.y  + FlxG.scroll.y);
+			myShape.graphics.lineTo((p2.x * cacheRTLambda + (1 - cacheRTLambda) * p1.x)  + FlxG.scroll.x, 
+									(p2.y * cacheRTLambda + (1 - cacheRTLambda) * p1.y)  + FlxG.scroll.y);
+			
+			FlxG.buffer.draw(myShape);
+		}
+		
+		//As long as there's something ahead of me
+		public function isAnythingForward():Boolean{
+			return cacheRTF ? true : false;
+		}
+		
+		//There is ground ahead of me if there is something ahead at my feet
+		public function isGroundForward():Boolean{
+			return cacheRTF && cacheRTLambda > .7;
+		}
+		
+		//I am blocked forward if there is something in my way that's in front of me
+		public function isBlockedForward():Boolean{
+			return cacheRTF && cacheRTLambda < .7;
 		}
 		
 		//NOTE: Always change getXML first, then save all the levels into new files and then
@@ -505,6 +572,7 @@ package org.overrides
 			xml.@friction = fixture.GetFriction();
 			xml.@density = fixture.GetDensity();
 			xml.@restitution = fixture.GetRestitution();
+			xml.@damage = damage;
 			
 			//XML representation is in screen coordinates, so scale up physics
 			xml.@x = final_body.GetPosition().x * ExState.PHYS_SCALE;
@@ -553,6 +621,8 @@ package org.overrides
 			fixtureDef.density = xml.@density;
 			fixtureDef.restitution = xml.@restitution;
 			
+			damage = xml.@damage.length() > 0 ? xml.@damage : 0;
+			
 			//TODO:Do we need to correct for x and y...?
 			createPhysBody(world, controller);
 			
@@ -569,7 +639,5 @@ package org.overrides
 			final_body.CreateFixture2(shape, density);
 			fixture = final_body.GetFixtureList();
 		}
-		
-		
 	}
 }

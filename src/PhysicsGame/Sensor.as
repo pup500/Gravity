@@ -34,7 +34,6 @@
 		public var Trigger:String;
 		
 		public function Sensor(x:int=0, y:int=0, triggerName:String="Player")
-		//(X:int=0, Y:int=0, Width:int=10, Height:int=10, triggerName:String="Player") 
 		{
 			super(x, y);
 			name = "Sensor";
@@ -43,13 +42,10 @@
 			//super.height = Height;
 			Trigger = triggerName;
 			_triggered = false;
-			//So only player collides with sensors. Without the if statements in SetImpactPoint() it'll still collide with world object that aren't assigned a category..
-			fixtureDef.filter.maskBits = 0x0001;
+			
 			fixtureDef.isSensor = true;
 			
-			//fixtureDef.isSensor = true;
-			fixtureDef.filter.groupIndex = -2;
-			fixtureDef.filter.categoryBits = 0x0001;
+			fixtureDef.filter.categoryBits = FilterData.SPECIAL;
 			
 			bodyDef.type = b2Body.b2_staticBody;
 			
@@ -67,14 +63,6 @@
 		{
 			_events.push(eventObj);
 		}
-		
-		/*
-		override public function createPhysBody(world:b2World):void
-		{
-			super.createPhysBody(world);
-			//final_body.SetStatic();
-		}
-		*/
 		
 		override public function update():void
 		{
@@ -117,13 +105,13 @@
 			_triggered = false;
 		}
 		
-		override public function setImpactPoint(point:b2Contact, oBody:b2Body):void {
-			if(!oBody) 
+		override public function setImpactPoint(point:b2Contact, myFixture:b2Fixture, oFixture:b2Fixture):void {
+			if(!oFixture) 
 				return;
 			
-			var spriteA:ExSprite = oBody.GetUserData() as ExSprite;
-			//var spriteB:ExSprite = point.GetFixtureB().GetBody().GetUserData() as ExSprite;
-			if (spriteA.name == Trigger)
+			var oSprite:ExSprite = oFixture.GetBody().GetUserData() as ExSprite;
+			
+			if (oSprite.name == Trigger)
 				_triggered = true;
 		}
 		
@@ -131,12 +119,12 @@
 		{
 			var xml:XML = new XML(<sensor/>);
 			xml.@x = final_body.GetWorldCenter().x * ExState.PHYS_SCALE;		 		
-			xml.@y = final_body.GetWorldCenter().y * ExState.PHYS_SCALE;//y;
+			xml.@y = final_body.GetWorldCenter().y * ExState.PHYS_SCALE;
 			xml.@width = _bw;
 			xml.@height = _bh; 
 			
-			var eventXML:XML = new XML(<event/>);
 			for each (var event:EventObject in _events){
+				var eventXML:XML = new XML(<event/>);
 				eventXML.@x = event.GetBody().GetWorldCenter().x * ExState.PHYS_SCALE;;
 				eventXML.@y = event.GetBody().GetWorldCenter().y * ExState.PHYS_SCALE;;
 				xml.appendChild(eventXML);

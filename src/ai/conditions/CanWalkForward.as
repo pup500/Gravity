@@ -26,19 +26,18 @@ package ai.conditions
 			//TODO:Maybe this needs to be split, one ray trace to detect ground
 			//One ray trace to detect obstacles....
 			
-			
+			/*
 			if(bb.getObject("canWalkForward", false)){
 				return e_succeeded;
 			}
 			else
 				return e_failed;
+			*/
 			
-			/*
 			if(detectObstacles(bb) == e_failed)
 				return e_failed;
 			
 			return detectGround(bb);
-			*/
 		}
 		
 		private function detectGround(bb:BlackBoard):uint{
@@ -91,6 +90,7 @@ package ai.conditions
 				lambda = output.fraction;
 			}
 			
+			trace("detect obstacles: " + f);
 			trace(lambda);
 			//TODO:Maybe we can see if lambda is close to 1
 			//brain.blackboard.setObject("canWalkForward", lambda > .9); //f != null);

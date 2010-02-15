@@ -72,21 +72,17 @@ package PhysicsGame
 			
 			//Make this part of group -2, and do not collide with other in the same negative group...
 			name = "Player";
+			health = 20;
 			
-			fixtureDef.filter.groupIndex = -2;
-			fixtureDef.filter.categoryBits = 0x0001;
+			fixtureDef.filter.categoryBits = FilterData.PLAYER;
+			
+			//adding this to play around with player's density to get maximum platformy/gravity-y goodness - MK
+			fixtureDef.density = 50;
 			
 			
 			_restart = 0;
 			_nextLevel = false;
-			//_mass = 100; //default
-			
-			//basic player physics
-			//var runSpeed:uint = 40;//80;
-			//_jumpPower = 100;
-			//maxVelocity.x = runSpeed;
-			//maxVelocity.y = _jumpPower;
-			
+
 			//animations
 			addAnimation("idle", [0]);
 			addAnimation("run", [1, 2, 3, 4, 5], 10);
@@ -119,8 +115,7 @@ package PhysicsGame
 			f.shape = s;
 			f.friction = 0;
 			f.density = 1;
-			f.filter.groupIndex = -2;
-			f.filter.categoryBits = 0x0001;
+			f.filter.categoryBits = FilterData.PLAYER;
 			final_body.CreateFixture(f);
 		}
 		
@@ -135,10 +130,7 @@ package PhysicsGame
 			f.shape = s;
 			f.isSensor = true;
 			f.density = 0;
-			//TODO:Do we need to have a filter to avoid collision with bullet
-			//But be careful because we want sensors to work...
-			//f.filter.groupIndex = -2;
-			//f.filter.categoryBits = 0x0001;
+			f.filter.categoryBits = FilterData.PLAYER;
 			gFixture = final_body.CreateFixture(f);
 		}
 		
@@ -160,13 +152,6 @@ package PhysicsGame
 				return;
 			}
 			
-			/*
-			if(_nextLevel){
-				FlxG.level++;
-				FlxG.switchState(XMLPhysState);
-			}
-			*/
-			
 			//final_body.SetLinearDamping(.5);
 			
 			
@@ -178,7 +163,7 @@ package PhysicsGame
 			if(FlxG.keys.A)
 			{
 				facing = LEFT;
-				_applyForce.x = -7;//_canJump ? -7 : -2;
+				_applyForce.x = -75;//_canJump ? -7 : -2;  (this was originally -7 -MK)
 				_applyForce.y = 0;
 				//We multiply this here because it is later multiplied by inverse mass. - Minh
 				//_applyForce.Multiply(final_body.GetMass());
@@ -196,7 +181,7 @@ package PhysicsGame
 			{
 				facing = RIGHT;
 				//final_body.GetLinearVelocity().x = 30;
-				_applyForce.x = 7;//_canJump ? 7 : 2;
+				_applyForce.x = 75;//_canJump ? 7 : 2;    (this was originally 7  -MK)
 				_applyForce.y = 0;
 				//We multiply this here because it is later multiplied by inverse mass. - Minh
 				//_applyForce.Multiply(final_body.GetMass());
@@ -233,9 +218,6 @@ package PhysicsGame
 				//final_body.GetLinearVelocity().Set(_applyForce.x, _applyForce.y);
 				FlxG.play(SndJump);
 			}
-			
-			//Make it so player doesn't rotate.
-			//final_body.m_sweep.a = 0;
 			
 			//AIMING
 			_up = false;
@@ -367,95 +349,42 @@ package PhysicsGame
 			_justJumped = false;
 		}
 		
-		override public function setImpactPoint(point:b2Contact, oBody:b2Body):void{
-			super.setImpactPoint(point, oBody);
+		override public function setImpactPoint(point:b2Contact, myFixture:b2Fixture, oFixture:b2Fixture):void{
+			super.setImpactPoint(point, myFixture, oFixture);
 			
-			//TODO:Fix this so that the sensor doesn't do any collision impact with point
-			//I think we might have to do this in presolve...
-			if(oBody.GetUserData() is GravityObject || oBody.GetUserData() is Bullet) return;
+			//We can impact with sensor but we just won't use that for jump check
+			if(oFixture.IsSensor()) 
+				return;
 			
-			if(point.GetFixtureA() == gFixture || point.GetFixtureB() == gFixture){
+			if(myFixture == gFixture){
 				_canJump = true;
 			}
 		}
 		
-		override public function removeImpactPoint(point:b2Contact, oBody:b2Body):void{
-			super.setImpactPoint(point, oBody);
+		override public function removeImpactPoint(point:b2Contact, myFixture:b2Fixture, oFixture:b2Fixture):void{
+			super.setImpactPoint(point, myFixture, oFixture);
 			
-			//TODO:Fix this so that the sensor doesn't do any collision impact with point
-			//I think we might have to do this in presolve...
-			if(oBody.GetUserData() is GravityObject || oBody.GetUserData() is Bullet) return;
+			if(oFixture.IsSensor()) 
+				return;
 			
-			
-			if(point.GetFixtureA() == gFixture || point.GetFixtureB() == gFixture){
+			if(myFixture == gFixture){
 				_canJump = false;
 			}
 		}
 		
 		override public function hurt(Damage:Number):void{
+			health -= Damage;
 			
+			if(Damage > 0){
+				//dead = true;
+				flicker(2);
+			}
 		}
 		
 		override public function render():void{
 			super.render();
 			
-			var dir:int = facing == RIGHT ? 1 : -1;
-			
-			var p1:b2Vec2 = final_body.GetWorldPoint(new b2Vec2((width/2 + .1)/ExState.PHYS_SCALE * dir,(height/4) / ExState.PHYS_SCALE));
-			var p2:b2Vec2 = final_body.GetWorldPoint(new b2Vec2(20/ExState.PHYS_SCALE * dir, (height/4) / ExState.PHYS_SCALE));
-				
-			var state:ExState = FlxG.state as ExState;
-			var f:b2Fixture = state.the_world.RayCastOne(p1, p2);
-			
-			var lambda:Number = 0;
-			if (f)
-			{
-				
-				
-				//trace("p1: " + p1.x + "," + p1.y);
-				//trace("p2: " + p2.x + "," + p2.y);
-				
-				
-				var input:b2RayCastInput = new b2RayCastInput(p1, p2);
-				var output:b2RayCastOutput = new b2RayCastOutput();
-				f.RayCast(output, input);
-				lambda = output.fraction;
-			}
-			
-			var myShape:Shape = new Shape();
-			
-			/*
-			myShape.graphics.lineStyle(1,0xff0000,1);
-			myShape.graphics.moveTo(p1.x * ExState.PHYS_SCALE, p1.y * ExState.PHYS_SCALE);
-			myShape.graphics.lineTo( 	(p2.x * lambda + (1 - lambda) * p1.x) * ExState.PHYS_SCALE,
-										(p2.y * lambda + (1 - lambda) * p1.y) * ExState.PHYS_SCALE);
-					*/
-			getScreenXY(_p);
-			//trace( "screen xy " + _p.x + ", "+ _p.y);
-			//trace("scaled p1: " + (p1.x * ExState.PHYS_SCALE + FlxG.scroll.x)+ "," + (p1.y * ExState.PHYS_SCALE + FlxG.scroll.y));
-			//trace("scaled p2: " + (p2.x * ExState.PHYS_SCALE + FlxG.scroll.x)+ "," + (p2.y * ExState.PHYS_SCALE + FlxG.scroll.y));
-			
-			//var myShape:Shape = new Shape();
-			myShape.graphics.lineStyle(2,0x0,1);
-			
-			p1.x = p1.x * ExState.PHYS_SCALE;
-			p1.y = p1.y * ExState.PHYS_SCALE;
-			
-			p2.x = p2.x * ExState.PHYS_SCALE;
-			p2.y = p2.y * ExState.PHYS_SCALE;
-			
-			//trace( "lambda " + lambda);
-			
-			//myShape.graphics.moveTo(p1.x * ExState.PHYS_SCALE + FlxG.scroll.x, p1.y * ExState.PHYS_SCALE + FlxG.scroll.y);
-			//myShape.graphics.lineTo((p2.x * lambda + (1 - lambda) * p1.x) * ExState.PHYS_SCALE + FlxG.scroll.x,
-			//						 (p2.y * lambda + (1 - lambda) * p1.y) * ExState.PHYS_SCALE + FlxG.scroll.y);
-			
-			myShape.graphics.moveTo(p1.x + FlxG.scroll.x, p1.y  + FlxG.scroll.y);
-			myShape.graphics.lineTo((p2.x * lambda + (1 - lambda) * p1.x)  + FlxG.scroll.x, 
-									(p2.y * lambda + (1 - lambda) * p1.y)  + FlxG.scroll.y);
-			
-			FlxG.buffer.draw(myShape);
-
+			drawGroundRayTrace();
 		}
 	}
 }

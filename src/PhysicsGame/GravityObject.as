@@ -55,8 +55,9 @@
 			fixtureDef.density = 0;
 			fixtureDef.friction = 1;
 			fixtureDef.isSensor = true;
-			fixtureDef.filter.groupIndex = -2;
 			
+			//fixtureDef.filter.groupIndex = -2;
+			fixtureDef.filter.categoryBits = FilterData.PLAYER;
 			
 			//Make this part of group -2, and do not collide with other in the same negative group...
 			
@@ -281,7 +282,7 @@
 			
 			//We're going to take this force and get it's log to scale it down to make the push/pull smoother.
 			var directionlessForce:Number = G / r2 * this.mass * physBody.GetMass();
-			directionlessForce = Math.log(directionlessForce + 1) * 5;
+			directionlessForce = Math.log(directionlessForce + 1) * 2; // Originally it was *5 -MK
 			
 			//Separate the force into x, y direction components.
 			f.Multiply(directionlessForce);

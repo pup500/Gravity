@@ -1,0 +1,45 @@
+<config>
+  <objects>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" x="183.5" y="232.5">
+      <file>data/editor/images/e_ass_10.png</file>
+    </shape>
+    <sensor x="537.5" y="391" width="65" height="28"/>
+    <sensor x="415.5" y="393.5" width="79" height="33"/>
+    <sensor x="264.5" y="392" width="77" height="30"/>
+    <sensor x="149.5" y="397.5" width="65" height="41">
+      <event x="121" y="182"/>
+    </sensor>
+    <event type="2" x="121" y="182"/>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" x="80" y="304">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" x="224" y="416">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" x="351.5" y="216.5">
+      <file>data/editor/images/e_ass_10.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" x="127.5" y="216.5">
+      <file>data/editor/images/e_ass_10.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" x="624" y="304">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" x="575.5" y="216.5">
+      <file>data/editor/images/e_ass_10.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" x="463.5" y="216.5">
+      <file>data/editor/images/e_ass_10.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" x="480" y="416">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" x="239.5" y="216.5">
+      <file>data/editor/images/e_ass_10.png</file>
+    </shape>
+  </objects>
+  <points>
+    <start x="107" y="327"/>
+    <end x="575" y="363"/>
+  </points>
+</config>

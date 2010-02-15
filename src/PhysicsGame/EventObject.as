@@ -35,8 +35,8 @@ package PhysicsGame
 		public function EventObject(x:int=0, y:int=0){
 			super(x, y, eventImg);
 			fixtureDef.isSensor = true;
-			fixtureDef.filter.groupIndex = -2;
-			fixtureDef.filter.categoryBits = 0x0001;
+			//fixtureDef.filter.groupIndex = -2;
+			fixtureDef.filter.categoryBits = FilterData.SPECIAL;
 			
 			args = new Dictionary();
 		}
@@ -59,6 +59,8 @@ package PhysicsGame
 		
 		public function setArgs(args:Dictionary):void{
 			_impl.setArgs(args);
+			
+			this.args = args;
 		}
 		
 		public function activate():void{
@@ -108,6 +110,7 @@ package PhysicsGame
 				item.target.@y = t.GetBody().GetWorldCenter().y * ExState.PHYS_SCALE;
 			}
 			
+<<<<<<< HEAD
 			var arg:XML;
 			
 			for (var key:Object in args)
@@ -121,6 +124,13 @@ package PhysicsGame
 				item.appendChild(arg);
 				//item.args[i].@name = key;
 				//item.args[i].@value = args[key];
+=======
+			var arg:XML = <arg/>
+			if(args["speed"]){
+				arg.@name = "speed"
+				arg.@value = args["speed"];
+				item.appendChild(arg);
+>>>>>>> fb5b0137e10ead8530237907f69f490ab2202d16
 			}
 			
 			return item;

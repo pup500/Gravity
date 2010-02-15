@@ -18,6 +18,7 @@ package PhysicsEditor.Fields
 				new FrictionField(),
 				new BounceField(),
 				new DensityField(),
+				new DamageField(),
 				new SpeedField(),
 				new TorqueField()
 			];

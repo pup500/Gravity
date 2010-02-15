@@ -1,18 +1,18 @@
 package PhysicsGame
 {
 	import Box2D.Collision.Shapes.*;
-	import Box2D.Collision.b2RayCastInput;
-	import Box2D.Collision.b2RayCastOutput;
 	import Box2D.Common.Math.b2Vec2;
 	import Box2D.Dynamics.*;
 	import Box2D.Dynamics.Contacts.*;
 	import Box2D.Dynamics.Controllers.b2Controller;
 	
-	import ai.*;
-	import ai.actions.*;
-	import ai.brains.BrainFactory;
-	import ai.conditions.*;
-	import ai.decorators.*;
+	import ailab.*;
+	import ailab.actions.*;
+	import ailab.basic.*;
+	import ailab.brains.*;
+	import ailab.conditions.*;
+	import ailab.decorators.*;
+	import ailab.groups.*;
 	
 	import flash.display.Shape;
 	
@@ -24,7 +24,6 @@ package PhysicsGame
 	{
 		[Embed(source="../data/g_walk_old.png")] private var ImgSpaceman:Class;
 		
-		//private var task:Task;
 		private var brain:TaskTree;
 		
 		private var gFixture:b2Fixture;
@@ -48,10 +47,11 @@ package PhysicsGame
 			fixtureDef.restitution = 0;
 			
 			//Make this part of group -2, and do not collide with other in the same negative group...
-			name = "Player";
+			name = "Enemy";
 			
-			//fixtureDef.filter.groupIndex = -2;
-			fixtureDef.filter.categoryBits = 0x0002;
+			damage = 10;
+			
+			fixtureDef.filter.categoryBits = FilterData.ENEMY;
 
 			//animations
 			addAnimation("idle", [0]);
@@ -62,10 +62,12 @@ package PhysicsGame
 			//addAnimation("jump_up", [0]);
 			//addAnimation("jump_down", [0]);
 
-			brain = BrainFactory.createRandomBrain();
+			//Working new brain
+			brain = BrainFactory.createBrain(0);//createRandomBrain();//.createBrain(1);
+			
 			brain.blackboard.setObject("me", this);
 			
-			var _applyForce:b2Vec2 = new b2Vec2(2,0);
+			var _applyForce:b2Vec2 = new b2Vec2(1,0);
 			brain.blackboard.setObject("force", _applyForce);
 			
 			brain.blackboard.setObject("canWalkForward", true);
@@ -79,8 +81,7 @@ package PhysicsGame
 			f.shape = s;
 			f.friction = 0;
 			f.density = 1;
-			//f.filter.groupIndex = -2;
-			f.filter.categoryBits = 0x0002;
+			f.filter.categoryBits = FilterData.ENEMY;
 			final_body.CreateFixture(f);
 		}
 		
@@ -97,8 +98,7 @@ package PhysicsGame
 			f.shape = s;
 			f.isSensor = true;
 			f.density = 0;
-			//f.filter.groupIndex = -2;
-			f.filter.categoryBits = 0x0002;
+			f.filter.categoryBits = FilterData.ENEMY;
 			gFixture = final_body.CreateFixture(f);
 		}
 		
@@ -113,92 +113,27 @@ package PhysicsGame
 		
 		override public function update():void
 		{
-			//final_body.GetFixtureList().RayCast();
-			
-			
 			brain.update();
 			
 			//UPDATE POSITION AND ANIMATION			
 			super.update();
+			
+			brain.blackboard.setObject("moving", final_body.GetLinearVelocity().x > 0.1);
 		}
 		
 		override public function render():void{
 			super.render();
 			
-			var dir:int = facing == RIGHT ? 1 : -1;
-			
-			var p1:b2Vec2 = final_body.GetWorldPoint(new b2Vec2((width/2 + .1)/ExState.PHYS_SCALE * dir,(height/4) / ExState.PHYS_SCALE));
-			var p2:b2Vec2 = final_body.GetWorldPoint(new b2Vec2((width)/ExState.PHYS_SCALE * dir, (height/2+2)/ ExState.PHYS_SCALE));
-				
-			var state:ExState = FlxG.state as ExState;
-			var f:b2Fixture = state.the_world.RayCastOne(p1, p2);
-			
-			var lambda:Number = 0;
-			if (f)
-			{
-				
-				trace(f.GetBody().GetUserData().name);
-				//trace("p1: " + p1.x + "," + p1.y);
-				//trace("p2: " + p2.x + "," + p2.y);
-				
-				
-				var input:b2RayCastInput = new b2RayCastInput(p1, p2);
-				var output:b2RayCastOutput = new b2RayCastOutput();
-				f.RayCast(output, input);
-				lambda = output.fraction;
-			}
-			
-			trace(lambda);
-			//TODO:Maybe we can see if lambda is close to 1
-			brain.blackboard.setObject("canWalkForward", lambda > .7); //f != null);
-			
-			
-			var myShape:Shape = new Shape();
-			
-			/*
-			myShape.graphics.lineStyle(1,0xff0000,1);
-			myShape.graphics.moveTo(p1.x * ExState.PHYS_SCALE, p1.y * ExState.PHYS_SCALE);
-			myShape.graphics.lineTo( 	(p2.x * lambda + (1 - lambda) * p1.x) * ExState.PHYS_SCALE,
-										(p2.y * lambda + (1 - lambda) * p1.y) * ExState.PHYS_SCALE);
-					*/
-			getScreenXY(_p);
-			//trace( "screen xy " + _p.x + ", "+ _p.y);
-			//trace("scaled p1: " + (p1.x * ExState.PHYS_SCALE + FlxG.scroll.x)+ "," + (p1.y * ExState.PHYS_SCALE + FlxG.scroll.y));
-			//trace("scaled p2: " + (p2.x * ExState.PHYS_SCALE + FlxG.scroll.x)+ "," + (p2.y * ExState.PHYS_SCALE + FlxG.scroll.y));
-			
-			//var myShape:Shape = new Shape();
-			myShape.graphics.lineStyle(2,0x0,1);
-			
-			p1.x = p1.x * ExState.PHYS_SCALE;
-			p1.y = p1.y * ExState.PHYS_SCALE;
-			
-			p2.x = p2.x * ExState.PHYS_SCALE;
-			p2.y = p2.y * ExState.PHYS_SCALE;
-			
-			lambda = 1;
-			//trace( "lambda " + lambda);
-			
-			//myShape.graphics.moveTo(p1.x * ExState.PHYS_SCALE + FlxG.scroll.x, p1.y * ExState.PHYS_SCALE + FlxG.scroll.y);
-			//myShape.graphics.lineTo((p2.x * lambda + (1 - lambda) * p1.x) * ExState.PHYS_SCALE + FlxG.scroll.x,
-			//						 (p2.y * lambda + (1 - lambda) * p1.y) * ExState.PHYS_SCALE + FlxG.scroll.y);
-			
-			myShape.graphics.moveTo(p1.x + FlxG.scroll.x, p1.y  + FlxG.scroll.y);
-			myShape.graphics.lineTo((p2.x * lambda + (1 - lambda) * p1.x)  + FlxG.scroll.x, 
-									(p2.y * lambda + (1 - lambda) * p1.y)  + FlxG.scroll.y);
-			
-			FlxG.buffer.draw(myShape);
-
+			drawGroundRayTrace();
 		}
 		
-		
-		override public function setImpactPoint(point:b2Contact, oBody:b2Body):void{
-			super.setImpactPoint(point, oBody);
+		override public function setImpactPoint(point:b2Contact, myFixture:b2Fixture, oFixture:b2Fixture):void{
+			super.setImpactPoint(point, myFixture, oFixture);
 			
-			//TODO:Fix this so that the sensor doesn't do any collision impact with point
-			//I think we might have to do this in presolve...
-			if(oBody.GetUserData() is GravityObject || oBody.GetUserData() is Bullet) return;
+			if(oFixture.IsSensor()) 
+				return;
 			
-			if(point.GetFixtureA() == gFixture || point.GetFixtureB() == gFixture){
+			if(myFixture == gFixture){
 				brain.blackboard.setObject("canJump", true);
 			}
 			else{
@@ -206,15 +141,13 @@ package PhysicsGame
 			}
 		}
 		
-		override public function removeImpactPoint(point:b2Contact, oBody:b2Body):void{
-			super.setImpactPoint(point, oBody);
+		override public function removeImpactPoint(point:b2Contact, myFixture:b2Fixture, oFixture:b2Fixture):void{
+			super.removeImpactPoint(point, myFixture, oFixture);
 			
-			//TODO:Fix this so that the sensor doesn't do any collision impact with point
-			//I think we might have to do this in presolve...
-			if(oBody.GetUserData() is GravityObject || oBody.GetUserData() is Bullet) return;
+			if(oFixture.IsSensor()) 
+				return;
 			
-			
-			if(point.GetFixtureA() == gFixture || point.GetFixtureB() == gFixture){
+			if(myFixture == gFixture){
 				brain.blackboard.setObject("canJump", false);
 			}
 			else{
