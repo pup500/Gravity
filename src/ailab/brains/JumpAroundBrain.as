@@ -16,10 +16,10 @@ package ailab.brains
 				.composite(new SequenceTask())
 					.add(new PlayAnimWalk())
 					//Sometimes, we walk off platform, other times, we don't care if we do
-					.composite(new RandomTask())
+					//.composite(new RandomTask())
 						.add(new WalkUntilNoPlatformTask())
-						.add(new WalkUntilBlockedTask())
-					.end()
+						//.add(new WalkUntilBlockedTask())
+					//.end()
 				.end()
 				.composite(new RandomTask())
 					//This seems to work out well

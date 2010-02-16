@@ -169,7 +169,9 @@
 			_bw = xml.@width;
 			_bh = xml.@height;
 			
-			Trigger = xml.@trigger;
+			if(xml.@trigger.length() > 0){
+				Trigger = xml.@trigger;
+			}
 			
 			initBoxShape();
 			

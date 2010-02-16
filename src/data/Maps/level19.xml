@@ -1,0 +1,11 @@
+<config>
+  <objects>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="obj01" x="303.5" y="280.6875">
+      <file>data/editor/images/e_ass_10.png</file>
+    </shape>
+  </objects>
+  <points>
+    <start x="0" y="0"/>
+    <end x="0" y="0"/>
+  </points>
+</config>
