@@ -14,6 +14,7 @@ package PhysicsEditor.Fields
 		{
 			//This is how you create new panels
 			fields = [
+				new NameField(),
 				new AngleField(),
 				new FrictionField(),
 				new BounceField(),

@@ -16,9 +16,8 @@ package PhysicsEditor.Actions
 			this.active = false;
 		}
 		
-		//Don't run preclick to allow the other modes to continue working...
+		//Override onClick to not deactivate other actions in the panel...
 		override protected function onClick(event:MouseEvent):void{
-			//onPreClick();
 			active = !active;
 		}
 		

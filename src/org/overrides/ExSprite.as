@@ -573,6 +573,7 @@ package org.overrides
 			xml.@density = fixture.GetDensity();
 			xml.@restitution = fixture.GetRestitution();
 			xml.@damage = damage;
+			xml.@name = name;
 			
 			//XML representation is in screen coordinates, so scale up physics
 			xml.@x = final_body.GetPosition().x * ExState.PHYS_SCALE;
@@ -622,11 +623,14 @@ package org.overrides
 			fixtureDef.restitution = xml.@restitution;
 			
 			damage = xml.@damage.length() > 0 ? xml.@damage : 0;
+			name = xml.@name;
 			
 			//TODO:Do we need to correct for x and y...?
 			createPhysBody(world, controller);
 			
 			reset(xml.@x, xml.@y);
+			
+			update();
 		}
 		
 		public function SetBodyType(type:uint):void{

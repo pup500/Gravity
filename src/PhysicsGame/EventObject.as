@@ -73,14 +73,16 @@ package PhysicsGame
 			args["x"] = x;
 			args["y"] = y;
 			
-			_impl.setArgs(args);
-			_impl.update();
+			if(_impl){
+				_impl.setArgs(args);
+				_impl.update();
+			}
 		}
 		
 		override public function render():void{
-			trace("render: " + x + "," + y);
+			//trace("render: " + x + "," + y);
 			super.render();
-			trace("renderafter: " + x + "," + y);
+			//trace("renderafter: " + x + "," + y);
 			
 			if(!visible)
 				return;
@@ -106,8 +108,13 @@ package PhysicsGame
 			
 			if(this.getTarget()){
 				var t:ExSprite = this.getTarget();
-				item.target.@x = t.GetBody().GetWorldCenter().x * ExState.PHYS_SCALE;
-				item.target.@y = t.GetBody().GetWorldCenter().y * ExState.PHYS_SCALE;
+				
+				//TODO:If we had deleted the target, the event would still have a reference to it
+				//But it won't have a body
+				if(t.GetBody()){
+					item.target.@x = t.GetBody().GetWorldCenter().x * ExState.PHYS_SCALE;
+					item.target.@y = t.GetBody().GetWorldCenter().y * ExState.PHYS_SCALE;
+				}
 			}
 			
 			var arg:XML = <arg/>

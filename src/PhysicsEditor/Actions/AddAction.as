@@ -60,6 +60,7 @@ package PhysicsEditor.Actions
 			p.x += tl.x == br.x ? 0 : (br.x - tl.x)/2;
 			
 			var xml:XML = new XML(<shape/>);
+			xml.@name = state.getArgs()["name"];
 			xml.file = state.getArgs()["file"];
 			xml.@x = p.x;		 		
 			xml.@y = p.y;

@@ -19,3 +19,4 @@ data/objects/windmill.xml
 data/objects/piston.xml
 data/objects/event0.xml
 data/objects/rods.xml
+data/objects/moving_platform.xml

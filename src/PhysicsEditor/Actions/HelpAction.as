@@ -32,9 +32,8 @@ package PhysicsEditor.Actions
             state.addChild(helpText);
 		}
 		
-		//Don't run preclick to allow the other modes to continue working...
+		//Override onClick to not deactivate other actions in the panel...
 		override protected function onClick(event:MouseEvent):void{
-			//onPreClick();
 			active = !active;
 			
 			//Allows us to add help text later to make it appear in front of everything

@@ -1,0 +1,44 @@
+<config>
+  <objects>
+    <event type="3" x="110" y="311">
+      <target x="287.49999999999994" y="319.97786699999995"/>
+      <arg name="speed" value="-1"/>
+    </event>
+    <event type="3" x="133" y="198">
+      <target x="367.5" y="271.991367"/>
+      <arg name="speed" value="-1"/>
+    </event>
+    <sensor x="224.5" y="360.5" width="73" height="25">
+      <event x="133" y="198"/>
+      <event x="110" y="311"/>
+    </sensor>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" x="368" y="272.491367">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" x="224" y="384">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" x="288" y="320.477867">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" x="480" y="384">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <joint type="2">
+      <body1 x="0" y="0"/>
+      <body2 x="368" y="272.491367"/>
+      <anchor x="549" y="269"/>
+      <axis x="-1" y="0"/>
+    </joint>
+    <joint type="2">
+      <body1 x="0" y="0"/>
+      <body2 x="288" y="320.477867"/>
+      <anchor x="455" y="316"/>
+      <axis x="-1" y="0"/>
+    </joint>
+  </objects>
+  <points>
+    <start x="106" y="330"/>
+    <end x="564" y="331"/>
+  </points>
+</config>

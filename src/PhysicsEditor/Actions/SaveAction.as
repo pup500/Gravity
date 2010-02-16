@@ -19,7 +19,7 @@ package PhysicsEditor.Actions
 			super(img, panel, active);
 		}
 		
-		//Don't run preclick to allow the other modes to continue working...
+		//Override onClick to not deactivate other actions in the panel...
 		override protected function onClick(event:MouseEvent):void{
 			var xml:XML = Utilities.CreateXMLRepresentation(state.the_world);
 			var points:XML = new XML(<points/>);

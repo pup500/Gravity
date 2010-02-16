@@ -54,6 +54,10 @@
 			_events = new Array();
 		}
 		
+		public function setTrigger(trigger:String):void{
+			Trigger = trigger;
+		}
+		
 		public function setTarget(target:ExSprite):void
 		{
 			_events.push(target);
@@ -121,7 +125,8 @@
 			xml.@x = final_body.GetWorldCenter().x * ExState.PHYS_SCALE;		 		
 			xml.@y = final_body.GetWorldCenter().y * ExState.PHYS_SCALE;
 			xml.@width = _bw;
-			xml.@height = _bh; 
+			xml.@height = _bh;
+			xml.@trigger = Trigger;
 			
 			for each (var event:EventObject in _events){
 				var eventXML:XML = new XML(<event/>);
@@ -156,6 +161,8 @@
 			_bw = xml.@width;
 			_bh = xml.@height;
 			
+			Trigger = xml.@trigger;
+			
 			initBoxShape();
 			
 			//bodyDef.angle = xml.@angle;
@@ -165,6 +172,7 @@
 			createPhysBody(world, controller);
 			
 			for each(var evXML:XML in xml.event){
+				trace("sensor event: " + evXML.@x + "," + evXML.@y);
 				var t:b2Body = Utilities.GetBodyAtPoint(world, new b2Vec2(evXML.@x, evXML.@y), true);
 				if(t)
 		    		AddEvent(t.GetUserData());
