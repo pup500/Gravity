@@ -26,7 +26,7 @@
 		//protected var _world:b2World;
 		public var mass:Number;
 		private var initialMass:Number = 20;//5000;//50000;
-		private var deltaMass:Number = 10;
+		private var deltaMass:Number = 7;
 		
 		private var distf:Number = 20;
 		private var minf:b2Vec2 = new b2Vec2(-distf,-distf);
@@ -73,7 +73,7 @@
 			
 			_startLosingMass = false;
 			
-			addAnimation("idle",[0, 1, 2, 3], 12);
+			addAnimation("idle",[0, 1, 2, 3], 1);
 			
 			_coolDown = new Timer(1000,1);
 			_coolDown.addEventListener(TimerEvent.TIMER_COMPLETE, onTimer);
@@ -282,7 +282,7 @@
 			
 			//We're going to take this force and get it's log to scale it down to make the push/pull smoother.
 			var directionlessForce:Number = G / r2 * this.mass * physBody.GetMass();
-			directionlessForce = Math.log(directionlessForce + 1) * 2; // Originally it was *5 -MK
+			directionlessForce = Math.log(directionlessForce + 1) * 3; // Originally it was *5 -MK
 			
 			//Separate the force into x, y direction components.
 			f.Multiply(directionlessForce);

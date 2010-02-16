@@ -77,7 +77,7 @@ package PhysicsGame
 			fixtureDef.filter.categoryBits = FilterData.PLAYER;
 			
 			//adding this to play around with player's density to get maximum platformy/gravity-y goodness - MK
-			fixtureDef.density = 50;
+			fixtureDef.density = 15;
 			
 			
 			_restart = 0;

@@ -117,6 +117,19 @@ package PhysicsGame
 				}
 			}
 			
+			/*
+			var arg:XML;
+			for (var key:Object in args)
+
+			{
+				trace("EventArgs" + key + " || " + args[key]);
+				arg = new XML(<arg/>);
+				arg.@name = key;
+				arg.@value = args[key];
+				
+				item.appendChild(arg);
+			}
+			*/
 			var arg:XML = <arg/>
 			if(args["speed"]){
 				arg.@name = "speed"
