@@ -22,7 +22,7 @@ package ailab.actions
 		}
 		
 		override public function run(bb:BlackBoard):TaskResult{
-			trace("in walk task");
+			trace("in walk until no platform task");
 			
 			var me:ExSprite = bb.getObject("me", null) as ExSprite;
 			
@@ -33,6 +33,8 @@ package ailab.actions
 			me.GetBody().ApplyForce(_applyForce, me.GetBody().GetWorldCenter());
 			
 			me.rayTrace();
+			
+			trace("is ground forward? " + me.isGroundForward());
 			
 			//TODO:Probably make into different types of walk behaviors
 			

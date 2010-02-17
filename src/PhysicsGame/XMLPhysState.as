@@ -28,10 +28,12 @@ package PhysicsGame
 			controller = new GravityObjectController();
 			the_world.AddController(controller);
 			
+			//Turn this on to see physics box in play mode
 			//debug = true;
 			initBox2DDebugRendering();
 			
-			//ev.visible = true;
+			//Turn this on to see sensors in play mode
+			ev.visible = true;
 			
 			loadLevelConfig();
 			

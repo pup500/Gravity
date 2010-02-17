@@ -79,20 +79,10 @@
 		}
 		
 		override public function render():void{
-			//trace("render: " + x + "," + y);
 			super.render();
-			//trace("renderafter: " + x + "," + y);
 			
-			getScreenXY(_p);
-			
-			var box:Shape = new Shape();
-			box.graphics.beginFill(0x111111, .5);
-			box.graphics.drawRect(_p.x+width/2, _p.y+height/2, width, height);
-			box.graphics.endFill();
-			FlxG.buffer.draw(box);
-			
-			//if(!visible)
-			//	return;
+			if(!visible)
+				return;
 			
 			//TODO:Need something to specify when to not draw the lines
 			for each(var event:EventObject in _events){
@@ -104,7 +94,6 @@
 				myShape.graphics.lineTo(_p.x  - x + event.x + event.width/2, _p.y - y + event.y + event.height/2);
 				FlxG.buffer.draw(myShape);
 			}
-			
 		}
 		
 		protected function playEvents():void

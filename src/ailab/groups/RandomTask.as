@@ -1,12 +1,13 @@
 package ailab.groups
 {
 	import ailab.Task;
+	import ailab.TaskResult;
 	
-	public class RandomTask extends SelectorTask
+	public class RandomTask extends GroupTask
 	{
 		public function RandomTask()
 		{
-			super();
+			super(true, true, TaskResult.SUCCEEDED);
 			name = "Random";
 		}
 		

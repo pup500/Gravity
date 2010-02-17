@@ -50,6 +50,7 @@
     </sensor>
     <event type="3" x="244.99999999999997" y="363">
       <target x="351.49999999999994" y="400.16533399999713"/>
+      <arg name="speed" value="-1"/>
     </event>
     <event type="2" x="300" y="320"/>
     <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="176" y="543.9500005842026">

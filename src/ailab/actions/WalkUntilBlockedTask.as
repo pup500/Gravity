@@ -22,7 +22,7 @@ package ailab.actions
 		}
 		
 		override public function run(bb:BlackBoard):TaskResult{
-			trace("in walk task");
+			trace("in walk until blocked task");
 			
 			var me:ExSprite = bb.getObject("me", null) as ExSprite;
 			
@@ -34,6 +34,8 @@ package ailab.actions
 			
 			me.rayTrace();
 			
+			
+			trace("is blocked forward? " + me.isBlockedForward());
 			//TODO:Probably make into different types of walk behaviors
 			
 			//If I am blocked forward, then stop walking
