@@ -54,11 +54,11 @@ package common.joints
 				//Initialize some sample values for now...
 				prisJoint.Initialize(body1, body2, anchor, axis);
 				prisJoint.enableMotor = true;
-				prisJoint.enableLimit = true;
+				//prisJoint.enableLimit = true;
 				prisJoint.maxMotorForce = 100 * body2.GetMass();
 				prisJoint.motorSpeed = 1;
-				prisJoint.upperTranslation = 5;
-				prisJoint.lowerTranslation = -5;
+				//prisJoint.upperTranslation = 5;
+				//prisJoint.lowerTranslation = -5;
 				prisJoint.collideConnected = true;
 				prisJoint.userData = axis;
 				valid = true;
