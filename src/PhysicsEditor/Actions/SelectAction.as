@@ -26,7 +26,9 @@ package PhysicsEditor.Actions
 				if(bSprite){
 					//bSprite.kill();
 					//Just fill in args with things we pull from object
-					state.getArgs()["angle"] = b2.GetAngle();
+					state.getArgs()["name"] = bSprite.name;
+					state.getArgs()["damage"] = bSprite.damage;
+					state.getArgs()["angle"] = b2.GetAngle() * 180 / Math.PI;
 					state.getArgs()["restitution"] = fixture.GetRestitution();
 					state.getArgs()["density"] = fixture.GetDensity();
 					state.getArgs()["friction"] = fixture.GetFriction();

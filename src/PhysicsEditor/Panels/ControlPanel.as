@@ -6,7 +6,7 @@ package PhysicsEditor.Panels
 	public class ControlPanel extends PanelBase
 	{
 		private var ACTIONS:Array = 
-			[RunAction, SaveAction, HelpAction];
+			[SaveAction, HelpAction, RunAction];
 		
 		public function ControlPanel(x:uint=0, y:uint=0, horizontal:Boolean=false)
 		{

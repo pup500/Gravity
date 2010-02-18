@@ -3,10 +3,11 @@ package PhysicsEditor.Options
 	import PhysicsEditor.IAction;
 	import PhysicsEditor.IPanel;
 	
-	import flash.display.DisplayObject;
 	import flash.display.Bitmap;
+	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
+	import flash.text.TextField;
 	
 	import org.flixel.FlxG;
 	import org.overrides.ExState;
@@ -14,6 +15,7 @@ package PhysicsEditor.Options
 	public class OptionBase implements IAction
 	{
 		protected var sprite:Sprite;
+		protected var tooltip:String;
 		protected var active:Boolean;
 		protected var state:ExState;
 		protected var panel:IPanel;
@@ -28,20 +30,31 @@ package PhysicsEditor.Options
 			sprite.graphics.endFill();
 			
 			sprite.addEventListener(MouseEvent.MOUSE_DOWN, onClick);
+			sprite.addEventListener(MouseEvent.MOUSE_OVER, onHover);
+			sprite.addEventListener(MouseEvent.MOUSE_OUT, onLeave);
 			
 			state = FlxG.state as ExState;
 			
 			this.active = active;
 			this.panel = panel;
+			
+			tooltip = "";
 		}
-
-		public function getSprite():DisplayObject
-		{
+		
+		public function getSprite():DisplayObject{
 			return sprite;
 		}
 		
 		protected function onClick(event:MouseEvent):void{
 			active = !active;
+		}
+		
+		protected function onHover(event:MouseEvent):void{
+			//tooltip.visible = tooltip.text.length > 0;
+		}
+		
+		protected function onLeave(event:MouseEvent):void{
+			//tooltip.visible = false;
 		}
 		
 		public function update():void
