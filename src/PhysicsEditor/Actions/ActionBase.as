@@ -28,17 +28,36 @@ package PhysicsEditor.Actions
 			active = true;
 		}
 		
+		protected function getMouse(snap:Boolean):b2Vec2{
+			var size:uint = 4;
+			if(snap)
+				return new b2Vec2(FlxG.mouse.x - (FlxG.mouse.x % size), FlxG.mouse.y - (FlxG.mouse.y % size));
+			else
+				return new b2Vec2(FlxG.mouse.x, FlxG.mouse.y);
+		}
+		
+		override public function update():void{
+			super.update();
+			
+			args["mouse"] = getMouse(false);
+			args["mouse_snap"] = getMouse(state.getArgs()["snap"]);
+		}
+		
 		override public function handleBegin():void{
 			if(!active) return;
 			
 			beginDrag = true;
-			args["start"] = new b2Vec2(FlxG.mouse.x, FlxG.mouse.y);
+			args["start"] = getMouse(false);
+			args["start_snap"] = getMouse(state.getArgs()["snap"]);
 			
 			onHandleBegin();
 		}
 		
 		override public function handleDrag():void{
 			if(!beginDrag) return;
+			
+			args["drag"] = getMouse(false);
+			args["drag_snap"] = getMouse(state.getArgs()["snap"]);
 			
 			onHandleDrag();
 		}
@@ -47,7 +66,8 @@ package PhysicsEditor.Actions
 			if(!active) return;
 			
 			beginDrag = false;
-			args["end"] = new b2Vec2(FlxG.mouse.x, FlxG.mouse.y);
+			args["end"] = getMouse(false);
+			args["end_snap"] = getMouse(state.getArgs()["snap"]);
 			
 			onHandleEnd();
 		}

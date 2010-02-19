@@ -11,12 +11,12 @@ package PhysicsEditor.Panels
 		{
 			//This is how you create new panels
 			panels = [
-				new ActionPanel(5,5), 
-				new OptionPanel(590, 5),
-				new TypePanel(55, 5, true),
-				new ShapePanel(190, 5, true),
-				new JointPanel(325, 5, true),
-				new ControlPanel(55, 325)
+				new ActionPanel(5, 5), 
+				new OptionPanel(5+46, 5),
+				new TypePanel(5+46*2, 5),
+				new ShapePanel(5+46*3, 5),
+				new JointPanel(5+46*4, 5),
+				new ControlPanel(594, 5)
 			];
 			
 			for each(var panel:PanelBase in panels){
@@ -26,8 +26,6 @@ package PhysicsEditor.Panels
 		
 		public function update():void{
 			for each(var panel:PanelBase in panels){
-				//Toggle visibility of control panels when SHIFT key is held
-				panel.getSprite().visible = !FlxG.keys.SHIFT;
 				panel.update();
 			}
 		}

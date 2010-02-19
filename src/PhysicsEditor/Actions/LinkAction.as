@@ -37,7 +37,7 @@ package PhysicsEditor.Actions
 			line.graphics.clear();
 			line.graphics.lineStyle(1,0xFF0000,1);
 			line.graphics.moveTo(args["start"].x + FlxG.scroll.x, args["start"].y + FlxG.scroll.y);
-			line.graphics.lineTo(FlxG.mouse.x + FlxG.scroll.x, FlxG.mouse.y + FlxG.scroll.y);
+			line.graphics.lineTo(args["drag"].x + FlxG.scroll.x, args["drag"].y + FlxG.scroll.y);
 		}
 
 		override public function onHandleEnd():void{

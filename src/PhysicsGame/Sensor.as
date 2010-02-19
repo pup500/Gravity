@@ -178,6 +178,8 @@
 		    }
 			
 			reset(xml.@x, xml.@y);
+			
+			update();
 		}
 	}
 }
