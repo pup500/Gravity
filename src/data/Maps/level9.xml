@@ -1,0 +1,137 @@
+<config>
+  <objects>
+    <shape layer="1" bodyType="0" shapeType="1" angle="-0.001367990757311189" friction="0.3" density="1" restitution="0" x="422.2007626184733" y="320.08559923498245">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="1248" y="368.1019058495593">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="847.9800000000018" y="832.1323">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="575.9899976873838" y="944.0768">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="1103.9900000000002" y="736.067200000001">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="703.9800000000018" y="832.1452">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="671.9800000000018" y="896.0767999999999">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="303.9500000000003" y="352.09000000000066">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="1104" y="256.0872005497105">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="591.9899999994171" y="320.11520000208">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="607.9800000000018" y="896.332667">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="-0.0019400688520760708" friction="0.3" density="1" restitution="0" x="393.700890001694" y="320.1899453272199">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="32" y="464.1486932434497">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="303.9500000000004" y="448.04680000000087">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="847.9899999999994" y="320.0467000000015">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="959.980000000002" y="800.332667">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="176" y="832.1727999999999">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="335.9500000000003" y="320.1023000000007">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="879.9900000000007" y="624.302667000001">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="911.9900000000008" y="624.0783000000009">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="1104" y="319.96000000000055">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="991.9900000000008" y="528.1023000000009">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="447.9500000000003" y="320.1287000000007">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="607.9800000000018" y="864.0867000000001">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="639.9800000000018" y="896.1083">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="432" y="832.1083">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="703.9800000000018" y="864.2882999999999">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="959.980000000002" y="736.1200000000001">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="303.9500000000003" y="384.1428000000008">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="703.9800000000018" y="896.1587">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="703.9500000000005" y="448.10829999999993">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="447.9899985541209" y="448.0567051558013">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="1023.9900000000007" y="528.090000000001">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="847.9900000000007" y="624.067200000001">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="1248" y="624.1250906375266">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="959.980000000002" y="768.332667">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="959.9900000000008" y="528.115200000001">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="367.9500000000003" y="320.0672000000007">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="943.9999999999994" y="623.9600000000013">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="975.9999998407236" y="288.06830000000014">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="32" y="720.1083">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="303.9500000000003" y="416.0900000000007">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="303.9500000000003" y="320.0783000000007">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+  </objects>
+  <points>
+    <start x="100" y="731"/>
+    <end x="336" y="379"/>
+  </points>
+</config>

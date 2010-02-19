@@ -1,6 +1,6 @@
 ﻿package com.adamatomic.Mode 
 {
-	import com.adamatomic.flixel.FlxEmitter;
+	import org.flixel.FlxEmitter;
 	import com.adamatomic.Mode.MassedFlxSprite;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -17,13 +17,12 @@
 		[Embed(source = '../../../data/GravSink.png')]
 		private var ImgGravSink:Class;
 		
-		private var _coolDown:Timer;
 		private var _dispatcher:EventDispatcher;
 		private var initialMass:Number = 5000;
 		
 		public function GravityObj(X:int = 0,Y:int = 0) 
 		{
-			super(ImgGravSink, X, Y);
+			super(X, Y, ImgGravSink);
 			_mass = initialMass;
 			
 			_dispatcher = new EventDispatcher(this);
@@ -34,12 +33,14 @@
 		/**
 		 * called when re-added from active pool
 		 */
-		public function reset():void {
-			exists = true;
+		public override function reset(X:Number, Y:Number):void {
+			//exists = true;
 			alpha = 1;
 			_mass = initialMass;
 			_coolDown.reset();
 			_coolDown.start();
+			
+			super.reset(X, Y);
 		}
 		
 		private function stopTimer($e:TimerEvent):void{

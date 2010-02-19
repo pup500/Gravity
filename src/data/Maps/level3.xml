@@ -1,0 +1,45 @@
+<config>
+  <objects>
+    <shape layer="1" bodyType="2" shapeType="1" angle="-0.4363323129985824" friction="0" density="1" restitution="0" x="468.383371100757" y="143.3786339745158">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0" density="0" restitution="0" x="719.9912147464531" y="368">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0.4363323129985824" friction="0" density="1" restitution="0" x="252.49999999999997" y="137.18825">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0.4363323129985824" friction="0" density="1" restitution="0" x="338.61662889924304" y="135.04586602548417">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0" density="0" restitution="0" x="208" y="368">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="-0.4363323129985824" friction="0" density="1" restitution="0" x="554.5" y="141.23624999999998">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0" density="0" restitution="0" x="464" y="368">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <joint type="3">
+      <body1 x="207.43818643275085" y="221.84741312991497"/>
+      <body2 x="308.78234094200735" y="226.80574096209983"/>
+    </joint>
+    <joint type="3">
+      <body1 x="294.8029046691112" y="46.32417817943504"/>
+      <body2 x="387.50659956974187" y="46.15001560717629"/>
+    </joint>
+    <joint type="3">
+      <body1 x="495.47845002031914" y="228.0780929735442"/>
+      <body2 x="596.8226045295758" y="227.1197651413593"/>
+    </joint>
+    <joint type="3">
+      <body1 x="417.17680965432527" y="48.32867540565728"/>
+      <body2 x="509.03526803147463" y="50.69022240384275"/>
+    </joint>
+  </objects>
+  <points>
+    <start x="94" y="315"/>
+    <end x="812" y="318"/>
+  </points>
+</config>

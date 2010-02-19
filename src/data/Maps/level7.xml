@@ -1,0 +1,29 @@
+<config>
+  <objects>
+    <shape layer="1" bodyType="2" shapeType="0" angle="0" friction="0.3" density="1" restitution="0" x="279" y="113.1587">
+      <file>data/editor/images/blocks_5.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="0" angle="0" friction="0.3" density="1" restitution="0" x="279" y="139.17280000000002">
+      <file>data/editor/images/blocks_5.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="624" y="272">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="480" y="384">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="264" y="279">
+      <file>data/angled.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="80" y="272">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" x="224" y="384">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+  </objects>
+  <points>
+    <start x="117" y="334"/>
+    <end x="571" y="333"/>
+  </points>
+</config>

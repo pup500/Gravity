@@ -1,0 +1,89 @@
+﻿<config>
+  <objects>
+    <event type="3" x="664" y="470">
+      <target x="511.4999999999995" y="415.54319999999973"/>
+	  <arg name="speed" value="1"></arg>
+    </event>
+    <event type="3" x="535" y="476">
+      <target x="511.4999999999995" y="415.54319999999973"/>
+	  <arg name="speed" value="-1"></arg>
+    </event>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="mp1" x="511.99999999999943" y="416.0431999999998">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <sensor x="716.5" y="427" width="27" height="80" trigger="mp1">
+      <event x="664" y="470"/>
+    </sensor>
+    <sensor x="488" y="418.5" width="24" height="67" trigger="mp1">
+      <event x="535" y="476"/>
+    </sensor>
+    <sensor x="317" y="286.5" width="48" height="73" trigger="Player">
+      <event x="401" y="142"/>
+    </sensor>
+    <event type="3" x="401" y="142">
+      <target x="407.4500000000001" y="304.08979999999997"/>
+      <arg name="speed" value="-1"/>
+    </event>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="447.95000000000016" y="336">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="591.9500000000002" y="527.9999999999995">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="735.9999999999995" y="160">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="472.45000000000016" y="415.4980772109064">
+      <file>data/editor/images/e_ass_08.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="735.9999999999992" y="415.99999999999983">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="272" y="336">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="472.45000000000016" y="351.5">
+      <file>data/editor/images/e_ass_08.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="559.9500000000002" y="335.9999999999998">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="407.95000000000016" y="304.58979999999997">
+      <file>data/editor/images/blocks_3.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="472.45000000000016" y="479.49926731732546">
+      <file>data/editor/images/e_ass_08.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="591.9500000000002" y="335.9999999999998">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="415.95000000000016" y="336">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="527.9500000000002" y="335.9999999999997">
+      <file>data/editor/images/blocks_6.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="527.9500281521125" y="192">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="128" y="224">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+    <joint type="2">
+      <body1 x="0" y="0"/>
+      <body2 x="511.99999999999943" y="416.0431999999998"/>
+      <anchor x="601" y="412"/>
+      <axis x="-0.9999382773199424" y="0.011110425303554876"/>
+    </joint>
+    <joint type="2">
+      <body1 x="0" y="0"/>
+      <body2 x="407.95000000000016" y="304.58979999999997"/>
+      <anchor x="412" y="160"/>
+      <axis x="-0.007462478771027082" y="0.9999721553176328"/>
+    </joint>
+  </objects>
+  <points>
+    <start x="157" y="282"/>
+    <end x="547" y="279"/>
+  </points>
+</config>

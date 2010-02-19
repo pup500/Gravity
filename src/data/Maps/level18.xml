@@ -1,0 +1,27 @@
+<config>
+  <objects>
+    <sensor x="599" y="265.72130000000004" width="7" height="44" trigger="1234"/>
+    <sensor x="194" y="262.72130000000004" width="7" height="39" trigger="1234"/>
+    <event type="3" x="578" y="202.72130000000004">
+      <target x="405.5" y="262.39410000000004"/>
+      <arg name="speed" value="0"/>
+    </event>
+    <event type="3" x="212" y="203.72130000000004">
+      <target x="405.5" y="262.39410000000004"/>
+      <arg name="speed" value="0"/>
+    </event>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="1234" x="406" y="262.89410000000004">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <joint type="2">
+      <body1 x="0" y="0"/>
+      <body2 x="406" y="262.89410000000004"/>
+      <anchor x="199" y="262.72130000000004"/>
+      <axis x="0.999979454939544" y="-0.0064101247111509"/>
+    </joint>
+  </objects>
+  <points>
+    <start x="307" y="206"/>
+    <end x="494" y="210"/>
+  </points>
+</config>

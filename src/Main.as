@@ -1,22 +1,29 @@
 package {
-	import com.adamatomic.flixel.FlxGame;
-	import com.adamatomic.flixel.FlxG;
-	import com.adamatomic.Mode.*;
+	//import org.flixel.FlxGame;
+	import PhysicsGame.*;
 	
-	[SWF(width="640", height="480", backgroundColor="#000000")]
-	[Frame(factoryClass="Preloader")]
+	import PhysicsLab.*;
+	
+	import org.flixel.FlxG;
+	import org.overrides.*;
+	
+	[SWF(width="640", height="480", backgroundColor="#ffffff")]
+	//[Frame(factoryClass="Preloader")]
 
-	public class Main extends FlxGame
+	public class Main extends ExGame
 	{
+		private const MAX_LEVEL:uint = 54;
+		
 		public function Main():void
 		{
-			super(320,240,LevelSelectMenu,2,0xff131c1b,false,0xff729954);
-			help("Jump", "Shoot", "Nothing");
+			super(640, 480, LevelSelectMenu, 1);
+			super.showLogo = false;
+			useDefaultHotKeys = false;
 			
-			FlxG.levels.add("com.adamatomic.Mode.MapOneGap");
-			FlxG.levels.add("com.adamatomic.Mode.MapSmallOnePlatform");
-			FlxG.levels.add("com.adamatomic.Mode.MapValley");
-			FlxG.levels.add("com.adamatomic.Mode.MapTestLevel");
+			for(var i:uint = 1; i <= MAX_LEVEL; i++){
+				FlxG.levels.push("data/Maps/level" + i + ".xml");
+			}
+
 			FlxG.level = 0;
 		}
 	}

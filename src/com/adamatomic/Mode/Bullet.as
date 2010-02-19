@@ -1,6 +1,6 @@
 package com.adamatomic.Mode
 {
-	import com.adamatomic.flixel.*;
+	import org.flixel.*;
 
 	public class Bullet extends FlxSprite
 	{
@@ -10,7 +10,8 @@ package com.adamatomic.Mode
 		
 		public function Bullet()
 		{
-			super(ImgBullet,0,0,true);
+			super();
+			loadGraphic(ImgBullet,true);
 			width = 6;
 			height = 6;
 			offset.x = 1;
@@ -30,9 +31,14 @@ package com.adamatomic.Mode
 			else super.update();
 		}
 		
-		override public function hitWall():Boolean { hurt(0); return true; }
-		override public function hitFloor():Boolean { hurt(0); return true; }
-		override public function hitCeiling():Boolean { hurt(0); return true; }
+		override public function render():void
+		{
+			super.render();
+		}
+		
+		override public function hitWall(Contact:FlxCore=null):Boolean { hurt(0); return true; }
+		override public function hitFloor(Contact:FlxCore=null):Boolean { hurt(0); return true; }
+		override public function hitCeiling(Contact:FlxCore=null):Boolean { hurt(0); return true; }
 		override public function hurt(Damage:Number):void
 		{
 			if(dead) return;
@@ -47,13 +53,10 @@ package com.adamatomic.Mode
 			play("poof");
 		}
 		
-		
-		
 		public function shoot(X:int, Y:int, VelocityX:int, VelocityY:int):void
 		{
 			FlxG.play(SndShoot);
-			x = X;
-			y = Y;
+			super.reset(X,Y);
 			velocity.x = VelocityX;
 			velocity.y = VelocityY;
 			if(velocity.y < 0)
@@ -64,9 +67,6 @@ package com.adamatomic.Mode
 				play("left");
 			else if(velocity.x > 0)
 				play("right");
-			dead = false;
-			exists = true;
-			visible = true;
 		}
 	}
 }

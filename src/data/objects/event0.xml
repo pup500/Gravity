@@ -1,0 +1,32 @@
+<config>
+  <objects>
+    <event>
+      <type>0</type>
+      <x>288</x>
+      <y>192</y>
+      <target>
+        <x>232.5</x>
+        <y>207.5</y>
+      </target>
+    </event>
+    <shape>
+      <file>data/editor/images/e_ass_08.png</file>
+      <layer>1</layer>
+      <bodyType>0</bodyType>
+      <shapeType>1</shapeType>
+      <angle>0</angle>
+      <x>232.5</x>
+      <y>207.5</y>
+    </shape>
+  </objects>
+  <points>
+    <start>
+      <x>0</x>
+      <y>0</y>
+    </start>
+    <end>
+      <x>0</x>
+      <y>0</y>
+    </end>
+  </points>
+</config>
