@@ -60,8 +60,8 @@ package PhysicsGame
 			//var s:b2CircleShape = new b2CircleShape(0);//(width/2)/ExState.PHYS_SCALE);
 			//s.SetLocalPosition(new b2Vec2(0, (height/4)/ ExState.PHYS_SCALE));
 			var s:b2PolygonShape = new b2PolygonShape();
-			s.SetAsOrientedBox(width/2/ExState.PHYS_SCALE, height/4/ExState.PHYS_SCALE,
-				new b2Vec2(0, height/4/ExState.PHYS_SCALE));
+			s.SetAsOrientedBox(width/2/ExState.PHYS_SCALE, (3*height/4)/2/ExState.PHYS_SCALE,
+				new b2Vec2(0, height/8/ExState.PHYS_SCALE));
 			
 			shape = s;
 			
