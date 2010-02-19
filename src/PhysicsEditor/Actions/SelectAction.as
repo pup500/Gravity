@@ -24,7 +24,6 @@ package PhysicsEditor.Actions
 				var bSprite:ExSprite = b2.GetUserData() as ExSprite;
 				var fixture:b2Fixture = b2.GetFixtureList();
 				if(bSprite){
-					//bSprite.kill();
 					//Just fill in args with things we pull from object
 					state.getArgs()["name"] = bSprite.name;
 					state.getArgs()["damage"] = bSprite.damage;
@@ -32,7 +31,6 @@ package PhysicsEditor.Actions
 					state.getArgs()["restitution"] = fixture.GetRestitution();
 					state.getArgs()["density"] = fixture.GetDensity();
 					state.getArgs()["friction"] = fixture.GetFriction();
-					//state.getArgs()["shapeType"] = fixture.GetType();
 				}
 			}
 			

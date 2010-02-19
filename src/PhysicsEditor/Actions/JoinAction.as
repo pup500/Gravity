@@ -5,6 +5,7 @@ package PhysicsEditor.Actions
 	import common.JointFactory;
 	
 	import flash.display.Shape;
+	import flash.utils.Dictionary;
 	
 	import org.flixel.FlxG;
 	
@@ -29,14 +30,19 @@ package PhysicsEditor.Actions
 		override public function onHandleDrag():void{
 			line.graphics.clear();
 			line.graphics.lineStyle(1,0xFF0000,1);
-			line.graphics.moveTo(args["start"].x + FlxG.scroll.x, args["start"].y + FlxG.scroll.y);
-			line.graphics.lineTo(FlxG.mouse.x + FlxG.scroll.x, FlxG.mouse.y + FlxG.scroll.y);
+			line.graphics.moveTo(args["start_snap"].x + FlxG.scroll.x, args["start_snap"].y + FlxG.scroll.y);
+			line.graphics.lineTo(args["drag_snap"].x + FlxG.scroll.x, args["drag_snap"].y + FlxG.scroll.y);
 		}
 
 		override public function onHandleEnd():void{
 			args["type"] = state.getArgs()["jointType"];
 			
-			var xml:XML = JointFactory.createJointXML(args);
+			var jointArgs:Dictionary = new Dictionary();
+			jointArgs["type"] = args["type"];
+			jointArgs["start"] = args["start_snap"];
+			jointArgs["end"] = args["end_snap"];
+			
+			var xml:XML = JointFactory.createJointXML(jointArgs);
 			JointFactory.addJoint(state.the_world, xml);
 		}
 

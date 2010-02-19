@@ -18,8 +18,8 @@ package PhysicsEditor.Actions
 		override public function onHandleBegin():void{
 			//TODO:Fix this up....
 			var xml:XML = new XML(<event/>);
-			xml.@x = args["start"].x;
-			xml.@y = args["start"].y;
+			xml.@x = args["start_snap"].x;
+			xml.@y = args["start_snap"].y;
 			xml.@type = state.getArgs()["event"];
 			
 			var b2:EventObject = new EventObject();

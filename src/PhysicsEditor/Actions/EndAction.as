@@ -39,7 +39,7 @@ package PhysicsEditor.Actions
 		}
 		
 		override public function onHandleBegin():void{
-			state.getArgs()["endPoint"] = args["start"];
+			state.getArgs()["endPoint"] = args["start_snap"];
 		}
 		
 		override public function update():void{

@@ -1,12 +1,15 @@
 package PhysicsEditor.Actions
 {
-	import org.flixel.FlxG;
-	import org.overrides.ExState;
+	import Box2D.Common.Math.b2Vec2;
+	
+	import PhysicsEditor.IPanel;
+	
+	import PhysicsGame.Sensor;
 	
 	import flash.display.*;
-	import Box2D.Common.Math.b2Vec2;
-	import PhysicsEditor.IPanel;
-	import PhysicsGame.Sensor;
+	
+	import org.flixel.FlxG;
+	import org.overrides.ExState;
 	
 	public class SensorAction extends ActionBase
 	{
@@ -22,13 +25,14 @@ package PhysicsEditor.Actions
 		
 		override public function onHandleDrag():void
 		{			
-			var startPoint:b2Vec2 = args["start"];
+			var startPoint:b2Vec2 = args["start_snap"];
+			var dragPoint:b2Vec2 = args["drag_snap"];
 			
 			if (FlxG.mouse.x != startPoint.x || FlxG.mouse.y != startPoint.y)
 			{
 				dragBox.graphics.clear();
 				dragBox.graphics.beginFill(0x111111, .25);
-				dragBox.graphics.drawRect(startPoint.x+FlxG.scroll.x, startPoint.y+FlxG.scroll.y, FlxG.mouse.x - startPoint.x, FlxG.mouse.y - startPoint.y);
+				dragBox.graphics.drawRect(startPoint.x+FlxG.scroll.x, startPoint.y+FlxG.scroll.y, dragPoint.x - startPoint.x, dragPoint.y - startPoint.y);
 				dragBox.graphics.endFill();
 				FlxG.buffer.draw(dragBox);
 			}
@@ -43,8 +47,8 @@ package PhysicsEditor.Actions
 		
 		private function createSensor():void 
 		{
-			var startPoint:b2Vec2 = args["start"];
-			var endPoint:b2Vec2 = args["end"];
+			var startPoint:b2Vec2 = args["start_snap"];
+			var endPoint:b2Vec2 = args["end_snap"];
 			var width:int = Math.abs(endPoint.x - startPoint.x);
 			var height:int = Math.abs(endPoint.y - startPoint.y);
 			

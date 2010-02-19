@@ -4,22 +4,27 @@ package PhysicsEditor.Panels
 	import PhysicsEditor.IPanel;
 	
 	import flash.display.Sprite;
+	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
 	
 	import org.flixel.FlxG;
 	
 	public class PanelBase implements IPanel
 	{
+		protected var panel:Sprite;
 		protected var layer:Sprite;
 		protected var minimize:Sprite;
+		public var minimized:Boolean;
 		
 		protected var actions:Array;
 		
 		public function PanelBase(x:uint=0, y:uint=0)
 		{
+			panel = new Sprite();
+			panel.x = x;
+			panel.y = y;
+			
 			layer = new Sprite();
-			layer.x = x;
-			layer.y = y;
 			
 			minimize = new Sprite();
 			minimize.graphics.beginFill(0x222222,1);
@@ -27,13 +32,22 @@ package PhysicsEditor.Panels
 			minimize.graphics.endFill();
 			minimize.x = 5;
 			minimize.y = -3;
-			layer.addChild(minimize);
+			minimize.addEventListener(MouseEvent.CLICK, onMinimize);
+			
+			panel.addChild(layer);
+			panel.addChild(minimize);
+			
+			minimized = false;
 			
 			actions = new Array();
 		}
 		
+		public function onMinimize(event:MouseEvent):void{
+			minimized = !minimized;
+		}
+		
 		public function getSprite():Sprite{
-			return layer;
+			return panel;
 		}
 		
 		//Allows for overriding the constructor with other specific ones..
@@ -65,6 +79,9 @@ package PhysicsEditor.Panels
 		}
 		
 		public function update():void{
+			//Toggle visibility of control panels when SHIFT key is held
+			layer.visible = !FlxG.keys.SHIFT && !minimized;
+			
 			for each(var action:IAction in actions){
 				action.update();
 				

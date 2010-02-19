@@ -86,13 +86,14 @@ package PhysicsEditor.Actions
 			
 			if(active){
 				//Draw the preview image based on the selected resource
-				assetImage.x = FlxG.mouse.x + FlxG.scroll.x;
-				assetImage.y = FlxG.mouse.y + FlxG.scroll.y;
+				assetImage.x = args["mouse_snap"].x + FlxG.scroll.x;
+				assetImage.y = args["mouse_snap"].y + FlxG.scroll.y;
 				
+				/*
 				if(state.getArgs()["snap"]){
 					assetImage.x -= (FlxG.mouse.x % 16);
 					assetImage.y -= (FlxG.mouse.y % 16);
-				}
+				}*/
 				
 				assetImage.rotation = state.getArgs()["angle"];
 				
