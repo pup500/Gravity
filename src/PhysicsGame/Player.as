@@ -1,14 +1,11 @@
 package PhysicsGame
 {
 	import Box2D.Collision.Shapes.*;
-	import Box2D.Collision.b2RayCastInput;
-	import Box2D.Collision.b2RayCastOutput;
 	import Box2D.Common.Math.b2Vec2;
 	import Box2D.Dynamics.*;
 	import Box2D.Dynamics.Contacts.*;
 	import Box2D.Dynamics.Controllers.b2Controller;
 	
-	import flash.display.Shape;
 	import flash.events.TimerEvent;
 	import flash.geom.Point;
 	import flash.utils.Timer;
@@ -60,14 +57,18 @@ package PhysicsGame
 			width = 14;
 			height = 30;
 			
-			var s:b2CircleShape = new b2CircleShape((width/2)/ExState.PHYS_SCALE);
-			s.SetLocalPosition(new b2Vec2(0, (height/4)/ ExState.PHYS_SCALE));
+			//var s:b2CircleShape = new b2CircleShape(0);//(width/2)/ExState.PHYS_SCALE);
+			//s.SetLocalPosition(new b2Vec2(0, (height/4)/ ExState.PHYS_SCALE));
+			var s:b2PolygonShape = new b2PolygonShape();
+			s.SetAsOrientedBox(width/2/ExState.PHYS_SCALE, height/4/ExState.PHYS_SCALE,
+				new b2Vec2(0, height/4/ExState.PHYS_SCALE));
+			
 			shape = s;
 			
 			//initCircleShape();
 			//initBoxShape();
 			
-			fixtureDef.friction = .5;
+			fixtureDef.friction = 0;
 			fixtureDef.restitution = 0;
 			
 			//Make this part of group -2, and do not collide with other in the same negative group...
@@ -121,14 +122,21 @@ package PhysicsGame
 		
 		private function addSensor():void{
 			var e:ExState;
-			var s:b2PolygonShape = new b2PolygonShape();
+			
+			var s:b2CircleShape = new b2CircleShape(1/ExState.PHYS_SCALE);
+			s.SetLocalPosition(new b2Vec2(0, (height/2)/ExState.PHYS_SCALE));
+			
+			//var s:b2PolygonShape = new b2PolygonShape();
 			//Sensor is only portion of width
-			s.SetAsOrientedBox((width/4)/ExState.PHYS_SCALE, 1/ExState.PHYS_SCALE, 
-				new b2Vec2(0, (height/2)/ExState.PHYS_SCALE),0);
+			//s.SetAsOrientedBox((width/4)/ExState.PHYS_SCALE, 1/ExState.PHYS_SCALE, 
+			//	new b2Vec2(0, (height/2)/ExState.PHYS_SCALE),0);
+			
+			
 			
 			var f:b2FixtureDef = new b2FixtureDef();
 			f.shape = s;
-			f.isSensor = true;
+			//f.isSensor = true;
+			f.friction = .8;
 			f.density = 0;
 			f.filter.categoryBits = FilterData.PLAYER;
 			gFixture = final_body.CreateFixture(f);
