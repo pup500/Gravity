@@ -68,16 +68,24 @@ package PhysicsGame.Components
 		}
 		
 		public function addTorso(f:Number=0, d:Number=1):b2Fixture{
+			//return null;
+			/*
 			var s:b2PolygonShape = new b2PolygonShape();
 			s.SetAsOrientedBox(me.width/2/ExState.PHYS_SCALE, (3*me.height/4)/2/ExState.PHYS_SCALE,
 				new b2Vec2(0, me.height/8/ExState.PHYS_SCALE));
+			*/
+			
+			var s:b2PolygonShape = new b2PolygonShape();
+			s.SetAsOrientedBox(me.width/2/ExState.PHYS_SCALE, (me.height/2)/2/ExState.PHYS_SCALE,
+				new b2Vec2(0, 0/ExState.PHYS_SCALE));
+			
 			
 			return addShape(s, f, d);
 		}
 		
 		public function addSensor(f:Number=0, d:Number=1):b2Fixture{
-			var s:b2CircleShape = new b2CircleShape(1/ExState.PHYS_SCALE);
-			s.SetLocalPosition(new b2Vec2(0, (me.height/2)/ExState.PHYS_SCALE));
+			var s:b2CircleShape = new b2CircleShape(me.width/2/ExState.PHYS_SCALE);
+			s.SetLocalPosition(new b2Vec2(0, ((me.height)/4)/ExState.PHYS_SCALE));
 			
 			return addShape(s, f, d);
 		}

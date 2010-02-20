@@ -339,6 +339,7 @@ package org.overrides
 		}
 		
 		//TODO override FlxCore.destroy() instead of using this as the public function.
+		//TODO:Make sure this is appropriate after we switch over to physics component
 		public function destroyPhysBody():void
 		{
 			if(exists){
@@ -556,6 +557,7 @@ package org.overrides
 		
 		//There is ground ahead of me if there is something ahead at my feet
 		public function isGroundForward():Boolean{
+			trace("cache lambda" + cacheRTLambda);
 			return cacheRTF && cacheRTLambda > .7;
 		}
 		

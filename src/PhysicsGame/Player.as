@@ -61,6 +61,11 @@ package PhysicsGame
 			height = 30;
 			
 			inputComponent = new InputComponent(this);
+			
+			//NOTE:This is how you should adjust the player's mass
+			//There's 3 parts to him, Head, Torso, And Feet Sensor..
+			//Pass in friction, and density
+			//TODO:Refactor the shapes out of the physics
 			physicsComponent = new PhysicsComponent(this, FilterData.PLAYER);
 			physicsComponent.initBody();
 			physicsComponent.addHead();
