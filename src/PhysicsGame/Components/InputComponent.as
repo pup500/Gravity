@@ -34,12 +34,12 @@ package PhysicsGame.Components
 				//_applyForce.Multiply(final_body.GetMass());
 				//final_body.ApplyImpulse(_applyForce, final_body.GetWorldCenter());
 				
-				if(me.final_body.GetLinearVelocity().x < -3.5) {
+				if(me.GetBody().GetLinearVelocity().x < -3.5) {
 					
 				}
 				else
 				
-					me.final_body.ApplyForce(_applyForce, me.final_body.GetWorldCenter());
+					me.GetBody().ApplyForce(_applyForce, me.GetBody().GetWorldCenter());
 				//final_body.GetLinearVelocity().x = -30;
 			}
 			else if(FlxG.keys.D)
@@ -50,11 +50,11 @@ package PhysicsGame.Components
 				_applyForce.y = 0;
 				//We multiply this here because it is later multiplied by inverse mass. - Minh
 				//_applyForce.Multiply(final_body.GetMass());
-				if(me.final_body.GetLinearVelocity().x > 3.5) {
+				if(me.GetBody().GetLinearVelocity().x > 3.5) {
 				}
 				else
 				//final_body.ApplyImpulse(_applyForce, final_body.GetWorldCenter());
-					me.final_body.ApplyForce(_applyForce, me.final_body.GetWorldCenter());
+					me.GetBody().ApplyForce(_applyForce, me.GetBody().GetWorldCenter());
 			}
 
 			////trace("can jump: " + _canJump);
@@ -73,12 +73,12 @@ package PhysicsGame.Components
 				_applyForce.x = 0;
 				_applyForce.y = -5;
 				//We multiply this here because it is later multiplied by inverse mass. - Minh
-				_applyForce.Multiply(me.final_body.GetMass());
+				_applyForce.Multiply(me.GetBody().GetMass());
 				
 				////trace("mass" + final_body.GetMass());
 				
 				//Apply a instantaneous upward force.
-				me.final_body.ApplyImpulse(_applyForce, me.final_body.GetWorldCenter());
+				me.GetBody().ApplyImpulse(_applyForce, me.GetBody().GetWorldCenter());
 				//final_body.GetLinearVelocity().Set(_applyForce.x, _applyForce.y);
 			}
 		}

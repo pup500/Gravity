@@ -6,6 +6,8 @@ package PhysicsGame
 	import Box2D.Dynamics.Contacts.*;
 	import Box2D.Dynamics.Controllers.b2Controller;
 	
+	import PhysicsGame.Components.PhysicsComponent;
+	
 	import ailab.*;
 	import ailab.actions.*;
 	import ailab.basic.*;
@@ -13,8 +15,6 @@ package PhysicsGame
 	import ailab.conditions.*;
 	import ailab.decorators.*;
 	import ailab.groups.*;
-	
-	import flash.display.Shape;
 	
 	import org.flixel.*;
 	import org.overrides.ExSprite;
@@ -25,9 +25,8 @@ package PhysicsGame
 		[Embed(source="../data/g_walk_old.png")] private var ImgSpaceman:Class;
 		
 		private var brain:TaskTree;
+		//private var physicsComponent:PhysicsComponent;
 		
-		private var gFixture:b2Fixture;
-
 		public function Enemy(x:int=0, y:int=0){
 			super(x, y);
 			loadGraphic(ImgSpaceman,true,true,16,32);
@@ -36,12 +35,18 @@ package PhysicsGame
 			width = 14;
 			height = 30;
 			
+			physicsComponent = new PhysicsComponent(this, FilterData.ENEMY);
+			physicsComponent.initBody();
+			physicsComponent.addHead(0,1);
+			physicsComponent.addTorso(0,1);
+			gFixture = physicsComponent.addSensor(0.8, 1);
+			
 			/*
 			var s:b2CircleShape = new b2CircleShape((width/2)/ExState.PHYS_SCALE);
 			s.SetLocalPosition(new b2Vec2(0, (height/4)/ ExState.PHYS_SCALE));
 			shape = s;
 			*/
-			
+			/*
 			var s:b2PolygonShape = new b2PolygonShape();
 			s.SetAsOrientedBox(width/2/ExState.PHYS_SCALE, (3*height/4)/2/ExState.PHYS_SCALE,
 				new b2Vec2(0, height/8/ExState.PHYS_SCALE));
@@ -53,7 +58,7 @@ package PhysicsGame
 			
 			fixtureDef.friction = 0;
 			fixtureDef.restitution = 0;
-			
+			*/
 			//Make this part of group -2, and do not collide with other in the same negative group...
 			name = "Enemy";
 			
@@ -81,6 +86,12 @@ package PhysicsGame
 			brain.blackboard.setObject("canWalkForward", true);
 		}
 		
+		
+		override public function GetBody():b2Body{
+			return physicsComponent.final_body;
+		}
+		
+		/*
 		private function addHead():void{
 			var s:b2CircleShape = new b2CircleShape((width/2)/ExState.PHYS_SCALE);
 			s.SetLocalPosition(new b2Vec2(0, -(height/4) / ExState.PHYS_SCALE));
@@ -115,11 +126,22 @@ package PhysicsGame
 			gFixture = final_body.CreateFixture(f);
 		}
 		
+		*/
+		
+		//Overridden normal behavior, using a physics component,
+		//TODO:Fix exsprite to remove physics dependency
 		override public function createPhysBody(world:b2World, controller:b2Controller=null):void{
-			super.createPhysBody(world, controller);
-			addHead();
-			addSensor();
+			//Save the world
+			_world = world;
+			_controller = controller;
+			
+			if(controller){
+				controller.AddBody(GetBody());
+			}
+			
+			loaded = true;
 		}
+		
 		
 		public function SetBullets(bullets:Array):void{
 		}
@@ -128,10 +150,12 @@ package PhysicsGame
 		{
 			brain.update();
 			
+			physicsComponent.update();
+			
 			//UPDATE POSITION AND ANIMATION			
 			super.update();
 			
-			brain.blackboard.setObject("moving", final_body.GetLinearVelocity().x > 0.1);
+			brain.blackboard.setObject("moving", GetBody().GetLinearVelocity().x > 0.1);
 		}
 		
 		override public function render():void{

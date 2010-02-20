@@ -7,6 +7,7 @@ package PhysicsGame
 	import Box2D.Dynamics.Controllers.b2Controller;
 	
 	import PhysicsGame.Components.InputComponent;
+	import PhysicsGame.Components.PhysicsComponent;
 	
 	import flash.events.TimerEvent;
 	import flash.geom.Point;
@@ -49,8 +50,6 @@ package PhysicsGame
 		public var _justJumped:Boolean;
 		private var _antiGravity:Boolean;
 		
-		private var gFixture:b2Fixture;
-		
 		private var inputComponent:InputComponent;
 		
 		public function Player(x:int=0, y:int=0){
@@ -62,30 +61,15 @@ package PhysicsGame
 			height = 30;
 			
 			inputComponent = new InputComponent(this);
-			
-			//var s:b2CircleShape = new b2CircleShape(0);//(width/2)/ExState.PHYS_SCALE);
-			//s.SetLocalPosition(new b2Vec2(0, (height/4)/ ExState.PHYS_SCALE));
-			var s:b2PolygonShape = new b2PolygonShape();
-			s.SetAsOrientedBox(width/2/ExState.PHYS_SCALE, (3*height/4)/2/ExState.PHYS_SCALE,
-				new b2Vec2(0, height/8/ExState.PHYS_SCALE));
-			
-			shape = s;
-			
-			//initCircleShape();
-			//initBoxShape();
-			
-			fixtureDef.friction = 0;
-			fixtureDef.restitution = 0;
+			physicsComponent = new PhysicsComponent(this, FilterData.PLAYER);
+			physicsComponent.initBody();
+			physicsComponent.addHead();
+			physicsComponent.addTorso(0, 15);
+			gFixture = physicsComponent.addSensor(0.8,1);
 			
 			//Make this part of group -2, and do not collide with other in the same negative group...
 			name = "Player";
 			health = 20;
-			
-			fixtureDef.filter.categoryBits = FilterData.PLAYER;
-			
-			//adding this to play around with player's density to get maximum platformy/gravity-y goodness - MK
-			fixtureDef.density = 15;
-			
 			
 			_restart = 0;
 			_nextLevel = false;
@@ -114,44 +98,22 @@ package PhysicsGame
 			_antiGravity = false;
 		}
 		
-		private function addHead():void{
-			var s:b2CircleShape = new b2CircleShape((width/2)/ExState.PHYS_SCALE);
-			s.SetLocalPosition(new b2Vec2(0, -(height/4) / ExState.PHYS_SCALE));
-			
-			var f:b2FixtureDef = new b2FixtureDef();
-			f.shape = s;
-			f.friction = 0;
-			f.density = 1;
-			f.filter.categoryBits = FilterData.PLAYER;
-			final_body.CreateFixture(f);
+		override public function GetBody():b2Body{
+			return physicsComponent.final_body;
 		}
 		
-		private function addSensor():void{
-			var e:ExState;
-			
-			var s:b2CircleShape = new b2CircleShape(1/ExState.PHYS_SCALE);
-			s.SetLocalPosition(new b2Vec2(0, (height/2)/ExState.PHYS_SCALE));
-			
-			//var s:b2PolygonShape = new b2PolygonShape();
-			//Sensor is only portion of width
-			//s.SetAsOrientedBox((width/4)/ExState.PHYS_SCALE, 1/ExState.PHYS_SCALE, 
-			//	new b2Vec2(0, (height/2)/ExState.PHYS_SCALE),0);
-			
-			
-			
-			var f:b2FixtureDef = new b2FixtureDef();
-			f.shape = s;
-			//f.isSensor = true;
-			f.friction = .8;
-			f.density = 0;
-			f.filter.categoryBits = FilterData.PLAYER;
-			gFixture = final_body.CreateFixture(f);
-		}
-		
+		//Overridden normal behavior, using a physics component,
+		//TODO:Fix exsprite to remove physics dependency
 		override public function createPhysBody(world:b2World, controller:b2Controller=null):void{
-			super.createPhysBody(world, controller);
-			addHead();
-			addSensor();
+			//Save the world
+			_world = world;
+			_controller = controller;
+			
+			if(controller){
+				controller.AddBody(GetBody());
+			}
+			
+			loaded = true;
 		}
 		
 		public function SetBullets(bullets:Array):void{
@@ -166,10 +128,11 @@ package PhysicsGame
 				return;
 			}
 			
+			physicsComponent.update();
 			inputComponent.update();
 			
 			//ANIMATION
-			if(Math.abs(final_body.GetLinearVelocity().y) > 0.1)
+			if(Math.abs(GetBody().GetLinearVelocity().y) > 0.1)
 			{
 				play("jump");
 				
@@ -178,7 +141,7 @@ package PhysicsGame
 				//else play("jump");
 				////trace("jumping");
 			}
-			else if(Math.abs(final_body.GetLinearVelocity().x) < 0.1)
+			else if(Math.abs(GetBody().GetLinearVelocity().x) < 0.1)
 			{
 				play("idle");
 				//if(_up) play("idle_up");

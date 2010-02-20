@@ -30,6 +30,9 @@ package ailab.actions
 			
 			var _applyForce:b2Vec2 = bb.getObject("force", new b2Vec2(0,0)) as b2Vec2;
 			
+			trace("forward force" + _applyForce.x + ", " + _applyForce.y);
+			
+			
 			me.GetBody().ApplyForce(_applyForce, me.GetBody().GetWorldCenter());
 			
 			me.rayTrace();
