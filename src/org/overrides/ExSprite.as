@@ -39,7 +39,7 @@ package org.overrides
 		protected var shape:b2Shape;
 		protected var bodyDef:b2BodyDef;
 		protected var fixtureDef:b2FixtureDef;
-		protected var final_body:b2Body; //The physical representation in the Body2D b2World.
+		public var final_body:b2Body; //The physical representation in the Body2D b2World.
 		protected var fixture:b2Fixture;
 		
 		protected var impactPoint:b2Contact;

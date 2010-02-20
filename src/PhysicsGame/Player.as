@@ -6,6 +6,8 @@ package PhysicsGame
 	import Box2D.Dynamics.Contacts.*;
 	import Box2D.Dynamics.Controllers.b2Controller;
 	
+	import PhysicsGame.Components.InputComponent;
+	
 	import flash.events.TimerEvent;
 	import flash.geom.Point;
 	import flash.utils.Timer;
@@ -42,12 +44,14 @@ package PhysicsGame
 		private var _coolDown:Timer;
 		private var _canShoot:Boolean;
 		
-		private var _canJump:Boolean;
-		private var _jumpTimer:Timer;
-		private var _justJumped:Boolean;
+		public var _canJump:Boolean;
+		public var _jumpTimer:Timer;
+		public var _justJumped:Boolean;
 		private var _antiGravity:Boolean;
 		
 		private var gFixture:b2Fixture;
+		
+		private var inputComponent:InputComponent;
 		
 		public function Player(x:int=0, y:int=0){
 			super(x, y);
@@ -56,6 +60,8 @@ package PhysicsGame
 			//Do this after to set graphics and shape first...
 			width = 14;
 			height = 30;
+			
+			inputComponent = new InputComponent(this);
 			
 			//var s:b2CircleShape = new b2CircleShape(0);//(width/2)/ExState.PHYS_SCALE);
 			//s.SetLocalPosition(new b2Vec2(0, (height/4)/ ExState.PHYS_SCALE));
@@ -160,80 +166,7 @@ package PhysicsGame
 				return;
 			}
 			
-			//final_body.SetLinearDamping(.5);
-			
-			
-			var _applyForce:b2Vec2 = new b2Vec2(0,0);
-			
-			////trace("vel.x " + final_body.GetLinearVelocity().x);
-			//MOVEMENT
-			//acceleration.x = 0;
-			if(FlxG.keys.A)
-			{
-				facing = LEFT;
-				_applyForce.x = -75;//_canJump ? -7 : -2;  (this was originally -7 -MK)
-				_applyForce.y = 0;
-				//We multiply this here because it is later multiplied by inverse mass. - Minh
-				//_applyForce.Multiply(final_body.GetMass());
-				//final_body.ApplyImpulse(_applyForce, final_body.GetWorldCenter());
-				
-				if(final_body.GetLinearVelocity().x < -3.5) {
-					
-				}
-				else
-				
-					final_body.ApplyForce(_applyForce, final_body.GetWorldCenter());
-				//final_body.GetLinearVelocity().x = -30;
-			}
-			else if(FlxG.keys.D)
-			{
-				facing = RIGHT;
-				//final_body.GetLinearVelocity().x = 30;
-				_applyForce.x = 75;//_canJump ? 7 : 2;    (this was originally 7  -MK)
-				_applyForce.y = 0;
-				//We multiply this here because it is later multiplied by inverse mass. - Minh
-				//_applyForce.Multiply(final_body.GetMass());
-				if(final_body.GetLinearVelocity().x > 3.5) {
-				}
-				else
-				//final_body.ApplyImpulse(_applyForce, final_body.GetWorldCenter());
-					final_body.ApplyForce(_applyForce, final_body.GetWorldCenter());
-			}
-
-			////trace("can jump: " + _canJump);
-			////trace("vel" + final_body.m_linearVelocity.y);
-			////TODO only when collision from bottom
-			if((FlxG.keys.SPACE || FlxG.keys.W) && _canJump && !_justJumped)//impactPoint.position.y > y + height - 1)///&& Math.abs(final_body.m_linearVelocity.y) < 0.1)
-			{
-				//Hack... attempt at jumping...
-				//impactPoint.position.y = -100;
-				_canJump = false;
-				_justJumped = true;
-				_jumpTimer.start();
-				
-				//velocity.y = -_jumpPower;
-				//final_body.SetLinearVelocity(new b2Vec2(0,-_jumpPower));
-				_applyForce.x = 0;
-				_applyForce.y = -5;
-				//We multiply this here because it is later multiplied by inverse mass. - Minh
-				_applyForce.Multiply(final_body.GetMass());
-				
-				FlxG.log(_applyForce.y + " || " + final_body.GetMass());
-				////trace("mass" + final_body.GetMass());
-				
-				//Apply a instantaneous upward force.
-				final_body.ApplyImpulse(_applyForce, final_body.GetWorldCenter());
-				//final_body.GetLinearVelocity().Set(_applyForce.x, _applyForce.y);
-				FlxG.play(SndJump);
-			}
-			
-			//AIMING
-			_up = false;
-			_down = false;
-			if(FlxG.keys.W) _up = true;
-			else if(FlxG.keys.S && velocity.y) _down = true;
-			
-			////trace("XXXYYY: " + final_body.GetLinearVelocity().x + ", " + final_body.GetLinearVelocity().y);
+			inputComponent.update();
 			
 			//ANIMATION
 			if(Math.abs(final_body.GetLinearVelocity().y) > 0.1)

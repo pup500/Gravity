@@ -29,7 +29,7 @@ package PhysicsGame
 			the_world.AddController(controller);
 			
 			//Turn this on to see physics box in play mode
-			debug = true;
+			//debug = true;
 			initBox2DDebugRendering();
 			
 			//Turn this on to see sensors in play mode
