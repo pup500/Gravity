@@ -43,13 +43,17 @@
 			Trigger = triggerName;
 			_triggered = false;
 			
-			fixtureDef.isSensor = true;
+			physicsComponent.initStaticBody();
+			physicsComponent.addShape(physicsComponent.createShape(1), 0, 1, true);
 			
-			fixtureDef.filter.categoryBits = FilterData.SPECIAL;
 			
-			bodyDef.type = b2Body.b2_staticBody;
+			//fixtureDef.isSensor = true;
 			
-			initBoxShape();
+			//fixtureDef.filter.categoryBits = FilterData.SPECIAL;
+			
+			//bodyDef.type = b2Body.b2_staticBody;
+			
+			//initBoxShape();
 			
 			_events = new Array();
 		}
@@ -119,8 +123,8 @@
 		override public function getXML():XML
 		{
 			var xml:XML = new XML(<sensor/>);
-			xml.@x = final_body.GetWorldCenter().x * ExState.PHYS_SCALE;		 		
-			xml.@y = final_body.GetWorldCenter().y * ExState.PHYS_SCALE;
+			xml.@x = GetBody().GetWorldCenter().x * ExState.PHYS_SCALE;		 		
+			xml.@y = GetBody().GetWorldCenter().y * ExState.PHYS_SCALE;
 			xml.@width = _bw;
 			xml.@height = _bh;
 			xml.@trigger = Trigger;
@@ -153,7 +157,7 @@
 			bitmapData.fillRect(new Rectangle(0,0,xml.@width, xml.@height), 0xff888888);
 			pixels = bitmapData;
 			
-			bodyDef.type = xml.@bodyType;
+			//bodyDef.type = xml.@bodyType;
 			
 			_bw = xml.@width;
 			_bh = xml.@height;
@@ -162,13 +166,31 @@
 				Trigger = xml.@trigger;
 			}
 			
-			initBoxShape();
+			//initBoxShape();
 			
 			//bodyDef.angle = xml.@angle;
-			bodyDef.position.Set(xml.@x/ExState.PHYS_SCALE, xml.@y/ExState.PHYS_SCALE);
+			//bodyDef.position.Set(xml.@x/ExState.PHYS_SCALE, xml.@y/ExState.PHYS_SCALE);
 			
 			//TODO:Do we need to correct for x and y...?
-			createPhysBody(world, controller);
+			//createPhysBody(world, controller);
+			
+			xml.@shapeType = b2Shape.e_polygonShape;
+			var body:b2Body = physicsComponent.createBodyFromXML(xml);
+			physicsComponent.createFixtureFromXML(xml, true);
+			
+			_world = world;
+			_controller = controller;
+			
+			//We don't need to do this...
+			/*
+			if(_controller){
+				_controller.AddBody(body);
+			}
+			*/
+			
+			loaded = true;
+			
+			
 			
 			for each(var evXML:XML in xml.event){
 				trace("sensor event: " + evXML.@x + "," + evXML.@y);

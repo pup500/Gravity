@@ -4,6 +4,7 @@ package PhysicsGame.Components
 	import Box2D.Collision.Shapes.b2PolygonShape;
 	import Box2D.Collision.Shapes.b2Shape;
 	import Box2D.Common.Math.b2Vec2;
+	import Box2D.Common.b2internal;
 	import Box2D.Dynamics.Controllers.b2Controller;
 	import Box2D.Dynamics.b2Body;
 	import Box2D.Dynamics.b2BodyDef;
@@ -15,12 +16,14 @@ package PhysicsGame.Components
 	import org.overrides.ExSprite;
 	import org.overrides.ExState;
 	
+	use namespace b2internal;
+	
 	public class PhysicsComponent implements IComponent
 	{
 		protected var me:ExSprite;
 		
-		protected var shape:b2Shape;
-		protected var bodyDef:b2BodyDef;
+		//protected var shape:b2Shape;
+		//protected var bodyDef:b2BodyDef;
 		public var final_body:b2Body; //The physical representation in the Body2D b2World.
 		
 		protected var state:ExState;
@@ -35,27 +38,99 @@ package PhysicsGame.Components
 			me = obj;
 			filterData = filter;
 			
-			bodyDef = new b2BodyDef();
-			bodyDef.type = b2Body.b2_dynamicBody;
-			bodyDef.position.Set(me.x/ExState.PHYS_SCALE, me.y/ExState.PHYS_SCALE);
-			bodyDef.fixedRotation = false;
-			
 			//TODO:Decouple this
 			state = FlxG.state as ExState;
 			world = state.the_world;
 			controller = state.getController();
 		}
 		
-		public function initBody():void{
-			final_body = world.CreateBody(bodyDef);
-			final_body.SetUserData(me);
+		public function isLoaded():Boolean{
+			return final_body != null;
 		}
 		
-		public function addShape(s:b2Shape, f:Number, d:Number):b2Fixture{
+		public function createBodyFromXML(xml:XML):b2Body{
+			var bodyDef:b2BodyDef = new b2BodyDef();
+			bodyDef.type = xml.@bodyType;
+			bodyDef.angle = xml.@angle;
+			bodyDef.bullet = xml.@bullet;
+			bodyDef.position.Set(xml.@x/ExState.PHYS_SCALE, xml.@y/ExState.PHYS_SCALE);
+			bodyDef.fixedRotation = false; //xml.@fixedRotation;
+			return addBody(bodyDef);
+		}
+		
+		public function addBody(bodyDef:b2BodyDef):b2Body{
+			if(final_body){
+				world.DestroyBody(final_body);
+				final_body = null;
+			}
+			
+			final_body = world.CreateBody(bodyDef);
+			final_body.SetUserData(me);
+			return final_body;
+		}
+		
+		public function createShape(type:uint):b2Shape{
+			switch(type){
+				case b2Shape.e_circleShape:
+					return createCircleShape();
+					break;
+				case b2Shape.e_polygonShape:
+					//initShape();
+					return createShapeFromSprite();
+					break;
+				case b2Shape.e_edgeShape:
+					//initShape();
+					//We don't have edgeshapes yet.....
+					return null;//createShapeFromSprite();
+					break;
+				default:
+					return null;
+			}
+		}
+		
+		//TODO:Remove sensor field...
+		public function createFixtureFromXML(xml:XML, sensor:Boolean=false):b2Fixture{
+			var fixtureDef:b2FixtureDef = new b2FixtureDef();
+			fixtureDef.shape = createShape(xml.@shapeType);
+			fixtureDef.friction = xml.@friction;
+			fixtureDef.density = xml.@density;
+			fixtureDef.restitution = xml.@restitution;
+			fixtureDef.isSensor = sensor;//xml.@sensor;
+			return addFixture(fixtureDef);
+		}
+		
+		public function addFixture(fd:b2FixtureDef):b2Fixture{
+			return final_body.CreateFixture(fd);
+		}
+		
+///////////////////////////
+
+
+		public function initStaticBody():b2Body{
+			var bodyDef:b2BodyDef = new b2BodyDef();
+			bodyDef.type = b2Body.b2_staticBody;
+			bodyDef.position.Set(me.x/ExState.PHYS_SCALE, me.y/ExState.PHYS_SCALE);
+			bodyDef.fixedRotation = false;
+			return addBody(bodyDef);
+		}
+
+		//These are helpers for player and enemy classes
+		public function initBody():b2Body{
+			var bodyDef:b2BodyDef = new b2BodyDef();
+			bodyDef.type = b2Body.b2_dynamicBody;
+			bodyDef.position.Set(me.x/ExState.PHYS_SCALE, me.y/ExState.PHYS_SCALE);
+			bodyDef.fixedRotation = false;
+			return addBody(bodyDef);
+		}
+		
+		
+		
+		public function addShape(s:b2Shape, f:Number, d:Number, sensor:Boolean=false):b2Fixture{
 			var fixture:b2FixtureDef = new b2FixtureDef();
 			fixture.shape = s;
 			fixture.friction = f;
 			fixture.density = d;
+			fixture.isSensor = sensor;
 			fixture.filter.categoryBits = filterData;
 			return final_body.CreateFixture(fixture);			
 		}
@@ -68,17 +143,9 @@ package PhysicsGame.Components
 		}
 		
 		public function addTorso(f:Number=0, d:Number=1):b2Fixture{
-			//return null;
-			/*
-			var s:b2PolygonShape = new b2PolygonShape();
-			s.SetAsOrientedBox(me.width/2/ExState.PHYS_SCALE, (3*me.height/4)/2/ExState.PHYS_SCALE,
-				new b2Vec2(0, me.height/8/ExState.PHYS_SCALE));
-			*/
-			
 			var s:b2PolygonShape = new b2PolygonShape();
 			s.SetAsOrientedBox(me.width/2/ExState.PHYS_SCALE, (me.height/2)/2/ExState.PHYS_SCALE,
 				new b2Vec2(0, 0/ExState.PHYS_SCALE));
-			
 			
 			return addShape(s, f, d);
 		}
@@ -90,8 +157,10 @@ package PhysicsGame.Components
 			return addShape(s, f, d);
 		}
 		
+//////////////////////////
+		
 		//@desc Create a polygon shape definition based on bitmap. If this doesn't work, it will call initShape()
-		protected function initShapeFromSprite():void{
+		protected function createShapeFromSprite():b2Shape{
 			var shapeDef:b2PolygonShape = new b2PolygonShape();
 			var points:Array = new Array();
 			var newPoint:b2Vec2 = new b2Vec2();
@@ -273,42 +342,36 @@ package PhysicsGame.Components
 					
 					shapeDef.SetAsArray(points, points.length);
 					
-					/*
-					shapeDef.vertexCount = points.length;
-					for(var k:uint = 0; k < points.length; k++){
-						shapeDef.vertices[k].Set(points[k].x - _bw/2, points[k].y - _bh/2);
-						
-						//trace("finalk:" + k + " Xy:" + points[k].x + "," + points[k].y);
-					}
-					//trace("X,y:" + x + ", " + y + " bw: " + _bw + " bh: " + _bh);
-					*/
-					
-					shape = shapeDef;
-					return;
+					return shapeDef;
 				}
 				else{
 					round++;
 				}
 			}
 			
-			initBoxShape();
+			return createBoxShape();
 		}
 		
 		//Init box shape from frame dimensions
-		protected function initBoxShape():void {
+		protected function createBoxShape():b2Shape {
 			var shapeDef:b2PolygonShape = new b2PolygonShape();
 			shapeDef.SetAsBox((me.width/2) / ExState.PHYS_SCALE, (me.height/2)/ExState.PHYS_SCALE);
-			shape = shapeDef;
+			return shapeDef;
 		}
 		
 		//@desc Create a circle shape definition from the sprite's width.
-		protected function initCircleShape():void
-		{
-			shape = new b2CircleShape((me.width/2)/ExState.PHYS_SCALE);
+		protected function createCircleShape():b2Shape{
+			return new b2CircleShape((me.width/2)/ExState.PHYS_SCALE);
 		}
 
 		public function update():void
 		{
+			if(!isLoaded())
+				return;
+			//TODO:Figure out when exsprite should be loaded
+			//if(!final_body)
+			//	return;
+			
 			updateAngle();
 			updatePosition();
 		}

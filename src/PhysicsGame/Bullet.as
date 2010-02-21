@@ -34,17 +34,17 @@
 			super();
 			
 			width = 8;
-			initCircleShape();
+			//initCircleShape();
 			
 			loadGraphic(ImgBullet, true);
 			
-			fixtureDef.friction = 1;
+			//fixtureDef.friction = 1;
 			
 			//Bullets should pass through player and special objects like events and sensors
-			fixtureDef.filter.maskBits ^= FilterData.PLAYER;
-			fixtureDef.filter.maskBits ^= FilterData.SPECIAL;
+			//fixtureDef.filter.maskBits ^= FilterData.PLAYER;
+			//fixtureDef.filter.maskBits ^= FilterData.SPECIAL;
 			
-			fixtureDef.filter.categoryBits = FilterData.PLAYER;
+			//fixtureDef.filter.categoryBits = FilterData.PLAYER;
 			
 			name = "Bullet" + count;
 			count++;
@@ -58,7 +58,7 @@
 			_spawn = false;
 			spawnPos = new b2Vec2();
 			
-			bodyDef.bullet = true;
+			//bodyDef.bullet = true;
 			
 			//addAnimation("idle",[0, 1, 2, 3, 4, 5], 50);
 			addAnimation("idle",[0], 50);
@@ -95,7 +95,7 @@
 			//Cannot create objects in hurt, this is called in collision....
 			_spawn = true;
 			
-			final_body.GetLinearVelocity().SetZero();
+			GetBody().GetLinearVelocity().SetZero();
 			if(onScreen()) FlxG.play(SndHit);
 			dead = true;
 			
@@ -116,10 +116,10 @@
 		{
 			destroyPhysBody();
 			
-			bodyDef.position.Set(X/ExState.PHYS_SCALE, Y/ExState.PHYS_SCALE);
-			createPhysBody(_world, _controller);
-			final_body.SetBullet(true);
-			final_body.SetLinearVelocity(new b2Vec2(VelocityX, VelocityY));
+			//bodyDef.position.Set(X/ExState.PHYS_SCALE, Y/ExState.PHYS_SCALE);
+			//createPhysBody(_world, _controller);
+			//final_body.SetBullet(true);
+			//final_body.SetLinearVelocity(new b2Vec2(VelocityX, VelocityY));
 		//	trace("bullet speed" + final_body.GetLinearVelocity().x + "," + final_body.GetLinearVelocity().y);
 			//final_body.ApplyImpulse(new Box2D.Common.Math.b2Vec2(VelocityX,VelocityY), new Box2D.Common.Math.b2Vec2(x, y));
 			play("idle");

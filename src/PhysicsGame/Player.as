@@ -51,6 +51,7 @@ package PhysicsGame
 		private var _antiGravity:Boolean;
 		
 		private var inputComponent:InputComponent;
+		public var gFixture:b2Fixture;
 		
 		public function Player(x:int=0, y:int=0){
 			super(x, y);
@@ -71,6 +72,8 @@ package PhysicsGame
 			physicsComponent.addHead();
 			physicsComponent.addTorso(0, 15);
 			gFixture = physicsComponent.addSensor(0.8,1);
+			
+			loaded = true;
 			
 			//Make this part of group -2, and do not collide with other in the same negative group...
 			name = "Player";
@@ -107,6 +110,7 @@ package PhysicsGame
 			return physicsComponent.final_body;
 		}
 		
+		/*
 		//Overridden normal behavior, using a physics component,
 		//TODO:Fix exsprite to remove physics dependency
 		override public function createPhysBody(world:b2World, controller:b2Controller=null):void{
@@ -120,6 +124,7 @@ package PhysicsGame
 			
 			loaded = true;
 		}
+		*/
 		
 		public function SetBullets(bullets:Array):void{
 			_bullets = bullets;
@@ -133,7 +138,7 @@ package PhysicsGame
 				return;
 			}
 			
-			physicsComponent.update();
+			//physicsComponent.update();
 			inputComponent.update();
 			
 			//ANIMATION

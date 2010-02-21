@@ -85,7 +85,7 @@ package PhysicsGame
 			
 			//var body:Enemy = new Enemy(args["startPoint"].x, args["startPoint"].y);
 			var body:Player = new Player(args["startPoint"].x, args["startPoint"].y);
-			body.createPhysBody(the_world, controller);
+			//body.createPhysBody(the_world, controller);
 			body.GetBody().SetSleepingAllowed(false);
 			body.GetBody().SetFixedRotation(true);
 			body.SetBullets(_bullets);
@@ -104,7 +104,7 @@ package PhysicsGame
 			//Fix sensor...
 			var body:Sensor = new Sensor(args["endPoint"].x, args["endPoint"].y);
 			body.loadGraphic(endPoint);
-			body.createPhysBody(the_world);
+			//body.createPhysBody(the_world);
 			
 			//TODO:Make this more concise
 			var levelEvent:EventObject = new EventObject(args["endPoint"].x, args["endPoint"].y);

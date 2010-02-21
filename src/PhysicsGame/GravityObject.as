@@ -46,18 +46,18 @@
 			//Setup shape first to avoid screwing up pixels
 			width = 1;
 			height = 1;
-			initCircleShape();
+			//initCircleShape();
 			
 			loadGraphic(GravSink, true);
 			
-			bodyDef.type = b2Body.b2_staticBody;
+			//bodyDef.type = b2Body.b2_staticBody;
 			
-			fixtureDef.density = 0;
-			fixtureDef.friction = 1;
-			fixtureDef.isSensor = true;
+			//fixtureDef.density = 0;
+			//fixtureDef.friction = 1;
+			//fixtureDef.isSensor = true;
 			
 			//fixtureDef.filter.groupIndex = -2;
-			fixtureDef.filter.categoryBits = FilterData.PLAYER;
+			//fixtureDef.filter.categoryBits = FilterData.PLAYER;
 			
 			//Make this part of group -2, and do not collide with other in the same negative group...
 			
@@ -109,9 +109,9 @@
 			var scaledX:Number = X / ExState.PHYS_SCALE;
 			var scaledY:Number = Y / ExState.PHYS_SCALE;
 			
-			bodyDef.position.Set(scaledX, scaledY);
+			//bodyDef.position.Set(scaledX, scaledY);
 			//trace("grav body def: " + X/ExState.PHYS_SCALE + ", " + Y/ExState.PHYS_SCALE);
-			createPhysBody(_world);
+			//createPhysBody(_world);
 			
 			mass=initialMass;
 			
@@ -231,7 +231,7 @@
 			var r2:Number = 0;
 			var f:b2Vec2 = null;
 			
-			p1 = final_body.GetWorldCenter();
+			p1 = GetBody().GetWorldCenter();
 			p2 = physBody.GetWorldCenter()
 			dx = p1.x - p2.x;
 			dy = p1.y - p2.y;
@@ -270,7 +270,7 @@
 			var r2:Number = 0;
 			var f:b2Vec2 = null;
 			
-			p1 = final_body.GetWorldCenter();
+			p1 = GetBody().GetWorldCenter();
 			p2 = physBody.GetWorldCenter()
 			dx = p1.x - p2.x;
 			dy = p1.y - p2.y;

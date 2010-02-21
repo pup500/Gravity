@@ -1,9 +1,11 @@
 package PhysicsGame
 {
+	import Box2D.Collision.Shapes.b2Shape;
 	import Box2D.Common.Math.b2Vec2;
 	import Box2D.Dynamics.Controllers.b2Controller;
 	import Box2D.Dynamics.b2Body;
 	import Box2D.Dynamics.b2World;
+	import Box2D.Common.b2internal;
 	
 	import PhysicsGame.Events.*;
 	
@@ -15,6 +17,9 @@ package PhysicsGame
 	import org.flixel.FlxG;
 	import org.overrides.ExSprite;
 	import org.overrides.ExState;
+	
+	
+	use namespace b2internal;
 
 	public class EventObject extends ExSprite
 	{
@@ -34,9 +39,13 @@ package PhysicsGame
 		
 		public function EventObject(x:int=0, y:int=0){
 			super(x, y, eventImg);
-			fixtureDef.isSensor = true;
+			
+			physicsComponent.initStaticBody();
+			physicsComponent.addShape(physicsComponent.createShape(1), 0, 1, true);
+			
+			//fixtureDef.isSensor = true;
 			//fixtureDef.filter.groupIndex = -2;
-			fixtureDef.filter.categoryBits = FilterData.SPECIAL;
+			//fixtureDef.filter.categoryBits = FilterData.SPECIAL;
 			
 			args = new Dictionary();
 		}
@@ -103,8 +112,8 @@ package PhysicsGame
 		{
 			var item:XML = new XML(<event/>);
 			item.@type = _type;
-			item.@x = final_body.GetPosition().x * ExState.PHYS_SCALE;
-			item.@y = final_body.GetPosition().y * ExState.PHYS_SCALE;
+			item.@x = GetBody().GetPosition().x * ExState.PHYS_SCALE;
+			item.@y = GetBody().GetPosition().y * ExState.PHYS_SCALE;
 			
 			if(this.getTarget()){
 				var t:ExSprite = this.getTarget();
@@ -144,6 +153,10 @@ package PhysicsGame
 			super.initFromXML(xml, world, controller);
 			
 			changeType(xml.@type);
+			
+			xml.@shapeType = b2Shape.e_polygonShape;
+			var body:b2Body = physicsComponent.createBodyFromXML(xml);
+			physicsComponent.createFixtureFromXML(xml, true);
 			
 			//TODO:Be careful of selecting targets by position, you might have overlapping objects
 			if(xml.target.@x.length() > 0 && xml.target.@y.length() > 0 && world){

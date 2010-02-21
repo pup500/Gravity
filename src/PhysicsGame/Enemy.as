@@ -25,6 +25,7 @@ package PhysicsGame
 		[Embed(source="../data/g_walk_old.png")] private var ImgSpaceman:Class;
 		
 		private var brain:TaskTree;
+		public var gFixture:b2Fixture;
 		
 		public function Enemy(x:int=0, y:int=0){
 			super(x, y);
@@ -39,6 +40,7 @@ package PhysicsGame
 			physicsComponent.addHead(0,1);
 			physicsComponent.addTorso(0,1);
 			gFixture = physicsComponent.addSensor(0.8, 1);
+			loaded = true;
 			
 			name = "Enemy";
 			
@@ -70,6 +72,7 @@ package PhysicsGame
 			return physicsComponent.final_body;
 		}
 		
+		/*
 		//Overridden normal behavior, using a physics component,
 		//TODO:Fix exsprite to remove physics dependency
 		override public function createPhysBody(world:b2World, controller:b2Controller=null):void{
@@ -83,6 +86,7 @@ package PhysicsGame
 			
 			loaded = true;
 		}
+		*/
 		
 		
 		public function SetBullets(bullets:Array):void{
