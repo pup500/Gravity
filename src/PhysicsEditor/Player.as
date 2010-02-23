@@ -17,8 +17,6 @@ package PhysicsEditor
 	{
 		[Embed(source="../data/g_walk_old.png")] private var ImgSpaceman:Class;
 		
-		private var gFixture:b2Fixture;
-		
 		public function Player(x:int=0, y:int=0)
 		//(x:int=0, y:int=0, bullets:Array=null)
 		{

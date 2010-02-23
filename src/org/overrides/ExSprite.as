@@ -12,6 +12,7 @@ package org.overrides
 	import Box2D.Dynamics.Joints.b2PrismaticJoint;
 	import Box2D.Dynamics.Joints.b2RevoluteJoint;
 	
+	import PhysicsGame.Components.PhysicsComponent;
 	import PhysicsGame.FilterData;
 	
 	import flash.display.Bitmap;
@@ -36,10 +37,14 @@ package org.overrides
 		public var layer:uint;
 		
 		//Box2D
+		protected var physicsComponent:PhysicsComponent;
+		public var gFixture:b2Fixture;
+		
+		//TODO:Replace all of these things
 		protected var shape:b2Shape;
 		protected var bodyDef:b2BodyDef;
 		protected var fixtureDef:b2FixtureDef;
-		protected var final_body:b2Body; //The physical representation in the Body2D b2World.
+		public var final_body:b2Body; //The physical representation in the Body2D b2World.
 		protected var fixture:b2Fixture;
 		
 		protected var impactPoint:b2Contact;
@@ -335,6 +340,7 @@ package org.overrides
 		}
 		
 		//TODO override FlxCore.destroy() instead of using this as the public function.
+		//TODO:Make sure this is appropriate after we switch over to physics component
 		public function destroyPhysBody():void
 		{
 			if(exists){
@@ -424,13 +430,13 @@ package org.overrides
 			
 			updatePosition();
 			
-			angle = final_body.GetAngle();
+			angle = GetBody().GetAngle();
 			
 			//updateJoints();
 		}
 		
 		public function updatePosition():void{
-			var posVec:b2Vec2 = final_body.GetPosition();
+			var posVec:b2Vec2 = GetBody().GetPosition();
 			
 			////trace("name:" + name + " posxy:" + posVec.x + "," + posVec.y + " scaledxy: " + (posVec.x * ExState.PHYS_SCALE) + "," + (posVec.y * ExState.PHYS_SCALE));
 			////trace("width:" + width + "," + height);
@@ -501,8 +507,8 @@ package org.overrides
 			var dir:int = facing == RIGHT ? 1 : -1;
 			
 			//TODO:Make it not so arbitrary
-			cacheP1 = final_body.GetWorldPoint(new b2Vec2((width/2 -2)/ExState.PHYS_SCALE * dir,(height/4) / ExState.PHYS_SCALE));
-			cacheP2 = final_body.GetWorldPoint(new b2Vec2((width)/ExState.PHYS_SCALE * dir, (height/2+2)/ ExState.PHYS_SCALE));
+			cacheP1 = GetBody().GetWorldPoint(new b2Vec2((width/2 -2)/ExState.PHYS_SCALE * dir,(height/4) / ExState.PHYS_SCALE));
+			cacheP2 = GetBody().GetWorldPoint(new b2Vec2((width)/ExState.PHYS_SCALE * dir, (height/2+2)/ ExState.PHYS_SCALE));
 				
 			var state:ExState = FlxG.state as ExState;
 			
@@ -552,6 +558,7 @@ package org.overrides
 		
 		//There is ground ahead of me if there is something ahead at my feet
 		public function isGroundForward():Boolean{
+			trace("cache lambda" + cacheRTLambda);
 			return cacheRTF && cacheRTLambda > .7;
 		}
 		
@@ -577,8 +584,8 @@ package org.overrides
 			xml.@name = name;
 			
 			//XML representation is in screen coordinates, so scale up physics
-			xml.@x = final_body.GetPosition().x * ExState.PHYS_SCALE;
-			xml.@y = final_body.GetPosition().y * ExState.PHYS_SCALE;
+			xml.@x = GetBody().GetPosition().x * ExState.PHYS_SCALE;
+			xml.@y = GetBody().GetPosition().y * ExState.PHYS_SCALE;
 					
 			return xml;
 		}
