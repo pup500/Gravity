@@ -16,6 +16,9 @@
 		
 		public override function Step(step:b2TimeStep):void 
 		{
+			if (_gravObjects == null)
+				return;
+			
 			var edge:b2ControllerEdge = null;
 			var force:b2Vec2;
 			

@@ -293,6 +293,7 @@ package org.overrides
 			shape = new b2CircleShape((width/2)/ExState.PHYS_SCALE);
 		}
 		
+		//@param type b2Shape enumerated uint.
 		public function initShape(type:uint):void{
 			switch(type){
 				case b2Shape.e_circleShape:

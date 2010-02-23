@@ -16,7 +16,7 @@ package {
 		
 		public function Main():void
 		{
-			super(640, 480, LevelSelectMenu, 1);
+			super(640, 480, CannonTest, 1);
 			super.showLogo = false;
 			useDefaultHotKeys = false;
 			
