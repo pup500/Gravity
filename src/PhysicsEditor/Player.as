@@ -5,7 +5,7 @@ package PhysicsEditor
 	import Box2D.Dynamics.Contacts.*;
 	import Box2D.Dynamics.Controllers.b2Controller;
 	
-	import PhysicsGame.Components.InputComponent;
+	import PhysicsGame.Components.EditorInputComponent;
 	import PhysicsGame.Components.PhysicsComponent;
 	import PhysicsGame.FilterData;
 	
@@ -48,7 +48,7 @@ package PhysicsEditor
 		public var _justJumped:Boolean;
 		private var _antiGravity:Boolean;
 		
-		private var inputComponent:InputComponent;
+		private var inputComponent:EditorInputComponent;
 		
 		public var gFixture:b2Fixture;
 		
@@ -60,7 +60,7 @@ package PhysicsEditor
 			width = 14;
 			height = 30;
 			
-			//inputComponent = new InputComponent(this);
+			inputComponent = new EditorInputComponent(this);
 			
 			//NOTE:This is how you should adjust the player's mass
 			//There's 3 parts to him, Head, Torso, And Feet Sensor..
