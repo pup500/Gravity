@@ -88,12 +88,18 @@
 		
 		override public function update():void
 		{
+			loaded = physicsComponent.isLoaded();
+			
 			if(dead){
 				physicsComponent.destroyPhysBody();
 				exists = false;
 			}
 			else { 
+				
+				
 				super.update();
+				
+				trace("gravity location x: " + x + "," + y);
 				
 				if(_startLosingMass){
 					mass -= deltaMass * FlxG.elapsed;
@@ -127,6 +133,8 @@
 			gPoint = new Point(scaledX, scaledY);
 			
 			super.reset(X,Y);
+			
+			trace("gravity spawned x: " + X + "," + Y);
 			
 			
 			physicsComponent.initBody(b2Body.b2_staticBody);
@@ -181,9 +189,9 @@
 			  //myShape.graphics.drawRect(_p.x + width/2,_p.y + height/2, 100, 100);
 			 */ 
 			 
-			//  myShape.graphics.drawCircle(_p.x + width/2,_p.y + height/2, alpha*50);
+			  myShape.graphics.drawCircle(_p.x + width/2,_p.y + height/2, alpha*50);
 			
-			myShape.graphics.drawCircle(_p.x ,_p.y, alpha*50);
+			//myShape.graphics.drawCircle(_p.x ,_p.y, alpha*50);
 			
 			myShape.graphics.endFill();
 			  FlxG.buffer.draw(myShape);
