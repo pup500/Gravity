@@ -12,6 +12,8 @@ package PhysicsGame.Components
 	import Box2D.Dynamics.b2FixtureDef;
 	import Box2D.Dynamics.b2World;
 	
+	import PhysicsGame.FilterData;
+	
 	import org.flixel.FlxG;
 	import org.overrides.ExSprite;
 	import org.overrides.ExState;
@@ -31,12 +33,14 @@ package PhysicsGame.Components
 		protected var controller:b2Controller;
 		
 		protected var filterData:uint;
+		protected var mask:uint;
 		
 		//TODO:Refactor to ExSprite
 		public function PhysicsComponent(obj:ExSprite, filter:uint)
 		{
 			me = obj;
 			filterData = filter;
+			mask = 0xFFFF;
 			
 			//TODO:Decouple this
 			state = FlxG.state as ExState;
@@ -81,7 +85,20 @@ package PhysicsGame.Components
 			
 			final_body = world.CreateBody(bodyDef);
 			final_body.SetUserData(me);
+			
+			if(controller){
+				controller.AddBody(final_body);
+			}
+			
 			return final_body;
+		}
+		
+		public function createFixture(type:uint, f:Number, d:Number, sensor:Boolean=false):void{
+			var shape:b2Shape = createShape(type);
+			
+			if(shape){
+				addShape(shape, f, d, sensor);
+			}
 		}
 		
 		public function createShape(type:uint):b2Shape{
@@ -111,6 +128,11 @@ package PhysicsGame.Components
 			fixtureDef.density = xml.@density;
 			fixtureDef.restitution = xml.@restitution;
 			fixtureDef.isSensor = sensor;//xml.@sensor;
+			
+			//TODO:This is messy
+			fixtureDef.filter.categoryBits = filterData;
+			fixtureDef.filter.maskBits = mask;
+			
 			return addFixture(fixtureDef);
 		}
 		
@@ -138,7 +160,16 @@ package PhysicsGame.Components
 			return addBody(bodyDef);
 		}
 		
+		public function setCategory(c:uint):void{
+			filterData = c;
+		}
 		
+		public function setMask(m:uint):void{
+			trace("mask " + 0xffff);
+			trace("mask without player: " + (0xffff ^ (FilterData.PLAYER | FilterData.SPECIAL)));
+			mask = ~m & 0xffff;
+			trace("~m " + mask);
+		}
 		
 		public function addShape(s:b2Shape, f:Number, d:Number, sensor:Boolean=false):b2Fixture{
 			var fixture:b2FixtureDef = new b2FixtureDef();
@@ -147,6 +178,7 @@ package PhysicsGame.Components
 			fixture.density = d;
 			fixture.isSensor = sensor;
 			fixture.filter.categoryBits = filterData;
+			fixture.filter.maskBits = mask;
 			return final_body.CreateFixture(fixture);			
 		}
 		

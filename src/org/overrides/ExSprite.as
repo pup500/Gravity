@@ -181,11 +181,11 @@ package org.overrides
 		
 		override public function update():void
 		{
-			trace(name);
+			//trace(name);
 			
 			if(!loaded) return;
 			
-			trace("name is loaded" + name);
+			//trace("name is loaded" + name);
 			
 			super.update();
 			
@@ -202,7 +202,7 @@ package org.overrides
 		
 		override public function kill():void
 		{
-			destroyPhysBody();
+			physicsComponent.destroyPhysBody();
 			super.kill();
 		}
 		

@@ -41,6 +41,7 @@ package PhysicsGame
 			super(x, y, eventImg);
 			
 			physicsComponent.initStaticBody();
+			physicsComponent.setCategory(FilterData.SPECIAL);
 			physicsComponent.addShape(physicsComponent.createShape(1), 0, 1, true);
 			
 			//fixtureDef.isSensor = true;

@@ -44,7 +44,9 @@
 			_triggered = false;
 			
 			physicsComponent.initStaticBody();
-			physicsComponent.addShape(physicsComponent.createShape(1), 0, 1, true);
+			physicsComponent.setCategory(FilterData.SPECIAL);
+			physicsComponent.createFixture(b2Shape.e_polygonShape, 0, 1, true);
+			//physicsComponent.addShape(physicsComponent.createShape(1), 0, 1, true);
 			
 			
 			//fixtureDef.isSensor = true;

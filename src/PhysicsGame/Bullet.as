@@ -78,10 +78,13 @@
 		{
 			loaded = physicsComponent.isLoaded();
 			
-			trace("bullet: " + x + ", " + y);
+			trace("bullet: " + x + ", " + y + " loaded: " + loaded);
 			
 			if(dead && finished){
-				destroyPhysBody();
+				//TODO:Make sure body is removed from controller...
+				physicsComponent.destroyPhysBody();
+				exists = false;
+				//destroyPhysBody();
 				if(_spawn){
 					_spawn = false;
 					_gravityObject.shoot(spawnPos.x * ExState.PHYS_SCALE, spawnPos.y * ExState.PHYS_SCALE, 0, 0);//impactPoint.position.x,impactPoint.position.y,0,0);
@@ -140,9 +143,12 @@
 			super.reset(X,Y);
 			
 			physicsComponent.destroyPhysBody();
+			physicsComponent.setCategory(FilterData.PLAYER);
+			physicsComponent.setMask(FilterData.PLAYER | FilterData.SPECIAL);
 			physicsComponent.initBody(b2Body.b2_dynamicBody);
-			physicsComponent.createShape(b2Shape.e_circleShape);
-			physicsComponent.final_body.SetLinearVelocity(new b2Vec2(VelocityX, VelocityY));//.ApplyImpulse(new Box2D.Common.Math.b2Vec2(VelocityX,VelocityY), new Box2D.Common.Math.b2Vec2(x, y));
+			physicsComponent.createFixture(b2Shape.e_circleShape, 1, 1);
+			physicsComponent.final_body.SetLinearVelocity(new b2Vec2(VelocityX, VelocityY));
+			//.ApplyImpulse(new Box2D.Common.Math.b2Vec2(VelocityX,VelocityY), new Box2D.Common.Math.b2Vec2(x, y));
 			
 			play("idle");
 			FlxG.play(SndShoot);

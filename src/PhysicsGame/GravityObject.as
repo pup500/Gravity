@@ -4,6 +4,7 @@
 	import Box2D.Collision.Shapes.*;
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
+	import Box2D.Common.b2internal;
 	
 	import flash.display.*;
 	import flash.events.TimerEvent;
@@ -14,6 +15,7 @@
 	import org.overrides.ExSprite;
 	import org.overrides.ExState;
 
+	use namespace b2internal;
 	
 	/**
 	 * ...
@@ -50,6 +52,7 @@
 			
 			loadGraphic(GravSink, true);
 			
+			
 			//bodyDef.type = b2Body.b2_staticBody;
 			
 			//fixtureDef.density = 0;
@@ -85,8 +88,9 @@
 		
 		override public function update():void
 		{
-			if(dead && finished){
-				destroyPhysBody();
+			if(dead){
+				physicsComponent.destroyPhysBody();
+				exists = false;
 			}
 			else { 
 				super.update();
@@ -104,7 +108,7 @@
 		
 		public function shoot(X:int, Y:int, VelocityX:int, VelocityY:int):void
 		{
-			destroyPhysBody();
+			physicsComponent.destroyPhysBody();
 			
 			var scaledX:Number = X / ExState.PHYS_SCALE;
 			var scaledY:Number = Y / ExState.PHYS_SCALE;
@@ -123,6 +127,14 @@
 			gPoint = new Point(scaledX, scaledY);
 			
 			super.reset(X,Y);
+			
+			
+			physicsComponent.initBody(b2Body.b2_staticBody);
+			physicsComponent.createFixture(b2Shape.e_circleShape, 1, 0, true);
+			
+			play("idle");
+			
+			
 			//trace("grav shoot : " + x + ", " + y);
 		}
 		
