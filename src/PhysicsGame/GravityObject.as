@@ -138,6 +138,7 @@
 			
 			
 			physicsComponent.initBody(b2Body.b2_staticBody);
+			physicsComponent.setCategory(FilterData.PLAYER);
 			physicsComponent.createFixture(b2Shape.e_circleShape, 1, 0, true);
 			update();
 			

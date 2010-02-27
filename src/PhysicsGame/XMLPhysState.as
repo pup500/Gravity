@@ -69,7 +69,7 @@ package PhysicsGame
 			}
 			
 			//Create bullets
-			for(i = 0; i < 2; i++){
+			for(i = 0; i < 8; i++){
 				var bullet:Bullet = new Bullet(the_world, controller);
 				bullet.setGravityObject(_gravObjects[i]);
 				_bullets.push(this.add(bullet));
