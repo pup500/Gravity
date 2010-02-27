@@ -6,10 +6,15 @@
 	import Box2D.Dynamics.*;
 	import Box2D.Dynamics.Contacts.*;
 	import Box2D.Dynamics.Controllers.b2Controller;
+	import Box2D.Common.b2internal;
+	
+	import PhysicsGame.Components.PhysicsComponent;
 	
 	import org.flixel.FlxG;
 	import org.overrides.ExSprite;
 	import org.overrides.ExState;
+	
+	use namespace b2internal;
 	
 	/**
 	 * ...
@@ -37,6 +42,10 @@
 			//initCircleShape();
 			
 			loadGraphic(ImgBullet, true);
+			
+			//physicsComponent = new PhysicsComponent(this, FilterData.PLAYER);
+			//physicsComponent.initBody(b2Body.b2_dynamicBody);
+			//physicsComponent.createShape(b2Shape.e_circleShape);
 			
 			//fixtureDef.friction = 1;
 			
@@ -67,6 +76,10 @@
 		
 		override public function update():void
 		{
+			loaded = physicsComponent.isLoaded();
+			
+			trace("bullet: " + x + ", " + y);
+			
 			if(dead && finished){
 				destroyPhysBody();
 				if(_spawn){
@@ -114,7 +127,7 @@
 		
 		public function shoot(X:int, Y:int, VelocityX:int, VelocityY:int, antiGravity:Boolean=false):void
 		{
-			destroyPhysBody();
+			//destroyPhysBody();
 			
 			//bodyDef.position.Set(X/ExState.PHYS_SCALE, Y/ExState.PHYS_SCALE);
 			//createPhysBody(_world, _controller);
@@ -122,6 +135,15 @@
 			//final_body.SetLinearVelocity(new b2Vec2(VelocityX, VelocityY));
 		//	trace("bullet speed" + final_body.GetLinearVelocity().x + "," + final_body.GetLinearVelocity().y);
 			//final_body.ApplyImpulse(new Box2D.Common.Math.b2Vec2(VelocityX,VelocityY), new Box2D.Common.Math.b2Vec2(x, y));
+			
+			//Reset x and y first because initBody uses object's location
+			super.reset(X,Y);
+			
+			physicsComponent.destroyPhysBody();
+			physicsComponent.initBody(b2Body.b2_dynamicBody);
+			physicsComponent.createShape(b2Shape.e_circleShape);
+			physicsComponent.final_body.SetLinearVelocity(new b2Vec2(VelocityX, VelocityY));//.ApplyImpulse(new Box2D.Common.Math.b2Vec2(VelocityX,VelocityY), new Box2D.Common.Math.b2Vec2(x, y));
+			
 			play("idle");
 			FlxG.play(SndShoot);
 			
@@ -129,7 +151,7 @@
 			
 			_gravityObject.antiGravity = antiGravity;
 			
-			super.reset(X,Y);
+			//super.reset(X,Y);
 		}
 		
 		override public function setImpactPoint(point:b2Contact, myFixture:b2Fixture, oFixture:b2Fixture):void{

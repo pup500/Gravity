@@ -92,6 +92,7 @@ package PhysicsGame
 			//addAnimation("jump_up", [0]);
 			//addAnimation("jump_down", [0]);
 			
+			_antiGravity = false;
 			_curBullet = 0;
 			_bulletVel = 20;
 			_canShoot = true;
@@ -103,8 +104,6 @@ package PhysicsGame
 			
 			_canJump = false;
 			_justJumped = false;
-			
-			_antiGravity = false;
 		}
 		
 		/*
@@ -169,7 +168,7 @@ package PhysicsGame
 			
 			changeGravityObjectInput();
 			
-			mouseShoot();
+			//mouseShoot();
 			
 			gravObjKillSwitch();
 			changeGravObjButton();

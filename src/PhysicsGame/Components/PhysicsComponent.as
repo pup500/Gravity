@@ -44,6 +44,21 @@ package PhysicsGame.Components
 			controller = state.getController();
 		}
 		
+		public function destroyPhysBody():void{
+			if(!isLoaded())
+				return;
+				
+			if(controller){
+				controller.RemoveBody(final_body);
+			}
+			
+			if(world){
+				world.DestroyBody(final_body);
+			}
+			
+			final_body = null;
+		}
+		
 		public function isLoaded():Boolean{
 			return final_body != null;
 		}

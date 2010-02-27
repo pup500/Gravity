@@ -5,6 +5,7 @@ package PhysicsGame
 	import Box2D.Dynamics.*;
 	
 	import PhysicsGame.Components.InputComponent;
+	import PhysicsGame.Components.WeaponsComponent;
 	
 	import flash.utils.Dictionary;
 	
@@ -88,10 +89,11 @@ package PhysicsGame
 			//var body:Enemy = new Enemy(args["startPoint"].x, args["startPoint"].y);
 			var body:Player = new Player(args["startPoint"].x, args["startPoint"].y);
 			body.registerComponent(new InputComponent(body));
+			body.registerComponent(new WeaponsComponent(body, _bullets));
 			//body.createPhysBody(the_world, controller);
 			body.GetBody().SetSleepingAllowed(false);
 			body.GetBody().SetFixedRotation(true);
-			body.SetBullets(_bullets);
+			//body.SetBullets(_bullets);
 			
 			add(body);
 			
