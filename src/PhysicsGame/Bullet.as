@@ -140,7 +140,7 @@
 			//final_body.ApplyImpulse(new Box2D.Common.Math.b2Vec2(VelocityX,VelocityY), new Box2D.Common.Math.b2Vec2(x, y));
 			
 			//Reset x and y first because initBody uses object's location
-			super.reset(X,Y);
+			super.reset(X+width/2,Y+height/2);
 			
 			physicsComponent.destroyPhysBody();
 			physicsComponent.setCategory(FilterData.PLAYER);

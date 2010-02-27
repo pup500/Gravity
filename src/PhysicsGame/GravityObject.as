@@ -131,6 +131,7 @@
 			
 			physicsComponent.initBody(b2Body.b2_staticBody);
 			physicsComponent.createFixture(b2Shape.e_circleShape, 1, 0, true);
+			update();
 			
 			play("idle");
 			
@@ -180,7 +181,10 @@
 			  //myShape.graphics.drawRect(_p.x + width/2,_p.y + height/2, 100, 100);
 			 */ 
 			 
-			  myShape.graphics.drawCircle(_p.x + width/2,_p.y + height/2, alpha*50);
+			//  myShape.graphics.drawCircle(_p.x + width/2,_p.y + height/2, alpha*50);
+			
+			myShape.graphics.drawCircle(_p.x ,_p.y, alpha*50);
+			
 			myShape.graphics.endFill();
 			  FlxG.buffer.draw(myShape);
 			
