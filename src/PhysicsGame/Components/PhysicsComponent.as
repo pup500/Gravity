@@ -115,9 +115,9 @@ package PhysicsGame.Components
 		}
 
 		//These are helpers for player and enemy classes
-		public function initBody():b2Body{
+		public function initBody(type:uint):b2Body{
 			var bodyDef:b2BodyDef = new b2BodyDef();
-			bodyDef.type = b2Body.b2_dynamicBody;
+			bodyDef.type = type;//b2Body.b2_dynamicBody;
 			bodyDef.position.Set(me.x/ExState.PHYS_SCALE, me.y/ExState.PHYS_SCALE);
 			bodyDef.fixedRotation = false;
 			return addBody(bodyDef);

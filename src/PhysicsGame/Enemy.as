@@ -36,7 +36,7 @@ package PhysicsGame
 			height = 30;
 			
 			physicsComponent = new PhysicsComponent(this, FilterData.ENEMY);
-			physicsComponent.initBody();
+			physicsComponent.initBody(b2Body.b2_dynamicBody);
 			physicsComponent.addHead(0,1);
 			physicsComponent.addTorso(0,1);
 			gFixture = physicsComponent.addSensor(0.8, 1);

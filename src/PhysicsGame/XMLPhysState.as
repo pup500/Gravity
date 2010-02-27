@@ -4,6 +4,8 @@ package PhysicsGame
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
 	
+	import PhysicsGame.Components.InputComponent;
+	
 	import flash.utils.Dictionary;
 	
 	import org.flixel.*;
@@ -85,6 +87,7 @@ package PhysicsGame
 			
 			//var body:Enemy = new Enemy(args["startPoint"].x, args["startPoint"].y);
 			var body:Player = new Player(args["startPoint"].x, args["startPoint"].y);
+			body.registerComponent(new InputComponent(body));
 			//body.createPhysBody(the_world, controller);
 			body.GetBody().SetSleepingAllowed(false);
 			body.GetBody().SetFixedRotation(true);

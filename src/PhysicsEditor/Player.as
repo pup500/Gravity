@@ -26,32 +26,6 @@ package PhysicsEditor
 		[Embed(source="../data/hurt.mp3")] private var SndHurt:Class;
 		[Embed(source="../data/jam.mp3")] private var SndJam:Class;
 		
-		private var _lastVel:Point;
-		private var _moving:Boolean;
-		
-		private var _nextLevel:Boolean;
-		
-		private var _jumpPower:int;
-		private var _up:Boolean;
-		private var _down:Boolean;
-		private var _restart:Number;
-		private var _gibs:FlxEmitter;
-		
-		private var _bullets:Array;
-		private var _curBullet:uint;
-		private var _bulletVel:int;
-		private var _coolDown:Timer;
-		private var _canShoot:Boolean;
-		
-		public var _canJump:Boolean;
-		public var _jumpTimer:Timer;
-		public var _justJumped:Boolean;
-		private var _antiGravity:Boolean;
-		
-		private var inputComponent:EditorInputComponent;
-		
-		public var gFixture:b2Fixture;
-		
 		public function Player(x:int=0, y:int=0){
 			super(x, y);
 			loadGraphic(ImgSpaceman,true,true,16,32);
@@ -60,54 +34,26 @@ package PhysicsEditor
 			width = 14;
 			height = 30;
 			
-			inputComponent = new EditorInputComponent(this);
-			
 			//NOTE:This is how you should adjust the player's mass
 			//There's 3 parts to him, Head, Torso, And Feet Sensor..
 			//Pass in friction, and density
 			//TODO:Refactor the shapes out of the physics
 			physicsComponent = new PhysicsComponent(this, FilterData.PLAYER);
-			physicsComponent.initBody();
-			physicsComponent.addHead();
-			physicsComponent.addTorso(0, 15);
-			gFixture = physicsComponent.addSensor(0.8,1);
+			physicsComponent.initBody(b2Body.b2_kinematicBody);
+			//physicsComponent.addHead();
+			//physicsComponent.addTorso(0, 15);
+			//gFixture = physicsComponent.addSensor(0.8,1);
 			
 			//Make this part of group -2, and do not collide with other in the same negative group...
 			name = "Player";
-			health = 20;
 			
-			_restart = 0;
-			_nextLevel = false;
+			loaded = true;
 
 			//animations
 			addAnimation("idle", [0]);
 			addAnimation("run", [1, 2, 3, 4, 5], 10);
 			addAnimation("jump", [1]);
-			//addAnimation("idle_up", [0]);
-			//addAnimation("run_up", [6, 7, 8, 5], 12);
-			//addAnimation("jump_up", [0]);
-			//addAnimation("jump_down", [0]);
 		}
-		
-		override public function GetBody():b2Body{
-			return physicsComponent.final_body;
-		}
-		
-		/*
-		//Overridden normal behavior, using a physics component,
-		//TODO:Fix exsprite to remove physics dependency
-		override public function createPhysBody(world:b2World, controller:b2Controller=null):void{
-			//Save the world
-			_world = world;
-			_controller = controller;
-			
-			if(controller){
-				controller.AddBody(GetBody());
-			}
-			
-			loaded = true;
-		}
-		*/
 		
 		public function SetBullets(bullets:Array):void{
 			//_bullets = bullets;
@@ -154,6 +100,7 @@ package PhysicsEditor
 			super.update();
 		}
 		
+		/*
 		override public function setImpactPoint(point:b2Contact, myFixture:b2Fixture, oFixture:b2Fixture):void{
 			super.setImpactPoint(point, myFixture, oFixture);
 			
@@ -176,5 +123,6 @@ package PhysicsEditor
 				//_canJump = false;
 			}
 		}
+		*/
 	}
 }

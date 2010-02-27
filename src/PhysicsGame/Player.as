@@ -50,7 +50,7 @@ package PhysicsGame
 		public var _justJumped:Boolean;
 		private var _antiGravity:Boolean;
 		
-		private var inputComponent:InputComponent;
+		//private var inputComponent:InputComponent;
 		public var gFixture:b2Fixture;
 		
 		public function Player(x:int=0, y:int=0){
@@ -61,14 +61,15 @@ package PhysicsGame
 			width = 14;
 			height = 30;
 			
-			inputComponent = new InputComponent(this);
+			//inputComponent = new InputComponent(this);
 			
 			//NOTE:This is how you should adjust the player's mass
 			//There's 3 parts to him, Head, Torso, And Feet Sensor..
 			//Pass in friction, and density
 			//TODO:Refactor the shapes out of the physics
+			//Sets the player physics component to be of type player
 			physicsComponent = new PhysicsComponent(this, FilterData.PLAYER);
-			physicsComponent.initBody();
+			physicsComponent.initBody(b2Body.b2_dynamicBody);
 			physicsComponent.addHead();
 			physicsComponent.addTorso(0, 15);
 			gFixture = physicsComponent.addSensor(0.8,1);
@@ -106,10 +107,6 @@ package PhysicsGame
 			_antiGravity = false;
 		}
 		
-		override public function GetBody():b2Body{
-			return physicsComponent.final_body;
-		}
-		
 		/*
 		//Overridden normal behavior, using a physics component,
 		//TODO:Fix exsprite to remove physics dependency
@@ -139,7 +136,7 @@ package PhysicsGame
 			}
 			
 			//physicsComponent.update();
-			inputComponent.update();
+			//inputComponent.update();
 			
 			//ANIMATION
 			if(Math.abs(GetBody().GetLinearVelocity().y) > 0.1)

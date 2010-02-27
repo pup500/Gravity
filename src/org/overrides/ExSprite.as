@@ -12,10 +12,9 @@ package org.overrides
 	import Box2D.Dynamics.Joints.b2PrismaticJoint;
 	import Box2D.Dynamics.Joints.b2RevoluteJoint;
 	
+	import PhysicsGame.Components.IComponent;
 	import PhysicsGame.Components.PhysicsComponent;
 	import PhysicsGame.FilterData;
-	
-	import SVG.b2Bezier;
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -39,6 +38,8 @@ package org.overrides
 		public var layer:uint;
 		
 		//Box2D
+		protected var components:Array;
+		
 		protected var physicsComponent:PhysicsComponent;
 		
 		protected var impactPoint:b2Contact;
@@ -54,6 +55,8 @@ package org.overrides
 		public function ExSprite(x:int=0, y:int=0, sprite:Class=null){
 			//TODO:Note that x and y needs to be offsetted by half width and height to match physics...
 			super(x, y, sprite);
+			
+			components = new Array();
 			
 			physicsComponent = new PhysicsComponent(this, FilterData.NORMAL);
 			
@@ -172,13 +175,27 @@ package org.overrides
 		}
 		*/
 		
+		public function registerComponent(component:IComponent):void{
+			components.push(component);
+		}
+		
 		override public function update():void
 		{
+			trace(name);
+			
 			if(!loaded) return;
+			
+			trace("name is loaded" + name);
 			
 			super.update();
 			
+			//Physics is separate for now
 			physicsComponent.update();
+			
+			//Update all registered components
+			for each(var component:IComponent in components){
+				component.update();
+			}
 			
 			//updateJoints();
 		}
