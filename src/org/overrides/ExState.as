@@ -24,7 +24,7 @@ package org.overrides
 		public var debug_sprite:Sprite;
 		//protected var controller:b2Controller;
 		
-		protected var _worldWrapper:WorldWrapper;
+		//protected var _worldWrapper:WorldWrapper;
 		
 		protected var _bgLayer:FlxLayer;
 		protected var _fgLayer:FlxLayer;
@@ -49,13 +49,16 @@ package org.overrides
 			_fgLayer = new FlxLayer();
 			_evLayer = new FlxLayer();
 			
-			//var gravity:b2Vec2 = new b2Vec2(0.0, 10);
+			var gravity:b2Vec2 = new b2Vec2(0.0, 10);
 			// Allow bodies to sleep
-			//var doSleep:Boolean = true;
-			//the_world = new b2World(gravity, doSleep);
-			//the_world.SetWarmStarting(true);
+			var doSleep:Boolean = true;
 			
-			_worldWrapper = new WorldWrapper();
+			var the_world:b2World;
+			the_world = new b2World(gravity, doSleep);
+			the_world.SetWarmStarting(true);
+			WorldWrapper.the_world = the_world;
+			
+			//_worldWrapper = new WorldWrapper();
 			
 			debug = false;
 			
@@ -72,9 +75,11 @@ package org.overrides
 			_loaded = true;
 		}
 		
+		/*
 		public function getController():b2Controller{
 			return _worldWrapper.controller;
 		}
+		*/
 		
 		public function getArgs():Dictionary{
 			return args;
@@ -94,7 +99,7 @@ package org.overrides
 				debug_draw.SetAlpha(1);
 				debug_draw.SetLineThickness(2);
 				debug_draw.SetFlags(b2DebugDraw.e_shapeBit |b2DebugDraw.e_centerOfMassBit | b2DebugDraw.e_jointBit);
-				_worldWrapper.the_world.SetDebugDraw(debug_draw);
+				WorldWrapper.the_world.SetDebugDraw(debug_draw);
 			}
 		}
 		
@@ -105,9 +110,9 @@ package org.overrides
 			
 			//This probably ensures constant physics regardless of framerate...
 			//We probably should not do this.... documentation says to step it with no vary
-			_worldWrapper.the_world.Step(FlxG.elapsed, 10, 10);
+			WorldWrapper.the_world.Step(FlxG.elapsed, 10, 10);
 			
-			_worldWrapper.the_world.ClearForces();
+			WorldWrapper.the_world.ClearForces();
 			
 			_bgLayer.update();
 			super.update();
@@ -141,12 +146,14 @@ package org.overrides
 			if(_fgLayer.visible) _fgLayer.render();
 			if(_evLayer.visible) _evLayer.render();
 			
-			_worldWrapper.the_world.DrawDebugData();
+			WorldWrapper.the_world.DrawDebugData();
 		}
 		
+		/*
 		public function get worldWrapper():WorldWrapper{
 			return _worldWrapper;
 		}
+		*/
 		
 		public function get bg():FlxLayer{ return _bgLayer;}
 		public function get mg():FlxLayer{ return _layer;}

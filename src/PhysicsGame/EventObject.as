@@ -150,8 +150,8 @@ package PhysicsGame
 			return item;
 		}
 		
-		override public function initFromXML(xml:XML, world:b2World, controller:b2Controller=null):void{
-			super.initFromXML(xml, world, controller);
+		override public function initFromXML(xml:XML):void{
+			super.initFromXML(xml);
 			
 			changeType(xml.@type);
 			
@@ -160,8 +160,8 @@ package PhysicsGame
 			physicsComponent.createFixtureFromXML(xml, true);
 			
 			//TODO:Be careful of selecting targets by position, you might have overlapping objects
-			if(xml.target.@x.length() > 0 && xml.target.@y.length() > 0 && world){
-				var t:b2Body = Utilities.GetBodyAtPoint(world, new b2Vec2(xml.target.@x, xml.target.@y), true);
+			if(xml.target.@x.length() > 0 && xml.target.@y.length() > 0){
+				var t:b2Body = Utilities.GetBodyAtPoint(new b2Vec2(xml.target.@x, xml.target.@y), true);
 				setTarget(t.GetUserData());
 			}
 			

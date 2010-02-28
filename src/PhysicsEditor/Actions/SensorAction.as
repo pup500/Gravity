@@ -5,6 +5,7 @@ package PhysicsEditor.Actions
 	import PhysicsEditor.IPanel;
 	
 	import PhysicsGame.Sensor;
+	import PhysicsGame.Wrappers.WorldWrapper;
 	
 	import flash.display.*;
 	
@@ -86,7 +87,7 @@ package PhysicsEditor.Actions
 			xml.@trigger = state.getArgs()["name"];
 			
 			var b2:Sensor = new Sensor();
-		    b2.initFromXML(xml, state.worldWrapper.the_world, state.getController());
+			b2.initFromXML(xml);
 		    
 		    state.addToLayer(b2, ExState.EV);
 		}

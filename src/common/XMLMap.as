@@ -4,6 +4,7 @@ package common
 	import Box2D.Dynamics.Joints.*;
 	
 	import PhysicsGame.*;
+	import PhysicsGame.Wrappers.WorldWrapper;
 	
 	import flash.events.Event;
 	import flash.geom.Point;
@@ -85,7 +86,7 @@ package common
 			
 			for each(var shape:XML in configXML.objects.shape){
 				 var b2:ExSprite = new ExSprite();
-		    	b2.initFromXML(shape, _state.worldWrapper.the_world, _state.getController());
+				b2.initFromXML(shape);
 		    	_state.addToLayer(b2, shape.layer);
 			}
 		}
@@ -184,12 +185,12 @@ package common
 		private function addAllJoints():void{
 			for each (var jointXML:XML in configXML.objects.joint){
 				jointXML.loaded = "true";
-				JointFactory.addJoint(_state.worldWrapper.the_world, jointXML);
+				JointFactory.addJoint(jointXML);
 			}
 		}
 		
 		public function addJoint(args:Dictionary):void{
-			JointFactory.addJoint(_state.worldWrapper.the_world, JointFactory.createJointXML(args));
+			JointFactory.addJoint(JointFactory.createJointXML(args));
 		}
 		
 		//Add all joints from configuration file, also pass configuration jointXML along
@@ -208,7 +209,7 @@ package common
 			//Which means we have to worry about the updated sprite position... 
 			
 			var b2:EventObject = new EventObject();
-			b2.initFromXML(event, _state.worldWrapper.the_world);
+			b2.initFromXML(event);
 			//b2.createPhysBody(_state.the_world);
 		    
 			_state.addToLayer(b2, ExState.EV);
@@ -225,14 +226,14 @@ package common
 			var sensor:Sensor = new Sensor();
 			//sensorXML.x, sensorXML.y, sensorXML.width, sensorXML.height);
 			//sensor.loadGraphic(sprite);
-			sensor.initFromXML(sensorXML, _state.worldWrapper.the_world, _state.getController());
+			sensor.initFromXML(sensorXML);
 			
 			//sensor.createPhysBody(_state.the_world);
 			_state.addToLayer(sensor, ExState.EV);
 		}
 		
 		public function getItemCount():uint{
-			return _state.worldWrapper.the_world.GetBodyCount();
+			return WorldWrapper.the_world.GetBodyCount();
 		}
 	}
 }

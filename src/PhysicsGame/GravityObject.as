@@ -41,7 +41,7 @@
 		
 		//@desc Bullet constructor
 		//@param world	We'll need this to spawn the bullet's physical body when it's shot.
-		public function GravityObject(world:b2World)
+		public function GravityObject()
 		{
 			super();
 			
@@ -66,7 +66,7 @@
 			
 			name = "GravityObject";
 			
-			_world = world; //For use when we shoot.
+			//_world = world; //For use when we shoot.
 			
 			antiGravity = false;
 			

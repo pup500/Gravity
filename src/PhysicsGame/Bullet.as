@@ -34,7 +34,7 @@
 		
 		//@desc Bullet constructor
 		//@param world	We'll need this to spawn the bullet's physical body when it's shot.
-		public function Bullet(world:b2World, controller:b2Controller)
+		public function Bullet()
 		{
 			super();
 			
@@ -58,8 +58,8 @@
 			name = "Bullet" + count;
 			count++;
 			
-			_world = world; //For use when we shoot.
-			_controller = controller;
+			//_world = world; //For use when we shoot.
+			//_controller = controller;
 			
 			//offset.x = 1;
 			//offset.y = 1;

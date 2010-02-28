@@ -2,15 +2,16 @@ package common.joints
 {
 	import Box2D.Common.Math.b2Vec2;
 	import Box2D.Dynamics.Joints.b2PrismaticJointDef;
-	import Box2D.Dynamics.b2World;
+	
+	import PhysicsGame.Wrappers.WorldWrapper;
 	
 	import org.overrides.ExState;
 	
 	public class PrismaticJoint extends Joint
 	{
-		public function PrismaticJoint(world:b2World, xml:XML)
+		public function PrismaticJoint(xml:XML)
 		{
-			super(world, xml);
+			super(xml);
 		}
 		
 		override public function SetJointDef():void{
@@ -28,7 +29,7 @@ package common.joints
 				
 				if(body1 == null){
 					//If body1 isn't found, use world ground body
-					body1 = world.GetGroundBody();
+					body1 = WorldWrapper.the_world.GetGroundBody();
 					
 					//Also the anchor point should be where we placed the joint
 					anchor.x = point1.x;

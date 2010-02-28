@@ -2,15 +2,16 @@ package common.joints
 {
 	import Box2D.Common.Math.b2Vec2;
 	import Box2D.Dynamics.Joints.b2RevoluteJointDef;
-	import Box2D.Dynamics.b2World;
+	
+	import PhysicsGame.Wrappers.WorldWrapper;
 	
 	import org.overrides.ExState;
 
 	public class RevoluteJoint extends Joint
 	{	
-		public function RevoluteJoint(world:b2World, xml:XML)
+		public function RevoluteJoint(xml:XML)
 		{
-			super(world, xml);
+			super(xml);
 			
 		}
 		
@@ -21,7 +22,7 @@ package common.joints
 			
 			if(body2){
 				if(body1 == null || body1 === body2){
-					body1 = world.GetGroundBody();
+					body1 = WorldWrapper.the_world.GetGroundBody();
 				}
 				
 				var anchor:b2Vec2 = new b2Vec2();

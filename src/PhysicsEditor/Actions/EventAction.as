@@ -3,6 +3,7 @@ package PhysicsEditor.Actions
 	import PhysicsEditor.IPanel;
 	
 	import PhysicsGame.EventObject;
+	import PhysicsGame.Wrappers.WorldWrapper;
 	
 	import org.overrides.ExState;
 	
@@ -23,7 +24,7 @@ package PhysicsEditor.Actions
 			xml.@type = state.getArgs()["event"];
 			
 			var b2:EventObject = new EventObject();
-			b2.initFromXML(xml, state.worldWrapper.the_world);
+			b2.initFromXML(xml);
 			state.addToLayer(b2, ExState.EV);
 		}
 	}

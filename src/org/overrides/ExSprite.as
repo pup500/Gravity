@@ -15,6 +15,7 @@ package org.overrides
 	import PhysicsGame.Components.Components;
 	import PhysicsGame.Components.IComponent;
 	import PhysicsGame.Components.PhysicsComponent;
+	import PhysicsGame.Wrappers.WorldWrapper;
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -45,8 +46,8 @@ package org.overrides
 		protected var impactPoint:b2Contact;
 		
 		//We need the world to destroy the physical objects
-		protected var _world:b2World;
-		protected var _controller:b2Controller;
+		//protected var _world:b2World;
+		//protected var _controller:b2Controller;
 		
 		protected var loaded:Boolean;
 		
@@ -59,7 +60,7 @@ package org.overrides
 			components = new Components();
 			
 			var state:ExState = FlxG.state as ExState;
-			physicsComponent = new PhysicsComponent(this, state.worldWrapper.the_world, state.getController());
+			physicsComponent = new PhysicsComponent(this);
 			
 			impactPoint = new b2Contact();
 			damage = 0;
@@ -121,7 +122,7 @@ package org.overrides
 		public function destroyAllJoints():void{
 			var joints:b2JointEdge;
 			while(joints = GetBody().GetJointList()){
-				_world.DestroyJoint(joints.joint);
+				WorldWrapper.the_world.DestroyJoint(joints.joint);
 			}
 		}
 		
@@ -281,7 +282,7 @@ package org.overrides
 				return 1;
 			}
 			
-			state.worldWrapper.the_world.RayCast(castFunction, cacheP1, cacheP2);
+			WorldWrapper.the_world.RayCast(castFunction, cacheP1, cacheP2);
 		}
 		
 		public function drawGroundRayTrace():void{
@@ -346,23 +347,23 @@ package org.overrides
 		}
 		
 		//Initialize the ExSprite from the xml data structure
-		public function initFromXML(xml:XML, world:b2World, controller:b2Controller=null):void{
+		public function initFromXML(xml:XML):void{
 			//If there's no image file information, just load the file normally
 			if(xml.file.length() == 0){
-				onInitXMLComplete(xml, world, controller);
+				onInitXMLComplete(xml);
 				return;
 			}
 			
 			var loader:Loader = new Loader();
     		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, 
     			function(e:Event):void{
-    				onInitXMLComplete(xml, world, controller, e)
+    				onInitXMLComplete(xml, e)
     			});
     		
     		loader.load(new URLRequest(xml.file));
 		}
 		
-		protected function onInitXMLComplete(xml:XML, world:b2World=null, controller:b2Controller=null, event:Event=null):void{
+		protected function onInitXMLComplete(xml:XML, event:Event=null):void{
 			//Load the bitmap data
 			if(event){
 				var loadinfo:LoaderInfo = LoaderInfo(event.target);

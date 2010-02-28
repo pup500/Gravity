@@ -7,6 +7,7 @@ package PhysicsGame
 	import PhysicsGame.Components.AnimationComponent;
 	import PhysicsGame.Components.InputComponent;
 	import PhysicsGame.Components.WeaponsComponent;
+	import PhysicsGame.Wrappers.WorldWrapper;
 	
 	import flash.utils.Dictionary;
 	
@@ -29,8 +30,9 @@ package PhysicsGame
 		{
 			super();
 			bgColor = 0xffeeeeff;
-			worldWrapper.controller = new GravityObjectController();
-			worldWrapper.the_world.AddController(worldWrapper.controller);
+			
+			WorldWrapper.controller = new GravityObjectController();
+			WorldWrapper.the_world.AddController(WorldWrapper.controller);
 			
 			//Turn this on to see physics box in play mode
 			debug = true;
@@ -65,20 +67,20 @@ package PhysicsGame
 			
 			//Create GravityObjects
 			for(var i:uint= 0; i < 8; i++){
-				_gravObjects.push(this.add(new GravityObject(worldWrapper.the_world)));
+				_gravObjects.push(this.add(new GravityObject()));
 				//don't create physical body, wait till bullet is shot.
 			}
 			
 			//Create bullets
 			for(i = 0; i < 8; i++){
-				var bullet:Bullet = new Bullet(worldWrapper.the_world, worldWrapper.controller);
+				var bullet:Bullet = new Bullet();
 				bullet.setGravityObject(_gravObjects[i]);
 				_bullets.push(this.add(bullet));
 				//don't create physical body, wait till bullet is shot.
 			}
 			
 			//Add gravity object to controller so that it can step through them with all other objects
-			var gController:GravityObjectController = worldWrapper.controller as GravityObjectController;
+			var gController:GravityObjectController = WorldWrapper.controller as GravityObjectController;
 			gController._gravObjects = _gravObjects;
 			
 		}
@@ -129,7 +131,7 @@ package PhysicsGame
 		}
 		
 		private function initContactListener():void{
-			worldWrapper.the_world.SetContactListener(new ContactListener());
+			WorldWrapper.the_world.SetContactListener(new ContactListener());
 		}
 		
 		override public function update():void

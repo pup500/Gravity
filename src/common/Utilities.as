@@ -8,6 +8,8 @@ package common
 	import Box2D.Dynamics.b2Fixture;
 	import Box2D.Dynamics.b2World;
 	
+	import PhysicsGame.Wrappers.WorldWrapper;
+	
 	import org.overrides.ExSprite;
 	import org.overrides.ExState;
 	
@@ -27,7 +29,7 @@ package common
 		}
 		
 		//This might be a clean way to get body at mouse.....
-		public static function GetBodyAtPoint(the_world:b2World, _p:b2Vec2, includeStatic:Boolean = false):b2Body{
+		public static function GetBodyAtPoint(_p:b2Vec2, includeStatic:Boolean = false):b2Body{
 			if(!_p) return null;
 			
 			var body:b2Body;
@@ -49,7 +51,7 @@ package common
 				return true;
 			}
 			
-			the_world.QueryPoint(GetBodyCallback, p);
+			WorldWrapper.the_world.QueryPoint(GetBodyCallback, p);
 			
 			return body;
 		}
@@ -85,14 +87,14 @@ package common
 		}
 		*/
 				
-		public static function CreateXMLRepresentation(the_world:b2World):XML {
+		public static function CreateXMLRepresentation():XML {
 			var config:XML = new XML(<config/>);
 			var objects:XML = new XML(<objects/>);
 
 			var item:XML;
 			var bSprite:ExSprite;
 			
-			for (var bb:b2Body = the_world.GetBodyList(); bb; bb = bb.GetNext()) {
+			for (var bb:b2Body = WorldWrapper.the_world.GetBodyList(); bb; bb = bb.GetNext()) {
 				
 				bSprite = bb.GetUserData();
 				
@@ -108,7 +110,7 @@ package common
 			}
 			
 			var joint:XML;
-			for (var j:b2Joint=the_world.GetJointList(); j; j=j.GetNext()) {
+			for (var j:b2Joint= WorldWrapper.the_world.GetJointList(); j; j=j.GetNext()) {
 				var type:uint;
 				
 				type = j.GetType();

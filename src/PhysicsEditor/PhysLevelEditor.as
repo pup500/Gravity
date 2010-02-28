@@ -10,6 +10,7 @@
 	import PhysicsGame.ContactListener;
 	import PhysicsGame.EventObject;
 	import PhysicsGame.LevelSelectMenu;
+	import PhysicsGame.Wrappers.WorldWrapper;
 	
 	import flash.events.Event;
 	import flash.net.URLLoader;
@@ -43,7 +44,7 @@
 		{
 			super();
 			bgColor = 0xffeeeeff;
-			worldWrapper.the_world.SetGravity(new b2Vec2(0,10));
+			WorldWrapper.the_world.SetGravity(new b2Vec2(0,10));
 			
 			debug = true;
 			initBox2DDebugRendering();
@@ -71,7 +72,7 @@
 		
 				
 		private function initContactListener():void{
-			worldWrapper.the_world.SetContactListener(new ContactListener());
+			WorldWrapper.the_world.SetContactListener(new ContactListener());
 		}
 		
 		//Load the config file to set up world...

@@ -141,7 +141,7 @@
 			return xml;
 		}
 		
-		override protected function onInitXMLComplete(xml:XML, world:b2World = null, controller:b2Controller = null, event:Event = null):void
+		override protected function onInitXMLComplete(xml:XML, event:Event = null):void
 		{
 			//Load the bitmap data
 			//if(event){
@@ -180,8 +180,8 @@
 			var body:b2Body = physicsComponent.createBodyFromXML(xml);
 			physicsComponent.createFixtureFromXML(xml, true);
 			
-			_world = world;
-			_controller = controller;
+			//_world = world;
+			//_controller = controller;
 			
 			//We don't need to do this...
 			/*
@@ -196,7 +196,7 @@
 			
 			for each(var evXML:XML in xml.event){
 				trace("sensor event: " + evXML.@x + "," + evXML.@y);
-				var t:b2Body = Utilities.GetBodyAtPoint(world, new b2Vec2(evXML.@x, evXML.@y), true);
+				var t:b2Body = Utilities.GetBodyAtPoint(new b2Vec2(evXML.@x, evXML.@y), true);
 				if(t)
 		    		AddEvent(t.GetUserData());
 		    }

@@ -2,6 +2,8 @@ package PhysicsEditor.Actions
 {
 	import PhysicsEditor.IPanel;
 	
+	import PhysicsGame.Wrappers.WorldWrapper;
+	
 	import common.JointFactory;
 	
 	import flash.display.Shape;
@@ -43,7 +45,7 @@ package PhysicsEditor.Actions
 			jointArgs["end"] = args["end_snap"];
 			
 			var xml:XML = JointFactory.createJointXML(jointArgs);
-			JointFactory.addJoint(state.worldWrapper.the_world, xml);
+			JointFactory.addJoint(xml);
 		}
 
 	}

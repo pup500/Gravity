@@ -5,14 +5,13 @@ package PhysicsGame.Components
 	import Box2D.Collision.Shapes.b2Shape;
 	import Box2D.Common.Math.b2Vec2;
 	import Box2D.Common.b2internal;
-	import Box2D.Dynamics.Controllers.b2Controller;
 	import Box2D.Dynamics.b2Body;
 	import Box2D.Dynamics.b2BodyDef;
 	import Box2D.Dynamics.b2Fixture;
 	import Box2D.Dynamics.b2FixtureDef;
-	import Box2D.Dynamics.b2World;
 	
 	import PhysicsGame.FilterData;
+	import PhysicsGame.Wrappers.WorldWrapper;
 	
 	import org.overrides.ExSprite;
 	import org.overrides.ExState;
@@ -25,32 +24,29 @@ package PhysicsGame.Components
 		
 		public var final_body:b2Body; //The physical representation in the Body2D b2World.
 		
-		protected var _world:b2World;
-		protected var _controller:b2Controller;
+		//protected var _world:b2World;
+		//protected var _controller:b2Controller;
 		
 		protected var filterData:uint;
 		protected var mask:uint;
 		
-		public function PhysicsComponent(obj:ExSprite, world:b2World, controller:b2Controller=null)
+		public function PhysicsComponent(obj:ExSprite)
 		{
 			me = obj;
 			filterData = FilterData.NORMAL;
 			mask = 0xFFFF;
-			
-			_world = world;
-			_controller = controller;
 		}
 		
 		public function destroyPhysBody():void{
 			if(!isLoaded())
 				return;
-				
-			if(_controller){
-				_controller.RemoveBody(final_body);
+			
+			if(WorldWrapper.controller){
+				WorldWrapper.controller.RemoveBody(final_body);
 			}
 			
-			if(_world){
-				_world.DestroyBody(final_body);
+			if(WorldWrapper.the_world){
+				WorldWrapper.the_world.DestroyBody(final_body);
 			}
 			
 			final_body = null;
@@ -75,11 +71,11 @@ package PhysicsGame.Components
 				destroyPhysBody();
 			}
 			
-			final_body = _world.CreateBody(bodyDef);
+			final_body = WorldWrapper.the_world.CreateBody(bodyDef);
 			final_body.SetUserData(me);
 			
-			if(_controller){
-				_controller.AddBody(final_body);
+			if(WorldWrapper.controller){
+				WorldWrapper.controller.AddBody(final_body);
 			}
 			
 			return final_body;
