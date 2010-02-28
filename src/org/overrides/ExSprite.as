@@ -120,10 +120,7 @@ package org.overrides
 		
 		//We can remove all joints explicitly
 		public function destroyAllJoints():void{
-			var joints:b2JointEdge;
-			while(joints = GetBody().GetJointList()){
-				WorldWrapper.the_world.DestroyJoint(joints.joint);
-			}
+			WorldWrapper.destroyAllJoints(GetBody());
 		}
 		
 		public function setJointMotorSpeed(speed:Number):void{
@@ -282,7 +279,7 @@ package org.overrides
 				return 1;
 			}
 			
-			WorldWrapper.the_world.RayCast(castFunction, cacheP1, cacheP2);
+			WorldWrapper.rayCast(castFunction, cacheP1, cacheP2);
 		}
 		
 		public function drawGroundRayTrace():void{

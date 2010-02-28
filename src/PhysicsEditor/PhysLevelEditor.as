@@ -44,7 +44,7 @@
 		{
 			super();
 			bgColor = 0xffeeeeff;
-			WorldWrapper.the_world.SetGravity(new b2Vec2(0,10));
+			WorldWrapper.setGravity(new b2Vec2(0,10));
 			
 			debug = true;
 			initBox2DDebugRendering();
@@ -72,7 +72,7 @@
 		
 				
 		private function initContactListener():void{
-			WorldWrapper.the_world.SetContactListener(new ContactListener());
+			WorldWrapper.setContactListener(new ContactListener());
 		}
 		
 		//Load the config file to set up world...

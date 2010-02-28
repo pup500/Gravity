@@ -22,7 +22,7 @@ package common.joints
 			
 			if(body2){
 				if(body1 == null || body1 === body2){
-					body1 = WorldWrapper.the_world.GetGroundBody();
+					body1 = WorldWrapper.getGroundBody();
 				}
 				
 				var anchor:b2Vec2 = new b2Vec2();

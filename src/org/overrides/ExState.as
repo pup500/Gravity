@@ -99,7 +99,7 @@ package org.overrides
 				debug_draw.SetAlpha(1);
 				debug_draw.SetLineThickness(2);
 				debug_draw.SetFlags(b2DebugDraw.e_shapeBit |b2DebugDraw.e_centerOfMassBit | b2DebugDraw.e_jointBit);
-				WorldWrapper.the_world.SetDebugDraw(debug_draw);
+				WorldWrapper.setDebugDraw(debug_draw);
 			}
 		}
 		
@@ -110,9 +110,7 @@ package org.overrides
 			
 			//This probably ensures constant physics regardless of framerate...
 			//We probably should not do this.... documentation says to step it with no vary
-			WorldWrapper.the_world.Step(FlxG.elapsed, 10, 10);
-			
-			WorldWrapper.the_world.ClearForces();
+			WorldWrapper.update();
 			
 			_bgLayer.update();
 			super.update();
@@ -146,7 +144,9 @@ package org.overrides
 			if(_fgLayer.visible) _fgLayer.render();
 			if(_evLayer.visible) _evLayer.render();
 			
-			WorldWrapper.the_world.DrawDebugData();
+			WorldWrapper.render();
+			
+			//WorldWrapper.the_world.DrawDebugData();
 		}
 		
 		/*

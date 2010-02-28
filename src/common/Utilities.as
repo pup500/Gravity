@@ -51,7 +51,7 @@ package common
 				return true;
 			}
 			
-			WorldWrapper.the_world.QueryPoint(GetBodyCallback, p);
+			WorldWrapper.queryPoint(GetBodyCallback, p);
 			
 			return body;
 		}
@@ -94,7 +94,7 @@ package common
 			var item:XML;
 			var bSprite:ExSprite;
 			
-			for (var bb:b2Body = WorldWrapper.the_world.GetBodyList(); bb; bb = bb.GetNext()) {
+			for (var bb:b2Body = WorldWrapper.getBodyList(); bb; bb = bb.GetNext()) {
 				
 				bSprite = bb.GetUserData();
 				
@@ -110,7 +110,7 @@ package common
 			}
 			
 			var joint:XML;
-			for (var j:b2Joint= WorldWrapper.the_world.GetJointList(); j; j=j.GetNext()) {
+			for (var j:b2Joint= WorldWrapper.getJointList(); j; j=j.GetNext()) {
 				var type:uint;
 				
 				type = j.GetType();

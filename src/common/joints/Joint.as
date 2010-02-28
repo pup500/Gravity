@@ -49,7 +49,7 @@ package common.joints
 		
 		public virtual function AddJoint():void{
 			if(valid){
-				WorldWrapper.the_world.CreateJoint(joint);
+				WorldWrapper.createJoint(joint);
 			}
 		}
 	}

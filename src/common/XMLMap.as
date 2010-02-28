@@ -233,7 +233,7 @@ package common
 		}
 		
 		public function getItemCount():uint{
-			return WorldWrapper.the_world.GetBodyCount();
+			return WorldWrapper.getBodyCount();
 		}
 	}
 }

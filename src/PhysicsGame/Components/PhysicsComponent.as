@@ -37,19 +37,16 @@ package PhysicsGame.Components
 			mask = 0xFFFF;
 		}
 		
+		public function addBody(bodyDef:b2BodyDef):b2Body{
+			destroyPhysBody();
+			final_body = WorldWrapper.addBody(bodyDef);
+			final_body.SetUserData(me);
+			
+			return final_body;
+		}
+		
 		public function destroyPhysBody():void{
-			if(!isLoaded())
-				return;
-			
-			if(WorldWrapper.controller){
-				WorldWrapper.controller.RemoveBody(final_body);
-			}
-			
-			if(WorldWrapper.the_world){
-				WorldWrapper.the_world.DestroyBody(final_body);
-			}
-			
-			final_body = null;
+			final_body = WorldWrapper.destroyPhysBody(final_body);
 		}
 		
 		public function isLoaded():Boolean{
@@ -64,21 +61,6 @@ package PhysicsGame.Components
 			bodyDef.position.Set(xml.@x/ExState.PHYS_SCALE, xml.@y/ExState.PHYS_SCALE);
 			bodyDef.fixedRotation = false; //xml.@fixedRotation;
 			return addBody(bodyDef);
-		}
-		
-		public function addBody(bodyDef:b2BodyDef):b2Body{
-			if(final_body){
-				destroyPhysBody();
-			}
-			
-			final_body = WorldWrapper.the_world.CreateBody(bodyDef);
-			final_body.SetUserData(me);
-			
-			if(WorldWrapper.controller){
-				WorldWrapper.controller.AddBody(final_body);
-			}
-			
-			return final_body;
 		}
 		
 		public function createFixture(type:uint, f:Number, d:Number, sensor:Boolean=false):void{

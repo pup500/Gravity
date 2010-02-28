@@ -32,7 +32,7 @@ package PhysicsGame
 			bgColor = 0xffeeeeff;
 			
 			WorldWrapper.controller = new GravityObjectController();
-			WorldWrapper.the_world.AddController(WorldWrapper.controller);
+			//WorldWrapper.the_world.AddController(WorldWrapper.controller);
 			
 			//Turn this on to see physics box in play mode
 			debug = true;
@@ -131,7 +131,7 @@ package PhysicsGame
 		}
 		
 		private function initContactListener():void{
-			WorldWrapper.the_world.SetContactListener(new ContactListener());
+			WorldWrapper.setContactListener(new ContactListener());
 		}
 		
 		override public function update():void

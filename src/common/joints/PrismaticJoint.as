@@ -29,7 +29,7 @@ package common.joints
 				
 				if(body1 == null){
 					//If body1 isn't found, use world ground body
-					body1 = WorldWrapper.the_world.GetGroundBody();
+					body1 = WorldWrapper.getGroundBody();
 					
 					//Also the anchor point should be where we placed the joint
 					anchor.x = point1.x;

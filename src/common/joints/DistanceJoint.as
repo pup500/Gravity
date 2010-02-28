@@ -18,7 +18,7 @@ package common.joints
 			if(body2){
 				if(body1 == null || body1 == body2){
 					//If body1 isn't found, use world ground body
-					body1 = WorldWrapper.the_world.GetGroundBody();
+					body1 = WorldWrapper.getGroundBody();
 				}
 				
 				distJoint.Initialize(body1, body2, point1, point2);
