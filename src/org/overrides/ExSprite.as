@@ -38,16 +38,11 @@ package org.overrides
 		public var imageResource:String;
 		public var layer:uint;
 		
-		//Box2D
 		protected var components:Components;
 		
 		protected var physicsComponent:PhysicsComponent;
 		
 		protected var impactPoint:b2Contact;
-		
-		//We need the world to destroy the physical objects
-		//protected var _world:b2World;
-		//protected var _controller:b2Controller;
 		
 		protected var loaded:Boolean;
 		
@@ -67,56 +62,6 @@ package org.overrides
 			
 			loaded = false;
 		}
-		
-		
-
-		/*
-		//@desc Create the physical representation in the Box2D World using the shape definition from initShape methods.
-		//@param	world The Box2D b2World for this object to exist in.
-		public function createPhysBody(world:b2World, controller:b2Controller=null):void{
-			//fixtureDef.shape = shape;
-			
-			//bodyDef.fixedRotation = false;
-			
-			//final_body = world.CreateBody(bodyDef);
-			//fixture = final_body.CreateFixture(fixtureDef);
-			
-			//Save the world
-			_world = world;
-			_controller = controller;
-			
-			//final_body.SetUserData(this);
-			
-			if(controller){
-				controller.AddBody(GetBody());
-			}
-			
-			loaded = true;
-		}
-		
-		*/
-		
-		//TODO override FlxCore.destroy() instead of using this as the public function.
-		//TODO:Make sure this is appropriate after we switch over to physics component
-		/*
-		public function destroyPhysBody():void
-		{
-			if(exists){
-				exists = false;
-				//We might not need to save shape as destroy body should work already...
-				//final_body.DestroyShape(final_shape);
-				//destroyAllJoints();
-				
-				if(_controller){
-					_controller.RemoveBody(GetBody());
-				}
-				
-				_world.DestroyBody(GetBody());
-				
-				//final_body = null;
-				//fixture = null;
-			}
-		}*/
 		
 		//We can remove all joints explicitly
 		public function destroyAllJoints():void{
@@ -183,22 +128,13 @@ package org.overrides
 		
 		override public function update():void
 		{
-			//trace(name);
-			
-			if(!loaded) return;
-			
-			//trace("name is loaded" + name);
-			
 			super.update();
 			
-			//Physics is separate for now
-			
-			//TODO:
+			//TODO:Put physics component into the components array
 			physicsComponent.update();
 			
-			components.update();
-			
 			//Update all registered components
+			components.update();
 			
 			//updateJoints();
 		}
@@ -375,34 +311,8 @@ package org.overrides
 			var body:b2Body = physicsComponent.createBodyFromXML(xml);
 			physicsComponent.createFixtureFromXML(xml);
 			
-			/*
-			_world = world;
-			_controller = controller;
-			
-			if(_controller){
-				_controller.AddBody(body);
-			}
-			*/
-			
-			loaded = true;
-			
-			//TODO:FIX
-			//bodyDef.type = xml.@bodyType;
-			
-			//initShape(xml.@shapeType);
-			
-			//bodyDef.angle = xml.@angle;
-			//bodyDef.position.Set(xml.@x/ExState.PHYS_SCALE, xml.@y/ExState.PHYS_SCALE);
-			
-			//fixtureDef.friction = xml.@friction;
-			//fixtureDef.density = xml.@density;
-			//fixtureDef.restitution = xml.@restitution;
-			
 			damage = xml.@damage.length() > 0 ? xml.@damage : 0;
 			name = xml.@name;
-			
-			//TODO:Do we need to correct for x and y...?
-			//createPhysBody(world, controller);
 			
 			reset(xml.@x, xml.@y);
 			

@@ -2,10 +2,8 @@ package PhysicsGame
 {
 	import Box2D.Collision.Shapes.b2Shape;
 	import Box2D.Common.Math.b2Vec2;
-	import Box2D.Dynamics.Controllers.b2Controller;
-	import Box2D.Dynamics.b2Body;
-	import Box2D.Dynamics.b2World;
 	import Box2D.Common.b2internal;
+	import Box2D.Dynamics.b2Body;
 	
 	import PhysicsGame.Events.*;
 	
@@ -17,7 +15,6 @@ package PhysicsGame
 	import org.flixel.FlxG;
 	import org.overrides.ExSprite;
 	import org.overrides.ExState;
-	
 	
 	use namespace b2internal;
 
@@ -43,10 +40,6 @@ package PhysicsGame
 			physicsComponent.initStaticBody();
 			physicsComponent.setCategory(FilterData.SPECIAL);
 			physicsComponent.addShape(physicsComponent.createShape(1), 0, 1, true);
-			
-			//fixtureDef.isSensor = true;
-			//fixtureDef.filter.groupIndex = -2;
-			//fixtureDef.filter.categoryBits = FilterData.SPECIAL;
 			
 			args = new Dictionary();
 		}
@@ -140,6 +133,8 @@ package PhysicsGame
 				item.appendChild(arg);
 			}
 			*/
+			
+			//TODO:See if target can save this value
 			var arg:XML = <arg/>
 			if(args["speed"]){
 				arg.@name = "speed"

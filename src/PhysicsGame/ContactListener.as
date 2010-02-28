@@ -77,23 +77,17 @@ package PhysicsGame
 		override public function EndContact(contact:b2Contact) : void{
 			
 			super.EndContact(contact);
+			
 			/*
-			//point.shape1.GetUserData().hurt(0);
-			//point.shape2.GetUserData().hurt(0);
-			var body1:b2Body = point.shape1.GetBody();
-			var body2:b2Body = point.shape2.GetBody();
-			//trace("Body1: "+ body1.GetUserData().name + " Body2: " + body2.GetUserData().name);
+			var body1:b2Body = contact.GetFixtureA().GetBody();
+			var body2:b2Body = contact.GetFixtureB().GetBody();
 				
 			if(body1.GetUserData()){
-				trace("Body1: "+ body1.GetUserData().name + " Body2: " + body2.GetUserData().name);
-				body1.GetUserData().removeImpactPoint(point);
-				//body1.GetUserData().hurt(0);
+				body1.GetUserData().removeImpactPoint(contact, contact.GetFixtureA(), contact.GetFixtureB());
 			}
 			
 			if(body2.GetUserData()){
-				trace("Body1: "+ body1.GetUserData().name + " Body2: " + body2.GetUserData().name);
-				body2.GetUserData().removeImpactPoint(point);
-				//body2.GetUserData().hurt(0);
+				body2.GetUserData().removeImpactPoint(contact, contact.GetFixtureB(), contact.GetFixtureA());
 			}
 			*/
 		}

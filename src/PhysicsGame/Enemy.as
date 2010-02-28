@@ -4,9 +4,6 @@ package PhysicsGame
 	import Box2D.Common.Math.b2Vec2;
 	import Box2D.Dynamics.*;
 	import Box2D.Dynamics.Contacts.*;
-	import Box2D.Dynamics.Controllers.b2Controller;
-	
-	import PhysicsGame.Components.PhysicsComponent;
 	
 	import ailab.*;
 	import ailab.actions.*;
@@ -18,7 +15,6 @@ package PhysicsGame
 	
 	import org.flixel.*;
 	import org.overrides.ExSprite;
-	import org.overrides.ExState;
 	
 	public class Enemy extends ExSprite
 	{
@@ -67,35 +63,13 @@ package PhysicsGame
 			brain.blackboard.setObject("canWalkForward", true);
 		}
 		
-		/*
-		//Overridden normal behavior, using a physics component,
-		//TODO:Fix exsprite to remove physics dependency
-		override public function createPhysBody(world:b2World, controller:b2Controller=null):void{
-			//Save the world
-			_world = world;
-			_controller = controller;
-			
-			if(controller){
-				controller.AddBody(GetBody());
-			}
-			
-			loaded = true;
-		}
-		*/
-		
-		
-		public function SetBullets(bullets:Array):void{
-		}
-		
 		override public function update():void
 		{
 			brain.update();
 			
-			physicsComponent.update();
-			
-			//UPDATE POSITION AND ANIMATION			
 			super.update();
 			
+			//Not sure if this is used or is useful
 			brain.blackboard.setObject("moving", GetBody().GetLinearVelocity().x > 0.1);
 		}
 		

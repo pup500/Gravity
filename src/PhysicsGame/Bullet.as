@@ -39,35 +39,14 @@
 			super();
 			
 			width = 8;
-			//initCircleShape();
-			
 			loadGraphic(ImgBullet, true);
-			
-			//physicsComponent = new PhysicsComponent(this, FilterData.PLAYER);
-			//physicsComponent.initBody(b2Body.b2_dynamicBody);
-			//physicsComponent.createShape(b2Shape.e_circleShape);
-			
-			//fixtureDef.friction = 1;
-			
-			//Bullets should pass through player and special objects like events and sensors
-			//fixtureDef.filter.maskBits ^= FilterData.PLAYER;
-			//fixtureDef.filter.maskBits ^= FilterData.SPECIAL;
-			
-			//fixtureDef.filter.categoryBits = FilterData.PLAYER;
 			
 			name = "Bullet" + count;
 			count++;
 			
-			//_world = world; //For use when we shoot.
-			//_controller = controller;
-			
-			//offset.x = 1;
-			//offset.y = 1;
 			exists = false;
 			_spawn = false;
 			spawnPos = new b2Vec2();
-			
-			//bodyDef.bullet = true;
 			
 			//addAnimation("idle",[0, 1, 2, 3, 4, 5], 50);
 			addAnimation("idle",[0], 50);
@@ -81,21 +60,19 @@
 			trace("bullet: " + x + ", " + y + " loaded: " + loaded);
 			
 			if(dead && finished){
-				//TODO:Make sure body is removed from controller...
 				physicsComponent.destroyPhysBody();
 				exists = false;
-				//destroyPhysBody();
 				if(_spawn){
 					_spawn = false;
-					_gravityObject.shoot(spawnPos.x * ExState.PHYS_SCALE, spawnPos.y * ExState.PHYS_SCALE, 0, 0);//impactPoint.position.x,impactPoint.position.y,0,0);
+					_gravityObject.shoot(spawnPos.x * ExState.PHYS_SCALE, spawnPos.y * ExState.PHYS_SCALE, 0, 0);
 				}
 			}
 			else { 
-		//		trace("bullet:" + name +  " x,y:" + x + "," + y);
-		//		trace("dead:" + dead + " finished: " + finished);
+				//trace("bullet:" + name +  " x,y:" + x + "," + y);
+				//trace("dead:" + dead + " finished: " + finished);
 				super.update();
 				
-		//		trace("bullet speed" + final_body.GetLinearVelocity().x + "," + final_body.GetLinearVelocity().y);
+				//trace("bullet speed" + final_body.GetLinearVelocity().x + "," + final_body.GetLinearVelocity().y);
 			}
 		}
 		
@@ -130,34 +107,23 @@
 		
 		public function shoot(X:int, Y:int, VelocityX:int, VelocityY:int, antiGravity:Boolean=false):void
 		{
-			//destroyPhysBody();
-			
-			//bodyDef.position.Set(X/ExState.PHYS_SCALE, Y/ExState.PHYS_SCALE);
-			//createPhysBody(_world, _controller);
-			//final_body.SetBullet(true);
-			//final_body.SetLinearVelocity(new b2Vec2(VelocityX, VelocityY));
-		//	trace("bullet speed" + final_body.GetLinearVelocity().x + "," + final_body.GetLinearVelocity().y);
-			//final_body.ApplyImpulse(new Box2D.Common.Math.b2Vec2(VelocityX,VelocityY), new Box2D.Common.Math.b2Vec2(x, y));
-			
 			//Reset x and y first because initBody uses object's location
 			super.reset(X+width/2,Y+height/2);
 			
-			physicsComponent.destroyPhysBody();
 			physicsComponent.setCategory(FilterData.PLAYER);
 			physicsComponent.setMask(FilterData.PLAYER | FilterData.SPECIAL);
 			physicsComponent.initBody(b2Body.b2_dynamicBody);
 			physicsComponent.createFixture(b2Shape.e_circleShape, 1, 1);
+			physicsComponent.final_body.SetBullet(true);
 			physicsComponent.final_body.SetLinearVelocity(new b2Vec2(VelocityX, VelocityY));
 			//.ApplyImpulse(new Box2D.Common.Math.b2Vec2(VelocityX,VelocityY), new Box2D.Common.Math.b2Vec2(x, y));
 			
 			play("idle");
 			FlxG.play(SndShoot);
 			
-		//	trace("bullet shoot");
+			//trace("bullet shoot");
 			
 			_gravityObject.antiGravity = antiGravity;
-			
-			//super.reset(X,Y);
 		}
 		
 		override public function setImpactPoint(point:b2Contact, myFixture:b2Fixture, oFixture:b2Fixture):void{

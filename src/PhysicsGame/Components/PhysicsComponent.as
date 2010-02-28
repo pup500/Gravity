@@ -24,9 +24,6 @@ package PhysicsGame.Components
 		
 		public var final_body:b2Body; //The physical representation in the Body2D b2World.
 		
-		//protected var _world:b2World;
-		//protected var _controller:b2Controller;
-		
 		protected var filterData:uint;
 		protected var mask:uint;
 		
@@ -37,6 +34,8 @@ package PhysicsGame.Components
 			mask = 0xFFFF;
 		}
 		
+		//Create the body from bodyDef and let the world add it
+		//Then set the user data to the owner of this component
 		public function addBody(bodyDef:b2BodyDef):b2Body{
 			destroyPhysBody();
 			final_body = WorldWrapper.addBody(bodyDef);
@@ -385,9 +384,6 @@ package PhysicsGame.Components
 		{
 			if(!isLoaded())
 				return;
-			//TODO:Figure out when exsprite should be loaded
-			//if(!final_body)
-			//	return;
 			
 			updateAngle();
 			updatePosition();

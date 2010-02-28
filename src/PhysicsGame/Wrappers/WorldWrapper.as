@@ -47,8 +47,8 @@ package PhysicsGame.Wrappers
 			if(_world){
 				body = _world.CreateBody(bodyDef);
 
-				if(controller){
-					controller.AddBody(body);
+				if(_controller){
+					_controller.AddBody(body);
 				}
 			}
 			
@@ -63,8 +63,8 @@ package PhysicsGame.Wrappers
 			if(!body)
 				return null;
 			
-			if(controller){
-				controller.RemoveBody(body);
+			if(_controller){
+				_controller.RemoveBody(body);
 			}
 			
 			if(_world){
@@ -92,35 +92,6 @@ package PhysicsGame.Wrappers
 					bb.SetAwake(awake);
 			}
 		}
-		
-		/*
-		public static function GetBodyAtPoint(_p:b2Vec2, includeStatic:Boolean = false):b2Body{
-			if(!_p) return null;
-			
-			var body:b2Body;
-			var p:b2Vec2 = new b2Vec2(_p.x, _p.y);
-			
-			//trace("original p" + p.x + "," + p.y);
-			p.Multiply(1/ExState.PHYS_SCALE);
-			//trace("p" + p.x + "," + p.y);
-			
-			// Query the world for overlapping shapes.
-			function GetBodyCallback(fixture:b2Fixture):Boolean
-			{
-				var shape:b2Shape = fixture.GetShape();
-				if (fixture.GetBody().GetType() != b2Body.b2_staticBody || includeStatic)
-				{
-					body = fixture.GetBody();
-					return false
-				}
-				return true;
-			}
-			
-			_world.QueryPoint(GetBodyCallback, p);
-			
-			return body;
-		}
-		*/
 		
 		public static function getBodyCount():uint{
 			return _world.GetBodyCount();

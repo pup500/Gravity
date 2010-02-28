@@ -27,16 +27,15 @@ package common.joints
 			point1 = new b2Vec2(xml.body1.@x, xml.body1.@y);
 			point2 = new b2Vec2(xml.body2.@x, xml.body2.@y);
 			
-			trace("point before:" + point1.x + "," + point1.y);
-			//This is not right, utilties messes up point1 and point2....
-			//But right now, it is supposed to be that way...
+			//trace("point before:" + point1.x + "," + point1.y);
+			
 			body1 = Utilities.GetBodyAtPoint(point1, true);
 			body2 = Utilities.GetBodyAtPoint(point2, true);
 			
 			point1.Multiply(1/ExState.PHYS_SCALE);
 			point2.Multiply(1/ExState.PHYS_SCALE);
 			
-			trace("point after:" + point1.x + "," + point1.y);
+			//trace("point after:" + point1.x + "," + point1.y);
 		}
 		
 		public virtual function SetJointDef():void{

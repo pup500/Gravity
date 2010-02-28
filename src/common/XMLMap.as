@@ -35,7 +35,6 @@ package common
 			_state = state;	
 			_start = new Point();
 			_end = new Point();
-			//offset = new Point();
 			
 			savePoints = false;
 			
@@ -203,15 +202,9 @@ package common
 		}
 		
 		public function addXMLEvent(event:XML, sprite:Class=null):void{
-			//The synchronous time when adding objects that requires loading a bitmap will allow the object
-			//to get updated before it renders
-			//This doesn't work when there's no synchronous events... So this add takes place before the render...
-			//Which means we have to worry about the updated sprite position... 
-			
 			var b2:EventObject = new EventObject();
 			b2.initFromXML(event);
-			//b2.createPhysBody(_state.the_world);
-		    
+			 
 			_state.addToLayer(b2, ExState.EV);
 		}
 		
@@ -222,13 +215,9 @@ package common
 		}
 		
 		public function addXMLSensor(sensorXML:XML, sprite:Class = null):void {
-			//TODO:Fix sensor...
 			var sensor:Sensor = new Sensor();
-			//sensorXML.x, sensorXML.y, sensorXML.width, sensorXML.height);
-			//sensor.loadGraphic(sprite);
 			sensor.initFromXML(sensorXML);
 			
-			//sensor.createPhysBody(_state.the_world);
 			_state.addToLayer(sensor, ExState.EV);
 		}
 		

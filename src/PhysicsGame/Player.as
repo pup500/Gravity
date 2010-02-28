@@ -1,21 +1,11 @@
 package PhysicsGame
 {
 	import Box2D.Collision.Shapes.*;
-	import Box2D.Common.Math.b2Vec2;
 	import Box2D.Dynamics.*;
 	import Box2D.Dynamics.Contacts.*;
-	import Box2D.Dynamics.Controllers.b2Controller;
-	
-	import PhysicsGame.Components.InputComponent;
-	import PhysicsGame.Components.PhysicsComponent;
-	
-	import flash.events.TimerEvent;
-	import flash.geom.Point;
-	import flash.utils.Timer;
 	
 	import org.flixel.*;
 	import org.overrides.ExSprite;
-	import org.overrides.ExState;
 	
 	public class Player extends ExSprite
 	{
@@ -27,15 +17,7 @@ package PhysicsGame
 		[Embed(source="../data/menu_hit_2.mp3")] private var SndExplode2:Class;
 		[Embed(source="../data/hurt.mp3")] private var SndHurt:Class;
 		[Embed(source="../data/jam.mp3")] private var SndJam:Class;
-		
-		private var _jumpPower:int;
-		private var _gibs:FlxEmitter;
-		
-		//public var _canJump:Boolean;
-		//public var _jumpTimer:Timer;
-		//public var _justJumped:Boolean;
-		
-		//private var inputComponent:InputComponent;
+
 		public var gFixture:b2Fixture;
 		
 		public function Player(x:int=0, y:int=0){
@@ -45,8 +27,6 @@ package PhysicsGame
 			//Do this after to set graphics and shape first...
 			width = 14;
 			height = 30;
-			
-			//inputComponent = new InputComponent(this);
 			
 			//NOTE:This is how you should adjust the player's mass
 			//There's 3 parts to him, Head, Torso, And Feet Sensor..
@@ -75,35 +55,12 @@ package PhysicsGame
 			//addAnimation("run_up", [6, 7, 8, 5], 12);
 			//addAnimation("jump_up", [0]);
 			//addAnimation("jump_down", [0]);
-			
-			
-			//TODO:
-			//_jumpTimer = new Timer(500,1);
-			//_jumpTimer.addEventListener(TimerEvent.TIMER_COMPLETE, jumpTimer);
-			
-			//_canJump = false;
-			//_justJumped = false;
 		}
 		
 		override public function update():void
 		{
-			//game restart timer
-			if(dead)
-			{
-				return;
-			}
-			
-			
-			
-			//UPDATE POSITION AND ANIMATION			
 			super.update();
 		}
-		
-		/*
-		private function jumpTimer($e:TimerEvent):void{
-			_justJumped = false;
-		}
-		*/
 		
 		override public function setImpactPoint(point:b2Contact, myFixture:b2Fixture, oFixture:b2Fixture):void{
 			super.setImpactPoint(point, myFixture, oFixture);
@@ -114,10 +71,11 @@ package PhysicsGame
 			
 			if(myFixture == gFixture){
 				components.sendMessage({"type": "IO", "canJump": true});
-				//_canJump = true;
 			}
 		}
 		
+		//Currently, the contact listener is not calling this function
+		//So you can jump while falling for now
 		override public function removeImpactPoint(point:b2Contact, myFixture:b2Fixture, oFixture:b2Fixture):void{
 			super.setImpactPoint(point, myFixture, oFixture);
 			

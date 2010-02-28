@@ -32,7 +32,6 @@ package PhysicsGame
 			bgColor = 0xffeeeeff;
 			
 			WorldWrapper.controller = new GravityObjectController();
-			//WorldWrapper.the_world.AddController(WorldWrapper.controller);
 			
 			//Turn this on to see physics box in play mode
 			debug = true;
@@ -87,17 +86,13 @@ package PhysicsGame
 		
 		//Player will be called from the xmlMapLoader when the xml file is read...
 		public function addPlayer():void{
-			//var start:Point = xmlMapLoader.getStartPoint();
-			
 			//var body:Enemy = new Enemy(args["startPoint"].x, args["startPoint"].y);
 			var body:Player = new Player(args["startPoint"].x, args["startPoint"].y);
 			body.registerComponent(new InputComponent(body));
 			body.registerComponent(new WeaponsComponent(body, _bullets));
 			body.registerComponent(new AnimationComponent(body));
-			//body.createPhysBody(the_world, controller);
 			body.GetBody().SetSleepingAllowed(false);
 			body.GetBody().SetFixedRotation(true);
-			//body.SetBullets(_bullets);
 			
 			add(body);
 			
@@ -113,7 +108,6 @@ package PhysicsGame
 			//Fix sensor...
 			var body:Sensor = new Sensor(args["endPoint"].x, args["endPoint"].y);
 			body.loadGraphic(endPoint);
-			//body.createPhysBody(the_world);
 			
 			//TODO:Make this more concise
 			var levelEvent:EventObject = new EventObject(args["endPoint"].x, args["endPoint"].y);

@@ -6,7 +6,6 @@
 	import Box2D.Common.b2internal;
 	import Box2D.Dynamics.*;
 	import Box2D.Dynamics.Contacts.b2Contact;
-	import Box2D.Dynamics.Controllers.b2Controller;
 	
 	import common.Utilities;
 	
@@ -30,6 +29,7 @@
 		
 		protected var _events:Array;
 		protected var _triggered:Boolean;
+		
 		//@desc Name of object that will trigger this sensor on collision.
 		public var Trigger:String;
 		
@@ -46,16 +46,6 @@
 			physicsComponent.initStaticBody();
 			physicsComponent.setCategory(FilterData.SPECIAL);
 			physicsComponent.createFixture(b2Shape.e_polygonShape, 0, 1, true);
-			//physicsComponent.addShape(physicsComponent.createShape(1), 0, 1, true);
-			
-			
-			//fixtureDef.isSensor = true;
-			
-			//fixtureDef.filter.categoryBits = FilterData.SPECIAL;
-			
-			//bodyDef.type = b2Body.b2_staticBody;
-			
-			//initBoxShape();
 			
 			_events = new Array();
 		}
@@ -159,8 +149,6 @@
 			bitmapData.fillRect(new Rectangle(0,0,xml.@width, xml.@height), 0xff888888);
 			pixels = bitmapData;
 			
-			//bodyDef.type = xml.@bodyType;
-			
 			_bw = xml.@width;
 			_bh = xml.@height;
 			
@@ -168,34 +156,14 @@
 				Trigger = xml.@trigger;
 			}
 			
-			//initBoxShape();
-			
-			//bodyDef.angle = xml.@angle;
-			//bodyDef.position.Set(xml.@x/ExState.PHYS_SCALE, xml.@y/ExState.PHYS_SCALE);
-			
-			//TODO:Do we need to correct for x and y...?
-			//createPhysBody(world, controller);
-			
 			xml.@shapeType = b2Shape.e_polygonShape;
 			var body:b2Body = physicsComponent.createBodyFromXML(xml);
 			physicsComponent.createFixtureFromXML(xml, true);
 			
-			//_world = world;
-			//_controller = controller;
-			
-			//We don't need to do this...
-			/*
-			if(_controller){
-				_controller.AddBody(body);
-			}
-			*/
-			
 			loaded = true;
 			
-			
-			
 			for each(var evXML:XML in xml.event){
-				trace("sensor event: " + evXML.@x + "," + evXML.@y);
+				//trace("sensor event: " + evXML.@x + "," + evXML.@y);
 				var t:b2Body = Utilities.GetBodyAtPoint(new b2Vec2(evXML.@x, evXML.@y), true);
 				if(t)
 		    		AddEvent(t.GetUserData());
