@@ -55,50 +55,8 @@ package PhysicsEditor
 			addAnimation("jump", [1]);
 		}
 		
-		public function SetBullets(bullets:Array):void{
-			//_bullets = bullets;
-		}
-		
 		override public function update():void
 		{
-			//game restart timer
-			if(dead)
-			{
-				return;
-			}
-			
-			physicsComponent.update();
-			//inputComponent.update();
-			
-			//ANIMATION
-			/*
-			if(Math.abs(GetBody().GetLinearVelocity().y) > 0.1)
-			{
-				play("jump");
-				
-				//if(_up) play("jump_up");
-				//else if(_down) play("jump_down");
-				//else play("jump");
-				////trace("jumping");
-			}
-			else if(Math.abs(GetBody().GetLinearVelocity().x) < 0.1)
-			{
-				play("idle");
-				//if(_up) play("idle_up");
-				//else play("idle");
-			}
-			else
-			{
-				//if(_up) play("run_up");
-				
-				if(FlxG.keys.A || FlxG.keys.D)
-					play("run");
-				else
-					play("idle");
-			}
-			*/
-			
-			//UPDATE POSITION AND ANIMATION			
 			super.update();
 		}
 		

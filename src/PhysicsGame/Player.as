@@ -57,6 +57,13 @@ package PhysicsGame
 			//addAnimation("jump_down", [0]);
 		}
 		
+		public function removeBody():void{
+			//physicsComponent.destroyPhysBody();
+			//physicsComponent.setCategory(FilterData.PLAYER);
+			physicsComponent.initBody(b2Body.b2_kinematicBody);
+			gFixture = null;
+		}
+		
 		override public function update():void
 		{
 			super.update();
