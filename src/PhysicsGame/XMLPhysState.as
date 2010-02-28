@@ -34,11 +34,11 @@ package PhysicsGame
 			WorldWrapper.controller = new GravityObjectController();
 			
 			//Turn this on to see physics box in play mode
-			debug = true;
+			//debug = true;
 			initBox2DDebugRendering();
 			
 			//Turn this on to see sensors in play mode
-			ev.visible = true;
+			//ev.visible = true;
 			
 			loadLevelConfig();
 			
@@ -133,14 +133,6 @@ package PhysicsGame
 			//Allow quiting even if level is not loaded...
 			if(FlxG.keys.justReleased("ESC")) {
 				FlxG.switchState(LevelSelectMenu);
-			}
-			
-			//Allows XML Map Loader to determine when it is finished loading the level
-			xmlMapLoader.update();
-			
-			//Don't update if we aren't loaded...
-			if(!_loaded){
-				return;
 			}
 			
 			super.update();

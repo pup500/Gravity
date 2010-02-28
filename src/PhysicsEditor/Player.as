@@ -71,6 +71,7 @@ package PhysicsEditor
 			//inputComponent.update();
 			
 			//ANIMATION
+			/*
 			if(Math.abs(GetBody().GetLinearVelocity().y) > 0.1)
 			{
 				play("jump");
@@ -95,6 +96,7 @@ package PhysicsEditor
 				else
 					play("idle");
 			}
+			*/
 			
 			//UPDATE POSITION AND ANIMATION			
 			super.update();

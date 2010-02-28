@@ -9,7 +9,6 @@ package PhysicsGame.Components
 	{
 		protected var me:ExSprite;
 		
-		//TODO:Change this into ExSprite
 		public function AnimationComponent(obj:ExSprite)
 		{
 			me = obj;
@@ -37,6 +36,8 @@ package PhysicsGame.Components
 			{
 				//if(_up) play("run_up");
 				
+				//TODO:This might be counter to inputcomponent, so have to worry about this
+				//Whether this should be in animation or in inputcomponent
 				if(FlxG.keys.A || FlxG.keys.D)
 					me.play("run");
 				else

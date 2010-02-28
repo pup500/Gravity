@@ -24,6 +24,8 @@ package PhysicsGame.Wrappers
 		
 		public static function update():void{
 			if(_world){
+				//This probably ensures constant physics regardless of framerate...
+				//We probably should not do this.... documentation says to step it with no vary
 				_world.Step(FlxG.elapsed, 10, 10);
 				_world.ClearForces();
 			}

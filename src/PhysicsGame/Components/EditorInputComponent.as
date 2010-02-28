@@ -10,7 +10,6 @@ package PhysicsGame.Components
 	{
 		protected var me:ExSprite;
 		
-		//TODO:Change this into ExSprite
 		public function EditorInputComponent(obj:ExSprite)
 		{
 			me = obj;
@@ -20,25 +19,25 @@ package PhysicsGame.Components
 		{
 			me.GetBody().GetLinearVelocity().SetZero();
 			
-			if(FlxG.keys.A)
+			if(FlxG.keys.LEFT)
 			{
 				me.facing = FlxSprite.LEFT;
 				me.GetBody().GetLinearVelocity().x = -10;
 				me.play("run");
 			}
-			else if(FlxG.keys.D)
+			else if(FlxG.keys.RIGHT)
 			{
 				me.facing = FlxSprite.RIGHT;
 				me.GetBody().GetLinearVelocity().x = 10;
 				me.play("run");
 			}
-			else if(FlxG.keys.W){
+			else if(FlxG.keys.UP){
 				me.GetBody().GetLinearVelocity().y = -10;
-				me.play("run");
+				me.play("jump");
 			}
-			else if(FlxG.keys.S){
+			else if(FlxG.keys.DOWN){
 				me.GetBody().GetLinearVelocity().y = 10;
-				me.play("run");
+				me.play("jump");
 			}
 			else{	
 				me.play("idle");

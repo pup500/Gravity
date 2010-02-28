@@ -11,6 +11,7 @@
 	import PhysicsGame.EventObject;
 	import PhysicsGame.LevelSelectMenu;
 	import PhysicsGame.Wrappers.WorldWrapper;
+	//import PhysicsGame.Player;
 	
 	import flash.events.Event;
 	import flash.net.URLLoader;
@@ -40,6 +41,8 @@
 		
 		private var fields:Fields;
 		
+		private var cfgLoaded:Boolean;
+		
 		public function PhysLevelEditor() 
 		{
 			super();
@@ -58,6 +61,7 @@
 			eventType = 0;
 			
 			files = new Array();
+			cfgLoaded = false;
 			loadAssetList("data/editor/LevelEditor.txt");
 			
 			addPlayer();
@@ -88,7 +92,7 @@
 			var s:String = event.target.data;
 			files = s.split("\n");
 			fileIndex = 0;
-			_loaded = true;
+			cfgLoaded = true;
 			
 			createStatusText();
 		}
@@ -108,8 +112,7 @@
 		public function addPlayer():void{
 			var body:Player = new Player(100, 100);
 			body.registerComponent(new EditorInputComponent(body));
-			body.registerComponent(new AnimationComponent(body));
-			//body.createPhysBody(the_world);
+			//body.registerComponent(new AnimationComponent(body));
 			body.GetBody().SetSleepingAllowed(false);
 			body.GetBody().SetFixedRotation(true);
 			add(body);
@@ -127,7 +130,7 @@
 			super.update();
 			
 			//True only after the config file has been loaded
-			if(!_loaded) 
+			if(!cfgLoaded) 
 				return;
 			
 			if(FlxG.keys.justPressed("LBRACKET")) {
