@@ -4,6 +4,9 @@ package PhysicsGame.Components
 	
 	import PhysicsGame.Player;
 	
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
+	
 	import org.flixel.FlxG;
 	import org.flixel.FlxSprite;
 	
@@ -11,10 +14,20 @@ package PhysicsGame.Components
 	{
 		protected var me:Player;
 		
+		protected var _canJump:Boolean;
+		protected var _justJumped:Boolean;
+		protected var _jumpTimer:Timer;
+		
 		//TODO:Change this into ExSprite
 		public function InputComponent(obj:Player)
 		{
 			me = obj;
+			
+			_jumpTimer = new Timer(500,1);
+			_jumpTimer.addEventListener(TimerEvent.TIMER_COMPLETE, jumpTimer);
+			
+			_canJump = false;
+			_justJumped = false;
 		}
 
 		public function update():void
@@ -60,13 +73,13 @@ package PhysicsGame.Components
 			////trace("can jump: " + _canJump);
 			////trace("vel" + final_body.m_linearVelocity.y);
 			////TODO only when collision from bottom
-			if((FlxG.keys.SPACE || FlxG.keys.W) && me._canJump && !me._justJumped)//impactPoint.position.y > y + height - 1)///&& Math.abs(final_body.m_linearVelocity.y) < 0.1)
+			if((FlxG.keys.SPACE || FlxG.keys.W) && _canJump && !_justJumped)//impactPoint.position.y > y + height - 1)///&& Math.abs(final_body.m_linearVelocity.y) < 0.1)
 			{
 				//Hack... attempt at jumping...
 				//impactPoint.position.y = -100;
-				me._canJump = false;
-				me._justJumped = true;
-				me._jumpTimer.start();
+				_canJump = false;
+				_justJumped = true;
+				_jumpTimer.start();
 				
 				//velocity.y = -_jumpPower;
 				//final_body.SetLinearVelocity(new b2Vec2(0,-_jumpPower));
@@ -83,5 +96,16 @@ package PhysicsGame.Components
 			}
 		}
 		
+		private function jumpTimer($e:TimerEvent):void{
+			_justJumped = false;
+		}
+		
+		public function receive(args:Object):Boolean{
+			if(args["type"] == "IO"){
+				_canJump = args["canJump"];
+			}
+			
+			return false;
+		}
 	}
 }

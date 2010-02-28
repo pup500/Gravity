@@ -1,6 +1,6 @@
 package PhysicsGame.Components
 {
-	import PhysicsGame.Player;
+	import PhysicsGame.Bullet;
 	
 	import flash.events.TimerEvent;
 	import flash.geom.Point;
@@ -8,10 +8,13 @@ package PhysicsGame.Components
 	
 	import org.flixel.FlxG;
 	import org.flixel.FlxSprite;
+	import org.overrides.ExSprite;
 	
 	public class WeaponsComponent implements IComponent
 	{
-		protected var me:Player;
+		[Embed(source="../../data/asplode.mp3")] private var SndExplode:Class;
+		
+		protected var me:ExSprite;
 		
 		protected var _bullets:Array;
 		protected var _antiGravity:Boolean;
@@ -22,7 +25,7 @@ package PhysicsGame.Components
 		
 		
 		//TODO:Change this into ExSprite
-		public function WeaponsComponent(obj:Player, bullets:Array)
+		public function WeaponsComponent(obj:ExSprite, bullets:Array)
 		{
 			me = obj;
 			
@@ -38,6 +41,23 @@ package PhysicsGame.Components
 
 		public function update():void
 		{
+			if (FlxG.keys.justPressed("F"))
+			{
+				FlxG.play(SndExplode);
+				
+				_antiGravity = !_antiGravity;
+			}
+			
+			if (FlxG.keys.justPressed("Q"))
+			{
+				FlxG.play(SndExplode);
+				
+				for each(var bullet:Bullet in _bullets)
+				{
+					bullet.killGravityObject();
+				}
+			}
+			
 			if(FlxG.mouse.justPressed() && _canShoot){
 				FlxG.log("mouse x: " + FlxG.mouse.x + " mouse y: " + FlxG.mouse.y);
 				FlxG.log("player x: " + me.x + " player y: " + me.y);
@@ -68,6 +88,10 @@ package PhysicsGame.Components
 		
 		private function stopTimer($e:TimerEvent):void{
 			_canShoot = true;
+		}
+		
+		public function receive(args:Object):Boolean{
+			return false;
 		}
 	}
 }

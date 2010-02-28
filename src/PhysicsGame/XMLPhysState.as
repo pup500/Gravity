@@ -4,6 +4,7 @@ package PhysicsGame
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
 	
+	import PhysicsGame.Components.AnimationComponent;
 	import PhysicsGame.Components.InputComponent;
 	import PhysicsGame.Components.WeaponsComponent;
 	
@@ -90,6 +91,7 @@ package PhysicsGame
 			var body:Player = new Player(args["startPoint"].x, args["startPoint"].y);
 			body.registerComponent(new InputComponent(body));
 			body.registerComponent(new WeaponsComponent(body, _bullets));
+			body.registerComponent(new AnimationComponent(body));
 			//body.createPhysBody(the_world, controller);
 			body.GetBody().SetSleepingAllowed(false);
 			body.GetBody().SetFixedRotation(true);

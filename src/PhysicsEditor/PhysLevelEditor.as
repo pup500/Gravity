@@ -5,6 +5,7 @@
 	import PhysicsEditor.Fields.Fields;
 	import PhysicsEditor.Panels.Panels;
 	
+	import PhysicsGame.Components.AnimationComponent;
 	import PhysicsGame.Components.EditorInputComponent;
 	import PhysicsGame.ContactListener;
 	import PhysicsGame.EventObject;
@@ -106,6 +107,7 @@
 		public function addPlayer():void{
 			var body:Player = new Player(100, 100);
 			body.registerComponent(new EditorInputComponent(body));
+			body.registerComponent(new AnimationComponent(body));
 			//body.createPhysBody(the_world);
 			body.GetBody().SetSleepingAllowed(false);
 			body.GetBody().SetFixedRotation(true);

@@ -12,9 +12,9 @@ package org.overrides
 	import Box2D.Dynamics.Joints.b2PrismaticJoint;
 	import Box2D.Dynamics.Joints.b2RevoluteJoint;
 	
+	import PhysicsGame.Components.Components;
 	import PhysicsGame.Components.IComponent;
 	import PhysicsGame.Components.PhysicsComponent;
-	import PhysicsGame.FilterData;
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -38,7 +38,7 @@ package org.overrides
 		public var layer:uint;
 		
 		//Box2D
-		protected var components:Array;
+		protected var components:Components;
 		
 		protected var physicsComponent:PhysicsComponent;
 		
@@ -56,9 +56,10 @@ package org.overrides
 			//TODO:Note that x and y needs to be offsetted by half width and height to match physics...
 			super(x, y, sprite);
 			
-			components = new Array();
+			components = new Components();
 			
-			physicsComponent = new PhysicsComponent(this, FilterData.NORMAL);
+			var state:ExState = FlxG.state as ExState;
+			physicsComponent = new PhysicsComponent(this, state.the_world, state.getController());
 			
 			impactPoint = new b2Contact();
 			damage = 0;
@@ -94,6 +95,7 @@ package org.overrides
 		
 		//TODO override FlxCore.destroy() instead of using this as the public function.
 		//TODO:Make sure this is appropriate after we switch over to physics component
+		/*
 		public function destroyPhysBody():void
 		{
 			if(exists){
@@ -111,7 +113,7 @@ package org.overrides
 				//final_body = null;
 				//fixture = null;
 			}
-		}
+		}*/
 		
 		//We can remove all joints explicitly
 		public function destroyAllJoints():void{
@@ -176,7 +178,7 @@ package org.overrides
 		*/
 		
 		public function registerComponent(component:IComponent):void{
-			components.push(component);
+			components.registerComponent(component);
 		}
 		
 		override public function update():void
@@ -190,12 +192,13 @@ package org.overrides
 			super.update();
 			
 			//Physics is separate for now
+			
+			//TODO:
 			physicsComponent.update();
 			
+			components.update();
+			
 			//Update all registered components
-			for each(var component:IComponent in components){
-				component.update();
-			}
 			
 			//updateJoints();
 		}
@@ -372,12 +375,14 @@ package org.overrides
 			var body:b2Body = physicsComponent.createBodyFromXML(xml);
 			physicsComponent.createFixtureFromXML(xml);
 			
+			/*
 			_world = world;
 			_controller = controller;
 			
 			if(_controller){
 				_controller.AddBody(body);
 			}
+			*/
 			
 			loaded = true;
 			

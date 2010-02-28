@@ -38,7 +38,7 @@ package PhysicsEditor
 			//There's 3 parts to him, Head, Torso, And Feet Sensor..
 			//Pass in friction, and density
 			//TODO:Refactor the shapes out of the physics
-			physicsComponent = new PhysicsComponent(this, FilterData.PLAYER);
+			physicsComponent.setCategory(FilterData.PLAYER);
 			physicsComponent.initBody(b2Body.b2_kinematicBody);
 			//physicsComponent.addHead();
 			//physicsComponent.addTorso(0, 15);

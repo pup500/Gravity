@@ -1,6 +1,6 @@
 package PhysicsGame.Components
 {
-	import Box2D.Common.Math.b2Vec2;
+	import flash.utils.Dictionary;
 	
 	import org.flixel.FlxG;
 	import org.flixel.FlxSprite;
@@ -43,6 +43,10 @@ package PhysicsGame.Components
 			else{	
 				me.play("idle");
 			}
+		}
+		
+		public function receive(args:Object):Boolean{
+			return false;
 		}
 	}
 }

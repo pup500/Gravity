@@ -35,7 +35,7 @@ package PhysicsGame
 			width = 14;
 			height = 30;
 			
-			physicsComponent = new PhysicsComponent(this, FilterData.ENEMY);
+			physicsComponent.setCategory(FilterData.ENEMY);
 			physicsComponent.initBody(b2Body.b2_dynamicBody);
 			physicsComponent.addHead(0,1);
 			physicsComponent.addTorso(0,1);
@@ -65,11 +65,6 @@ package PhysicsGame
 			brain.blackboard.setObject("force", _applyForce);
 			
 			brain.blackboard.setObject("canWalkForward", true);
-		}
-		
-		
-		override public function GetBody():b2Body{
-			return physicsComponent.final_body;
 		}
 		
 		/*

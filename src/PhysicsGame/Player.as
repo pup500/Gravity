@@ -28,27 +28,12 @@ package PhysicsGame
 		[Embed(source="../data/hurt.mp3")] private var SndHurt:Class;
 		[Embed(source="../data/jam.mp3")] private var SndJam:Class;
 		
-		private var _lastVel:Point;
-		private var _moving:Boolean;
-		
-		private var _nextLevel:Boolean;
-		
 		private var _jumpPower:int;
-		private var _up:Boolean;
-		private var _down:Boolean;
-		private var _restart:Number;
 		private var _gibs:FlxEmitter;
 		
-		private var _bullets:Array;
-		private var _curBullet:uint;
-		private var _bulletVel:int;
-		private var _coolDown:Timer;
-		private var _canShoot:Boolean;
-		
-		public var _canJump:Boolean;
-		public var _jumpTimer:Timer;
-		public var _justJumped:Boolean;
-		private var _antiGravity:Boolean;
+		//public var _canJump:Boolean;
+		//public var _jumpTimer:Timer;
+		//public var _justJumped:Boolean;
 		
 		//private var inputComponent:InputComponent;
 		public var gFixture:b2Fixture;
@@ -68,7 +53,9 @@ package PhysicsGame
 			//Pass in friction, and density
 			//TODO:Refactor the shapes out of the physics
 			//Sets the player physics component to be of type player
-			physicsComponent = new PhysicsComponent(this, FilterData.PLAYER);
+			//physicsComponent = new PhysicsComponent(this, FilterData.PLAYER);
+			
+			physicsComponent.setCategory(FilterData.PLAYER);
 			physicsComponent.initBody(b2Body.b2_dynamicBody);
 			physicsComponent.addHead();
 			physicsComponent.addTorso(0, 15);
@@ -79,10 +66,7 @@ package PhysicsGame
 			//Make this part of group -2, and do not collide with other in the same negative group...
 			name = "Player";
 			health = 20;
-			
-			_restart = 0;
-			_nextLevel = false;
-
+				
 			//animations
 			addAnimation("idle", [0]);
 			addAnimation("run", [1, 2, 3, 4, 5], 10);
@@ -92,38 +76,13 @@ package PhysicsGame
 			//addAnimation("jump_up", [0]);
 			//addAnimation("jump_down", [0]);
 			
-			_antiGravity = false;
-			_curBullet = 0;
-			_bulletVel = 20;
-			_canShoot = true;
-			_coolDown = new Timer(500,1);
-			_coolDown.addEventListener(TimerEvent.TIMER_COMPLETE, stopTimer);
 			
-			_jumpTimer = new Timer(500,1);
-			_jumpTimer.addEventListener(TimerEvent.TIMER_COMPLETE, jumpTimer);
+			//TODO:
+			//_jumpTimer = new Timer(500,1);
+			//_jumpTimer.addEventListener(TimerEvent.TIMER_COMPLETE, jumpTimer);
 			
-			_canJump = false;
-			_justJumped = false;
-		}
-		
-		/*
-		//Overridden normal behavior, using a physics component,
-		//TODO:Fix exsprite to remove physics dependency
-		override public function createPhysBody(world:b2World, controller:b2Controller=null):void{
-			//Save the world
-			_world = world;
-			_controller = controller;
-			
-			if(controller){
-				controller.AddBody(GetBody());
-			}
-			
-			loaded = true;
-		}
-		*/
-		
-		public function SetBullets(bullets:Array):void{
-			_bullets = bullets;
+			//_canJump = false;
+			//_justJumped = false;
 		}
 		
 		override public function update():void
@@ -134,130 +93,17 @@ package PhysicsGame
 				return;
 			}
 			
-			//physicsComponent.update();
-			//inputComponent.update();
 			
-			//ANIMATION
-			if(Math.abs(GetBody().GetLinearVelocity().y) > 0.1)
-			{
-				play("jump");
-				
-				//if(_up) play("jump_up");
-				//else if(_down) play("jump_down");
-				//else play("jump");
-				////trace("jumping");
-			}
-			else if(Math.abs(GetBody().GetLinearVelocity().x) < 0.1)
-			{
-				play("idle");
-				//if(_up) play("idle_up");
-				//else play("idle");
-			}
-			else
-			{
-				//if(_up) play("run_up");
-				
-				if(FlxG.keys.A || FlxG.keys.D)
-					play("run");
-				else
-					play("idle");
-			}
 			
 			//UPDATE POSITION AND ANIMATION			
 			super.update();
-			
-			changeGravityObjectInput();
-			
-			//mouseShoot();
-			
-			gravObjKillSwitch();
-			changeGravObjButton();
 		}
 		
-		private function changeGravObjButton():void
-		{
-			if (FlxG.keys.justPressed("F"))
-			{
-				FlxG.play(SndExplode);
-				
-				_antiGravity = !_antiGravity;
-			}
-		}
-		
-		private function gravObjKillSwitch():void
-		{
-			if (FlxG.keys.justPressed("Q"))
-			{
-				FlxG.play(SndExplode);
-				
-				for each(var bullet:Bullet in _bullets)
-				{
-					bullet.killGravityObject();
-				}
-			}
-		}
-		
-		private function changeGravityObjectInput():void
-		{
-			if (FlxG.keys.justPressed("F"))
-			{
-			}
-		}
-		
-		private function mouseShoot():void{
-			if(FlxG.mouse.justPressed() && _canShoot){
-				FlxG.log("mouse x: " + FlxG.mouse.x + " mouse y: " + FlxG.mouse.y);
-				FlxG.log("player x: " + x + " player y: " + y);
-				
-				var angle:Point = new Point(FlxG.mouse.x - x, FlxG.mouse.y - y);
-				var dist:Number = Math.sqrt(angle.x * angle.x + angle.y * angle.y);
-				
-				FlxG.log("angle.x: " + angle.x + " angle.y: " + angle.y);
-				FlxG.log("dist" + dist);
-				
-				facing = angle.x > 0 ? RIGHT : angle.x < 0 ? LEFT : facing;
-				
-				var bX:Number = x + width/2;
-				var bY:Number = y + height*.2;
-				
-				/*
-				if(facing == RIGHT)
-				{
-					bX += width - 4;
-				}
-				else
-				{
-					bX -= _bullets[_curBullet].width - 4;
-				}*/
-				
-				/*
-				if(angle.y > height){
-					bY += height - 4;
-				}
-				else if(angle.y < -height){
-					bY -= height - 4;
-				}*/
-				
-				//Shoot it!!
-				_bullets[_curBullet].shoot(bX,bY,_bulletVel * angle.x/dist, _bulletVel * angle.y/dist, _antiGravity);
-				//Set the next bullet to be shot to the first in the array for recycling.
-				if(++_curBullet >= _bullets.length)
-					_curBullet = 0;
-				
-				//Maybe we should try to work with elapsed time instead of creating timer events...
-				_canShoot = false;
-				_coolDown.reset();
-				_coolDown.start();
-			}
-		}
-		
-		private function stopTimer($e:TimerEvent):void{
-			_canShoot = true;
-		}
-		
+		/*
 		private function jumpTimer($e:TimerEvent):void{
 			_justJumped = false;
 		}
+		*/
 		
 		override public function setImpactPoint(point:b2Contact, myFixture:b2Fixture, oFixture:b2Fixture):void{
 			super.setImpactPoint(point, myFixture, oFixture);
@@ -267,7 +113,8 @@ package PhysicsGame
 				return;
 			
 			if(myFixture == gFixture){
-				_canJump = true;
+				components.sendMessage({"type": "IO", "canJump": true});
+				//_canJump = true;
 			}
 		}
 		
@@ -278,7 +125,7 @@ package PhysicsGame
 				return;
 			
 			if(myFixture == gFixture){
-				_canJump = false;
+				components.sendMessage({"type": "IO", "canJump": false});
 			}
 		}
 		

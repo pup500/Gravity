@@ -14,7 +14,6 @@ package PhysicsGame.Components
 	
 	import PhysicsGame.FilterData;
 	
-	import org.flixel.FlxG;
 	import org.overrides.ExSprite;
 	import org.overrides.ExState;
 	
@@ -24,40 +23,34 @@ package PhysicsGame.Components
 	{
 		protected var me:ExSprite;
 		
-		//protected var shape:b2Shape;
-		//protected var bodyDef:b2BodyDef;
 		public var final_body:b2Body; //The physical representation in the Body2D b2World.
 		
-		protected var state:ExState;
-		protected var world:b2World;
-		protected var controller:b2Controller;
+		protected var _world:b2World;
+		protected var _controller:b2Controller;
 		
 		protected var filterData:uint;
 		protected var mask:uint;
 		
-		//TODO:Refactor to ExSprite
-		public function PhysicsComponent(obj:ExSprite, filter:uint)
+		public function PhysicsComponent(obj:ExSprite, world:b2World, controller:b2Controller=null)
 		{
 			me = obj;
-			filterData = filter;
+			filterData = FilterData.NORMAL;
 			mask = 0xFFFF;
 			
-			//TODO:Decouple this
-			state = FlxG.state as ExState;
-			world = state.the_world;
-			controller = state.getController();
+			_world = world;
+			_controller = controller;
 		}
 		
 		public function destroyPhysBody():void{
 			if(!isLoaded())
 				return;
 				
-			if(controller){
-				controller.RemoveBody(final_body);
+			if(_controller){
+				_controller.RemoveBody(final_body);
 			}
 			
-			if(world){
-				world.DestroyBody(final_body);
+			if(_world){
+				_world.DestroyBody(final_body);
 			}
 			
 			final_body = null;
@@ -79,15 +72,14 @@ package PhysicsGame.Components
 		
 		public function addBody(bodyDef:b2BodyDef):b2Body{
 			if(final_body){
-				world.DestroyBody(final_body);
-				final_body = null;
+				destroyPhysBody();
 			}
 			
-			final_body = world.CreateBody(bodyDef);
+			final_body = _world.CreateBody(bodyDef);
 			final_body.SetUserData(me);
 			
-			if(controller){
-				controller.AddBody(final_body);
+			if(_controller){
+				_controller.AddBody(final_body);
 			}
 			
 			return final_body;
@@ -421,6 +413,10 @@ package PhysicsGame.Components
 			
 			updateAngle();
 			updatePosition();
+		}
+		
+		public function receive(args:Object):Boolean{
+			return false;
 		}
 		
 		public function updateAngle():void{
