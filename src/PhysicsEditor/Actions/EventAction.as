@@ -23,7 +23,7 @@ package PhysicsEditor.Actions
 			xml.@type = state.getArgs()["event"];
 			
 			var b2:EventObject = new EventObject();
-			b2.initFromXML(xml, state.the_world);
+			b2.initFromXML(xml, state.worldWrapper.the_world);
 			state.addToLayer(b2, ExState.EV);
 		}
 	}

@@ -29,8 +29,8 @@ package PhysicsGame
 		{
 			super();
 			bgColor = 0xffeeeeff;
-			controller = new GravityObjectController();
-			the_world.AddController(controller);
+			worldWrapper.controller = new GravityObjectController();
+			worldWrapper.the_world.AddController(worldWrapper.controller);
 			
 			//Turn this on to see physics box in play mode
 			debug = true;
@@ -65,20 +65,20 @@ package PhysicsGame
 			
 			//Create GravityObjects
 			for(var i:uint= 0; i < 8; i++){
-				_gravObjects.push(this.add(new GravityObject(the_world)));
+				_gravObjects.push(this.add(new GravityObject(worldWrapper.the_world)));
 				//don't create physical body, wait till bullet is shot.
 			}
 			
 			//Create bullets
 			for(i = 0; i < 8; i++){
-				var bullet:Bullet = new Bullet(the_world, controller);
+				var bullet:Bullet = new Bullet(worldWrapper.the_world, worldWrapper.controller);
 				bullet.setGravityObject(_gravObjects[i]);
 				_bullets.push(this.add(bullet));
 				//don't create physical body, wait till bullet is shot.
 			}
 			
 			//Add gravity object to controller so that it can step through them with all other objects
-			var gController:GravityObjectController = controller as GravityObjectController;
+			var gController:GravityObjectController = worldWrapper.controller as GravityObjectController;
 			gController._gravObjects = _gravObjects;
 			
 		}
@@ -129,7 +129,7 @@ package PhysicsGame
 		}
 		
 		private function initContactListener():void{
-			the_world.SetContactListener(new ContactListener());
+			worldWrapper.the_world.SetContactListener(new ContactListener());
 		}
 		
 		override public function update():void

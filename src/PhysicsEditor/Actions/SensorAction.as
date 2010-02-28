@@ -86,7 +86,7 @@ package PhysicsEditor.Actions
 			xml.@trigger = state.getArgs()["name"];
 			
 			var b2:Sensor = new Sensor();
-		    b2.initFromXML(xml, state.the_world, state.getController());
+		    b2.initFromXML(xml, state.worldWrapper.the_world, state.getController());
 		    
 		    state.addToLayer(b2, ExState.EV);
 		}

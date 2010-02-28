@@ -59,13 +59,15 @@ package org.overrides
 			components = new Components();
 			
 			var state:ExState = FlxG.state as ExState;
-			physicsComponent = new PhysicsComponent(this, state.the_world, state.getController());
+			physicsComponent = new PhysicsComponent(this, state.worldWrapper.the_world, state.getController());
 			
 			impactPoint = new b2Contact();
 			damage = 0;
 			
 			loaded = false;
 		}
+		
+		
 
 		/*
 		//@desc Create the physical representation in the Box2D World using the shape definition from initShape methods.
@@ -279,7 +281,7 @@ package org.overrides
 				return 1;
 			}
 			
-			state.the_world.RayCast(castFunction, cacheP1, cacheP2);
+			state.worldWrapper.the_world.RayCast(castFunction, cacheP1, cacheP2);
 		}
 		
 		public function drawGroundRayTrace():void{

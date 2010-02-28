@@ -29,13 +29,13 @@ package PhysicsEditor.Actions
 		private function updateWorldObjects():void{
 			var bb:b2Body;
 			if(active){
-				for (bb = state.the_world.GetBodyList(); bb; bb = bb.GetNext()) {
+				for (bb = state.worldWrapper.the_world.GetBodyList(); bb; bb = bb.GetNext()) {
 					if(bb.GetType() == b2Body.b2_dynamicBody)
 						bb.SetAwake(true);
 				}
 			}
 			else{
-				for (bb = state.the_world.GetBodyList(); bb; bb = bb.GetNext()) {
+				for (bb = state.worldWrapper.the_world.GetBodyList(); bb; bb = bb.GetNext()) {
 					if(bb.GetType() == b2Body.b2_dynamicBody)
 						bb.SetAwake(false);
 				}

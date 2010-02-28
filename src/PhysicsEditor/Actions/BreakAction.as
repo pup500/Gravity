@@ -18,7 +18,7 @@ package PhysicsEditor.Actions
 		}
 		
 		override public function onHandleBegin():void{
-			var b2:b2Body = Utilities.GetBodyAtPoint(state.the_world, args["start"], true);
+			var b2:b2Body = Utilities.GetBodyAtPoint(state.worldWrapper.the_world, args["start"], true);
 			if(b2 && b2.GetUserData()){
 				var bSprite:ExSprite = b2.GetUserData() as ExSprite;
 				if(bSprite){

@@ -43,7 +43,7 @@ package PhysicsEditor.Actions
 			jointArgs["end"] = args["end_snap"];
 			
 			var xml:XML = JointFactory.createJointXML(jointArgs);
-			JointFactory.addJoint(state.the_world, xml);
+			JointFactory.addJoint(state.worldWrapper.the_world, xml);
 		}
 
 	}
