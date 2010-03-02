@@ -42,8 +42,6 @@ package org.overrides
 		
 		protected var physicsComponent:PhysicsComponent;
 		
-		protected var impactPoint:b2Contact;
-		
 		protected var loaded:Boolean;
 		
 		public var damage:int;
@@ -57,7 +55,6 @@ package org.overrides
 			var state:ExState = FlxG.state as ExState;
 			physicsComponent = new PhysicsComponent(this);
 			
-			impactPoint = new b2Contact();
 			damage = 0;
 			
 			loaded = false;
@@ -69,31 +66,7 @@ package org.overrides
 		}
 		
 		public function setJointMotorSpeed(speed:Number):void{
-			var joints:b2JointEdge = GetBody().GetJointList();
-			while(joints){
-				var joint:b2Joint = joints.joint;
-				
-				switch(joint.GetType()){
-					case b2Joint.e_prismaticJoint:
-						var jointPris:b2PrismaticJoint = joint as b2PrismaticJoint;
-						trace("joint speed: " + jointPris.GetMotorSpeed());
-						trace("joint force: " + jointPris.GetMotorForce());
-						jointPris.SetMotorSpeed(speed);//-Math.abs(jointPris.GetMotorSpeed()));
-						
-						//jointPris.SetMotorSpeed(speed);
-						break;
-					case b2Joint.e_revoluteJoint:
-						var jointRev:b2RevoluteJoint = joint as b2RevoluteJoint;
-						trace("joint speed: " + jointRev.GetMotorSpeed());
-						trace("joint torque: " + jointRev.GetMotorTorque());
-						jointRev.SetMotorSpeed(speed);//-Math.abs(jointPris.GetMotorSpeed()));
-						
-						//jointPris.SetMotorSpeed(speed);
-						break;
-				}
-				
-				joints = joints.next;
-			}
+			physicsComponent.setJointMotorSpeed(speed);
 		}
 		
 		/*

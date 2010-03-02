@@ -72,7 +72,7 @@
 		
 		override public function update():void
 		{
-			loaded = physicsComponent.isLoaded();
+			//loaded = physicsComponent.isLoaded();
 			
 			if(dead){
 				physicsComponent.destroyPhysBody();
@@ -96,8 +96,6 @@
 		
 		public function shoot(X:int, Y:int, VelocityX:int, VelocityY:int):void
 		{
-			physicsComponent.destroyPhysBody();
-			
 			var scaledX:Number = X / ExState.PHYS_SCALE;
 			var scaledY:Number = Y / ExState.PHYS_SCALE;
 			

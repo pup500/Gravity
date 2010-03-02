@@ -10,14 +10,7 @@ package PhysicsGame
 	public class Player extends ExSprite
 	{
 		[Embed(source="../data/g_walk_old.png")] private var ImgSpaceman:Class;
-		[Embed(source="../data/gibs.png")] private var ImgGibs:Class;
-		[Embed(source="../data/jump.mp3")] private var SndJump:Class;
-		[Embed(source="../data/land.mp3")] private var SndLand:Class;
-		[Embed(source="../data/asplode.mp3")] private var SndExplode:Class;
-		[Embed(source="../data/menu_hit_2.mp3")] private var SndExplode2:Class;
-		[Embed(source="../data/hurt.mp3")] private var SndHurt:Class;
-		[Embed(source="../data/jam.mp3")] private var SndJam:Class;
-
+		
 		public var gFixture:b2Fixture;
 		
 		public function Player(x:int=0, y:int=0){
@@ -27,10 +20,6 @@ package PhysicsGame
 			//Do this after to set graphics and shape first...
 			width = 14;
 			height = 30;
-			
-			//physicsComponent.setCategory(FilterData.PLAYER);
-			//physicsComponent.initBody(b2Body.b2_kinematicBody);
-			
 			
 			//NOTE:This is how you should adjust the player's mass
 			//There's 3 parts to him, Head, Torso, And Feet Sensor..

@@ -5,6 +5,11 @@ package PhysicsGame.Components
 	import Box2D.Collision.Shapes.b2Shape;
 	import Box2D.Common.Math.b2Vec2;
 	import Box2D.Common.b2internal;
+	import Box2D.Dynamics.Joints.b2DistanceJoint;
+	import Box2D.Dynamics.Joints.b2Joint;
+	import Box2D.Dynamics.Joints.b2JointEdge;
+	import Box2D.Dynamics.Joints.b2PrismaticJoint;
+	import Box2D.Dynamics.Joints.b2RevoluteJoint;
 	import Box2D.Dynamics.b2Body;
 	import Box2D.Dynamics.b2BodyDef;
 	import Box2D.Dynamics.b2Fixture;
@@ -402,6 +407,33 @@ package PhysicsGame.Components
 			//Use width and height because sprite may be animated so each frame doesn't take up full bitmap
 			me.x = Math.round((posVec.x * ExState.PHYS_SCALE) - (me.width/2));
 			me.y = Math.round((posVec.y * ExState.PHYS_SCALE) - (me.height/2));
+		}
+		
+		
+		//////////////
+		
+		public function setJointMotorSpeed(speed:Number):void{
+			var joints:b2JointEdge = final_body.GetJointList();
+			while(joints){
+				var joint:b2Joint = joints.joint;
+				
+				switch(joint.GetType()){
+					case b2Joint.e_prismaticJoint:
+						var jointPris:b2PrismaticJoint = joint as b2PrismaticJoint;
+						trace("joint speed: " + jointPris.GetMotorSpeed());
+						trace("joint force: " + jointPris.GetMotorForce());
+						jointPris.SetMotorSpeed(speed);
+						break;
+					case b2Joint.e_revoluteJoint:
+						var jointRev:b2RevoluteJoint = joint as b2RevoluteJoint;
+						trace("joint speed: " + jointRev.GetMotorSpeed());
+						trace("joint torque: " + jointRev.GetMotorTorque());
+						jointRev.SetMotorSpeed(speed);
+						break;
+				}
+				
+				joints = joints.next;
+			}
 		}
 	}
 }
