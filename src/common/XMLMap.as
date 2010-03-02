@@ -79,7 +79,8 @@ package common
 				_state.getArgs()["endPoint"] = new b2Vec2(_end.x, _end.y);
 			}
 			
-			expBodyCount = getItemCount() + configXML.objects.shape.length();
+			expBodyCount = getItemCount() + configXML.objects.shape.length() + configXML.objects.enemy.length();
+			
 			bodiesLoaded = false;
 			eventsLoaded = false;
 			
@@ -87,6 +88,13 @@ package common
 				 var b2:ExSprite = new ExSprite();
 				b2.initFromXML(shape);
 		    	_state.addToLayer(b2, shape.layer);
+			}
+			
+			//TODO:Make enemy more flexible
+			for each(var enemy:XML in configXML.objects.enemy){
+				var e:Enemy = new Enemy(enemy.@x, enemy.@y);
+				e.GetBody().SetFixedRotation(true);
+		    	_state.addToLayer(e, ExState.MG);
 			}
 		}
 		
@@ -115,6 +123,11 @@ package common
 			for each(shape in configXML.objects.shape){
 				shape.@x = int(shape.@x) + offset.x;
 		    	shape.@y = int(shape.@y) + offset.y;
+			}
+			
+			for each(var enemy:XML in configXML.objects.enemy){
+				enemy.@x = int(enemy.@x) + offset.x;
+				enemy.@y = int(enemy.@y) + offset.y;
 			}
 			
 			for each(var joint:XML in configXML.objects.joint){

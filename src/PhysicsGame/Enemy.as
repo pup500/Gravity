@@ -15,6 +15,7 @@ package PhysicsGame
 	
 	import org.flixel.*;
 	import org.overrides.ExSprite;
+	import org.overrides.ExState;
 	
 	public class Enemy extends ExSprite
 	{
@@ -105,6 +106,26 @@ package PhysicsGame
 			else{
 				brain.blackboard.setObject("blocked", false);
 			}
+		}
+		
+		override public function getXML():XML{
+			var xml:XML = new XML(<enemy/>);
+			//xml.file =  imageResource;
+			//xml.@layer = layer;
+			//xml.@bodyType = GetBody().GetType();
+			//xml.@shapeType = GetBody().GetFixtureList().GetType();
+			//xml.@angle = angle;
+			//xml.@friction = GetBody().GetFixtureList().GetFriction();
+			//xml.@density = GetBody().GetFixtureList().GetDensity();
+			//xml.@restitution = GetBody().GetFixtureList().GetRestitution();
+			//xml.@damage = damage;
+			//xml.@name = name;
+			
+			//XML representation is in screen coordinates, so scale up physics
+			xml.@x = GetBody().GetPosition().x * ExState.PHYS_SCALE;
+			xml.@y = GetBody().GetPosition().y * ExState.PHYS_SCALE;
+					
+			return xml;
 		}
 	}
 }

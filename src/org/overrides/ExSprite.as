@@ -6,11 +6,6 @@ package org.overrides
 	import Box2D.Common.b2internal;
 	import Box2D.Dynamics.*;
 	import Box2D.Dynamics.Contacts.*;
-	import Box2D.Dynamics.Controllers.b2Controller;
-	import Box2D.Dynamics.Joints.b2Joint;
-	import Box2D.Dynamics.Joints.b2JointEdge;
-	import Box2D.Dynamics.Joints.b2PrismaticJoint;
-	import Box2D.Dynamics.Joints.b2RevoluteJoint;
 	
 	import PhysicsGame.Components.Components;
 	import PhysicsGame.Components.IComponent;
