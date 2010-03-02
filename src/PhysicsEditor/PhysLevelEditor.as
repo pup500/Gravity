@@ -140,10 +140,10 @@
 				fileIndex++;
 			}
 			
-			if(FlxG.keys.justPressed("O")) {
+			if(FlxG.keys.justPressed("MINUS")) {
 				eventType--;
 			}
-			if(FlxG.keys.justPressed("P")){
+			if(FlxG.keys.justPressed("PLUS")){
 				eventType++;
 			}
 			

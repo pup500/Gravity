@@ -1,38 +1,7 @@
-Movement:
- WASD - moves player object to simulate scrolling
-
 Keyboard Shortcuts:
- [ and ] - shifts through image assets
- E - toggles ADD/REMOVE mode
- Z - toggles FG, MG, and BG layer for ADD.  Only MG interacts with player
- 1 - toggles bg layer visibility
- 2 - toggles mg layer visibility
- 3 - toggles fg layer visibilty
- 8 and 9 - sets the START/END point for ADD mode
- I - toggles ACTIVE/STATIC flag when ADDING objects
- G - toggles GRID
- N - toggles FREE/SNAP to grid
- H - toggles HUD/STATUS panel
- B - toggles using POLY/CIRCLE mode when adding sprites
-
- J - sets the JOIN mode.  SHIFT DRAG on static to active, active to active object
- T - Distance joints require two bodies.
- R - Revolute joints can be SHIFT DRAG in one body, so it connects to world
- Y - Prismatic joints axis is the midpoint of the mouse distance.
-
- SHIFT - hides TOOLBAR panel
- U - toggles DEBUG PHYSICS bodies for joints and bounding box issues
- F1 - toggles simulation.
- SHIFT CLICK - ADD/REMOVE the selected image asset at MOUSE coordinates
-
-Buttons:
- CHANGE BUTTON - sets the ACTIVE/STATIC flag of created objects with SHIFT CLICK
- ADD BUTTON - sets the ADD mode.  SHIFT CLICK to add objects
- REMOVE BUTTON - sets the REMOVE mode.  SHIFT CLICK to remove objects
- JOIN BUTTON - sets the JOIN mode.  SHIFT CLICK on one body and drag to another
- BREAK BUTTON - sets the BREAK mode.  SHIFT CLICK on a body to remove all joints
- COPY BUTTON - copies level settings.  You paste from clipboard to new file
- RUN BUTTON - toggles simulation.
-
+ ARROWS : moves player object to simulate scrolling
+ - and + : shifts through the event types
+ [ and ] : shifts through the image assets
+ 
 QUIT:
  SHIFT ESC - QUIT to the level select menu
