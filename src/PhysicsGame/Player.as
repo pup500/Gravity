@@ -28,6 +28,10 @@ package PhysicsGame
 			width = 14;
 			height = 30;
 			
+			//physicsComponent.setCategory(FilterData.PLAYER);
+			//physicsComponent.initBody(b2Body.b2_kinematicBody);
+			
+			
 			//NOTE:This is how you should adjust the player's mass
 			//There's 3 parts to him, Head, Torso, And Feet Sensor..
 			//Pass in friction, and density
@@ -36,10 +40,8 @@ package PhysicsGame
 			//physicsComponent = new PhysicsComponent(this, FilterData.PLAYER);
 			
 			physicsComponent.setCategory(FilterData.PLAYER);
-			physicsComponent.initBody(b2Body.b2_dynamicBody);
-			physicsComponent.addHead();
-			physicsComponent.addTorso(0, 15);
-			gFixture = physicsComponent.addSensor(0.8,1);
+			physicsComponent.initBody(b2Body.b2_kinematicBody);
+			gFixture = null;
 			
 			loaded = true;
 			
@@ -57,11 +59,11 @@ package PhysicsGame
 			//addAnimation("jump_down", [0]);
 		}
 		
-		public function removeBody():void{
-			//physicsComponent.destroyPhysBody();
-			//physicsComponent.setCategory(FilterData.PLAYER);
-			physicsComponent.initBody(b2Body.b2_kinematicBody);
-			gFixture = null;
+		public function initBody():void{
+			physicsComponent.initBody(b2Body.b2_dynamicBody);
+			physicsComponent.addHead();
+			physicsComponent.addTorso(0, 15);
+			gFixture = physicsComponent.addSensor(0.8,1);
 		}
 		
 		override public function update():void

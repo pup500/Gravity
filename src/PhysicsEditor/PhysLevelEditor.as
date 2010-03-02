@@ -11,7 +11,7 @@
 	import PhysicsGame.EventObject;
 	import PhysicsGame.LevelSelectMenu;
 	import PhysicsGame.Wrappers.WorldWrapper;
-	///import PhysicsGame.Player;
+	import PhysicsGame.Player;
 	
 	import flash.events.Event;
 	import flash.net.URLLoader;
@@ -115,7 +115,6 @@
 			//body.registerComponent(new AnimationComponent(body));
 			body.GetBody().SetSleepingAllowed(false);
 			body.GetBody().SetFixedRotation(true);
-			//body.removeBody();
 			add(body);
 			
 			FlxG.follow(body,2.5);

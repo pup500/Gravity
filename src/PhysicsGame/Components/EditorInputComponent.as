@@ -17,6 +17,7 @@ package PhysicsGame.Components
 
 		public function update():void
 		{
+			me.GetBody().SetAwake(true);
 			me.GetBody().GetLinearVelocity().SetZero();
 			
 			if(FlxG.keys.LEFT)
@@ -42,6 +43,8 @@ package PhysicsGame.Components
 			else{	
 				me.play("idle");
 			}
+			
+			trace("speed: " + me.GetBody().GetLinearVelocity().x + "," + me.GetBody().GetLinearVelocity().y);
 		}
 		
 		public function receive(args:Object):Boolean{

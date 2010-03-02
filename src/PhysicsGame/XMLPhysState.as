@@ -88,6 +88,7 @@ package PhysicsGame
 		public function addPlayer():void{
 			//var body:Enemy = new Enemy(args["startPoint"].x, args["startPoint"].y);
 			var body:Player = new Player(args["startPoint"].x, args["startPoint"].y);
+			body.initBody();
 			body.registerComponent(new InputComponent(body));
 			body.registerComponent(new WeaponsComponent(body, _bullets));
 			body.registerComponent(new AnimationComponent(body));
