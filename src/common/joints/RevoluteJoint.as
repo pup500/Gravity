@@ -56,8 +56,9 @@ package common.joints
 				
 				//The mass and distance has to be in so that longer distances will still work...
 				revJoint.maxMotorTorque = 100.0 * body2.GetMass() * distance;
-				revJoint.motorSpeed = 1;
-				revJoint.enableMotor = true;
+				revJoint.motorSpeed = xml.@speed;
+				//TODO:Speed determines if motor is enabled
+				revJoint.enableMotor = int(xml.@speed) != 0;
 				valid = true;
 			}
 			else{

@@ -48,6 +48,7 @@ package common
 			xml.body1.@y = args["start"].y;
 			xml.body2.@x = args["end"].x;
 			xml.body2.@y = args["end"].y;
+			xml.@speed = args["speed"];
 			xml.loaded = false;
 			return xml;
 		}

@@ -149,6 +149,7 @@ package common
 			joint.body1.@y = point1.y;
 			joint.body2.@x = point2.x;
 			joint.body2.@y = point2.y;
+			joint.@speed = 0;
 			
 			return joint;
 		}
@@ -187,6 +188,7 @@ package common
 			joint.anchor.@y = anchor.y;
 			joint.axis.@x = axis.x;
 			joint.axis.@y = axis.y;
+			joint.@speed = j.GetMotorSpeed();
 			
 			return joint;
 		}
@@ -215,6 +217,7 @@ package common
 			joint.body2.@y = point2.y;
 			joint.anchor.@x = anchor.x;
 			joint.anchor.@y = anchor.y;
+			joint.@speed = j.GetMotorSpeed();
 			
 			return joint;
 		}
