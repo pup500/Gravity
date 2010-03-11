@@ -41,8 +41,8 @@ package PhysicsEditor.Actions
 		}
 
 		override public function onHandleEnd():void{
-			var body1:b2Body = Utilities.GetBodyAtPoint(state.the_world, args["start"], true);
-			var body2:b2Body = Utilities.GetBodyAtPoint(state.the_world, args["end"], true);
+			var body1:b2Body = Utilities.GetBodyAtPoint(args["start"], true);
+			var body2:b2Body = Utilities.GetBodyAtPoint(args["end"], true);
 			
 			//TODO:Fix this
 			if(body1 && body2){

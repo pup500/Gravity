@@ -3,6 +3,7 @@
 	import Box2D.Collision.*;
 	import Box2D.Collision.Shapes.*;
 	import Box2D.Common.Math.*;
+	import Box2D.Common.b2internal;
 	import Box2D.Dynamics.*;
 	
 	import flash.display.*;
@@ -14,6 +15,7 @@
 	import org.overrides.ExSprite;
 	import org.overrides.ExState;
 
+	use namespace b2internal;
 	
 	/**
 	 * ...
@@ -23,7 +25,6 @@
 	{
 		[Embed(source="../data/GravSink.png")] private var GravSink:Class;
 		
-		//protected var _world:b2World;
 		public var mass:Number;
 		private var initialMass:Number = 20;//5000;//50000;
 		private var deltaMass:Number = 7;
@@ -39,31 +40,17 @@
 		
 		//@desc Bullet constructor
 		//@param world	We'll need this to spawn the bullet's physical body when it's shot.
-		public function GravityObject(world:b2World)
+		public function GravityObject()
 		{
 			super();
 			
 			//Setup shape first to avoid screwing up pixels
 			width = 1;
 			height = 1;
-			initCircleShape();
+			//initCircleShape();
 			
 			loadGraphic(GravSink, true);
-			
-			bodyDef.type = b2Body.b2_staticBody;
-			
-			fixtureDef.density = 0;
-			fixtureDef.friction = 1;
-			fixtureDef.isSensor = true;
-			
-			//fixtureDef.filter.groupIndex = -2;
-			fixtureDef.filter.categoryBits = FilterData.PLAYER;
-			
-			//Make this part of group -2, and do not collide with other in the same negative group...
-			
 			name = "GravityObject";
-			
-			_world = world; //For use when we shoot.
 			
 			antiGravity = false;
 			
@@ -85,11 +72,16 @@
 		
 		override public function update():void
 		{
-			if(dead && finished){
-				destroyPhysBody();
+			//loaded = physicsComponent.isLoaded();
+			
+			if(dead){
+				physicsComponent.destroyPhysBody();
+				exists = false;
 			}
 			else { 
 				super.update();
+				
+				trace("gravity location x: " + x + "," + y);
 				
 				if(_startLosingMass){
 					mass -= deltaMass * FlxG.elapsed;
@@ -104,18 +96,11 @@
 		
 		public function shoot(X:int, Y:int, VelocityX:int, VelocityY:int):void
 		{
-			destroyPhysBody();
-			
 			var scaledX:Number = X / ExState.PHYS_SCALE;
 			var scaledY:Number = Y / ExState.PHYS_SCALE;
 			
-			bodyDef.position.Set(scaledX, scaledY);
-			//trace("grav body def: " + X/ExState.PHYS_SCALE + ", " + Y/ExState.PHYS_SCALE);
-			createPhysBody(_world);
-			
 			mass=initialMass;
 			
-			//play("idle");
 			_coolDown.reset();
 			_coolDown.start();
 			
@@ -123,6 +108,21 @@
 			gPoint = new Point(scaledX, scaledY);
 			
 			super.reset(X,Y);
+			
+			trace("gravity spawned x: " + X + "," + Y);
+			
+			//TODO:Initbody currently pulls the body's x and y so we should really pass that in
+			physicsComponent.initBody(b2Body.b2_staticBody);
+			physicsComponent.setCategory(FilterData.PLAYER);
+			physicsComponent.createFixture(b2Shape.e_circleShape, 1, 0, true);
+			
+			//This update will set x and y correctly based on the physics component
+			//Essentially offsetting X and Y for the sprite
+			update();
+			
+			play("idle");
+			
+			
 			//trace("grav shoot : " + x + ", " + y);
 		}
 		
@@ -168,9 +168,12 @@
 			  //myShape.graphics.drawRect(_p.x + width/2,_p.y + height/2, 100, 100);
 			 */ 
 			 
-			  myShape.graphics.drawCircle(_p.x + width/2,_p.y + height/2, alpha*50);
+			myShape.graphics.drawCircle(_p.x + width/2,_p.y + height/2, alpha*50);
+			
+			//myShape.graphics.drawCircle(_p.x ,_p.y, alpha*50);
+			
 			myShape.graphics.endFill();
-			  FlxG.buffer.draw(myShape);
+			FlxG.buffer.draw(myShape);
 			
 			super.render();
 			
@@ -231,7 +234,7 @@
 			var r2:Number = 0;
 			var f:b2Vec2 = null;
 			
-			p1 = final_body.GetWorldCenter();
+			p1 = GetBody().GetWorldCenter();
 			p2 = physBody.GetWorldCenter()
 			dx = p1.x - p2.x;
 			dy = p1.y - p2.y;
@@ -270,7 +273,7 @@
 			var r2:Number = 0;
 			var f:b2Vec2 = null;
 			
-			p1 = final_body.GetWorldCenter();
+			p1 = GetBody().GetWorldCenter();
 			p2 = physBody.GetWorldCenter()
 			dx = p1.x - p2.x;
 			dy = p1.y - p2.y;

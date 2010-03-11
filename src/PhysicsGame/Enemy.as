@@ -4,9 +4,6 @@ package PhysicsGame
 	import Box2D.Common.Math.b2Vec2;
 	import Box2D.Dynamics.*;
 	import Box2D.Dynamics.Contacts.*;
-	import Box2D.Dynamics.Controllers.b2Controller;
-	
-	import PhysicsGame.Components.PhysicsComponent;
 	
 	import ailab.*;
 	import ailab.actions.*;
@@ -25,6 +22,7 @@ package PhysicsGame
 		[Embed(source="../data/g_walk_old.png")] private var ImgSpaceman:Class;
 		
 		private var brain:TaskTree;
+		public var gFixture:b2Fixture;
 		
 		public function Enemy(x:int=0, y:int=0){
 			super(x, y);
@@ -34,11 +32,12 @@ package PhysicsGame
 			width = 14;
 			height = 30;
 			
-			physicsComponent = new PhysicsComponent(this, FilterData.ENEMY);
-			physicsComponent.initBody();
+			physicsComponent.setCategory(FilterData.ENEMY);
+			physicsComponent.initBody(b2Body.b2_dynamicBody);
 			physicsComponent.addHead(0,1);
 			physicsComponent.addTorso(0,1);
 			gFixture = physicsComponent.addSensor(0.8, 1);
+			loaded = true;
 			
 			name = "Enemy";
 			
@@ -65,38 +64,13 @@ package PhysicsGame
 			brain.blackboard.setObject("canWalkForward", true);
 		}
 		
-		
-		override public function GetBody():b2Body{
-			return physicsComponent.final_body;
-		}
-		
-		//Overridden normal behavior, using a physics component,
-		//TODO:Fix exsprite to remove physics dependency
-		override public function createPhysBody(world:b2World, controller:b2Controller=null):void{
-			//Save the world
-			_world = world;
-			_controller = controller;
-			
-			if(controller){
-				controller.AddBody(GetBody());
-			}
-			
-			loaded = true;
-		}
-		
-		
-		public function SetBullets(bullets:Array):void{
-		}
-		
 		override public function update():void
 		{
 			brain.update();
 			
-			physicsComponent.update();
-			
-			//UPDATE POSITION AND ANIMATION			
 			super.update();
 			
+			//Not sure if this is used or is useful
 			brain.blackboard.setObject("moving", GetBody().GetLinearVelocity().x > 0.1);
 		}
 		
@@ -132,6 +106,26 @@ package PhysicsGame
 			else{
 				brain.blackboard.setObject("blocked", false);
 			}
+		}
+		
+		override public function getXML():XML{
+			var xml:XML = new XML(<enemy/>);
+			//xml.file =  imageResource;
+			//xml.@layer = layer;
+			//xml.@bodyType = GetBody().GetType();
+			//xml.@shapeType = GetBody().GetFixtureList().GetType();
+			//xml.@angle = angle;
+			//xml.@friction = GetBody().GetFixtureList().GetFriction();
+			//xml.@density = GetBody().GetFixtureList().GetDensity();
+			//xml.@restitution = GetBody().GetFixtureList().GetRestitution();
+			//xml.@damage = damage;
+			//xml.@name = name;
+			
+			//XML representation is in screen coordinates, so scale up physics
+			xml.@x = GetBody().GetPosition().x * ExState.PHYS_SCALE;
+			xml.@y = GetBody().GetPosition().y * ExState.PHYS_SCALE;
+					
+			return xml;
 		}
 	}
 }

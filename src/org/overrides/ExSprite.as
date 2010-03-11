@@ -6,14 +6,11 @@ package org.overrides
 	import Box2D.Common.b2internal;
 	import Box2D.Dynamics.*;
 	import Box2D.Dynamics.Contacts.*;
-	import Box2D.Dynamics.Controllers.b2Controller;
-	import Box2D.Dynamics.Joints.b2Joint;
-	import Box2D.Dynamics.Joints.b2JointEdge;
-	import Box2D.Dynamics.Joints.b2PrismaticJoint;
-	import Box2D.Dynamics.Joints.b2RevoluteJoint;
 	
+	import PhysicsGame.Components.Components;
+	import PhysicsGame.Components.IComponent;
 	import PhysicsGame.Components.PhysicsComponent;
-	import PhysicsGame.FilterData;
+	import PhysicsGame.Wrappers.WorldWrapper;
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -36,22 +33,9 @@ package org.overrides
 		public var imageResource:String;
 		public var layer:uint;
 		
-		//Box2D
+		protected var components:Components;
+		
 		protected var physicsComponent:PhysicsComponent;
-		public var gFixture:b2Fixture;
-		
-		//TODO:Replace all of these things
-		protected var shape:b2Shape;
-		protected var bodyDef:b2BodyDef;
-		protected var fixtureDef:b2FixtureDef;
-		public var final_body:b2Body; //The physical representation in the Body2D b2World.
-		protected var fixture:b2Fixture;
-		
-		protected var impactPoint:b2Contact;
-		
-		//We need the world to destroy the physical objects
-		protected var _world:b2World;
-		protected var _controller:b2Controller;
 		
 		protected var loaded:Boolean;
 		
@@ -61,339 +45,23 @@ package org.overrides
 			//TODO:Note that x and y needs to be offsetted by half width and height to match physics...
 			super(x, y, sprite);
 			
-			bodyDef = new b2BodyDef();
-			bodyDef.type = b2Body.b2_dynamicBody;
-			bodyDef.position.Set(x/ExState.PHYS_SCALE, y/ExState.PHYS_SCALE);
+			components = new Components();
 			
-			//TODO:To add this as an option
-			bodyDef.fixedRotation = false;
+			var state:ExState = FlxG.state as ExState;
+			physicsComponent = new PhysicsComponent(this);
 			
-			fixtureDef = new b2FixtureDef();
-			fixtureDef.friction = 1;
-			fixtureDef.filter.categoryBits = FilterData.NORMAL;
-			
-			impactPoint = new b2Contact();
 			damage = 0;
 			
 			loaded = false;
 		}
 		
-		//@desc Create a polygon shape definition based on bitmap. If this doesn't work, it will call initShape()
-		protected function initShapeFromSprite():void{
-			var shapeDef:b2PolygonShape = new b2PolygonShape();
-			var points:Array = new Array();
-			var newPoint:b2Vec2 = new b2Vec2();
-			var oldPoint:b2Vec2 = new b2Vec2(-1,-1);
-			var i:int;
-			var j:int;
-			var pixelValue:uint;
-			var alphaValue:uint;
-			
-			var left:Boolean = false;
-			var right:Boolean = false;
-			var bottom:Boolean = false;
-			var top:Boolean = false;
-			var round:uint = 0;
-			
-			//TODO:This doesn't account for frame data so we can't use this for animated objects
-			
-			while(round < 5){
-				if(!top){
-					//Go from top left to top right
-					for(i = 0; i < pixels.width; i++){
-						pixelValue = pixels.getPixel32(i,round);
-						alphaValue = pixelValue >> 24 & 0xFF;
-						//trace("x,y: " + i + ", " + round + " =" + alphaValue);
-						if(alphaValue != 0){
-							//Found first
-							newPoint = new b2Vec2(i,round);
-							if(oldPoint.x != newPoint.x || oldPoint.y != newPoint.y){
-								points.push(newPoint);
-								oldPoint.x = newPoint.x;
-								oldPoint.y = newPoint.y;
-							}
-							top = true;
-							
-							//look for last one on same line...
-							for(j = pixels.width-1; j > i; j--){
-								pixelValue = pixels.getPixel32(j,round);
-								alphaValue = pixelValue >> 24 & 0xFF;
-								//trace("x,y: " + j + ", " + round + " =" + alphaValue);
-								if(alphaValue != 0){
-									newPoint = new b2Vec2(j, round);
-									if(oldPoint.x != newPoint.x || oldPoint.y != newPoint.y){
-										points.push(newPoint);
-										oldPoint.x = newPoint.x;
-										oldPoint.y = newPoint.y;
-									}
-									break;
-								}
-							}
-							break;
-						}
-					}
-				}
-				
-				if(!right){
-					//Go from top right to bottom right
-					for(j = 0; j < pixels.height; j++){
-						pixelValue = pixels.getPixel32(pixels.width-1-round,j);
-						alphaValue = pixelValue >> 24 & 0xFF;
-						//trace("x,y: " + (pixels.width-1-round) + ", " + j + " =" + alphaValue);
-						if(alphaValue != 0){
-							newPoint = new b2Vec2(pixels.width-1-round,j);
-							if(oldPoint.x != newPoint.x || oldPoint.y != newPoint.y){
-								points.push(newPoint);
-								oldPoint.x = newPoint.x;
-								oldPoint.y = newPoint.y;
-							}
-							right = true;
-							
-							//look for last one on same line...
-							for(i = pixels.height-1; i > j; i--){
-								pixelValue = pixels.getPixel32(pixels.width-1-round,i);
-								alphaValue = pixelValue >> 24 & 0xFF;
-								//trace("x,y: " + (pixels.width-1-round) + ", " + i + " =" + alphaValue);
-								if(alphaValue != 0){
-									newPoint = new b2Vec2(pixels.width-1-round,i);
-									if(oldPoint.x != newPoint.x || oldPoint.y != newPoint.y){
-										points.push(newPoint);
-										oldPoint.x = newPoint.x;
-										oldPoint.y = newPoint.y;
-									}
-									break;
-								}
-							}
-							break;
-						}
-					}
-				}
-				
-				if(!bottom){
-					//Go from bottom right to bottom left
-					for(i = pixels.width - 1; i >= 0; i--){
-						pixelValue = pixels.getPixel32(i,pixels.height-1-round);
-						alphaValue = pixelValue >> 24 & 0xFF;
-						//trace("x,y: " + i + ", " + (pixels.height-1-round) + " =" + alphaValue);
-						if(alphaValue != 0){
-							newPoint = new b2Vec2(i,pixels.height-1-round);
-							if(oldPoint.x != newPoint.x || oldPoint.y != newPoint.y){
-								points.push(newPoint);
-								oldPoint.x = newPoint.x;
-								oldPoint.y = newPoint.y;
-							}
-							bottom = true;
-							
-							//look for last one on same line...
-							for(j = 0; j < i; j++){
-								pixelValue = pixels.getPixel32(j,pixels.height-1-round);
-								alphaValue = pixelValue >> 24 & 0xFF;
-								//trace("x,y: " + j + ", " + (pixels.height-1-round) + " =" + alphaValue);
-								if(alphaValue != 0){
-									newPoint = new b2Vec2(j,pixels.height-1-round);
-									if(oldPoint.x != newPoint.x || oldPoint.y != newPoint.y){
-										points.push(newPoint);
-										oldPoint.x = newPoint.x;
-										oldPoint.y = newPoint.y;
-									}
-									break;
-								}
-							}
-							break;
-						}
-					}
-				}
-				
-				if(!left){
-					//Go from bottom left to top left
-					for(j = pixels.height - 1; j >= 0; j--){
-						pixelValue = pixels.getPixel32(round,j);
-						alphaValue = pixelValue >> 24 & 0xFF;
-						//trace("x,y: " + round + ", " + j + " =" + alphaValue);
-						if(alphaValue != 0){
-							newPoint = new b2Vec2(round,j);
-							if(oldPoint.x != newPoint.x || oldPoint.y != newPoint.y){
-								points.push(newPoint);
-								oldPoint.x = newPoint.x;
-								oldPoint.y = newPoint.y;
-							}
-							left = true;
-							
-							//look for last one on same line...
-							for(i = 0; i < j; i++){
-								pixelValue = pixels.getPixel32(round,i);
-								alphaValue = pixelValue >> 24 & 0xFF;
-								//trace("x,y: " + round + ", " + i + " =" + alphaValue);
-								if(alphaValue != 0){
-									newPoint = new b2Vec2(round,i);
-									if(oldPoint.x != newPoint.x || oldPoint.y != newPoint.y){
-										points.push(newPoint);
-										oldPoint.x = newPoint.x;
-										oldPoint.y = newPoint.y;
-									}
-									break;
-								}
-							}
-							break;
-						}
-					}
-				}
-				
-				if(points.length > 2){
-					//remove last if duplicate...
-					if(points[0].x == points[points.length-1].x &&
-						points[0].y == points[points.length-1].y){
-						points.pop();
-					}
-					
-					//Add the offset for the point
-					for(var k:uint = 0; k < points.length; k++){
-						//TODO:Are we offsetting by _bw or width height, etc...
-						//I'm thinking width and height...
-						points[k].x -= _bw/2;
-						points[k].y -= _bh/2;
-					}
-					
-					for(k = 0; k < points.length; k++){
-						points[k].x /= ExState.PHYS_SCALE;
-						points[k].y /= ExState.PHYS_SCALE;
-					}
-					
-					shapeDef.SetAsArray(points, points.length);
-					
-					/*
-					shapeDef.vertexCount = points.length;
-					for(var k:uint = 0; k < points.length; k++){
-						shapeDef.vertices[k].Set(points[k].x - _bw/2, points[k].y - _bh/2);
-						
-						//trace("finalk:" + k + " Xy:" + points[k].x + "," + points[k].y);
-					}
-					//trace("X,y:" + x + ", " + y + " bw: " + _bw + " bh: " + _bh);
-					*/
-					
-					shape = shapeDef;
-					return;
-				}
-				else{
-					round++;
-				}
-			}
-			
-			initBoxShape();
-		}
-		
-		//@desc Create a rectangle shape definition from the sprite dimensions.
-		//We're calling this outside the constructor because we need Flixel to define its sprite dimensions first in loadGraphic().
-		protected function initBoxShape():void {
-			var shapeDef:b2PolygonShape = new b2PolygonShape();
-			//Use width and height and not bw and bh because we are looking at frame data...
-			shapeDef.SetAsBox((width/2) / ExState.PHYS_SCALE, (height/2)/ExState.PHYS_SCALE);
-			shape = shapeDef;
-		}
-		
-		//@desc Create a circle shape definition from the sprite's width.
-		protected function initCircleShape():void
-		{
-			//Using width instead of bw because we are looking at frame data
-			shape = new b2CircleShape((width/2)/ExState.PHYS_SCALE);
-		}
-		
-		//@param type b2Shape enumerated uint.
-		public function initShape(type:uint):void{
-			switch(type){
-				case b2Shape.e_circleShape:
-					initCircleShape();
-					break;
-				case b2Shape.e_polygonShape:
-					//initShape();
-					initShapeFromSprite();
-					break;
-				case b2Shape.e_edgeShape:
-					//initShape();
-					//We don't have edgeshapes yet.....
-					initShapeFromSprite();
-					break;
-			}
-		}
-		
-		//@desc Create the physical representation in the Box2D World using the shape definition from initShape methods.
-		//@param	world The Box2D b2World for this object to exist in.
-		public function createPhysBody(world:b2World, controller:b2Controller=null):void{
-			fixtureDef.shape = shape;
-			
-			bodyDef.fixedRotation = false;
-			
-			final_body = world.CreateBody(bodyDef);
-			fixture = final_body.CreateFixture(fixtureDef);
-			
-			//Save the world
-			_world = world;
-			_controller = controller;
-			
-			final_body.SetUserData(this);
-			
-			if(controller){
-				controller.AddBody(final_body);
-			}
-			
-			loaded = true;
-		}
-		
-		//TODO override FlxCore.destroy() instead of using this as the public function.
-		//TODO:Make sure this is appropriate after we switch over to physics component
-		public function destroyPhysBody():void
-		{
-			if(exists){
-				exists = false;
-				//We might not need to save shape as destroy body should work already...
-				//final_body.DestroyShape(final_shape);
-				//destroyAllJoints();
-				
-				if(_controller){
-					_controller.RemoveBody(final_body);
-				}
-				
-				_world.DestroyBody(final_body);
-				
-				final_body = null;
-				fixture = null;
-			}
-		}
-		
 		//We can remove all joints explicitly
 		public function destroyAllJoints():void{
-			var joints:b2JointEdge;
-			while(joints = final_body.GetJointList()){
-				_world.DestroyJoint(joints.joint);
-			}
+			WorldWrapper.destroyAllJoints(GetBody());
 		}
 		
 		public function setJointMotorSpeed(speed:Number):void{
-			var joints:b2JointEdge = final_body.GetJointList();
-			while(joints){
-				var joint:b2Joint = joints.joint;
-				
-				switch(joint.GetType()){
-					case b2Joint.e_prismaticJoint:
-						var jointPris:b2PrismaticJoint = joint as b2PrismaticJoint;
-						trace("joint speed: " + jointPris.GetMotorSpeed());
-						trace("joint force: " + jointPris.GetMotorForce());
-						jointPris.SetMotorSpeed(speed);//-Math.abs(jointPris.GetMotorSpeed()));
-						
-						//jointPris.SetMotorSpeed(speed);
-						break;
-					case b2Joint.e_revoluteJoint:
-						var jointRev:b2RevoluteJoint = joint as b2RevoluteJoint;
-						trace("joint speed: " + jointRev.GetMotorSpeed());
-						trace("joint torque: " + jointRev.GetMotorTorque());
-						jointRev.SetMotorSpeed(speed);//-Math.abs(jointPris.GetMotorSpeed()));
-						
-						//jointPris.SetMotorSpeed(speed);
-						break;
-				}
-				
-				joints = joints.next;
-			}
+			physicsComponent.setJointMotorSpeed(speed);
 		}
 		
 		/*
@@ -422,33 +90,26 @@ package org.overrides
 		}
 		*/
 		
+		public function registerComponent(component:IComponent):void{
+			components.registerComponent(component);
+		}
+		
 		override public function update():void
 		{
-			if(!loaded) return;
-			
 			super.update();
 			
-			updatePosition();
+			//TODO:Put physics component into the components array
+			physicsComponent.update();
 			
-			angle = GetBody().GetAngle();
+			//Update all registered components
+			components.update();
 			
 			//updateJoints();
 		}
 		
-		public function updatePosition():void{
-			var posVec:b2Vec2 = GetBody().GetPosition();
-			
-			////trace("name:" + name + " posxy:" + posVec.x + "," + posVec.y + " scaledxy: " + (posVec.x * ExState.PHYS_SCALE) + "," + (posVec.y * ExState.PHYS_SCALE));
-			////trace("width:" + width + "," + height);
-			
-			//Use width and height because sprite may be animated so each frame doesn't take up full bitmap
-			x = Math.round((posVec.x * ExState.PHYS_SCALE) - (width/2));//_bw/2;
-			y = Math.round((posVec.y * ExState.PHYS_SCALE) - (height/2)); //* ExState.PHYS_SCALE;//_bh/2;
-		}
-		
 		override public function kill():void
 		{
-			destroyPhysBody();
+			physicsComponent.destroyPhysBody();
 			super.kill();
 		}
 		
@@ -479,11 +140,7 @@ package org.overrides
 		}
 		
 		public function GetBody():b2Body{
-			return final_body;
-		}
-		
-		public function GetShape():b2Shape{
-			return shape;
+			return physicsComponent.final_body;
 		}
 		
 		public function setImpactPoint(point:b2Contact, myFixture:b2Fixture, oFixture:b2Fixture):void {
@@ -526,7 +183,7 @@ package org.overrides
 				return 1;
 			}
 			
-			state.the_world.RayCast(castFunction, cacheP1, cacheP2);
+			WorldWrapper.rayCast(castFunction, cacheP1, cacheP2);
 		}
 		
 		public function drawGroundRayTrace():void{
@@ -574,12 +231,12 @@ package org.overrides
 			var xml:XML = new XML(<shape/>);
 			xml.file =  imageResource;
 			xml.@layer = layer;
-			xml.@bodyType = fixture.GetBody().GetType();
-			xml.@shapeType = fixture.GetType();
+			xml.@bodyType = GetBody().GetType();
+			xml.@shapeType = GetBody().GetFixtureList().GetType();
 			xml.@angle = angle;
-			xml.@friction = fixture.GetFriction();
-			xml.@density = fixture.GetDensity();
-			xml.@restitution = fixture.GetRestitution();
+			xml.@friction = GetBody().GetFixtureList().GetFriction();
+			xml.@density = GetBody().GetFixtureList().GetDensity();
+			xml.@restitution = GetBody().GetFixtureList().GetRestitution();
 			xml.@damage = damage;
 			xml.@name = name;
 			
@@ -591,23 +248,23 @@ package org.overrides
 		}
 		
 		//Initialize the ExSprite from the xml data structure
-		public function initFromXML(xml:XML, world:b2World, controller:b2Controller=null):void{
+		public function initFromXML(xml:XML):void{
 			//If there's no image file information, just load the file normally
 			if(xml.file.length() == 0){
-				onInitXMLComplete(xml, world, controller);
+				onInitXMLComplete(xml);
 				return;
 			}
 			
 			var loader:Loader = new Loader();
     		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, 
     			function(e:Event):void{
-    				onInitXMLComplete(xml, world, controller, e)
+    				onInitXMLComplete(xml, e)
     			});
     		
     		loader.load(new URLRequest(xml.file));
 		}
 		
-		protected function onInitXMLComplete(xml:XML, world:b2World=null, controller:b2Controller=null, event:Event=null):void{
+		protected function onInitXMLComplete(xml:XML, event:Event=null):void{
 			//Load the bitmap data
 			if(event){
 				var loadinfo:LoaderInfo = LoaderInfo(event.target);
@@ -619,22 +276,11 @@ package org.overrides
 			imageResource = xml.file;
 			layer = xml.@layer;
 			
-			bodyDef.type = xml.@bodyType;
-			
-			initShape(xml.@shapeType);
-			
-			bodyDef.angle = xml.@angle;
-			bodyDef.position.Set(xml.@x/ExState.PHYS_SCALE, xml.@y/ExState.PHYS_SCALE);
-			
-			fixtureDef.friction = xml.@friction;
-			fixtureDef.density = xml.@density;
-			fixtureDef.restitution = xml.@restitution;
+			var body:b2Body = physicsComponent.createBodyFromXML(xml);
+			physicsComponent.createFixtureFromXML(xml);
 			
 			damage = xml.@damage.length() > 0 ? xml.@damage : 0;
 			name = xml.@name;
-			
-			//TODO:Do we need to correct for x and y...?
-			createPhysBody(world, controller);
 			
 			reset(xml.@x, xml.@y);
 			
@@ -642,14 +288,14 @@ package org.overrides
 		}
 		
 		public function SetBodyType(type:uint):void{
-			final_body.SetType(type);
+			GetBody().SetType(type);
 		}
 		
 		public function SetShapeType(type:uint, density:Number=1.0):void{
-			initShape(type);
-			final_body.DestroyFixture(fixture);
-			final_body.CreateFixture2(shape, density);
-			fixture = final_body.GetFixtureList();
+			//initShape(type);
+			//GetBody().DestroyFixture(fixture);
+			//GetBody().CreateFixture2(shape, density);
+			//fixture = final_body.GetFixtureList();
 		}
 	}
 }

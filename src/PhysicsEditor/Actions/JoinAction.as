@@ -2,6 +2,8 @@ package PhysicsEditor.Actions
 {
 	import PhysicsEditor.IPanel;
 	
+	import PhysicsGame.Wrappers.WorldWrapper;
+	
 	import common.JointFactory;
 	
 	import flash.display.Shape;
@@ -35,15 +37,17 @@ package PhysicsEditor.Actions
 		}
 
 		override public function onHandleEnd():void{
+			args["speed"] = state.getArgs()["speed"];
 			args["type"] = state.getArgs()["jointType"];
 			
 			var jointArgs:Dictionary = new Dictionary();
 			jointArgs["type"] = args["type"];
 			jointArgs["start"] = args["start_snap"];
 			jointArgs["end"] = args["end_snap"];
+			jointArgs["speed"] = args["speed"];
 			
 			var xml:XML = JointFactory.createJointXML(jointArgs);
-			JointFactory.addJoint(state.the_world, xml);
+			JointFactory.addJoint(xml);
 		}
 
 	}

@@ -6,7 +6,6 @@
 	import Box2D.Common.b2internal;
 	import Box2D.Dynamics.*;
 	import Box2D.Dynamics.Contacts.b2Contact;
-	import Box2D.Dynamics.Controllers.b2Controller;
 	
 	import common.Utilities;
 	
@@ -30,6 +29,7 @@
 		
 		protected var _events:Array;
 		protected var _triggered:Boolean;
+		
 		//@desc Name of object that will trigger this sensor on collision.
 		public var Trigger:String;
 		
@@ -43,13 +43,9 @@
 			Trigger = triggerName;
 			_triggered = false;
 			
-			fixtureDef.isSensor = true;
-			
-			fixtureDef.filter.categoryBits = FilterData.SPECIAL;
-			
-			bodyDef.type = b2Body.b2_staticBody;
-			
-			initBoxShape();
+			physicsComponent.initStaticBody();
+			physicsComponent.setCategory(FilterData.SPECIAL);
+			physicsComponent.createFixture(b2Shape.e_polygonShape, 0, 1, true);
 			
 			_events = new Array();
 		}
@@ -119,8 +115,8 @@
 		override public function getXML():XML
 		{
 			var xml:XML = new XML(<sensor/>);
-			xml.@x = final_body.GetWorldCenter().x * ExState.PHYS_SCALE;		 		
-			xml.@y = final_body.GetWorldCenter().y * ExState.PHYS_SCALE;
+			xml.@x = GetBody().GetWorldCenter().x * ExState.PHYS_SCALE;		 		
+			xml.@y = GetBody().GetWorldCenter().y * ExState.PHYS_SCALE;
 			xml.@width = _bw;
 			xml.@height = _bh;
 			xml.@trigger = Trigger;
@@ -135,7 +131,7 @@
 			return xml;
 		}
 		
-		override protected function onInitXMLComplete(xml:XML, world:b2World = null, controller:b2Controller = null, event:Event = null):void
+		override protected function onInitXMLComplete(xml:XML, event:Event = null):void
 		{
 			//Load the bitmap data
 			//if(event){
@@ -153,8 +149,6 @@
 			bitmapData.fillRect(new Rectangle(0,0,xml.@width, xml.@height), 0xff888888);
 			pixels = bitmapData;
 			
-			bodyDef.type = xml.@bodyType;
-			
 			_bw = xml.@width;
 			_bh = xml.@height;
 			
@@ -162,17 +156,15 @@
 				Trigger = xml.@trigger;
 			}
 			
-			initBoxShape();
+			xml.@shapeType = b2Shape.e_polygonShape;
+			var body:b2Body = physicsComponent.createBodyFromXML(xml);
+			physicsComponent.createFixtureFromXML(xml, true);
 			
-			//bodyDef.angle = xml.@angle;
-			bodyDef.position.Set(xml.@x/ExState.PHYS_SCALE, xml.@y/ExState.PHYS_SCALE);
-			
-			//TODO:Do we need to correct for x and y...?
-			createPhysBody(world, controller);
+			loaded = true;
 			
 			for each(var evXML:XML in xml.event){
-				trace("sensor event: " + evXML.@x + "," + evXML.@y);
-				var t:b2Body = Utilities.GetBodyAtPoint(world, new b2Vec2(evXML.@x, evXML.@y), true);
+				//trace("sensor event: " + evXML.@x + "," + evXML.@y);
+				var t:b2Body = Utilities.GetBodyAtPoint(new b2Vec2(evXML.@x, evXML.@y), true);
 				if(t)
 		    		AddEvent(t.GetUserData());
 		    }

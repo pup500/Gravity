@@ -19,7 +19,7 @@ package PhysicsEditor.Actions
 		}
 		
 		override public function onHandleEnd():void{
-			var b2:b2Body = Utilities.GetBodyAtPoint(state.the_world, args["start"], true);
+			var b2:b2Body = Utilities.GetBodyAtPoint(args["start"], true);
 			if(b2 && b2.GetUserData()){
 				var bSprite:ExSprite = b2.GetUserData();
 				bSprite.SetBodyType(state.getArgs()["bodyType"]);

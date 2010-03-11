@@ -5,6 +5,8 @@ package org.overrides
 	import Box2D.Dynamics.*;
 	import Box2D.Dynamics.Controllers.b2Controller;
 	
+	import PhysicsGame.Wrappers.WorldWrapper;
+	
 	import common.XMLMap;
 	
 	import flash.display.Sprite;
@@ -17,16 +19,12 @@ package org.overrides
 
 	public class ExState extends FlxState
 	{
-		public var the_world:b2World;
 		protected var debug:Boolean;
 		public var debug_sprite:Sprite;
-		protected var controller:b2Controller;
 		
 		protected var _bgLayer:FlxLayer;
 		protected var _fgLayer:FlxLayer;
 		protected var _evLayer:FlxLayer;
-		
-		public var _loaded:Boolean;
 		
 		protected var args:Dictionary;
 		protected var xmlMapLoader:XMLMap;
@@ -46,15 +44,16 @@ package org.overrides
 			_evLayer = new FlxLayer();
 			
 			var gravity:b2Vec2 = new b2Vec2(0.0, 10);
-			
 			// Allow bodies to sleep
 			var doSleep:Boolean = true;
 			
+			var the_world:b2World;
 			the_world = new b2World(gravity, doSleep);
 			the_world.SetWarmStarting(true);
+			WorldWrapper.the_world = the_world;
+			
 			debug = false;
 			
-			_loaded = false;
 			debug_sprite = new Sprite();
 			
 			ev.visible = false;
@@ -63,13 +62,16 @@ package org.overrides
 			xmlMapLoader = new XMLMap(this);
 		}
 		
+		//This function is used to signal that the state has finished loading
 		public function init():void{
-			_loaded = true;
+			
 		}
 		
+		/*
 		public function getController():b2Controller{
-			return controller;
+			return _worldWrapper.controller;
 		}
+		*/
 		
 		public function getArgs():Dictionary{
 			return args;
@@ -89,20 +91,13 @@ package org.overrides
 				debug_draw.SetAlpha(1);
 				debug_draw.SetLineThickness(2);
 				debug_draw.SetFlags(b2DebugDraw.e_shapeBit |b2DebugDraw.e_centerOfMassBit | b2DebugDraw.e_jointBit);
-				the_world.SetDebugDraw(debug_draw);
+				WorldWrapper.setDebugDraw(debug_draw);
 			}
 		}
 		
 		override public function update():void
 		{
-			//the_world.Step(FlxG.elapsed, 10);
-			//the_world.Step(1/30, 10, 10);
-			
-			//This probably ensures constant physics regardless of framerate...
-			//We probably should not do this.... documentation says to step it with no vary
-			the_world.Step(FlxG.elapsed, 10, 10);
-			
-			the_world.ClearForces();
+			WorldWrapper.update();
 			
 			_bgLayer.update();
 			super.update();
@@ -115,7 +110,6 @@ package org.overrides
 			debug_sprite.y = FlxG.scroll.y;
 			
 			xmlMapLoader.update();
-			
 		}
 		
 		public function addToLayer(Core:FlxCore, layer:uint=0):FlxCore
@@ -136,8 +130,14 @@ package org.overrides
 			if(_fgLayer.visible) _fgLayer.render();
 			if(_evLayer.visible) _evLayer.render();
 			
-			the_world.DrawDebugData();
+			WorldWrapper.render();
 		}
+		
+		/*
+		public function get worldWrapper():WorldWrapper{
+			return _worldWrapper;
+		}
+		*/
 		
 		public function get bg():FlxLayer{ return _bgLayer;}
 		public function get mg():FlxLayer{ return _layer;}

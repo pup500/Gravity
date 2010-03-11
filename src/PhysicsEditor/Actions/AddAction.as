@@ -74,7 +74,7 @@ package PhysicsEditor.Actions
 			xml.@damage = state.getArgs()["damage"];
 			
 			var b2:ExSprite = new ExSprite();
-		    b2.initFromXML(xml, state.the_world, state.getController());
+		    b2.initFromXML(xml);
 		    
 		    state.addToLayer(b2, xml.layer);
 		}

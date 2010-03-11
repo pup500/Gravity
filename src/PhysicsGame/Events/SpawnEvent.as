@@ -37,7 +37,7 @@ package PhysicsGame.Events
 		    
 		    var state:ExState = FlxG.state as ExState;
 		    var body:Enemy = new Enemy(_args["x"], _args["y"]);
-			body.createPhysBody(state.the_world, state.getController());
+			//body.createPhysBody(state.the_world, state.getController());
 			body.GetBody().SetFixedRotation(true);
 		    
 		    state.addToLayer(body, 1);

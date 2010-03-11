@@ -4,6 +4,11 @@ package PhysicsGame
 	import Box2D.Common.Math.*;
 	import Box2D.Dynamics.*;
 	
+	import PhysicsGame.Components.AnimationComponent;
+	import PhysicsGame.Components.InputComponent;
+	import PhysicsGame.Components.WeaponsComponent;
+	import PhysicsGame.Wrappers.WorldWrapper;
+	
 	import flash.utils.Dictionary;
 	
 	import org.flixel.*;
@@ -25,8 +30,8 @@ package PhysicsGame
 		{
 			super();
 			bgColor = 0xffeeeeff;
-			controller = new GravityObjectController();
-			the_world.AddController(controller);
+			
+			WorldWrapper.controller = new GravityObjectController();
 			
 			//Turn this on to see physics box in play mode
 			//debug = true;
@@ -61,34 +66,34 @@ package PhysicsGame
 			
 			//Create GravityObjects
 			for(var i:uint= 0; i < 8; i++){
-				_gravObjects.push(this.add(new GravityObject(the_world)));
+				_gravObjects.push(this.add(new GravityObject()));
 				//don't create physical body, wait till bullet is shot.
 			}
 			
 			//Create bullets
 			for(i = 0; i < 8; i++){
-				var bullet:Bullet = new Bullet(the_world, controller);
+				var bullet:Bullet = new Bullet();
 				bullet.setGravityObject(_gravObjects[i]);
 				_bullets.push(this.add(bullet));
 				//don't create physical body, wait till bullet is shot.
 			}
 			
 			//Add gravity object to controller so that it can step through them with all other objects
-			var gController:GravityObjectController = controller as GravityObjectController;
+			var gController:GravityObjectController = WorldWrapper.controller as GravityObjectController;
 			gController._gravObjects = _gravObjects;
 			
 		}
 		
 		//Player will be called from the xmlMapLoader when the xml file is read...
 		public function addPlayer():void{
-			//var start:Point = xmlMapLoader.getStartPoint();
-			
 			//var body:Enemy = new Enemy(args["startPoint"].x, args["startPoint"].y);
 			var body:Player = new Player(args["startPoint"].x, args["startPoint"].y);
-			body.createPhysBody(the_world, controller);
+			body.initBody();
+			body.registerComponent(new InputComponent(body));
+			body.registerComponent(new WeaponsComponent(body, _bullets));
+			body.registerComponent(new AnimationComponent(body));
 			body.GetBody().SetSleepingAllowed(false);
 			body.GetBody().SetFixedRotation(true);
-			body.SetBullets(_bullets);
 			
 			add(body);
 			
@@ -104,7 +109,6 @@ package PhysicsGame
 			//Fix sensor...
 			var body:Sensor = new Sensor(args["endPoint"].x, args["endPoint"].y);
 			body.loadGraphic(endPoint);
-			body.createPhysBody(the_world);
 			
 			//TODO:Make this more concise
 			var levelEvent:EventObject = new EventObject(args["endPoint"].x, args["endPoint"].y);
@@ -122,7 +126,7 @@ package PhysicsGame
 		}
 		
 		private function initContactListener():void{
-			the_world.SetContactListener(new ContactListener());
+			WorldWrapper.setContactListener(new ContactListener());
 		}
 		
 		override public function update():void
@@ -130,14 +134,6 @@ package PhysicsGame
 			//Allow quiting even if level is not loaded...
 			if(FlxG.keys.justReleased("ESC")) {
 				FlxG.switchState(LevelSelectMenu);
-			}
-			
-			//Allows XML Map Loader to determine when it is finished loading the level
-			xmlMapLoader.update();
-			
-			//Don't update if we aren't loaded...
-			if(!_loaded){
-				return;
 			}
 			
 			super.update();

@@ -21,7 +21,7 @@ package PhysicsEditor.Actions
 		
 		//Override onClick to not deactivate other actions in the panel...
 		override protected function onClick(event:MouseEvent):void{
-			var xml:XML = Utilities.CreateXMLRepresentation(state.the_world);
+			var xml:XML = Utilities.CreateXMLRepresentation();
 			var points:XML = new XML(<points/>);
 			
 			if(state.getArgs()["startPoint"]){

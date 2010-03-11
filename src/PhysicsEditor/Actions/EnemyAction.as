@@ -2,29 +2,33 @@ package PhysicsEditor.Actions
 {
 	import PhysicsEditor.IPanel;
 	
+	import PhysicsGame.Enemy;
 	import PhysicsGame.EventObject;
-	import PhysicsGame.Wrappers.WorldWrapper;
 	
 	import org.overrides.ExState;
 	
-	public class EventAction extends ActionBase
+	public class EnemyAction extends ActionBase
 	{
-		[Embed(source="../../data/editor/interface/add_event.png")] private var img:Class;
+		[Embed(source="../../data/editor/interface/gas-soldier-icon.png")] private var img:Class;
 		
-		public function EventAction(panel:IPanel, active:Boolean)
+		public function EnemyAction(panel:IPanel, active:Boolean)
 		{
 			super(img, panel, active);
 		}
 		
 		override public function onHandleBegin():void{
 			//TODO:Fix this up....
+			/*
 			var xml:XML = new XML(<event/>);
 			xml.@x = args["start_snap"].x;
 			xml.@y = args["start_snap"].y;
 			xml.@type = state.getArgs()["event"];
+			*/
 			
-			var b2:EventObject = new EventObject();
-			b2.initFromXML(xml);
+			var b2:Enemy = new Enemy(args["start_snap"].x, args["start_snap"].y);
+			b2.GetBody().SetFixedRotation(true);
+			
+			//b2.initFromXML(xml);
 			state.addToLayer(b2, ExState.EV);
 		}
 	}

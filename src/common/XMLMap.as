@@ -4,6 +4,7 @@ package common
 	import Box2D.Dynamics.Joints.*;
 	
 	import PhysicsGame.*;
+	import PhysicsGame.Wrappers.WorldWrapper;
 	
 	import flash.events.Event;
 	import flash.geom.Point;
@@ -34,7 +35,6 @@ package common
 			_state = state;	
 			_start = new Point();
 			_end = new Point();
-			//offset = new Point();
 			
 			savePoints = false;
 			
@@ -79,14 +79,22 @@ package common
 				_state.getArgs()["endPoint"] = new b2Vec2(_end.x, _end.y);
 			}
 			
-			expBodyCount = getItemCount() + configXML.objects.shape.length();
+			expBodyCount = getItemCount() + configXML.objects.shape.length() + configXML.objects.enemy.length();
+			
 			bodiesLoaded = false;
 			eventsLoaded = false;
 			
 			for each(var shape:XML in configXML.objects.shape){
 				 var b2:ExSprite = new ExSprite();
-		    	b2.initFromXML(shape, _state.the_world, _state.getController());
+				b2.initFromXML(shape);
 		    	_state.addToLayer(b2, shape.layer);
+			}
+			
+			//TODO:Make enemy more flexible
+			for each(var enemy:XML in configXML.objects.enemy){
+				var e:Enemy = new Enemy(enemy.@x, enemy.@y);
+				e.GetBody().SetFixedRotation(true);
+		    	_state.addToLayer(e, ExState.MG);
 			}
 		}
 		
@@ -115,6 +123,11 @@ package common
 			for each(shape in configXML.objects.shape){
 				shape.@x = int(shape.@x) + offset.x;
 		    	shape.@y = int(shape.@y) + offset.y;
+			}
+			
+			for each(var enemy:XML in configXML.objects.enemy){
+				enemy.@x = int(enemy.@x) + offset.x;
+				enemy.@y = int(enemy.@y) + offset.y;
 			}
 			
 			for each(var joint:XML in configXML.objects.joint){
@@ -184,12 +197,12 @@ package common
 		private function addAllJoints():void{
 			for each (var jointXML:XML in configXML.objects.joint){
 				jointXML.loaded = "true";
-				JointFactory.addJoint(_state.the_world, jointXML);
+				JointFactory.addJoint(jointXML);
 			}
 		}
 		
 		public function addJoint(args:Dictionary):void{
-			JointFactory.addJoint(_state.the_world, JointFactory.createJointXML(args));
+			JointFactory.addJoint(JointFactory.createJointXML(args));
 		}
 		
 		//Add all joints from configuration file, also pass configuration jointXML along
@@ -202,15 +215,9 @@ package common
 		}
 		
 		public function addXMLEvent(event:XML, sprite:Class=null):void{
-			//The synchronous time when adding objects that requires loading a bitmap will allow the object
-			//to get updated before it renders
-			//This doesn't work when there's no synchronous events... So this add takes place before the render...
-			//Which means we have to worry about the updated sprite position... 
-			
 			var b2:EventObject = new EventObject();
-			b2.initFromXML(event, _state.the_world);
-			//b2.createPhysBody(_state.the_world);
-		    
+			b2.initFromXML(event);
+			 
 			_state.addToLayer(b2, ExState.EV);
 		}
 		
@@ -221,18 +228,14 @@ package common
 		}
 		
 		public function addXMLSensor(sensorXML:XML, sprite:Class = null):void {
-			//TODO:Fix sensor...
 			var sensor:Sensor = new Sensor();
-			//sensorXML.x, sensorXML.y, sensorXML.width, sensorXML.height);
-			//sensor.loadGraphic(sprite);
-			sensor.initFromXML(sensorXML, _state.the_world, _state.getController());
+			sensor.initFromXML(sensorXML);
 			
-			//sensor.createPhysBody(_state.the_world);
 			_state.addToLayer(sensor, ExState.EV);
 		}
 		
 		public function getItemCount():uint{
-			return _state.the_world.GetBodyCount();
+			return WorldWrapper.getBodyCount();
 		}
 	}
 }

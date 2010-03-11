@@ -2,15 +2,16 @@ package common.joints
 {
 	import Box2D.Common.Math.b2Vec2;
 	import Box2D.Dynamics.Joints.b2RevoluteJointDef;
-	import Box2D.Dynamics.b2World;
+	
+	import PhysicsGame.Wrappers.WorldWrapper;
 	
 	import org.overrides.ExState;
 
 	public class RevoluteJoint extends Joint
 	{	
-		public function RevoluteJoint(world:b2World, xml:XML)
+		public function RevoluteJoint(xml:XML)
 		{
-			super(world, xml);
+			super(xml);
 			
 		}
 		
@@ -21,7 +22,7 @@ package common.joints
 			
 			if(body2){
 				if(body1 == null || body1 === body2){
-					body1 = world.GetGroundBody();
+					body1 = WorldWrapper.getGroundBody();
 				}
 				
 				var anchor:b2Vec2 = new b2Vec2();
@@ -55,8 +56,9 @@ package common.joints
 				
 				//The mass and distance has to be in so that longer distances will still work...
 				revJoint.maxMotorTorque = 100.0 * body2.GetMass() * distance;
-				revJoint.motorSpeed = 1;
-				revJoint.enableMotor = true;
+				revJoint.motorSpeed = xml.@speed;
+				//TODO:Speed determines if motor is enabled
+				revJoint.enableMotor = int(xml.@speed) != 0;
 				valid = true;
 			}
 			else{

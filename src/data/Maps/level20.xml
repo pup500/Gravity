@@ -1,0 +1,35 @@
+<config>
+  <objects>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="380" y="240.33266700000001">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="236" y="364">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="491.99999999999994" y="364">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="124.00000000000001" y="220">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="0.1" restitution="0" damage="0" name="" x="380" y="297.3381680000001">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <joint type="2" speed="-1">
+      <body1 x="0" y="0"/>
+      <body2 x="380" y="240.33266700000001"/>
+      <anchor x="564" y="240"/>
+      <axis x="-1" y="0"/>
+    </joint>
+    <joint type="2" speed="0">
+      <body1 x="0" y="0"/>
+      <body2 x="380" y="297.3381680000001"/>
+      <anchor x="580" y="292"/>
+      <axis x="-1" y="0"/>
+    </joint>
+  </objects>
+  <points>
+    <start x="164" y="312"/>
+    <end x="580" y="312"/>
+  </points>
+</config>

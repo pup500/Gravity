@@ -1,8 +1,6 @@
 ﻿package PhysicsGame 
 {
 	import PhysicsEditor.PhysLevelEditor;
-	//import PhysicsLab.PhysLevelEditor;
-	//import PhysicsLab.LevelEditor;
 	
 	import org.flixel.*;
 	

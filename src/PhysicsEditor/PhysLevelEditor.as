@@ -5,9 +5,13 @@
 	import PhysicsEditor.Fields.Fields;
 	import PhysicsEditor.Panels.Panels;
 	
+	import PhysicsGame.Components.AnimationComponent;
+	import PhysicsGame.Components.EditorInputComponent;
 	import PhysicsGame.ContactListener;
 	import PhysicsGame.EventObject;
 	import PhysicsGame.LevelSelectMenu;
+	import PhysicsGame.Wrappers.WorldWrapper;
+	import PhysicsGame.Player;
 	
 	import flash.events.Event;
 	import flash.net.URLLoader;
@@ -37,11 +41,13 @@
 		
 		private var fields:Fields;
 		
+		private var cfgLoaded:Boolean;
+		
 		public function PhysLevelEditor() 
 		{
 			super();
 			bgColor = 0xffeeeeff;
-			the_world.SetGravity(new b2Vec2(0,10));
+			WorldWrapper.setGravity(new b2Vec2(0,10));
 			
 			debug = true;
 			initBox2DDebugRendering();
@@ -55,6 +61,7 @@
 			eventType = 0;
 			
 			files = new Array();
+			cfgLoaded = false;
 			loadAssetList("data/editor/LevelEditor.txt");
 			
 			addPlayer();
@@ -69,7 +76,7 @@
 		
 				
 		private function initContactListener():void{
-			the_world.SetContactListener(new ContactListener());
+			WorldWrapper.setContactListener(new ContactListener());
 		}
 		
 		//Load the config file to set up world...
@@ -85,7 +92,7 @@
 			var s:String = event.target.data;
 			files = s.split("\n");
 			fileIndex = 0;
-			_loaded = true;
+			cfgLoaded = true;
 			
 			createStatusText();
 		}
@@ -104,7 +111,8 @@
 		
 		public function addPlayer():void{
 			var body:Player = new Player(100, 100);
-			body.createPhysBody(the_world);
+			body.registerComponent(new EditorInputComponent(body));
+			//body.registerComponent(new AnimationComponent(body));
 			body.GetBody().SetSleepingAllowed(false);
 			body.GetBody().SetFixedRotation(true);
 			add(body);
@@ -122,7 +130,7 @@
 			super.update();
 			
 			//True only after the config file has been loaded
-			if(!_loaded) 
+			if(!cfgLoaded) 
 				return;
 			
 			if(FlxG.keys.justPressed("LBRACKET")) {
@@ -132,10 +140,10 @@
 				fileIndex++;
 			}
 			
-			if(FlxG.keys.justPressed("O")) {
+			if(FlxG.keys.justPressed("MINUS")) {
 				eventType--;
 			}
-			if(FlxG.keys.justPressed("P")){
+			if(FlxG.keys.justPressed("PLUS")){
 				eventType++;
 			}
 			

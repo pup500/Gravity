@@ -33,9 +33,9 @@ package common
 		}
 		
 		//Always make sure we have registered two points
-		public static function addJoint(world:b2World, jointXML:XML):void{
+		public static function addJoint(jointXML:XML):void{
 			//if(jointXML.@type.length() > 0){
-				var joint:Joint = new JOINTS[jointXML.@type](world, jointXML);
+				var joint:Joint = new JOINTS[jointXML.@type](jointXML);
 				joint.SetJointDef();
 				joint.AddJoint();
 			//}
@@ -48,6 +48,7 @@ package common
 			xml.body1.@y = args["start"].y;
 			xml.body2.@x = args["end"].x;
 			xml.body2.@y = args["end"].y;
+			xml.@speed = args["speed"];
 			xml.loaded = false;
 			return xml;
 		}

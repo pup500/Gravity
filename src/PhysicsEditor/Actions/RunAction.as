@@ -4,6 +4,8 @@ package PhysicsEditor.Actions
 	
 	import PhysicsEditor.IPanel;
 	
+	import PhysicsGame.Wrappers.WorldWrapper;
+	
 	import flash.events.MouseEvent;
 	
 	public class RunAction extends ActionBase
@@ -27,19 +29,7 @@ package PhysicsEditor.Actions
 		}
 		
 		private function updateWorldObjects():void{
-			var bb:b2Body;
-			if(active){
-				for (bb = state.the_world.GetBodyList(); bb; bb = bb.GetNext()) {
-					if(bb.GetType() == b2Body.b2_dynamicBody)
-						bb.SetAwake(true);
-				}
-			}
-			else{
-				for (bb = state.the_world.GetBodyList(); bb; bb = bb.GetNext()) {
-					if(bb.GetType() == b2Body.b2_dynamicBody)
-						bb.SetAwake(false);
-				}
-			}
+			WorldWrapper.setAllAwake(active);
 		}
 	}
 }

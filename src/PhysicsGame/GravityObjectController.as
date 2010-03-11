@@ -16,7 +16,8 @@
 		
 		public override function Step(step:b2TimeStep):void 
 		{
-			if (_gravObjects == null)
+
+			if(!_gravObjects)
 				return;
 			
 			var edge:b2ControllerEdge = null;
@@ -41,5 +42,4 @@
 			}
 		}
 	}
-
 }
