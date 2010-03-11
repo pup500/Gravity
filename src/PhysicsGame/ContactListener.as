@@ -1,5 +1,6 @@
 package PhysicsGame
 {
+	import Box2D.Collision.b2Manifold;
 	import Box2D.Dynamics.*;
 	import Box2D.Dynamics.Contacts.*;
 
@@ -27,6 +28,22 @@ package PhysicsGame
 			if(body2.GetUserData()){
 				body2.GetUserData().setImpactPoint(contact, contact.GetFixtureB(), contact.GetFixtureA());
 			}
+		}
+		
+		override public function PreSolve(contact:b2Contact, oldManifold:b2Manifold):void 
+		{
+			var fixtureA:b2Fixture = contact.GetFixtureA();
+			var fixtureB:b2Fixture = contact.GetFixtureB();
+			
+			/*if (fixtureA != test.m_platform && fixtureA != test.m_character)
+				return;
+			if (fixtureB != test.m_platform && fixtureB != test.m_character)
+				return;
+				
+			var position:b2Vec2 = test.m_character.GetBody().GetPosition();
+			*/
+			//if (position.y > test.m_top)
+			//	contact.SetEnabled(false);
 		}
 	
 		/// Called when a contact point persists. This includes the geometry
