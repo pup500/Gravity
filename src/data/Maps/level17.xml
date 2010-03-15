@@ -23,7 +23,7 @@
     <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="464" y="416">
       <file>data/editor/images/blocks_2.jpg</file>
     </shape>
-    <joint type="2">
+    <joint type="2" speed="-1">
       <body1 x="0" y="0"/>
       <body2 x="336" y="304.39869999999996"/>
       <anchor x="129" y="304"/>

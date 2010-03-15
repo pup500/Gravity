@@ -52,7 +52,7 @@ package PhysicsGame
 			physicsComponent.initBody(b2Body.b2_dynamicBody);
 			physicsComponent.addHead();
 			physicsComponent.addTorso(0, 15);
-			gFixture = physicsComponent.addSensor(0.8,1);
+			gFixture = physicsComponent.addSensor(.8,1);
 		}
 		
 		override public function update():void
