@@ -16,7 +16,6 @@
 		
 		public override function Step(step:b2TimeStep):void 
 		{
-
 			if(!_gravObjects)
 				return;
 			

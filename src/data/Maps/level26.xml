@@ -1,0 +1,92 @@
+﻿<config>
+  <objects>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="338.99999999999983" y="31.158700000000003">
+      <file>data/editor/images/sheep.png</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="326.99999999999983" y="91.1083">
+      <file>data/editor/images/sheep.png</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="434.99999999999983" y="215.06750000000002">
+      <file>data/editor/images/sheep.png</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="354.99999999999983" y="195.0675">
+      <file>data/editor/images/sheep.png</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="498.9999999999999" y="91.05879999999999">
+      <file>data/editor/images/sheep.png</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0.0013167771741721909" friction="0.3" density="1" restitution="0" damage="0" name="" x="543.5394710943817" y="175.04304683577084">
+      <file>data/editor/images/sheep.png</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0.010789198657049389" friction="0.3" density="1" restitution="0" damage="0" name="" x="506.470271807502" y="171.12623239780908">
+      <file>data/editor/images/sheep.png</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="550.9999999999998" y="127.07679999999999">
+      <file>data/editor/images/sheep.png</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="458.99999999999983" y="99.05069999999999">
+      <file>data/editor/images/sheep.png</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="470.99999999999983" y="147.0507">
+      <file>data/editor/images/sheep.png</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="662.9999999999998" y="55">
+      <file>data/editor/images/sheep.png</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="614.9999999999997" y="47">
+      <file>data/editor/images/sheep.png</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="594.9999999999993" y="67">
+      <file>data/editor/images/sheep.png</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="530.9999999999973" y="39">
+      <file>data/editor/images/sheep.png</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="402.9999999999891" y="47">
+      <file>data/editor/images/sheep.png</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="387" y="87">
+      <file>data/editor/images/sheep.png</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="140" y="395.9500439961941">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.1" density="1" restitution="0" damage="0" name="" x="240" y="540.7250000000001">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0.7853981633974483" friction="0.3" density="1" restitution="0" damage="0" name="" x="640.8" y="133.825">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="660" y="395.9500000000001">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="500.00000000000006" y="683.9500000000002">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="140" y="395.9500701007762">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="2" shapeType="1" angle="8.408161075492968e-20" friction="0.1" density="1" restitution="0" damage="0" name="" x="559.2886736265086" y="540.7309289664233">
+      <file>data/editor/images/blocks_1.jpg</file>
+    </shape>
+    <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="244" y="683.9500000000002">
+      <file>data/editor/images/blocks_2.jpg</file>
+    </shape>
+    <joint type="2" speed="-1">
+      <body1 x="0" y="0"/>
+      <body2 x="240" y="540.7250000000001"/>
+      <anchor x="360" y="540.7250000000001"/>
+      <axis x="-0.9994449069791544" y="-0.033314830232638364"/>
+    </joint>
+    <joint type="2" speed="-1">
+      <body1 x="0" y="0"/>
+      <body2 x="559.2886736265086" y="540.7309289664233"/>
+      <anchor x="432" y="540.6115000000001"/>
+      <axis x="0.9995120760870788" y="-0.031234752377721095"/>
+    </joint>
+  </objects>
+  <points>
+    <start x="392" y="296"/>
+    <end x="592" y="332"/>
+  </points>
+</config>
