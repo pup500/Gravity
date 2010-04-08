@@ -4,6 +4,7 @@ data/editor/images/blocks_3.jpg
 data/editor/images/blocks_4.jpg
 data/editor/images/blocks_5.jpg
 data/editor/images/blocks_6.jpg
+data/editor/images/sheep.png
 data/editor/images/e_ass_03.png
 data/editor/images/e_ass_06.png
 data/editor/images/e_ass_08.png
@@ -20,4 +21,4 @@ data/objects/piston.xml
 data/objects/event0.xml
 data/objects/rods.xml
 data/objects/moving_platform.xml
-data/editor/images/sheep.png
+data/objects/Ushape.xml

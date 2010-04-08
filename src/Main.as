@@ -19,7 +19,7 @@ package {
 			super(640, 480, LevelSelectMenu, 1);
 			super.showLogo = false;
 			useDefaultHotKeys = false;
-			
+			super.setLogoFX(0xFFFF0000);
 			for(var i:uint = 1; i <= MAX_LEVEL; i++){
 				FlxG.levels.push("data/Maps/level" + i + ".xml");
 			}
