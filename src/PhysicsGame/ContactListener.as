@@ -15,7 +15,7 @@ package PhysicsGame
 		/// and the forces.
 		override public function BeginContact(contact:b2Contact) : void {
 			super.BeginContact(contact);
-		
+			
 			//Changed to this for Box2D 2.1a. We're using b2Fixtures instead of b2Shapes.
 			var body1:b2Body = contact.GetFixtureA().GetBody();
 			var body2:b2Body = contact.GetFixtureB().GetBody();
@@ -45,7 +45,11 @@ package PhysicsGame
 			//if (position.y > test.m_top)
 			//	contact.SetEnabled(false);
 		}
-	
+		
+		override public function PostSolve(contact:b2Contact, impulse:b2ContactImpulse):void 
+		{
+			
+		}
 		/// Called when a contact point persists. This includes the geometry
 		/// and the forces.
 		//override public function Persist(point:b2ContactPoint) : void{

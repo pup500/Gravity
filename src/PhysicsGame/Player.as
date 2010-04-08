@@ -60,6 +60,8 @@ package PhysicsGame
 			super.update();
 		}
 		
+
+		
 		override public function setImpactPoint(point:b2Contact, myFixture:b2Fixture, oFixture:b2Fixture):void{
 			super.setImpactPoint(point, myFixture, oFixture);
 			
