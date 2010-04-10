@@ -1,52 +1,36 @@
 ﻿<config>
   <objects>
-    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="338.99999999999983" y="31.158700000000003">
-      <file>data/editor/images/sheep.png</file>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="338.99999999999983" y="31.158700000000003"crushable="1"><file>data/editor/images/sheep.png</file>
     </shape>
-    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="326.99999999999983" y="91.1083">
-      <file>data/editor/images/sheep.png</file>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="326.99999999999983" y="91.1083"crushable="1"><file>data/editor/images/sheep.png</file>
     </shape>
-    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="434.99999999999983" y="215.06750000000002">
-      <file>data/editor/images/sheep.png</file>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="434.99999999999983" y="215.06750000000002"crushable="1"><file>data/editor/images/sheep.png</file>
     </shape>
-    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="354.99999999999983" y="195.0675">
-      <file>data/editor/images/sheep.png</file>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="354.99999999999983" y="195.0675"crushable="1"><file>data/editor/images/sheep.png</file>
     </shape>
-    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="498.9999999999999" y="91.05879999999999">
-      <file>data/editor/images/sheep.png</file>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="498.9999999999999" y="91.05879999999999"crushable="1"><file>data/editor/images/sheep.png</file>
     </shape>
-    <shape layer="1" bodyType="2" shapeType="1" angle="0.0013167771741721909" friction="0.3" density="1" restitution="0" damage="0" name="" x="543.5394710943817" y="175.04304683577084">
-      <file>data/editor/images/sheep.png</file>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0.0013167771741721909" friction="0.3" density="1" restitution="0" damage="0" name="" x="543.5394710943817" y="175.04304683577084"crushable="1"><file>data/editor/images/sheep.png</file>
     </shape>
-    <shape layer="1" bodyType="2" shapeType="1" angle="0.010789198657049389" friction="0.3" density="1" restitution="0" damage="0" name="" x="506.470271807502" y="171.12623239780908">
-      <file>data/editor/images/sheep.png</file>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0.010789198657049389" friction="0.3" density="1" restitution="0" damage="0" name="" x="506.470271807502" y="171.12623239780908"crushable="1"><file>data/editor/images/sheep.png</file>
     </shape>
-    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="550.9999999999998" y="127.07679999999999">
-      <file>data/editor/images/sheep.png</file>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="550.9999999999998" y="127.07679999999999"crushable="1"><file>data/editor/images/sheep.png</file>
     </shape>
-    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="458.99999999999983" y="99.05069999999999">
-      <file>data/editor/images/sheep.png</file>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="458.99999999999983" y="99.05069999999999"crushable="1"><file>data/editor/images/sheep.png</file>
     </shape>
-    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="470.99999999999983" y="147.0507">
-      <file>data/editor/images/sheep.png</file>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="470.99999999999983" y="147.0507"crushable="1"><file>data/editor/images/sheep.png</file>
     </shape>
-    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="662.9999999999998" y="55">
-      <file>data/editor/images/sheep.png</file>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="662.9999999999998" y="55"crushable="1"><file>data/editor/images/sheep.png</file>
     </shape>
-    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="614.9999999999997" y="47">
-      <file>data/editor/images/sheep.png</file>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="614.9999999999997" y="47"crushable="1"><file>data/editor/images/sheep.png</file>
     </shape>
-    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="594.9999999999993" y="67">
-      <file>data/editor/images/sheep.png</file>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="594.9999999999993" y="67"crushable="1"><file>data/editor/images/sheep.png</file>
     </shape>
-    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="530.9999999999973" y="39">
-      <file>data/editor/images/sheep.png</file>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="530.9999999999973" y="39"crushable="1"><file>data/editor/images/sheep.png</file>
     </shape>
-    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="402.9999999999891" y="47">
-      <file>data/editor/images/sheep.png</file>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="402.9999999999891" y="47"crushable="1"><file>data/editor/images/sheep.png</file>
     </shape>
-    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="387" y="87">
-      <file>data/editor/images/sheep.png</file>
+    <shape layer="1" bodyType="2" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="387" y="87"><file>data/editor/images/sheep.png</file>
     </shape>
     <shape layer="1" bodyType="0" shapeType="1" angle="0" friction="0.3" density="1" restitution="0" damage="0" name="" x="140" y="395.9500439961941">
       <file>data/editor/images/blocks_2.jpg</file>
