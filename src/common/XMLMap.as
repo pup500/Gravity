@@ -84,10 +84,19 @@ package common
 			bodiesLoaded = false;
 			eventsLoaded = false;
 			
-			for each(var shape:XML in configXML.objects.shape){
-				 var b2:ExSprite = new ExSprite();
+			for each(var shape:XML in configXML.objects.shape) {
+				//Changed for Crushable build - Norman
+				var b2:ExSprite
+				;
+				if(shape.@crushable == "1"){
+					b2 = new Crushable();
+				}
+				else
+				{
+					b2 = new ExSprite();
+				}
 				b2.initFromXML(shape);
-		    	_state.addToLayer(b2, shape.layer);
+					_state.addToLayer(b2, shape.layer);
 			}
 			
 			//TODO:Make enemy more flexible
