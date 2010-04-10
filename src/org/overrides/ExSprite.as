@@ -147,9 +147,6 @@ package org.overrides
 			
 		public function setImpactPoint(point:b2Contact, myFixture:b2Fixture, oFixture:b2Fixture):void {
 			hurt(oFixture.GetBody().GetUserData().damage);
-			
-			//if (contact.GetManifold().m_localPlaneNormal.y > 0)
-				//top = true;
 		}
 		
 		public function removeImpactPoint(point:b2Contact, myFixture:b2Fixture, oFixture:b2Fixture):void{

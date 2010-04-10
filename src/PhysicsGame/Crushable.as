@@ -1,11 +1,14 @@
 ﻿package PhysicsGame 
 {
+	import flash.events.TimerEvent;
 	import org.flixel.FlxEmitter;
 	import org.flixel.FlxG;
 	import org.flixel.FlxSprite;
 	import org.overrides.ExSprite;
 	import Box2D.Dynamics.*;
 	import Box2D.Dynamics.Contacts.*;
+	
+	import flash.utils.Timer;
 	
 	/**
 	 * ...
@@ -23,6 +26,8 @@
 		private var _crushingGibs:FlxEmitter;
 		private var _gibs:FlxEmitter;
 		
+		private var _dyingTimer:Timer;
+		
 		public function Crushable(x:int=0, y:int=0, sprite:Class=null)
 		{
 			super(x, y, sprite);
@@ -31,11 +36,16 @@
 			cleft = false;
 			cright = false;
 			
-			_crushingGibs = new FlxEmitter(x, y, .4);
+			_crushingGibs = new FlxEmitter(0, 0, -1);
 			_crushingGibs.createSprites(ImgGibs, 6);
-			_gibs = new FlxEmitter(x, y,-.1);
+			FlxG.state.add(_crushingGibs);
+			
+			_gibs = new FlxEmitter(0, 0,-.1);
 			_gibs.createSprites(ImgSheepGibs, 4);
 			FlxG.state.add(_gibs);
+			
+			_dyingTimer = new Timer(1000,1);
+			_dyingTimer.addEventListener(TimerEvent.TIMER_COMPLETE, onCrush);
 		}
 		
 		override public function update():void
@@ -45,23 +55,31 @@
 			if (cleft && cright)
 			{
 				crushed = true;
-				//flicker(1);
-				kill();
+				flicker(1);
+				//kill();
+				_dyingTimer.start();
 			}
 			
 			cleft = false;
 			cright = false;
+			
+			if (crushed)
+			{
+				_crushingGibs.reset(x + width / 2, y + height / 2);
+			}
+		}
+		
+		private function onCrush(event:TimerEvent):void
+		{
+			kill();
 		}
 		
 		override public function kill():void
 		{
-			//var gibs:FlxEmitter = new FlxEmitter(x, y);
-			//gibs.loadSprites([new FlxSprite(0,0,ImgGibs)]);
-			//FlxG.state.add(gibs);
+			_crushingGibs.kill();
 			
 			super.kill();
 			_gibs.reset(x + width / 2, y + height / 2);
-			
 		}
 		
 		override public function setImpactPoint(point:b2Contact, myFixture:b2Fixture,  oFixture:b2Fixture):void
