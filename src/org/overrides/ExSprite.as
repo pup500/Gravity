@@ -106,15 +106,6 @@ package org.overrides
 			//Update all registered components
 			components.update();
 			
-			if (cleft && cright)
-			{
-				crushed = true;
-				flicker(1);
-				kill();
-			}
-			
-			cleft = false;
-				cright = false;
 			//updateJoints();
 		}
 		
@@ -154,26 +145,8 @@ package org.overrides
 			return physicsComponent.final_body;
 		}
 		
-		public var ctop:Boolean;
-		public var cbottom:Boolean;
-		public var cleft:Boolean;
-		public var cright:Boolean;
-		
 		public function setImpactPoint(point:b2Contact, myFixture:b2Fixture, oFixture:b2Fixture):void {
 			hurt(oFixture.GetBody().GetUserData().damage);
-			
-			//trace("localPlaneNormal x:" + point.GetManifold().m_localPlaneNormal.x);
-			//trace("localPlaneNormal y:" + point.GetManifold().m_localPlaneNormal.y);
-			
-			if(!cright)
-				cright = point.GetManifold().m_localPlaneNormal.x >= 1;
-			if(!cleft)
-				cleft = point.GetManifold().m_localPlaneNormal.x <= -1;
-			
-			
-				
-			//if (contact.GetManifold().m_localPlaneNormal.y > 0)
-				//top = true;
 		}
 		
 		public function removeImpactPoint(point:b2Contact, myFixture:b2Fixture, oFixture:b2Fixture):void{

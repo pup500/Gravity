@@ -1,4 +1,4 @@
-﻿package PhysicsLab
+package PhysicsLab
 {
 	import Box2D.Collision.*;
 	import Box2D.Common.Math.*;
