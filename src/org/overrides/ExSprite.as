@@ -33,8 +33,6 @@ package org.overrides
 		public var imageResource:String;
 		public var layer:uint;
 		
-		public var crushed:Boolean;
-		
 		protected var components:Components;
 		
 		protected var physicsComponent:PhysicsComponent;
@@ -144,7 +142,7 @@ package org.overrides
 		public function GetBody():b2Body{
 			return physicsComponent.final_body;
 		}
-		
+
 		public function setImpactPoint(point:b2Contact, myFixture:b2Fixture, oFixture:b2Fixture):void {
 			hurt(oFixture.GetBody().GetUserData().damage);
 		}
