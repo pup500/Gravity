@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>Gravity</name>
+	<name>Gravitron</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -10,8 +10,22 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+		<buildCommand>
+			<name>org.axdt.as3.imp.builder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
 		<nature>com.adobe.flexbuilder.project.actionscriptnature</nature>
+		<nature>org.axdt.as3.imp.nature</nature>
+		<nature>org.asdt.core.ASNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>core</name>
+			<type>2</type>
+			<locationURI>core</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>
